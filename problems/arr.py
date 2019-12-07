@@ -11,21 +11,33 @@ Follow-up: What if you can't use division? '''
 
 import sys
 
-'''O(N^2)'''
-def arrprod(arr):
-    result = [1] * len(arr)
+'''O(N^2) solution, no division'''
+class product1:
+    def func(self, arr):
+        result = [1] * len(arr)
 
-    for index in range(len(arr)):
-        for current in range(len(arr)):
-            
-            if current == index:
-                continue
-            
-            result[index] *= arr[ current ]
+        for index in range(len(arr)):
+            for current in range(len(arr)):
+                
+                if current == index:
+                    continue
+                
+                result[index] *= arr[ current ]
 
-    return result
+        return result
 
-def arrprod2(arr):
+'''O(N) solution, w/ division'''
+class product2:
+    def func(self, arr):
+        n = len(arr)
+        product = 1
+
+        for index in range(n):
+            product *= arr[index]
+
+        return [ int(product / i) for i in arr ]
+
+def product3(arr):
     pass
 
 ''' smallest window
@@ -39,30 +51,24 @@ given [3, 7, 5, 6, 9], you should return (1, 3)
 
 '''
 
-def smallest_window(arr):
-    length = len(arr)
-    begin, end, high = -1, -1, 0
-    for index in range(length):
+'''O(N) solution'''
+class window1:
+    def func(self, arr):
+        length = len(arr)
+        begin, end, high = -1, -1, 0
+        for index in range(length):
 
-        current = arr[index]
-        ahead = arr[min(length - 1, index + 1)]
+            current = arr[index]
+            ahead = arr[min(length - 1, index + 1)]
 
-        if current > ahead and begin == -1:
-            begin = index
-            high = max(current, high)
-        
-        if ( current > ahead or current <= high ) and begin != -1:
-            end = index
+            if current > ahead and begin == -1:
+                begin = index
+                high = max(current, high)
+            
+            if ( current > ahead or current <= high ) and begin != -1:
+                end = index
 
-    if begin != -1 and end == -1:
-        end = len(arr)
+        if begin != -1 and end == -1:
+            end = len(arr)
 
-    return (begin, end)
-
-if __name__ == '__main__':
-
-    raw_input = sys.argv[1]
-
-    if( raw_input != None ):
-        args = [int(i) for i in raw_input.split(",")]
-        print(arrprod(args))
+        return (begin, end)
