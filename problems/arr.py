@@ -37,8 +37,34 @@ class product2:
 
         return [ int(product / i) for i in arr ]
 
+''' O(N) solution '''
 def product3(arr):
-    pass
+    n = len(arr)
+    prefix = []
+    for num in arr:
+        if prefix:
+            prefix.append( prefix[-1] * num )
+        else:
+            prefix.append( num )
+
+    suffix = []
+    for num in reversed(arr):
+        if suffix:
+            suffix.append( num * suffix[-1] )
+        else:
+            suffix.append( num )
+    suffix.reverse()
+
+    results = []
+    for index in range(n):
+        if index == 0:
+            results.append( suffix[index + 1] )
+        elif index == n - 1:
+            results.append( prefix[index - 1] )
+        else:
+            results.append( prefix[index - 1] * suffix[index + 1] )
+
+    return results
 
 ''' smallest window
 
