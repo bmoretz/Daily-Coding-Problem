@@ -38,33 +38,34 @@ class product2:
         return [ int(product / i) for i in arr ]
 
 ''' O(N) solution '''
-def product3(arr):
-    n = len(arr)
-    prefix = []
-    for num in arr:
-        if prefix:
-            prefix.append( prefix[-1] * num )
-        else:
-            prefix.append( num )
+class product3:
+    def func(self, arr):
+        n = len(arr)
+        prefix = []
+        for num in arr:
+            if prefix:
+                prefix.append( prefix[-1] * num )
+            else:
+                prefix.append( num )
 
-    suffix = []
-    for num in reversed(arr):
-        if suffix:
-            suffix.append( num * suffix[-1] )
-        else:
-            suffix.append( num )
-    suffix.reverse()
+        suffix = []
+        for num in reversed(arr):
+            if suffix:
+                suffix.append( num * suffix[-1] )
+            else:
+                suffix.append( num )
+        suffix.reverse()
 
-    results = []
-    for index in range(n):
-        if index == 0:
-            results.append( suffix[index + 1] )
-        elif index == n - 1:
-            results.append( prefix[index - 1] )
-        else:
-            results.append( prefix[index - 1] * suffix[index + 1] )
+        results = []
+        for index in range(n):
+            if index == 0:
+                results.append( suffix[index + 1] )
+            elif index == n - 1:
+                results.append( prefix[index - 1] )
+            else:
+                results.append( prefix[index - 1] * suffix[index + 1] )
 
-    return results
+        return results
 
 ''' smallest window
 
@@ -125,3 +126,25 @@ class max_subarray_sum1:
             result[index] = max( sum( arr[index:n] ), 0 )
         
         return max(result)
+
+
+'''Given an array of integers, return a new array where each element in the new array
+is the number of smaller elements to the right of that element in the original input array.
+
+For example,
+
+given the array [3, 4, 9, 6, 1], return [1, 1, 2, 1, 0]
+
+'''
+
+class smaller_counts1():
+    def func(self, arr):
+        n = len(arr)
+        result = [0] * n
+
+        for index in range(n):
+            current = arr[index]
+            for num in arr[index+1:n]:
+                result[index] += 1 if num <= current else 0
+
+        return result

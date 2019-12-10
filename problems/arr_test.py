@@ -3,6 +3,7 @@ import unittest
 from arr import product1, product2, product3
 from arr import window1
 from arr import max_subarray_sum1
+from arr import smaller_counts1
 
 class Test_ArrayProduct1(unittest.TestCase):
     
@@ -69,6 +70,20 @@ class Test_MaxSubarraySum(unittest.TestCase):
     
     def test_case2(self):
         assert self._inst.func(self, [-5, -1, 8, -9]) == 0
+
+
+class Test_SmallerCounts1(unittest.TestCase):
+
+    _inst = smaller_counts1
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert self._inst.func(self,  [3, 4, 9, 6, 1]) == [1, 1, 2, 1, 0]
+    
+    def test_case2(self):
+        assert self._inst.func(self, [2, 5, 4, 7, 8]) == [0, 1, 0, 0, 0]
 
 if __name__ == '__main__':
     unittest.main()
