@@ -1,3 +1,5 @@
+import bisect
+
 ''' Given an array of integers, return a new array such that each element at index i of the new array
 is the product of all the numbers in the original array except the one at i.
 
@@ -8,8 +10,6 @@ If the input was [3,2,1],
 The output would be [2, 3, 6].
 
 Follow-up: What if you can't use division? '''
-
-import sys
 
 '''O(N^2) solution, no division'''
 class product1:
@@ -137,6 +137,7 @@ given the array [3, 4, 9, 6, 1], return [1, 1, 2, 1, 0]
 
 '''
 
+''' O(N^2) solution'''
 class smaller_counts1():
     def func(self, arr):
         n = len(arr)
