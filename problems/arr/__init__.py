@@ -13,7 +13,9 @@ Follow-up: What if you can't use division? '''
 
 '''O(N^2) solution, no division'''
 class product1:
-    def func(self, arr):
+
+    @staticmethod
+    def func(arr):
         result = [1] * len(arr)
 
         for index in range(len(arr)):
@@ -28,7 +30,9 @@ class product1:
 
 '''O(N) solution, w/ division'''
 class product2:
-    def func(self, arr):
+
+    @staticmethod
+    def func(arr):
         n = len(arr)
         product = 1
 
@@ -39,7 +43,9 @@ class product2:
 
 ''' O(N) solution '''
 class product3:
-    def func(self, arr):
+
+    @staticmethod
+    def func(arr):
         n = len(arr)
         prefix = []
         for num in arr:
@@ -80,7 +86,9 @@ given [3, 7, 5, 6, 9], you should return (1, 3)
 
 '''O(N) solution'''
 class window1:
-    def func(self, arr):
+
+    @staticmethod
+    def func(arr):
         length = len(arr)
         begin, end, high = -1, -1, 0
         for index in range(length):
@@ -118,7 +126,9 @@ For example, given [8, -1, 3, 4], return 15, as we choose the numbers 3, 4 and 8
 '''
 
 class max_subarray_sum1:
-    def func(self, arr):
+
+    @staticmethod
+    def func(arr):
         n = len(arr)
         result = [0] * n
 
@@ -139,7 +149,9 @@ given the array [3, 4, 9, 6, 1], return [1, 1, 2, 1, 0]
 
 ''' O(N^2) solution'''
 class smaller_counts1():
-    def func(self, arr):
+
+    @staticmethod
+    def func(arr):
         n = len(arr)
         result = [0] * n
 

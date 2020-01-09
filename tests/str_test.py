@@ -10,10 +10,10 @@ class Test_Anagram1(unittest.TestCase):
         pass
     
     def test_case1(self):
-        assert self._inst.func( self, "abxaba", "ab" ) == [0, 3, 4]
+        assert self._inst.func( "abxaba", "ab" ) == [0, 3, 4]
 
     def test_case2(self):
-        assert self._inst.func( self, "abba", "ab" ) == [0, 2]
+        assert self._inst.func( "abba", "ab" ) == [0, 2]
 
 class Test_Palindrome1(unittest.TestCase):
     

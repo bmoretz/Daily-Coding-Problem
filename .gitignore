@@ -4,3 +4,7 @@ env
 pk
 pem
 pub
+
+problems/str/__pycache__/
+
+tests/__pycache__/

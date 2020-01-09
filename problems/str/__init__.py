@@ -5,7 +5,9 @@ For example, given w is ab and s is abxaba, return [0, 3, 4].
 '''
 
 class anagram1:
-    def func(self, s, w):
+    
+    @staticmethod
+    def func(s, w):
         n = len(s)
         wr = w[::-1]
         parts = []
