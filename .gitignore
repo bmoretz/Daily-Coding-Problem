@@ -5,6 +5,4 @@ pk
 pem
 pub
 
-problems/str/__pycache__/
-
-tests/__pycache__/
+__pycache__/
