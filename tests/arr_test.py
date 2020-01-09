@@ -1,9 +1,9 @@
 import unittest
 
-from arr import product1, product2, product3
-from arr import window1
-from arr import max_subarray_sum1
-from arr import smaller_counts1
+from problems.arr import product1, product2, product3
+from problems.arr import window1
+from problems.arr import max_subarray_sum1
+from problems.arr import smaller_counts1
 
 class Test_ArrayProduct1(unittest.TestCase):
     

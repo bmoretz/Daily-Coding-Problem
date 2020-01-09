@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "d:\\Projects\\Daily-Coding-Problem\\dcp\\Scripts\\python.exe",
+    "python.pythonPath": "env/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],
@@ -9,7 +9,7 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./problems",
+        "./tests",
         "-p",
         "*_test.py"
     ]
