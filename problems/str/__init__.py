@@ -4,73 +4,74 @@ Given a word w and a string s, find all indices in s which are the starting loca
 For example, given w is ab and s is abxaba, return [0, 3, 4].
 '''
 
-class anagram1:
-    
-    @staticmethod
-    def func(s, w):
-        n = len(s)
-        wr = w[::-1]
-        parts = []
+def anagram1(s, w):
 
-        start, stop = 0, len(w)
-        for index in range(n):
+    n = len(s)
+    wr = w[::-1]
+    parts = []
 
-            parts.append( s[start:stop] )
+    start, stop = 0, len(w)
+    for index in range(n):
 
-            start = start + 1
-            stop = stop + 1
+        parts.append( s[start:stop] )
 
-        results = []
-        for index in range(len(parts)):
-            p = parts[index]
+        start = start + 1
+        stop = stop + 1
 
-            if p == w or p == wr:
-                results.append(index)
+    results = []
+    for index in range(len(parts)):
+        p = parts[index]
 
-        return results
+        if p == w or p == wr:
+            results.append(index)
+
+    return results
 
 '''Given a list of words, find all pairs of kunique indices such that the concatenation of the two words is a palindrome.
 
 For example, given the list ["code", "edoc", "da", "d"], return [(0, 1), (1, 0), (2, 3)]
 '''
 
-'''O() Solution'''
-class palindrome1:
+def is_palindrome(word):
+    return word == word[::-1]    
     
-    @staticmethod
-    def _is_palindrome(stri):
-        n = len(stri) - 1
+'''O(n) Solution'''
+def palindrome1(arr):
+    n, c = len(arr) - 1, 0
+    iters = []
 
-        is_pal = True
-        for index in range(n):
-            is_pal &= stri[index] == stri[n - index]
-        
-        return is_pal
+    # create test matrix
+    for index in range(n, -1, -1):
+        val = list(zip( [c] * index, [x + (c + 1) for x in range(index)] ))
+        iters.append(val)
+        c = c + 1
 
-    @staticmethod 
-    def func(arr):
-        n, c = len(arr) - 1, 0
-        iters = []
+    flattend = [item for sublist in iters for item in sublist]
 
-        # create test matrix
-        for index in range(n, -1, -1):
-            val = list(zip( [c] * index, [x + (c + 1) for x in range(index)] ))
-            iters.append(val)
-            c = c + 1
+    results = []
 
-        flattend = [item for sublist in iters for item in sublist]
+    for index, value in enumerate(flattend):
 
-        results = []
+        e1, e2 = value[0], value[1]
 
-        for index, value in enumerate(flattend):
+        # test both permutations
+        if is_palindrome( arr[e1] + arr[e2] ):
+            results.append( (e1, e2) )
 
-            e1, e2 = value[0], value[1]
+        if is_palindrome( arr[e2] + arr[e1] ):
+            results.append( (e2, e1) )
 
-            # test both permutations
-            if palindrome1._is_palindrome( arr[e1] + arr[e2] ):
-                results.append( (e1, e2) )
+    return results
 
-            if palindrome1._is_palindrome( arr[e2] + arr[e1] ):
-                results.append( (e2, e1) )
+''' O(N^2 + C) Solution '''
+def palindrome2(words):
+    result = []
 
-        return results
+    for i, word1 in enumerate(words):
+        for j, word2 in enumerate(words):
+            if i == j:
+                continue
+            if is_palindrome(word1 + word2):
+                result.append((i, j))
+
+    return result
