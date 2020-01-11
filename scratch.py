@@ -11,16 +11,36 @@ t     a     g
 '''
 
 stri, k = "thisisazigzag", 4
-n = len(stri)
 
-i = (2 * k) - 1
+def get_spaces(row, desc, k):
+    max_spaces = (k - 1) * 2 - 1
 
-result = {new_list : [] for new_list in range(k)}
+    if desc:
+        spaces = max_spaces - row * 2
+    else:
+        spaces = max_spaces - (k - 1 - row) * 2
+    return spaces
 
-for index in range(k * n):
-    line, char = index % k, index % n
-    
-    d = ( index % i ) - i
-    
-    result[line] +=  str( ' ' * line ) + stri[ char ]
+def is_descending(index, k):
+    # Check whether the index is more or less than halfway
+    # though its ocillation back to the starting point
+    return index % (2 * (k - 1)) < k -1
+
+def zigzag(sentence, k):
+    n = len(sentence)
+    result = ""
+
+    for row in range(k):
+        i = row
+        line = [" " for _ in range(n)]
+
+        while i < n:
+            line[i] = sentence[i]
+            desc = is_descending(i, k)
+            spaces = get_spaces(row, desc, k)
+            i += spaces + 1
+        result += "".join(line) + "\n"
+    return result
+
+print(zigzag(stri, k))
 
