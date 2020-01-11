@@ -1,46 +1,30 @@
-'''Given a string and a number of lines k, print the string in zigzag form.
+'''2.4 - Determine smallest rotated string:
 
-In zigzag, characters are printed out diagonally from top left to bottom right until reaching the k^th line, then back up to top right, and so on.
+You are given a string of length n and an integer k. The string can be manipulated by taking one of the first k letters and moving it to the end of the string.
 
-For example, given the sentence "thisisazigzag" and k = 4, you should print:
+Write a program to determine the lexicographically smallest string that can be created after an unlimted number of moves.
 
-t     a     g
- h   s z   a
-  i i   i z
-   s     g
+For example, suppose we are given the string daily and k = 1. The best we can create in this case is ailyd.
 '''
 
-stri, k = "thisisazigzag", 4
+stri, k = "daily", 1
 
-def get_spaces(row, desc, k):
-    max_spaces = (k - 1) * 2 - 1
+i = len(stri)
+string = list(stri)
 
-    if desc:
-        spaces = max_spaces - row * 2
-    else:
-        spaces = max_spaces - (k - 1 - row) * 2
-    return spaces
+# Rotate so that i is at the beginning.
 
-def is_descending(index, k):
-    # Check whether the index is more or less than halfway
-    # though its ocillation back to the starting point
-    return index % (2 * (k - 1)) < k -1
+while i > 0:
+    string = string[1:] + string[:1]
+    i -= 1
 
-def zigzag(sentence, k):
-    n = len(sentence)
-    result = ""
+    # Move the first two letters to the end in reversed order.
+    string = string[:1] + string[2:] + string[1:2]
+    string = string[1:] + string[:1]
 
-    for row in range(k):
-        i = row
-        line = [" " for _ in range(n)]
+    # Rotate back to the initial position.
+    while len(string) > k + 1:
+        string = string[1:] + string[:1]
+        k += 1
 
-        while i < n:
-            line[i] = sentence[i]
-            desc = is_descending(i, k)
-            spaces = get_spaces(row, desc, k)
-            i += spaces + 1
-        result += "".join(line) + "\n"
-    return result
-
-print(zigzag(stri, k))
-
+print(''.join(string))
