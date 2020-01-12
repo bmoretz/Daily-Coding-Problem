@@ -1,30 +1,19 @@
-'''2.4 - Determine smallest rotated string:
-
-You are given a string of length n and an integer k. The string can be manipulated by taking one of the first k letters and moving it to the end of the string.
-
-Write a program to determine the lexicographically smallest string that can be created after an unlimted number of moves.
-
-For example, suppose we are given the string daily and k = 1. The best we can create in this case is ailyd.
+'''3.1
+Given the head of a singly linked list, reverse it in-place.
 '''
 
-stri, k = "daily", 1
+from problems.linkedlist import Node
+from problems.linkedlist import SLinkedList
 
-i = len(stri)
-string = list(stri)
+sl = SLinkedList()
 
-# Rotate so that i is at the beginning.
+for d in range(0, 10):
+    sl.push_back(d)
 
-while i > 0:
-    string = string[1:] + string[:1]
-    i -= 1
+print(sl)
 
-    # Move the first two letters to the end in reversed order.
-    string = string[:1] + string[2:] + string[1:2]
-    string = string[1:] + string[:1]
+print(sl.head.next)
 
-    # Rotate back to the initial position.
-    while len(string) > k + 1:
-        string = string[1:] + string[:1]
-        k += 1
+sl.reverse()
 
-print(''.join(string))
+print(sl)
