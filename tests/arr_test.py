@@ -18,8 +18,6 @@ class Test_ArrayProduct1(unittest.TestCase):
 
 class Test_ArrayProduct2(unittest.TestCase):
     
-    _inst = product2
-    
     def setUp(self):
         pass
     
@@ -31,9 +29,7 @@ class Test_ArrayProduct2(unittest.TestCase):
 
 
 class Test_ArrayProduct3(unittest.TestCase):
-    
-    _inst = product3
-    
+
     def setUp(self):
         pass
     

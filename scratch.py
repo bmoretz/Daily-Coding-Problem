@@ -2,18 +2,17 @@
 Given the head of a singly linked list, reverse it in-place.
 '''
 
-from problems.linkedlist import Node
-from problems.linkedlist import SLinkedList
+from problems.linkedlist import Node, SLinkedList
 
 sl = SLinkedList()
 
 for d in range(0, 10):
     sl.push_back(d)
 
-print(sl)
-
-print(sl.head.next)
+t = sl.elements()
 
 sl.reverse()
 
-print(sl)
+s = sl.elements()
+
+print(sl.elements())

@@ -18,14 +18,13 @@ class Node:
         self.data = data
 
     def set_next(self, node):
-        self.next = node 
+        self.next = node
 
 '''Singly Linked List Implementation.'''
 class SLinkedList:
     
     def __init__(self):
         self.head = None
-        self.tail = None
 
     '''O(N) - Insert'''
     def push_back(self, data):
@@ -42,7 +41,22 @@ class SLinkedList:
 
             c.next = node
 
+    def elements(self):
+        
+        result = []
+        c = self.head
 
+        while( c.get_next() != None ):
+            result.append(c.data)
+            c = c.get_next()
+        
+        return result
+
+    '''3.1
+    Given the head of a singly linked list, reverse it in-place.
+
+    O(N) Solution
+    '''
     def reverse(self):
 
         prev, current = None, self.head
@@ -67,4 +81,3 @@ class SLinkedList:
             c = c.get_next()
 
         return result
-
