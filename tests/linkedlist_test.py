@@ -1,7 +1,7 @@
 import unittest
 
 from problems.linkedlist import Node, SLinkedList
-from problems.linkedlist import add_numbers
+from problems.linkedlist import add_numbers1, add_numbers2
 
 class Test_SingleLinkedListReverse(unittest.TestCase):
     
@@ -19,7 +19,7 @@ class Test_SingleLinkedListReverse(unittest.TestCase):
 
         assert sl.elements() == [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
-class Test_SingleLinkedListAdd(unittest.TestCase):
+class Test_SingleLinkedListAdd1(unittest.TestCase):
     
     def setUp(self):
         pass
@@ -34,8 +34,25 @@ class Test_SingleLinkedListAdd(unittest.TestCase):
         l2.push_back(5)
         l2.push_back(2)
 
-        result = add_numbers(l1, l2)
+        result = add_numbers1(l1, l2)
         
-        print(result.elements())
+        assert result.elements() == [4, 2, 1]
 
+class Test_SingleLinkedListAdd2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        l1, l2, result = SLinkedList(), SLinkedList(), SLinkedList()
+
+        l1.push_back(9)
+        l1.push_back(9)
+
+        l2.push_back(5)
+        l2.push_back(2)
+
+        result.head = add_numbers2(l1.head, l2.head)
+        
         assert result.elements() == [4, 2, 1]
