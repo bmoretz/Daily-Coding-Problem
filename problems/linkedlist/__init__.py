@@ -101,7 +101,7 @@ for example,
 Should return 124 (4 -> 2 -> 1)
 '''
 
-'''O(N) solution #1'''
+'''O(n + m) solution #1'''
 def add_numbers1(list1, list2):
     result = SLinkedList()
     
@@ -125,7 +125,7 @@ def add_numbers1(list1, list2):
 
     return result
 
-'''O(n) Solution #2'''
+'''O(n + m) Solution #2'''
 def add_numbers2(node0, node1, carry = 0):
 
     if not node0 and not node1 and not carry:
@@ -140,3 +140,37 @@ def add_numbers2(node0, node1, carry = 0):
     carry_next = 1 if total >= 10 else 0
 
     return Node(total % 10, add_numbers2(node0_next, node1_next, carry_next))
+
+'''3.3
+Given a linked list, rearrange the node values such that they appear in alternating
+
+low -> high -> low -> high ... form.
+
+For example, 
+
+given 1 -> 2 -> 3 -> 4 -> 5, 
+
+you should return
+
+1 -> 3 -> 2 -> 5 -> 4
+'''
+
+'''O(n) Solution'''
+def alt1(items):
+    is_min, result = True, SLinkedList()
+
+    p, c = None, items.head
+    n = c.get_next()
+
+    while c != None:
+
+        if is_min:
+            result.push_back( p.data if p is not None else c.data)
+        else:
+            result.push_back(n.data)
+
+        is_min, p = not is_min, c
+        c, n = c.get_next(), n.get_next() if n is not None else c.data
+    
+    return result
+

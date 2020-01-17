@@ -1,38 +1,41 @@
-'''3.1
-Given the head of a singly linked list, reverse it in-place.
-'''
-
 from problems.linkedlist import Node, SLinkedList
 
-# problem setup
+'''3.3
+Given a linked list, rearrange the node values such that they appear in alternating
 
-l1, l2 = SLinkedList(), SLinkedList()
+low -> high -> low -> high ... form.
 
-l1.push_back(9)
-l1.push_back(9)
+For example, 
 
-l2.push_back(5)
-l2.push_back(2)
+given 1 -> 2 -> 3 -> 4 -> 5, 
 
-# add numbers
+you should return
 
-def add(node0, node1, carry = 0):
+1 -> 3 -> 2 -> 5 -> 4
+'''
 
-    if not node0 and not node1 and not carry:
-        return None
-    
-    node0_val = node0.data if node0 else 0
-    node1_val = node1.data if node1 else 0
-    total = node0_val + node1_val + carry
+'''Problem Setup'''
+items = SLinkedList()
 
-    node0_next = node0.next if node0 else None
-    node1_next = node1.next if node1 else None
-    carry_next = 1 if total >= 10 else 0
+for index in range(1, 6):
+    items.push_back(index)
 
-    return Node(total % 10, add(node0_next, node1_next, carry_next))
+'''O(n) Solution'''
+def alt1(items):
+    is_min, result = True, SLinkedList()
 
+    p, c = None, items.head
+    n = c.get_next()
 
-result = SLinkedList()
-result.head = add(l1.head, l2.head )
+    while c != None:
 
-print(result.elements())
+        if is_min:
+            result.push_back( p.data if p is not None else c.data)
+        else:
+            result.push_back(n.data)
+
+        is_min, p = not is_min, c
+        c, n = c.get_next(), n.get_next() if n is not None else c.data
+    return result
+
+print(alt1(items).elements())
