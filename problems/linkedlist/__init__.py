@@ -51,6 +51,17 @@ class SLinkedList:
             c = c.get_next()
         
         return result
+    
+    '''O(n) - length'''
+    def length(self):
+
+        current, length = self.head, 0
+
+        while current is not None:
+            length += 1
+            current = current.next
+
+        return length
 
     '''3.1
     Given the head of a singly linked list, reverse it in-place.
@@ -174,7 +185,23 @@ def alternate1(items):
         result.push_back( i )
 
         p, is_low = c, not is_low
-        c, n = c.get_next(), n.get_next() if n is not None else Node(0)
+        c, n = c.get_next(), n.get_next() if n is not None else None
 
     return result
 
+'''O(n) Solution'''
+def alternate2(items):
+    even = True
+    cur = items.head
+
+    while cur.next:
+        if cur.data > cur.next.data and even:
+            cur.data, cur.next.data = cur.next.data, cur.data
+        
+        elif cur.data < cur.next.data and not even:
+            cur.data, cur.next.data = cur.next.data, cur.data
+
+        even = not even
+        cur = cur.next
+
+    return items

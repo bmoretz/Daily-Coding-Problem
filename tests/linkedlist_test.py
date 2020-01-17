@@ -2,7 +2,7 @@ import unittest
 
 from problems.linkedlist import Node, SLinkedList
 from problems.linkedlist import add_numbers1, add_numbers2
-from problems.linkedlist import alternate1
+from problems.linkedlist import alternate1, alternate2
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -79,7 +79,6 @@ class Test_SingleLinkedListAlt1(unittest.TestCase):
     def setUp(self):
         pass
 
-    '''Case: 1, 2, 3, 4, 5'''
     def test_case1(self):
 
         items = SLinkedList()
@@ -88,5 +87,21 @@ class Test_SingleLinkedListAlt1(unittest.TestCase):
             items.push_back(index)
 
         result = alternate1(items)
+
+        assert result.elements() == [1, 3, 2, 5, 4]
+
+class Test_SingleLinkedListAlt2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        items = SLinkedList()
+
+        for index in range(1, 6):
+            items.push_back(index)
+
+        result = alternate2(items)
 
         assert result.elements() == [1, 3, 2, 5, 4]

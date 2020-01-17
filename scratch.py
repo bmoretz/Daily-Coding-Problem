@@ -1,46 +1,33 @@
 from problems.linkedlist import Node, SLinkedList
 
-'''3.3
-Given a linked list, rearrange the node values such that they appear in alternating
+'''3.4
+Given two singly linked lists that intersect at some point, find the intersecting node.
 
-low -> high -> low -> high ... form.
+Assume the lists are non-cyclical.
 
-For example, 
+For example, given 
 
-given 1 -> 2 -> 3 -> 4 -> 5, 
+A = 3 -> 7 -> 8 -> 10, B = 99 -> 1 -> 8 -> 10
 
-you should return
+return the node with value 8. In this example, assume nodes with the same value are the exact same objects.
 
-1 -> 3 -> 2 -> 5 -> 4
+Do this in O(m + n) time (where m and n are the lenghts of the list) and constant space.
 '''
 
 '''Problem Setup'''
-items = SLinkedList()
+list1, list2 = SLinkedList(), SLinkedList()
 
-for index in range(1, 6):
-    items.push_back(index)
+list1.push_back(3)
+list1.push_back(7)
+list1.push_back(8)
+list1.push_back(10)
 
-'''O(n) Solution'''
-def alt1(items):
-    is_low, result = True, SLinkedList()
+list2.push_back(99)
+list2.push_back(1)
+list2.push_back(8)
+list2.push_back(10)
 
-    p, c = None, items.head
-    n = c.get_next()
 
-    while c != None:
-        
-        items = [x for x in [ c.data, p.data if p != None else None, n.data if n != None else None ] if x is not None]
+len1, len2 = list1.length(), list2.length()
+n1, n2 = list1.head, list2.head
 
-        if is_low:
-            i = min( items )
-        else:
-            i = max( items )
-
-        result.push_back( i )
-
-        p, is_low = c, not is_low
-        c, n = c.get_next(), n.get_next() if n is not None else Node(0)
-
-    return result
-
-print(alt1(items).elements())
