@@ -2,7 +2,7 @@ import unittest
 
 from problems.linkedlist import Node, SLinkedList
 from problems.linkedlist import add_numbers1, add_numbers2
-from problems.linkedlist import alt1
+from problems.linkedlist import alternate1
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -87,6 +87,6 @@ class Test_SingleLinkedListAlt1(unittest.TestCase):
         for index in range(1, 6):
             items.push_back(index)
 
-        result = alt1(items)
+        result = alternate1(items)
 
         assert result.elements() == [1, 3, 2, 5, 4]
