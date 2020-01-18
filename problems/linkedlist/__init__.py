@@ -205,3 +205,28 @@ def alternate2(items):
         cur = cur.next
 
     return items
+
+'''3.4
+Given two singly linked lists that intersect at some point, find the intersecting node.
+
+Assume the lists are non-cyclical.
+
+For example, given 
+
+A = 3 -> 7 -> 8 -> 10, B = 99 -> 1 -> 8 -> 10
+
+return the node with value 8. In this example, assume nodes with the same value are the exact same objects.
+
+Do this in O(m + n) time (where m and n are the lenghts of the list) and constant space.
+'''
+
+'''O(m + n) Solution'''
+def intersect1(list1, list2):
+    vals = dict()
+
+    for item in list1.elements():
+        vals.setdefault(item, [])
+
+    for item in list2.elements():
+        if item in vals:
+            return item

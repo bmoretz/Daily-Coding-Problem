@@ -3,6 +3,7 @@ import unittest
 from problems.linkedlist import Node, SLinkedList
 from problems.linkedlist import add_numbers1, add_numbers2
 from problems.linkedlist import alternate1, alternate2
+from problems.linkedlist import intersect1
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -105,3 +106,24 @@ class Test_SingleLinkedListAlt2(unittest.TestCase):
         result = alternate2(items)
 
         assert result.elements() == [1, 3, 2, 5, 4]
+
+class Test_SingleLinkedListIntersect1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        list1, list2 = SLinkedList(), SLinkedList()
+
+        list1.push_back(3)
+        list1.push_back(7)
+        list1.push_back(8)
+        list1.push_back(10)
+
+        list2.push_back(99)
+        list2.push_back(1)
+        list2.push_back(8)
+        list2.push_back(10)
+        
+        assert intersect1(list1, list2) == 8
