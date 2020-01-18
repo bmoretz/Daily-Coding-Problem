@@ -17,15 +17,8 @@ Do this in O(m + n) time (where m and n are the lenghts of the list) and constan
 '''Problem Setup'''
 listA, listB = SLinkedList(), SLinkedList()
 
-listA.push_back(3)
-listA.push_back(7)
-listA.push_back(8)
-listA.push_back(10)
-
-listB.push_back(99)
-listB.push_back(1)
-listB.push_back(8)
-listB.push_back(10)
+for x in [3, 7, 8, 10]: listA.push_back(x)
+for x in [99, 1, 8, 10]: listB.push_back(x)
 
 # if not listA or not listB: return None
 

@@ -46,11 +46,8 @@ class Test_SingleLinkedListAdd1(unittest.TestCase):
 
         l1, l2 = SLinkedList(), SLinkedList()
 
-        l1.push_back(9)
-        l1.push_back(9)
-
-        l2.push_back(5)
-        l2.push_back(2)
+        for x in [9, 9]: l1.push_back(x)
+        for x in [5, 2]: l2.push_back(x)
 
         result = add_numbers1(l1, l2)
         
@@ -65,11 +62,8 @@ class Test_SingleLinkedListAdd2(unittest.TestCase):
 
         l1, l2, result = SLinkedList(), SLinkedList(), SLinkedList()
 
-        l1.push_back(9)
-        l1.push_back(9)
-
-        l2.push_back(5)
-        l2.push_back(2)
+        for x in [9, 9]: l1.push_back(x)
+        for x in [5, 2]: l2.push_back(x)
 
         result.head = add_numbers2(l1.head, l2.head)
         
@@ -116,15 +110,8 @@ class Test_SingleLinkedListIntersect1(unittest.TestCase):
 
         list1, list2 = SLinkedList(), SLinkedList()
 
-        list1.push_back(3)
-        list1.push_back(7)
-        list1.push_back(8)
-        list1.push_back(10)
-
-        list2.push_back(99)
-        list2.push_back(1)
-        list2.push_back(8)
-        list2.push_back(10)
+        for x in [3, 7, 8, 10]: list1.push_back(x)
+        for x in [99, 1, 8, 10]: list2.push_back(x)
 
         assert intersect1(list1, list2) == 8
 
@@ -137,15 +124,8 @@ class Test_SingleLinkedListIntersect2(unittest.TestCase):
 
         list1, list2 = SLinkedList(), SLinkedList()
 
-        list1.push_back(3)
-        list1.push_back(7)
-        list1.push_back(8)
-        list1.push_back(10)
-
-        list2.push_back(99)
-        list2.push_back(1)
-        list2.push_back(8)
-        list2.push_back(10)
+        for x in [3, 7, 8, 10]: list1.push_back(x)
+        for x in [99, 1, 8, 10]: list2.push_back(x)
         
         result = intersect2(list1, list2)
 

@@ -41,7 +41,7 @@ class SLinkedList:
         self.head = None
         self.last = None
 
-    '''O(1) - Insert'''
+    '''O(1) - insert @ tail'''
     def push_back(self, data):
 
         node = Node(data)
@@ -52,6 +52,7 @@ class SLinkedList:
             tmp = self.last
             self.last, tmp.next = node, node
 
+    '''O(n) get elements'''
     def elements(self):
         
         result = []
@@ -103,6 +104,9 @@ class SLinkedList:
             c = c.get_next()
 
         return result
+
+def initialize(ll, vals):
+    for x in vals: ll.push_back(x)
 
 '''3.2
 We can represent an integer in a linked list format by having each node represent a digit in the number. The nodes are connected in reverse order, such that the number
