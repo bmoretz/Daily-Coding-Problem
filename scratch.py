@@ -15,21 +15,23 @@ Do this in O(m + n) time (where m and n are the lenghts of the list) and constan
 '''
 
 '''Problem Setup'''
-listA, listB = SLinkedList(), SLinkedList()
+l1, l2 = SLinkedList(), SLinkedList()
 
-for x in [3, 7, 8, 10]: listA.push_back(x)
-for x in [99, 1, 8, 10]: listB.push_back(x)
+for x in [3, 7, 8, 10]: l1.push_back(x)
+for x in [99, 1, 8, 10]: l2.push_back(x)
 
-# if not listA or not listB: return None
+m, n = l1.length(), l2.length()
+cur_a, cur_b = l1.head, l2.head
 
-a, b = listA.head, listB.head
+if m > n:
+    for _ in range(m - n):
+        cur_a = cur_a.next
+else:
+    for _ in range(n - m):
+        cur_b = cur_b.next
 
-while a != b:
+while(cur_a != cur_b):
+    cur_a = cur_a.next
+    cur_b = cur_b.next
 
-    if not a: a = listB.head
-    else: a = a.next
-
-    if not b: b = listA.head
-    else: b = b.next
-
-print(a)
+print(cur_a)

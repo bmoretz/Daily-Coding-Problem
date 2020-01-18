@@ -250,14 +250,33 @@ def intersect1(list1, list2):
 def intersect2(list1, list2):
     if not list1 or not list2: return None
 
-    a, b = list1.head, list2.head
+    n1, n2 = list1.head, list2.head
 
-    while a != b:
+    while n1 != n2:
 
-        if not a: a = list2.head
-        else: a = a.next
+        if not n1: n1 = list2.head
+        else: n1 = n1.next
 
-        if not b: b = list1.head
-        else: b = b.next
+        if not n2: n2 = list1.head
+        else: n2 = n2.next
 
-    return a
+    return n1
+
+'''O(m + n) Solution'''
+def intersect3(list1, list2):
+
+    m, n = list1.length(), list2.length()
+    cur_a, cur_b = list1.head, list2.head
+
+    if m > n:
+        for _ in range(m - n):
+            cur_a = cur_a.next
+    else:
+        for _ in range(n - m):
+            cur_b = cur_b.next
+
+    while(cur_a != cur_b):
+        cur_a = cur_a.next
+        cur_b = cur_b.next
+
+    return cur_a
