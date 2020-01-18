@@ -8,6 +8,20 @@ class Node:
     def __str__(self):
         return "{}".format(self.data) 
 
+    def __eq__(self, other):
+        if isinstance(other, Node):
+            return self.data == other.data
+        
+        return False
+
+    def __ne__(self, other):
+        result = self.__eq__(other)
+
+        if result is NotImplemented:
+            return result
+        
+        return not result
+
     def get_data(self):
         return self.data
 
@@ -25,21 +39,18 @@ class SLinkedList:
     
     def __init__(self):
         self.head = None
+        self.last = None
 
-    '''O(N) - Insert'''
+    '''O(1) - Insert'''
     def push_back(self, data):
 
         node = Node(data)
 
         if self.head == None:
-            self.head = node
+            self.head, self.last = node, node          
         else:
-            c = self.head
-            
-            while( c.get_next() != None ):
-                c = c.get_next()
-
-            c.next = node
+            tmp = self.last
+            self.last, tmp.next = node, node
 
     def elements(self):
         
@@ -230,3 +241,19 @@ def intersect1(list1, list2):
     for item in list2.elements():
         if item in vals:
             return item
+
+'''O(m + n) Solution'''
+def intersect2(list1, list2):
+    if not list1 or not list2: return None
+
+    a, b = list1.head, list2.head
+
+    while a != b:
+
+        if not a: a = list2.head
+        else: a = a.next
+
+        if not b: b = list1.head
+        else: b = b.next
+
+    return a

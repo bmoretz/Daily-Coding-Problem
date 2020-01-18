@@ -15,29 +15,28 @@ Do this in O(m + n) time (where m and n are the lenghts of the list) and constan
 '''
 
 '''Problem Setup'''
-list1, list2 = SLinkedList(), SLinkedList()
+listA, listB = SLinkedList(), SLinkedList()
 
+listA.push_back(3)
+listA.push_back(7)
+listA.push_back(8)
+listA.push_back(10)
 
-list1.push_back(3)
-list1.push_back(7)
-list1.push_back(8)
-list1.push_back(10)
+listB.push_back(99)
+listB.push_back(1)
+listB.push_back(8)
+listB.push_back(10)
 
-list2.push_back(99)
-list2.push_back(1)
-list2.push_back(8)
-list2.push_back(10)
+# if not listA or not listB: return None
 
-'''O(m + n) Solution'''
-def intersect1(list1, list2):
-    vals = dict()
+a, b = listA.head, listB.head
 
-    for item in list1.elements():
-        vals.setdefault(item, [])
+while a != b:
 
-    for item in list2.elements():
-        if item in vals:
-            return item
+    if not a: a = listB.head
+    else: a = a.next
 
+    if not b: b = listA.head
+    else: b = b.next
 
-print(intersect1(list1, list2))
+print(a)
