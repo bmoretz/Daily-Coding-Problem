@@ -1,37 +1,24 @@
-from problems.linkedlist import Node, SLinkedList
+from problems.stack_queue import Stack, MaxStack
 
-'''3.4
-Given two singly linked lists that intersect at some point, find the intersecting node.
+from random import randint
 
-Assume the lists are non-cyclical.
+'''4.1
 
-For example, given 
+Implement a max stack that has the following methods.
 
-A = 3 -> 7 -> 8 -> 10, B = 99 -> 1 -> 8 -> 10
+push(val): push val onto the stack
+pop: pop off and return the topmost element of the stack. If there are no elements in the stack, throw an error.
+max: return the maximum value in the stack currently. If there are no elements in the stack, throw an error.
 
-return the node with value 8. In this example, assume nodes with the same value are the exact same objects.
-
-Do this in O(m + n) time (where m and n are the lenghts of the list) and constant space.
+Each method should run in N(1) time.
 '''
 
-'''Problem Setup'''
-l1, l2 = SLinkedList(), SLinkedList()
+stack = MaxStack()
 
-for x in [3, 7, 8, 10]: l1.push_back(x)
-for x in [99, 1, 8, 10]: l2.push_back(x)
+for _ in range(0, 10):
+    stack.push( randint(0, 100) )
 
-m, n = l1.length(), l2.length()
-cur_a, cur_b = l1.head, l2.head
+for _ in range(stack.length()):
+    print( stack.max() )
 
-if m > n:
-    for _ in range(m - n):
-        cur_a = cur_a.next
-else:
-    for _ in range(n - m):
-        cur_b = cur_b.next
-
-while(cur_a != cur_b):
-    cur_a = cur_a.next
-    cur_b = cur_b.next
-
-print(cur_a)
+print(stack.length())
