@@ -53,8 +53,33 @@ class MaxStack(Stack):
     def pop(self):
         return super().pop()
 
+    '''O(1) max element'''
     def max(self):
         if self._max == None:
             return ValueError("Stack is empty so there is no max value.")
 
         return self._max[-1]
+
+'''4.2
+
+Given a string of round, curly, and square opening and closing brackers, return whether the brackets are balanced (well-formed).
+
+For example, 
+
+given the string "([])[]({})", return true.
+Given the string "([)]" or "((()", you should return false.
+'''
+
+def bracket_balanced1(instr):
+    braces = {'}' : '{', ')' : '(', ']' : '['}
+    stack = Stack()
+    
+    for char in instr:
+
+        if char in braces.values():
+            stack.push(char)
+        elif char in braces.keys():
+            if braces.get(char) == stack.peek():
+                stack.pop()
+
+    return stack.length() == 0

@@ -1,24 +1,29 @@
 from problems.stack_queue import Stack, MaxStack
 
-from random import randint
+'''4.2
 
-'''4.1
+Given a string of round, curly, and square opening and closing brackers, return whether the brackets are balanced (well-formed).
 
-Implement a max stack that has the following methods.
+For example, 
 
-push(val): push val onto the stack
-pop: pop off and return the topmost element of the stack. If there are no elements in the stack, throw an error.
-max: return the maximum value in the stack currently. If there are no elements in the stack, throw an error.
-
-Each method should run in N(1) time.
+given the string "([])[]({})", return true.
+Given the string "([)]" or "((()", you should return false.
 '''
 
-stack = MaxStack()
+instr = "((()"
 
-for _ in range(0, 10):
-    stack.push( randint(0, 100) )
+def is_balanced(instr):
+    braces = {'}' : '{', ')' : '(', ']' : '['}
+    stack = Stack()
+    
+    for char in instr:
 
-for _ in range(stack.length()):
-    print( stack.max() )
+        if char in braces.values():
+            stack.push(char)
+        elif char in braces.keys():
+            if braces.get(char) == stack.peek():
+                stack.pop()
 
-print(stack.length())
+    return stack.length() == 0
+
+print( is_balanced(instr) )
