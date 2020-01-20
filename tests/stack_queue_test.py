@@ -1,7 +1,7 @@
 import unittest
 
 from problems.stack_queue import Stack, MaxStack
-from problems.stack_queue import bracket_balanced1
+from problems.stack_queue import bracket_balanced1, bracket_balanced2
 
 class Test_BaseStack(unittest.TestCase):
     
@@ -41,7 +41,27 @@ class Test_BracketBalanced1(unittest.TestCase):
         assert bracket_balanced1("([])[]({})") == True
 
     def test_case2(self):
-        assert bracket_balanced1("([)]") == False
+        assert bracket_balanced1("}") == False
 
     def test_case3(self):
+        assert bracket_balanced1("([)]") == False
+
+    def test_case4(self):
         assert bracket_balanced1("((()") == False
+
+class Test_BracketBalanced2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert bracket_balanced2("([])[]({})") == True
+
+    def test_case2(self):
+        assert bracket_balanced2("}") == False
+
+    def test_case3(self):
+        assert bracket_balanced2("([)]") == False
+
+    def test_case4(self):
+        assert bracket_balanced2("((()") == False

@@ -10,20 +10,26 @@ given the string "([])[]({})", return true.
 Given the string "([)]" or "((()", you should return false.
 '''
 
-instr = "((()"
+instr = "([])[]({})"
 
-def is_balanced(instr):
-    braces = {'}' : '{', ')' : '(', ']' : '['}
-    stack = Stack()
-    
+def bracket_balanced2(instr):
+    stack = []
+
     for char in instr:
+        if char in ["(", "[", "{"]:
+            stack.append(char)
+        else:
+            # Check character is not unmatched
+            if not stack:
+                return False
+        
+            # Character is a closing bracket. Check top of stack  matches.
+            if (char == ")" and stack[-1] != "(") or \
+                (char == "]" and stack[-1] != "[") or \
+                (char == "}" and stack[-1] != "{"):
+                return False
+            stack.pop()
 
-        if char in braces.values():
-            stack.push(char)
-        elif char in braces.keys():
-            if braces.get(char) == stack.peek():
-                stack.pop()
+    return len(stack) == 0
 
-    return stack.length() == 0
-
-print( is_balanced(instr) )
+print( bracket_balanced2(instr) )

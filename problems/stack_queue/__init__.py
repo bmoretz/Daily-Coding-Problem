@@ -79,7 +79,30 @@ def bracket_balanced1(instr):
         if char in braces.values():
             stack.push(char)
         elif char in braces.keys():
+            if stack.length() == 0: 
+                return False
+
             if braces.get(char) == stack.peek():
                 stack.pop()
 
     return stack.length() == 0
+
+def bracket_balanced2(instr):
+    stack = []
+
+    for char in instr:
+        if char in ["(", "[", "{"]:
+            stack.append(char)
+        else:
+            # Check character is not unmatched
+            if not stack:
+                return False
+        
+            # Character is a closing bracket. Check top of stack  matches.
+            if (char == ")" and stack[-1] != "(") or \
+                (char == "]" and stack[-1] != "[") or \
+                (char == "}" and stack[-1] != "{"):
+                return False
+            stack.pop()
+
+    return len(stack) == 0
