@@ -1,3 +1,5 @@
+from collections import deque
+
 '''Vanilla Stack'''
 class Stack:
 
@@ -147,3 +149,28 @@ def max_subarray2(arr, k):
     for i in range(len(arr) - k + 1):
         results.append(max(arr[i:i + k]))
     return results
+
+'''O(n) Solution'''
+def max_subarray3(arr, k):
+    q, result = deque(), []
+    
+    for i in range(k):
+        while q and arr[i] >= arr[q[-1]]:
+            q.pop()
+        q.append(i)
+
+    # Loop invariant: q is a list of indices where their
+    # corresponding values are in descending order.
+    for i in range(k, len(arr)):
+        result.append( arr[q[0]] )
+
+        while q and q[0] <= i - k:
+            q.popleft()
+
+        while q and arr[i] >= arr[q[-1]]:
+            q.pop()
+        q.append(i)
+
+    result.append( arr[q[0]] )
+
+    return result

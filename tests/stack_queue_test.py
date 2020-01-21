@@ -96,4 +96,19 @@ class Test_MaxSub2(unittest.TestCase):
         arr, k = [1, 2, 3, 4, 5, 6, 7, 8, 9], 3
 
         assert max_subarray2(arr, k) == [3, 4, 5, 6, 7, 8, 9]
+
+class Test_MaxSub3(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        arr, k = [10, 5, 2, 7, 8, 7], 3
+
+        assert max_subarray2(arr, k) == [10, 7, 8, 8]
+
+    def test_case2(self):
+        arr, k = [1, 2, 3, 4, 5, 6, 7, 8, 9], 3
+
+        assert max_subarray2(arr, k) == [3, 4, 5, 6, 7, 8, 9]
  

@@ -1,5 +1,7 @@
 from problems.stack_queue import Stack, MaxStack
 
+from collections import deque
+
 '''4.3
 
 Compute maximum of k-length subarrays
@@ -22,12 +24,32 @@ Since,
 Do this in O(n) time and O(k) space. You can modify the input array in-place and you do not need to store the results. You can simply print them out as you compute them.
 '''
 
-arr, k = [1, 2, 3, 4, 5, 6, 7, 8, 9], 3
+arr, k = [10, 5, 2, 7, 8, 7], 3
 
-def max_subarray2(arr, k):
-    results = []
-    for i in range(len(arr) - k + 1):
-        results.append(max(arr[i:i + k]))
-    return results
+def max_subarray3(arr, k):
+    q, result = deque(), []
+    
+    for i in range(k):
+        while q and arr[i] >= arr[q[-1]]:
+            q.pop()
+        q.append(i)
 
-print(max_subarray2(arr, k))
+    # Loop invariant: q is a list of indices where their
+    # corresponding values are in descending order.
+    for i in range(k, len(arr)):
+        result.append( arr[q[0]] )
+
+        while q and q[0] <= i - k:
+            q.popleft()
+
+        while q and arr[i] >= arr[q[-1]]:
+            q.pop()
+        q.append(i)
+
+    result.append( arr[q[0]] )
+
+    return result
+
+print( max_subarray3(arr, k) )
+
+
