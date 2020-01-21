@@ -2,54 +2,42 @@ from problems.stack_queue import Stack, MaxStack
 
 from collections import deque
 
-'''4.3
+'''4.4
+Reconstruct array using +/- signs
 
-Compute maximum of k-length subarrays
+The sequance [0, 1, ..., N] has been jumbled, and the only clue you have for its order is an array representing whether each number is larger or smaller than the last.
 
-Given an array of integers and a number k, where 1 <= k <= array length, compute the maximum value of each subarray of lengh k.
+Given this information, reconstruct an array that is consistent with it. 
 
-For example, let's say the array is 
+For example, given 
 
-[10, 5, 2, 7, 8, 7] and k = 3. 
+[None, +, +, -, +],
 
-We should get [10, 7, 8, 8]
+You could return,
 
-Since,
-
-10 = max(10, 5, 2),
-7 = max(5, 2, 7)
-8 = max(2, 7, 8)
-8 = max(7, 8, 7)
-
-Do this in O(n) time and O(k) space. You can modify the input array in-place and you do not need to store the results. You can simply print them out as you compute them.
+[1, 2, 3, 0, 4]
 '''
 
-arr, k = [10, 5, 2, 7, 8, 7], 3
+lst = [None, '+', '+', '-', '+']
 
-def max_subarray3(arr, k):
-    q, result = deque(), []
-    
-    for i in range(k):
-        while q and arr[i] >= arr[q[-1]]:
-            q.pop()
-        q.append(i)
+def reconstruct1(array):
+    answer = []
+    n = len(array) - 1
+    stack = []
 
-    # Loop invariant: q is a list of indices where their
-    # corresponding values are in descending order.
-    for i in range(k, len(arr)):
-        result.append( arr[q[0]] )
+    for i in range(n):
+        if array[i + 1] == '-':
+            stack.append(i)
+        else:
+            answer.append(i)
+            while stack:
+                answer.append(stack.pop())
 
-        while q and q[0] <= i - k:
-            q.popleft()
+    stack.append(n)
 
-        while q and arr[i] >= arr[q[-1]]:
-            q.pop()
-        q.append(i)
+    while stack:
+        answer.append(stack.pop())
 
-    result.append( arr[q[0]] )
+    return answer
 
-    return result
-
-print( max_subarray3(arr, k) )
-
-
+print(reconstruct1(lst))
