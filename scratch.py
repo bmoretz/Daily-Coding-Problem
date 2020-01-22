@@ -1,43 +1,20 @@
-from problems.stack_queue import Stack, MaxStack
 
-from collections import deque
+from problems.hashtable import LRUCache
 
-'''4.4
-Reconstruct array using +/- signs
+'''5.1
 
-The sequance [0, 1, ..., N] has been jumbled, and the only clue you have for its order is an array representing whether each number is larger or smaller than the last.
+Implement a LRU (Least Recently Used) cache. The cache should be able to be initialized with cache size n, and provide the following methods:
 
-Given this information, reconstruct an array that is consistent with it. 
+1.) set(key, value): set key to value. If there are already n items in the cache and we are adding a new item, also remove the least recently used item.
 
-For example, given 
+2.) get(key): get the value at key. If no such key exists, return null.
 
-[None, +, +, -, +],
-
-You could return,
-
-[1, 2, 3, 0, 4]
+Each operation should run in O(1) time.
 '''
 
-lst = [None, '+', '+', '-', '+']
+cache = LRUCache(5)
 
-def reconstruct1(array):
-    answer = []
-    n = len(array) - 1
-    stack = []
+for index in range(10):
+    cache.set(index, index**2)
 
-    for i in range(n):
-        if array[i + 1] == '-':
-            stack.append(i)
-        else:
-            answer.append(i)
-            while stack:
-                answer.append(stack.pop())
-
-    stack.append(n)
-
-    while stack:
-        answer.append(stack.pop())
-
-    return answer
-
-print(reconstruct1(lst))
+print(cache.dict.keys())
