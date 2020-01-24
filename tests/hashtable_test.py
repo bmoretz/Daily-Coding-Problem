@@ -2,8 +2,8 @@ import unittest
 
 from problems.hashtable import two_sum1
 from problems.hashtable import LRUCache
-from problems.hashtable import SparseArray
 from problems.hashtable import fewest_cuts1
+from problems.hashtable import SparseArray, SparseMatrix
 
 class Test_TwoSum1(unittest.TestCase):
     
@@ -76,3 +76,34 @@ class Test_SparseArray(unittest.TestCase):
                 assert sa.get(index) != 0
             else:
                 assert sa.get(index) == 0
+
+
+class Test_SparseMatrix(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        mat = [[0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1]]
+                
+        n, m = 100, 100
+        sm = SparseMatrix(mat, n, m)
+
+        non_zero = [[5, 13, 19, 28], \
+                    [5, 13, 19, 28], \
+                    [5, 13, 19, 28], \
+                    [5, 13, 19, 28], \
+                    [5, 13, 19, 28]]
+
+        for n, row in enumerate(mat):
+            for m, val in enumerate(row):
+
+                if m in non_zero[n]:
+                    assert sm.get(n, m) != 0
+                else:
+                    assert sm.get(n, m) == 0
