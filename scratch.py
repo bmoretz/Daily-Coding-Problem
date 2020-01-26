@@ -1,73 +1,46 @@
-
 from collections import defaultdict
 
-'''5.4
+from problems.tree import Node
+from problems.tree import populate_pre_order
+from problems.tree import get_height, get_width
 
-Implement a sparse matrix.
+'''6.1
+A unival tree (which stands for "universal value") is a tree where all nodes under it have the same value.
 
-You have a large array, most of whose elements are zero.
-
-Create a more space-efficient data structure, SparseArray, that implements the following interface:
-
-+ init(mat, width, height): initialize with the original large array and size.
-
-+ set(row, col, val): update index at [row, col] to be val.
-
-+ get(i): get the value at index [row, col].
+Given the root to a binary tree, count the number of unival subtrees.
 
 '''
 
-mat = [[0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], \
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1]]
+def is_unival(root):
+    return unival_helper(root, root.data)
 
-rec_dd = lambda: defaultdict(rec_dd)
+def unival_helper(root, value):
 
-class SparseMatrix:
+    if root is None:
+        return True
 
-    def __init__(self, mat, width, height):
-        self._values = rec_dd()
-        self._size = (width, height)
+    if root.data == value:
+        return unival_helper(root.left, value) and \
+            unival_helper(root.right, value)
 
-        for n, row in enumerate(mat):
-            for m, val in enumerate(row):
-                if val != 0:
-                    self._values[n][m] = val
+    return False
 
-    def _check_bounds(self, n, m):
-        if n < 0 or n >= self._size[0] or m < 0 or m >= self._size[1]:
-            raise IndexError('Out of bounds')
+def count_unival_subtrees(root):
+    if root is None:
+        return 0
 
-    def set(self, row, col, value):
+    left = count_unival_subtrees(root.left)
+    right = count_unival_subtrees(root.right)
 
-        self._check_bounds(row, col)
+    return (1 + left + right) if is_unival(root) else left + right
 
-        if value != 0:
-            self._values[row][col] = value
-            return
-        elif col in self._values[row]:
-            del self._values[row][col]
+data = ['a',
+        ['a', [], []],
+        ['a',
+            ['a', [], []], 
+            ['a', [], ['b']]
+        ]]
 
-    def get(self, row, col):
-        
-        self._check_bounds(row, col)
+tree = populate_pre_order(data)
 
-        return self._values.get(row, []).get(col, 0)
-
-sm = SparseMatrix(mat, 100, 100)
-
-non_zero = [[5, 13, 19, 28], \
-            [5, 13, 19, 28], \
-            [5, 13, 19, 28], \
-            [5, 13, 19, 28], \
-            [5, 13, 19, 28]]
-
-for n, row in enumerate(mat):
-    for m, val in enumerate(row):
-
-        if m in non_zero[n]:
-            assert sm.get(n, m) != 0
-        else:
-            assert sm.get(n, m) == 0
+print(get_width(tree))

@@ -101,7 +101,7 @@ class Test_SparseMatrix(unittest.TestCase):
                     [5, 13, 19, 28]]
 
         for n, row in enumerate(mat):
-            for m, val in enumerate(row):
+            for m, _ in enumerate(row):
 
                 if m in non_zero[n]:
                     assert sm.get(n, m) != 0
