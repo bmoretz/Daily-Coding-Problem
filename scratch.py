@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from problems.tree import Node
 from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
@@ -34,13 +32,42 @@ def count_unival_subtrees(root):
 
     return (1 + left + right) if is_unival(root) else left + right
 
-data = ['a',
-        ['a', [], []],
-        ['a',
-            ['a', [], []], 
-            ['a', [], ['b']]
+data = [0,
+        [1, [], []],
+        [0,
+            [1, [1], [1]], 
+            [0, [], []]
         ]]
 
 tree = populate_pre_order(data)
 
-print(get_width(tree))
+
+def serialize(node):
+
+    if not node: return '#'
+
+    return '{} {} {}'.format(node.data, serialize(node.left), serialize(node.right))
+
+ser = serialize(tree)
+
+def deserialize(data):
+
+    def helper():
+        val = next(vals)
+        
+        if val == '#':
+            return None
+        
+        node = Node(int(val))
+        node.left = helper()
+        node.right = helper()
+
+        return node
+
+    vals = iter(data.split())
+
+    return helper()
+
+tree1 = deserialize(ser)
+
+print(tree1)
