@@ -25,27 +25,27 @@ preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
 inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
 
 
-def reconstruct(preorder, inorder):
+def reconstruct2(preorder, inorder):
 
-    if not preorder or not inorder: return None
+    def reconstruct(preorder, inorder):
+        if not preorder and not inorder:
+            return None
 
-    mid = round( ( len(inorder) ) / 2)
+        root = Node(preorder[0])
 
-    node = Node(preorder[0])
+        if len(preorder) == len(inorder) == 1:
+            return root
+ 
+        root_i = inorder.index(root.data) if len(inorder) > 1 else 0
+        root.left = reconstruct(preorder[1:1 + root_i],
+                                inorder[0:root_i])
+        root.right = reconstruct(preorder[1 + root_i:],
+                                        inorder[root_i + 1:])
 
-    left = preorder[1:mid]
+        return root
 
-    if left and mid != 0:
-        node.left = reconstruct(left, left)
+    return reconstruct(preorder, inorder)
 
-    right = preorder[mid:]
-
-    if right and mid != 0: 
-        node.right = reconstruct(right, right)
-
-    return node
-
-
-tree = reconstruct(preorder, inorder)
+tree = reconstruct2(preorder, inorder)
 
 print(tree)

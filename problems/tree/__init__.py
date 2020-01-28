@@ -159,3 +159,23 @@ def reconstruct1(preorder, inorder):
 
     return reconstruct(preorder, inorder)
     
+def reconstruct2(preorder, inorder):
+
+    def reconstruct(preorder, inorder):
+        if not preorder and not inorder:
+            return None
+
+        root = Node(preorder[0])
+
+        if len(preorder) == len(inorder) == 1:
+            return root
+ 
+        root_i = inorder.index(root.data) if len(inorder) > 1 else 0
+        root.left = reconstruct(preorder[1:1 + root_i],
+                                inorder[0:root_i])
+        root.right = reconstruct(preorder[1 + root_i:],
+                                        inorder[root_i + 1:])
+
+        return root
+
+    return reconstruct(preorder, inorder)
