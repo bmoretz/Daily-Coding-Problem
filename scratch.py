@@ -2,72 +2,50 @@ from problems.tree import Node
 from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
 
-'''6.1
-A unival tree (which stands for "universal value") is a tree where all nodes under it have the same value.
+''' 6.2
+Given pre-order and in-order traversals of a binary tree, write a function to reconstruct the tree.
 
-Given the root to a binary tree, count the number of unival subtrees.
+For example, given the following pre-order traversal:
 
+[a, b, d, e, c, f, g]
+
+And the following in-order traversal:
+
+[d, b, e, a, f, c, g]
+
+You should return the following tree:
+
+        a
+    b       c
+d      e  f    g
 '''
 
-def is_unival(root):
-    return unival_helper(root, root.data)
 
-def unival_helper(root, value):
-
-    if root is None:
-        return True
-
-    if root.data == value:
-        return unival_helper(root.left, value) and \
-            unival_helper(root.right, value)
-
-    return False
-
-def count_unival_subtrees(root):
-    if root is None:
-        return 0
-
-    left = count_unival_subtrees(root.left)
-    right = count_unival_subtrees(root.right)
-
-    return (1 + left + right) if is_unival(root) else left + right
-
-data = [0,
-        [1, [], []],
-        [0,
-            [1, [1], [1]], 
-            [0, [], []]
-        ]]
-
-tree = populate_pre_order(data)
+preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
+inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
 
 
-def serialize(node):
+def reconstruct(preorder, inorder):
 
-    if not node: return '#'
+    if not preorder or not inorder: return None
 
-    return '{} {} {}'.format(node.data, serialize(node.left), serialize(node.right))
+    mid = round( ( len(inorder) ) / 2)
 
-ser = serialize(tree)
+    node = Node(preorder[0])
 
-def deserialize(data):
+    left = preorder[1:mid]
 
-    def helper():
-        val = next(vals)
-        
-        if val == '#':
-            return None
-        
-        node = Node(int(val))
-        node.left = helper()
-        node.right = helper()
+    if left and mid != 0:
+        node.left = reconstruct(left, left)
 
-        return node
+    right = preorder[mid:]
 
-    vals = iter(data.split())
+    if right and mid != 0: 
+        node.right = reconstruct(right, right)
 
-    return helper()
+    return node
 
-tree1 = deserialize(ser)
 
-print(tree1)
+tree = reconstruct(preorder, inorder)
+
+print(tree)

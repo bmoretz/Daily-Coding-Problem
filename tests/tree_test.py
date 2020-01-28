@@ -5,6 +5,7 @@ from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
 from problems.tree import serialize, deserialize
 from problems.tree import count_unival_subtrees1
+from problems.tree import reconstruct1
 
 tree1 = [0,
         [1, [], []],
@@ -71,3 +72,31 @@ class Test_Serialization(unittest.TestCase):
         assert tree1.data == 0
         assert tree1.left.data == 1
         assert tree1.right.data == 0
+
+class Test_Reconstruct1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        
+        preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
+        inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
+
+        tree = reconstruct1(preorder, inorder)
+
+        assert tree.data == 'a'
+
+        left = tree.left
+
+        assert left.data == 'b'
+
+        assert left.left.data == 'd'
+        assert left.right.data == 'e'
+
+        right = tree.right
+
+        assert right.data == 'c'
+
+        assert right.left.data == 'f'
+        assert right.right.data == 'g'
