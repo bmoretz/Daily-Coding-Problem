@@ -2,59 +2,55 @@ from problems.tree import Node
 from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
 
-''' 6.3
+''' 6.4
 
-Suppose an arithmetic expression is given as a binary tree. Each leaf is an integer and each internal node is one of +, -, * or /.
+Get tree level with minimum sum
 
-Given the root to such a tree, write a function to evalutate it.
+Given a binary tree, return the level of the tree that has the minimum sum. The level of a node is defined as the number of connections requred to get to the root, with the root having level zero.
 
-For example, given the following tree:
+For example,
 
-        *
-    +       -
-3      2 4    5
+        1
+    2       3
+        4       5
 
-Should return 45, as it is (3 + 2) * (4 + 5)
+In this tree, level 0 has sum 1, level 1 has sum 5, and level 2 has sum 9, so the level with the minimuim sum is zero.
 '''
 
 
-arithmetic1 = ['*',
-                ['+', [3], [2]],
-                ['+', [4], [5]]]
+values1 = [1,
+            [2],
+            [3, [4], [5]]]
 
-def evaluate1(root):
+values2 = [5,
+            [1],
+            [2, [4], [5]]]
 
-    operations = { 
-        '+' : lambda x,y: x + y,
-        '-' : lambda x,y: x - y,
-        '*' : lambda x,y: x * y,
-        '\\' : lambda x,y: x / y
-    }
+def minsum1(root):
 
-    def op(op, l, r):
-        return operations[op](l, r) if op in operations.keys() else None
+    values = {}
 
-    def eval_node(node):
-         if isinstance( node.data, int ):
-            return node.data
-         else:
-            return evaluate(node)
-
-    def evaluate(root):
+    def evaluate(root, level = 1):
         if not root: return None
-
-        operation = root.data
         
-        left = eval_node(root.left)
+        if root.left or root.right: values[level] = 0
 
-        right = eval_node(root.right)
-        
-        return op(operation, left, right)
+        if root.left:
+            values[level] += root.left.data
+            evaluate(root.left, level + 1)
 
-    return evaluate(root)
+        if root.right:
+            values[level] += root.right.data
+            evaluate(root.right, level + 1)
 
-tree = populate_pre_order(arithmetic1)
+    if root: 
+        values[0] = root.data
+        evaluate(root)
+    
+    return min(values, key = values.get )
 
-val = evaluate1(tree)
+tree = populate_pre_order(values2)
+
+val = minsum1(tree)
 
 print(val)

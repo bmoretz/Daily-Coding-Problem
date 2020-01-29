@@ -7,6 +7,7 @@ from problems.tree import serialize, deserialize
 from problems.tree import count_unival_subtrees1
 from problems.tree import reconstruct1, reconstruct2
 from problems.tree import evaluate1
+from problems.tree import minsum1
 
 tree1 = [0,
         [1, [], []],
@@ -131,10 +132,6 @@ class Test_Reconstruct2(unittest.TestCase):
         assert right.left.data == 'f'
         assert right.right.data == 'g'
 
-# result = 45
-arithmetic1 = ['*',
-                ['+', [3], [2]],
-                ['+', [4], [5]]]
 
 class Test_Arithmetic1(unittest.TestCase):
 
@@ -143,8 +140,65 @@ class Test_Arithmetic1(unittest.TestCase):
 
     def test_case1(self):
 
-        operations = populate_pre_order(arithmetic1)
+        ops = ['*',
+                ['+', [3], [2]],
+                ['+', [4], [5]]]
+
+        operations = populate_pre_order(ops)
 
         result = evaluate1(operations)
 
-        assert result == 45        
+        assert result == 45
+
+    def test_case2(self):
+
+        ops = ['*',
+                [2],
+                ['+', [4], [5]]]
+
+        operations = populate_pre_order(ops)
+
+        result = evaluate1(operations)
+
+        assert result == 18
+        
+    def test_case3(self):
+
+        ops = ['*',
+                [2],
+                [5]]
+                
+        operations = populate_pre_order(ops)
+
+        result = evaluate1(operations)
+
+        assert result == 10
+
+
+class Test_MinSum1(unittest.TestCase):
+
+    def setUp(self):
+        self.values1 = [1,
+                        [2],
+                        [3, [4], [5]]]
+
+        self.values2 = [5,
+                        [1],
+                        [2, [4], [5]]]
+
+
+    def test_case1(self):
+
+        tree = populate_pre_order(self.values1)
+
+        min_level = minsum1(tree)
+
+        assert min_level == 0
+
+    def test_case2(self):
+
+        tree = populate_pre_order(self.values2)
+
+        min_level = minsum1(tree)
+
+        assert min_level == 1
