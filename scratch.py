@@ -2,50 +2,59 @@ from problems.tree import Node
 from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
 
-''' 6.2
-Given pre-order and in-order traversals of a binary tree, write a function to reconstruct the tree.
+''' 6.3
 
-For example, given the following pre-order traversal:
+Suppose an arithmetic expression is given as a binary tree. Each leaf is an integer and each internal node is one of +, -, * or /.
 
-[a, b, d, e, c, f, g]
+Given the root to such a tree, write a function to evalutate it.
 
-And the following in-order traversal:
+For example, given the following tree:
 
-[d, b, e, a, f, c, g]
+        *
+    +       -
+3      2 4    5
 
-You should return the following tree:
-
-        a
-    b       c
-d      e  f    g
+Should return 45, as it is (3 + 2) * (4 + 5)
 '''
 
 
-preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
-inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
+arithmetic1 = ['*',
+                ['+', [3], [2]],
+                ['+', [4], [5]]]
 
+def evaluate1(root):
 
-def reconstruct2(preorder, inorder):
+    operations = { 
+        '+' : lambda x,y: x + y,
+        '-' : lambda x,y: x - y,
+        '*' : lambda x,y: x * y,
+        '\\' : lambda x,y: x / y
+    }
 
-    def reconstruct(preorder, inorder):
-        if not preorder and not inorder:
-            return None
+    def op(op, l, r):
+        return operations[op](l, r) if op in operations.keys() else None
 
-        root = Node(preorder[0])
+    def eval_node(node):
+         if isinstance( node.data, int ):
+            return node.data
+         else:
+            return evaluate(node)
 
-        if len(preorder) == len(inorder) == 1:
-            return root
- 
-        root_i = inorder.index(root.data) if len(inorder) > 1 else 0
-        root.left = reconstruct(preorder[1:1 + root_i],
-                                inorder[0:root_i])
-        root.right = reconstruct(preorder[1 + root_i:],
-                                        inorder[root_i + 1:])
+    def evaluate(root):
+        if not root: return None
 
-        return root
+        operation = root.data
+        
+        left = eval_node(root.left)
 
-    return reconstruct(preorder, inorder)
+        right = eval_node(root.right)
+        
+        return op(operation, left, right)
 
-tree = reconstruct2(preorder, inorder)
+    return evaluate(root)
 
-print(tree)
+tree = populate_pre_order(arithmetic1)
+
+val = evaluate1(tree)
+
+print(val)

@@ -6,6 +6,7 @@ from problems.tree import get_height, get_width
 from problems.tree import serialize, deserialize
 from problems.tree import count_unival_subtrees1
 from problems.tree import reconstruct1, reconstruct2
+from problems.tree import evaluate1
 
 tree1 = [0,
         [1, [], []],
@@ -129,3 +130,21 @@ class Test_Reconstruct2(unittest.TestCase):
 
         assert right.left.data == 'f'
         assert right.right.data == 'g'
+
+# result = 45
+arithmetic1 = ['*',
+                ['+', [3], [2]],
+                ['+', [4], [5]]]
+
+class Test_Arithmetic1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        operations = populate_pre_order(arithmetic1)
+
+        result = evaluate1(operations)
+
+        assert result == 45        
