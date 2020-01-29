@@ -239,7 +239,6 @@ For example,
 In this tree, level 0 has sum 1, level 1 has sum 5, and level 2 has sum 9, so the level with the minimuim sum is zero.
 '''
 
-
 def minsum1(root):
 
     values = {}
