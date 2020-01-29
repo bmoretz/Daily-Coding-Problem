@@ -62,4 +62,4 @@ class Test_Zigzag1(unittest.TestCase):
         pass
 
     def test_case1(self):
-        assert zigzag1.zigzag("thisisazigzag", 4) == zigzag_out
+        assert zigzag1("thisisazigzag", 4) == zigzag_out

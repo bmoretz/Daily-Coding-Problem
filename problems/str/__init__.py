@@ -89,9 +89,8 @@ t     a     g
 '''
 
 ''' O(N * k) Solution '''
-class zigzag1:
+def zigzag1(stri, k):
 
-    @staticmethod
     def get_spaces(row, desc, k):
         max_spaces = (k - 1) * 2 - 1
 
@@ -101,13 +100,11 @@ class zigzag1:
             spaces = max_spaces - (k - 1 - row) * 2
         return spaces
 
-    @staticmethod
     def is_descending(index, k):
         # Check whether the index is more or less than halfway
         # though its ocillation back to the starting point
         return index % (2 * (k - 1)) < k -1
 
-    @staticmethod
     def zigzag(sentence, k):
         n = len(sentence)
         result = "\n"
@@ -118,9 +115,11 @@ class zigzag1:
 
             while i < n:
                 line[i] = sentence[i]
-                desc = zigzag1.is_descending(i, k)
-                spaces = zigzag1.get_spaces(row, desc, k)
+                desc = is_descending(i, k)
+                spaces = get_spaces(row, desc, k)
                 i += spaces + 1
             result += "".join(line) + "\n"
 
         return result
+
+    return zigzag(stri, k)

@@ -2,32 +2,17 @@ from problems.tree import Node
 from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
 
-''' 1.28
+''' 1.29
 
-cons(a, b) constructs a pair, and car(pair) and cdr(pair) returns the first and last element of that pair. For example, car(cons(3, 4)) returns 3, and cdr(cons(3, 4)) returns 4.
+An XOR linked list is a more memory efficent doubly linked list.
 
-Given this implementation of cons:
+Instead of each node holding next and prev fields, it holds a field named both, which is an XOR of the next node and the previous node. 
 
-def cons(a, b):
-    def pair(f):
-        return f(a, b)
-    return pair
+Implement an XOR linked list; it has:
 
-Implement car and cdr.
+add(element) which adds the element to the end, and a
+get(index) which returns the node at index.
+
 '''
 
-def cons(a, b):
-    def pair(f):
-        return f(a, b)
-    return pair
 
-def car(pair):
-    return pair(lambda a, b: a)
-
-def cdr(pair):
-    return pair(lambda a, b: b)
-
-    
-pair = car(cons(3, 4))
-
-print(p)
