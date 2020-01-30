@@ -1,46 +1,10 @@
-from problems.bst import Node, BST
+from problems.xorlist import Node, XorLinkedList
 
-values = [7, 5, 10, -1, 6, 25]
+lst = XorLinkedList()
 
-tree = BST()
-
-for v in values:
-    tree.insert(v)
-
-print(tree)
+for index in range(5):
+    lst.add(Node(index))
 
 
-'''7.1
-
-Find floor and ceiling.
-
-Given a binary search tree, find the floor and ceiling of a given integer. The floor is the highet element in the tree less than or equal to an integer, while the ceiling is the lowest element in the tree greater than or equal to an integer.
-
-If either value does not exist, return None
-'''
-
-k = -5
-
-def floor_ceiling1(root, k):
-
-    def get_bounds(root, x, floor=None, ceil=None):
-
-        if not root:
-            return floor, ceil
-
-        if x == root.data:
-            return x, x
-
-        elif x < root.data:
-            floor, ceil = get_bounds(root.left, x, floor, root.data)
-
-        elif x > root.data:
-            floor, ceil = get_bounds(root.right, x, root.data, ceil)
-
-        return floor, ceil
-    
-    return get_bounds(root, k, k)
-
-fc = floor_ceiling1(tree.root, k)
-
-print(fc)
+t1 = lst.get(4)
+print(lst)
