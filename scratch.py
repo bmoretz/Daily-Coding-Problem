@@ -1,18 +1,46 @@
-from problems.tree import Node
-from problems.tree import populate_pre_order
-from problems.tree import get_height, get_width
+from problems.bst import Node, BST
 
-''' 1.29
+values = [7, 5, 10, -1, 6, 25]
 
-An XOR linked list is a more memory efficent doubly linked list.
+tree = BST()
 
-Instead of each node holding next and prev fields, it holds a field named both, which is an XOR of the next node and the previous node. 
+for v in values:
+    tree.insert(v)
 
-Implement an XOR linked list; it has:
+print(tree)
 
-add(element) which adds the element to the end, and a
-get(index) which returns the node at index.
 
+'''7.1
+
+Find floor and ceiling.
+
+Given a binary search tree, find the floor and ceiling of a given integer. The floor is the highet element in the tree less than or equal to an integer, while the ceiling is the lowest element in the tree greater than or equal to an integer.
+
+If either value does not exist, return None
 '''
 
+k = -5
 
+def floor_ceiling1(root, k):
+
+    def get_bounds(root, x, floor=None, ceil=None):
+
+        if not root:
+            return floor, ceil
+
+        if x == root.data:
+            return x, x
+
+        elif x < root.data:
+            floor, ceil = get_bounds(root.left, x, floor, root.data)
+
+        elif x > root.data:
+            floor, ceil = get_bounds(root.right, x, root.data, ceil)
+
+        return floor, ceil
+    
+    return get_bounds(root, k, k)
+
+fc = floor_ceiling1(tree.root, k)
+
+print(fc)
