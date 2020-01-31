@@ -4,7 +4,7 @@ from problems.tree import Node
 from problems.tree import populate_pre_order
 from problems.tree import get_height, get_width
 from problems.tree import serialize, deserialize
-from problems.tree import count_unival_subtrees1
+from problems.tree import count_unival_subtrees1, count_unival_subtrees2
 from problems.tree import reconstruct1, reconstruct2
 from problems.tree import evaluate1
 from problems.tree import minsum1
@@ -58,6 +58,23 @@ class Test_CountUnivalSubtree1(unittest.TestCase):
         subtrees = count_unival_subtrees1(self.tree2)
 
         assert subtrees == 3
+
+class Test_CountUnivalSubtree2(unittest.TestCase):
+    
+    def setUp(self):
+        self.tree1 = populate_pre_order(tree1)
+        self.tree2 = populate_pre_order(tree2)
+
+    def test_case1(self):
+        
+        subtrees = count_unival_subtrees2(self.tree1)
+
+        assert subtrees == 5
+
+    def test_case2(self):
+        subtrees = count_unival_subtrees2(self.tree2)
+
+        assert subtrees == 5
 
 class Test_Serialization(unittest.TestCase):
 
@@ -167,7 +184,7 @@ class Test_Arithmetic1(unittest.TestCase):
         ops = ['*',
                 [2],
                 [5]]
-                
+
         operations = populate_pre_order(ops)
 
         result = evaluate1(operations)

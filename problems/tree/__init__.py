@@ -61,6 +61,14 @@ A unival tree (which stands for "universal value") is a tree where all nodes und
 
 Given the root to a binary tree, count the number of unival subtrees.
 
+For example, the tree:
+
+        0
+    1       0
+        1       0
+    1       1
+
+Should return 5.
 '''
 
 def is_unival(root):
@@ -87,6 +95,34 @@ def count_unival_subtrees1(root):
 
     return (1 + left + right) if is_unival(root) else left + right
 
+'''O(n^2) count universal value subtrees #2'''
+def count_unival_subtrees2(tree):
+
+    def is_univariate(node):
+
+        if node.left == None and node.right == None: return True
+
+        if node.left != None and node.right != None and \
+            node.left.data == node.right.data == node.data:
+            return True
+
+        return False
+    
+    def count_univariate(root):
+
+        if root == None: return 0
+
+        value = 1 if is_univariate(root) else 0
+
+        if root.left != None:
+            value += count_univariate(root.left)
+
+        if root.right != None:
+            value += count_univariate(root.right)
+
+        return value
+
+    return count_univariate(tree)
 
 ''' 6.5
 

@@ -2,6 +2,7 @@ import unittest
 
 from problems.daily import first_missing1, first_missing2
 from problems.daily import cons, car, cdr
+from problems.daily import num_encoding1
 
 class Test_FirstMissing1(unittest.TestCase):
     
@@ -43,3 +44,17 @@ class Test_Construct1(unittest.TestCase):
 
     def test_case2(self):
         assert cdr(cons(3, 4)) == 4
+
+class Test_NumEncodings(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):      
+        assert num_encoding1('111') == 3
+
+    def test_case2(self):
+        assert num_encoding1('011') == 0
+
+    def test_case3(self):
+        assert num_encoding1('602') == 0
