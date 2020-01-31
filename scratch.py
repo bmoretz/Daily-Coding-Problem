@@ -1,52 +1,30 @@
-'''1.30
+'''7.2
 
-Given the mapping a = 1, b = 2, ... z = 26, and an encoded message, count the number of ways it can be decoded.
+Given a sorted array, convert it into a hight-balanced binary search tree.
 
-For example, the message '111' would give 3, since it could be decoded as 'aaa', 'ka', and 'ak'.
-
-You can assume that the messages are decodable. For example, '001' is not allowed.
 '''
 
-from problems.tree import populate_pre_order, Node
+from problems.bst import Node
 
-tree2 = ['a',
-        ['a', [], []],
-        ['a',
-            ['a', [], []], 
-            ['a', [], ['b']]
-        ]]
+values = [1, 2, 3, 4]
 
-tree = populate_pre_order(tree2)
+def built_bst1(values):
 
+    def build_node(values):
 
-def count_univariate2(tree):
+        if not values:
+            return None
 
-    def is_univariate(node):
+        mid = len(values) // 2
 
-        if node.left == None and node.right == None: return True
+        root = Node(values[mid])
+        root.left = build_node(values[:mid])
+        root.right = build_node(values[mid + 1:])
 
-        if node.left != None and node.right != None and \
-            node.left.data == node.right.data == node.data:
-            return True
+        return root
 
-        return False
-    
-    def count_univariate(root):
+    return build_node(values)
 
-        if root == None: return 0
+tree = built_bst1(values)
 
-        value = 1 if is_univariate(root) else 0
-
-        if root.left != None:
-            value += count_univariate(root.left)
-
-        if root.right != None:
-            value += count_univariate(root.right)
-
-        return value
-
-    return count_univariate(tree)
-
-val = count_univariate2(tree)
-
-print(val)
+print(tree)
