@@ -1,30 +1,66 @@
-'''7.2
+from problems.tree import Node
 
-Given a sorted array, convert it into a hight-balanced binary search tree.
+'''7.3
 
+Given an integer n, construct all possible binary search trees with n nodes where all values from [1, ..., n] are used.
+
+For example, given n = 3, return the following trees:
+
+1
+    2
+        3
+
+1
+    3
+2
+
+    2
+1       3
+
+    3
+1
+    2
+
+        3
+    2
+1
 '''
 
-from problems.bst import Node
+def make_trees1(N):
 
-values = [1, 2, 3, 4]
+    def make_trees(low, high):
+        trees = []
 
-def built_bst1(values):
+        if low > high:
+            trees.append(None)
+            return trees
 
-    def build_node(values):
+        for i in range(low, high + 1):
+            left = make_trees(low, i - 1)
+            right = make_trees(i + 1, high)
 
-        if not values:
-            return None
+            for l in left:
+                for r in right:
+                    node = Node(i, left=l, right=r)
+                    trees.append(node)
 
-        mid = len(values) // 2
+        return trees
 
-        root = Node(values[mid])
-        root.left = build_node(values[:mid])
-        root.right = build_node(values[mid + 1:])
+    def preorder(root):
+        result = []
 
-        return root
+        if root:
+            result.append(root.data)
+            result += preorder(root.left)
+            result += preorder(root.right)
 
-    return build_node(values)
+        return result
 
-tree = built_bst1(values)
+    trees = make_trees(1, N)
 
-print(tree)
+    for tree in trees:
+        print(preorder(tree))
+
+
+make_trees1(3)
+

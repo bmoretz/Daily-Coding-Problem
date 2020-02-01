@@ -3,6 +3,7 @@ import unittest
 from problems.bst import Node, BST
 from problems.bst import floor_ceiling1
 from problems.bst import built_bst1
+from problems.bst import make_trees1
 
 class Test_FloorCeiling1(unittest.TestCase):
     
@@ -63,4 +64,19 @@ class Test_BuildBST1(unittest.TestCase):
         assert left.data == 2
         assert left.left.data == 1
 
-        assert root.right == 4
+        assert root.right.data == 4
+
+class Test_MakeTrees1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case3(self):       
+        
+        trees = make_trees1(N = 3)
+
+        assert trees[0] == [1, 2, 3]
+        assert trees[1] == [1, 3, 2]
+        assert trees[2] == [2, 1, 3]
+        assert trees[3] == [3, 1, 2]
+        assert trees[4] == [3, 2, 1]
