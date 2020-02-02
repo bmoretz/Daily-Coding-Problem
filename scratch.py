@@ -1,66 +1,23 @@
-from problems.tree import Node
+from problems.trie import Trie
 
-'''7.3
+from problems.trie import Autocomplete1
 
-Given an integer n, construct all possible binary search trees with n nodes where all values from [1, ..., n] are used.
+'''8.1
+Implement Autocomplete System
 
-For example, given n = 3, return the following trees:
+Implement an autocomplete system. That is, given a query string s and a set of all possible query strings, return all strings in the set that have s as a prefix.
 
-1
-    2
-        3
+For example, given the query string de and the set of strings:
 
-1
-    3
-2
+[dog, deer, deal]
 
-    2
-1       3
+return [deer, deal]
 
-    3
-1
-    2
-
-        3
-    2
-1
 '''
 
-def make_trees1(N):
+values, search = ['dog', 'deer', 'deal'], "de"
 
-    def make_trees(low, high):
-        trees = []
+ac = Autocomplete1()
+ac.insert_words(values)
 
-        if low > high:
-            trees.append(None)
-            return trees
-
-        for i in range(low, high + 1):
-            left = make_trees(low, i - 1)
-            right = make_trees(i + 1, high)
-
-            for l in left:
-                for r in right:
-                    node = Node(i, left=l, right=r)
-                    trees.append(node)
-
-        return trees
-
-    def preorder(root):
-        result = []
-
-        if root:
-            result.append(root.data)
-            result += preorder(root.left)
-            result += preorder(root.right)
-
-        return result
-
-    trees = make_trees(1, N)
-
-    for tree in trees:
-        print(preorder(tree))
-
-
-make_trees1(3)
-
+print( ac.get_matches(search) )
