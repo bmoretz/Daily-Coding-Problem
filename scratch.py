@@ -2,24 +2,54 @@ from problems.trie import Trie
 
 from problems.trie import Autocomplete1
 
-'''8.1
-Implement Autocomplete System
+from collections import defaultdict
 
-Implement an autocomplete system. That is, given a query string s and a set of all possible query strings, return all strings in the set that have s as a prefix.
+'''8.2
+Create Prefix Map Sum
 
-For example, given the query string de and the set of strings:
+Implement a PrefixMapSum class with the following methods:
 
-[dog, deer, deal]
+insert(key: str, value: int): Set a given key's value in the map. If the key already exists, overwrite the value.
 
-return [deer, deal]
+sum(prefix: str): Return the sum of all values of keys that begin with a given prefix.
 
+For example,
+
+you should be able to run the following code:
+
+mapsum.insert("columnar", 3)
+assert mapsum.sum("col") == 3
+
+mapsum.insert("column", 2)
+assert mapsum.sum("col") == 5
 '''
 
-values, search = ['dog', 'deer', 'deal'], "de"
 
-ac = Autocomplete1()
-ac.insert_words(values)
+class PrefixMapSum2():
 
-print( ac.get_matches(search) )
+    def __init__(self):
+        self._map = defaultdict()
+        self._words = set()
 
+    '''O(k^2)'''
+    def insert(self, key : str, value : int):
+        # if the key already exists, increment prefix totals
+        # by the difference of old and new values
+        if key in self._words:
+            value -= self._map[key]
+        self._words.add(key)
+    
+    '''O(1)'''
+    def sum(self, stri):
+        return self._map[stri]
 
+    
+mapsum = PrefixMapSum2()
+
+mapsum.insert("columar", 3)
+assert mapsum.sum("col") == 3
+
+mapsum.insert("column", 2)
+assert mapsum.sum("col") == 5
+
+print("")
