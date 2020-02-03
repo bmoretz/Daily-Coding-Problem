@@ -22,6 +22,18 @@ class Trie:
                 return None
         return trie
     
+    def _elements(self, d):
+        result = []
+
+        for key, value in d.items():
+            if key == ENDS_HERE:
+                subresult = ['']
+            else:
+                subresult = [key + suffix for suffix in self._elements(value)]
+            result.extend(subresult)
+
+        return result
+
 class Autocomplete1():
 
     def __init__(self):
@@ -31,24 +43,31 @@ class Autocomplete1():
 
         for val in values:
             self._words.insert(val)
-
-    def get_values(self, matches):
-
-        def words():
-            for key, value in matches.items():
-                if isinstance(value, dict):
-                    for subkey, subvalue in self.get_values(value).items():
-                        yield key + subkey, subvalue
-                else:
-                    yield key if key != ENDS_HERE else '', ''
-
-        return dict(words())
                 
     def get_matches(self, prefix):
 
         matches = self._words.find(prefix)
 
+        suffix = self._words._elements(matches)
+
+        return [prefix + word for word in suffix]
+
+class Autocomplete2():
+
+    def __init__(self):
+        self.words = set()
+
+    def insert_words(self, words):
+        
+        for word in words:
+            self.words.add(word)
+
+    def get_matches(self, prefix):
+
         results = []
-        for word in self.get_values(matches).keys():
-            results.append(prefix + word)
+        for word in self.words:
+            if word.startswith(prefix):
+                results.append(word)
+
         return results
+    

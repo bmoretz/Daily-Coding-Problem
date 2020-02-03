@@ -1,6 +1,6 @@
 import unittest
 
-from problems.trie import Autocomplete1
+from problems.trie import Autocomplete1, Autocomplete2
 
 class Test_Autocomplete1(unittest.TestCase):
     
@@ -16,5 +16,22 @@ class Test_Autocomplete1(unittest.TestCase):
 
         results = ac.get_matches(search)
 
-        assert results[0] == 'deer'
-        assert results[1] == 'deal'
+        assert 'deer' in results
+        assert 'deal' in results
+
+class Test_Autocomplete2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):       
+        
+        values, search = ['dog', 'deer', 'deal'], "de"
+
+        ac = Autocomplete2()
+        ac.insert_words(values)
+
+        results = ac.get_matches(search)
+
+        assert 'deer' in results
+        assert 'deal' in results
