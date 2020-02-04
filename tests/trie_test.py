@@ -37,6 +37,24 @@ class Test_Autocomplete2(unittest.TestCase):
         assert 'deer' in results
         assert 'deal' in results
 
+class Test_Autocomplete3(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):       
+        
+        values, search = ['dog', 'deer', 'deal', 'deed'], "de"
+
+        ac = Autocomplete2()
+        ac.insert_words(values)
+
+        results = ac.get_matches(search)
+
+        assert 'deer' in results
+        assert 'deal' in results
+        assert 'deed' in results
+        
 class Test_MapSum1(unittest.TestCase):
     
     def setUp(self):

@@ -1,55 +1,58 @@
-from problems.trie import Trie
+'''Implement an autocomplete system. 
 
-from problems.trie import Autocomplete1
+That is, given a query string s and a set of all possible query strings, return all strings in the set that have s as a prefix.
 
-from collections import defaultdict
-
-'''8.2
-Create Prefix Map Sum
-
-Implement a PrefixMapSum class with the following methods:
-
-insert(key: str, value: int): Set a given key's value in the map. If the key already exists, overwrite the value.
-
-sum(prefix: str): Return the sum of all values of keys that begin with a given prefix.
-
-For example,
-
-you should be able to run the following code:
-
-mapsum.insert("columnar", 3)
-assert mapsum.sum("col") == 3
-
-mapsum.insert("column", 2)
-assert mapsum.sum("col") == 5
+For example, given the query string de and the set of strings [dog, deer, deal], return [deer, deal].
 '''
 
+values = ['dog', 'deer', 'deal', 'deed']
 
-class PrefixMapSum2():
+ENDS_HERE = '#'
+
+class Autocomplete3:
 
     def __init__(self):
-        self._map = defaultdict()
-        self._words = set()
+        self.words = {}
 
-    '''O(k^2)'''
-    def insert(self, key : str, value : int):
-        # if the key already exists, increment prefix totals
-        # by the difference of old and new values
-        if key in self._words:
-            value -= self._map[key]
-        self._words.add(key)
-    
-    '''O(1)'''
-    def sum(self, stri):
-        return self._map[stri]
+    def insert(self, word : str):
+        
+        level = self.words
 
-    
-mapsum = PrefixMapSum2()
+        for char in word:
+            if char not in level: 
+                level[char] = {}
+            level = level[char]
+        level[ENDS_HERE] = '#'
 
-mapsum.insert("columar", 3)
-assert mapsum.sum("col") == 3
+    def expand(self, values : dict):
 
-mapsum.insert("column", 2)
-assert mapsum.sum("col") == 5
+        results = []
 
-print("")
+        for key, value in values.items():
+
+            if key == ENDS_HERE:
+                subresult = ['']
+            else:
+                subresult = [key + suffix for suffix in self.expand(value)]
+            
+            results.extend(subresult)
+
+        return results
+
+    def find(self, prefix : str):
+
+        level = self.words
+
+        for char in prefix:
+            if char in level:
+                level = level[char]
+
+        return [prefix + word for word in self.expand(level)]
+
+lookup = Autocomplete3()
+
+for val in values:
+    lookup.insert(val)
+
+results = lookup.find("de")
+print(results)
