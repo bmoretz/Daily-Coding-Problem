@@ -118,7 +118,7 @@ class Autocomplete3:
                 level = level[char]
 
         return [prefix + word for word in self.expand(level)]
-        
+
 ''' Create Prefix Map Sum.
 
 Implement a PrefixMapSum class with the following methods:
@@ -173,3 +173,48 @@ class PrefixMapSum2():
     '''O(1)'''
     def sum(self, stri):
         return self._map[stri]
+
+'''Maximum XOR.
+
+Find the maximum XOR of element pairs.
+
+Given an array of integers, find the maximum XOR of any two elements.
+'''
+
+class MaxXOR1:
+
+    def __init__(self, values):
+        self._trie = {}
+        self.size = 0
+
+        for val in values:
+            self.size = max(self.size, val.bit_length())
+
+        for val in values: self.insert(val)
+
+    def insert(self, item):
+        
+        trie = self._trie
+
+        for index in range(self.size, -1, -1):
+            bit = bool(item & (1 << index))
+            
+            if bit not in trie:
+                trie[bit] = {}
+            
+            trie = trie[bit]
+
+    def find_max_xor(self, item):
+        trie = self._trie
+        xor = 0
+
+        for index in range(self.size, -1, -1):
+            bit = bool(item & (1 << index))
+
+            if (1 - bit) in trie:
+                xor |= (1 << index)
+                trie = trie[1 - bit]
+            else:
+                trie = trie[bit]
+
+        return xor

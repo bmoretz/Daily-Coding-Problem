@@ -1,58 +1,52 @@
-'''Implement an autocomplete system. 
+'''Maximum XOR.
 
-That is, given a query string s and a set of all possible query strings, return all strings in the set that have s as a prefix.
+Find the maximum XOR of element pairs.
 
-For example, given the query string de and the set of strings [dog, deer, deal], return [deer, deal].
+Given an array of integers, find the maximum XOR of any two elements.
 '''
-
-values = ['dog', 'deer', 'deal', 'deed']
 
 ENDS_HERE = '#'
 
-class Autocomplete3:
+class MaxXOR:
 
-    def __init__(self):
-        self.words = {}
+    def __init__(self, values):
+        self._trie = {}
+        self.size = 0
 
-    def insert(self, word : str):
+        for val in values:
+            self.size = max(self.size, val.bit_length())
+
+        for val in values: self.insert(val)
+
+    def insert(self, item):
         
-        level = self.words
+        trie = self._trie
 
-        for char in word:
-            if char not in level: 
-                level[char] = {}
-            level = level[char]
-        level[ENDS_HERE] = '#'
-
-    def expand(self, values : dict):
-
-        results = []
-
-        for key, value in values.items():
-
-            if key == ENDS_HERE:
-                subresult = ['']
-            else:
-                subresult = [key + suffix for suffix in self.expand(value)]
+        for index in range(self.size, -1, -1):
+            bit = bool(item & (1 << index))
             
-            results.extend(subresult)
+            if bit not in trie:
+                trie[bit] = {}
+            
+            trie = trie[bit]
 
-        return results
+    def find_max_xor(self, item):
+        trie = self._trie
+        xor = 0
 
-    def find(self, prefix : str):
+        for index in range(self.size, -1, -1):
+            bit = bool(item & (1 << index))
 
-        level = self.words
+            if (1 - bit) in trie:
+                xor |= (1 << index)
+                trie = trie[1 - bit]
+            else:
+                trie = trie[bit]
 
-        for char in prefix:
-            if char in level:
-                level = level[char]
+        return xor
 
-        return [prefix + word for word in self.expand(level)]
+values = [4, 7, 6]
+mx = MaxXOR(values)
 
-lookup = Autocomplete3()
 
-for val in values:
-    lookup.insert(val)
-
-results = lookup.find("de")
-print(results)
+print(mx.find_max_xor(2))
