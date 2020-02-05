@@ -49,9 +49,7 @@ class BST:
             return self._find(x, root.right)
 
 
-'''7.1
-
-Find floor and ceiling.
+'''Find floor and ceiling.
 
 Given a binary search tree, find the floor and ceiling of a given integer. The floor is the highet element in the tree less than or equal to an integer, while the ceiling is the lowest element in the tree greater than or equal to an integer.
 
@@ -79,7 +77,7 @@ def floor_ceiling1(root, k):
     
     return get_bounds(root, k, k)
 
-'''7.2
+'''Build BST.
 
 Given a sorted array, convert it into a hight-balanced binary search tree.
 
@@ -102,7 +100,7 @@ def built_bst1(values):
 
     return build_node(values)
 
-'''7.3
+'''Possible BST.
 
 Given an integer n, construct all possible binary search trees with n nodes where all values from [1, ..., n] are used.
 

@@ -95,10 +95,7 @@ class Test_MaxXOR(unittest.TestCase):
 
     def test_case1(self):       
         
-        mapsum = PrefixMapSum2()
+        values = [4, 7, 6]
+        mx = MaxXOR1(values)
 
-        mapsum.insert("columar", 3)
-        assert mapsum.sum("col") == 3
-
-        mapsum.insert("column", 2)
-        assert mapsum.sum("col") == 5
+        assert mx.find_max_xor(2) == 6

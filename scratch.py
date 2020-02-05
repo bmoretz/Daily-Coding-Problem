@@ -1,52 +1,42 @@
-'''Maximum XOR.
+'''Running Median
 
-Find the maximum XOR of element pairs.
+Compute the running median of a sequence of numbers. That is, given a stream of numbers, print out the median of the list so far after each new element.
 
-Given an array of integers, find the maximum XOR of any two elements.
+For example, giveen the sequence [2, 1, 5, 7, 2, 0, 5],
+
+Your algorithm should print out:
+
+2
+1.5
+2
+3.5
+2
+2
+2
 '''
 
-ENDS_HERE = '#'
+class RunningMedian1():
 
-class MaxXOR:
+    def __init__(self):
+        self._values = []
 
-    def __init__(self, values):
-        self._trie = {}
-        self.size = 0
-
-        for val in values:
-            self.size = max(self.size, val.bit_length())
-
-        for val in values: self.insert(val)
-
-    def insert(self, item):
+    def median(self):
+        if not self._values: return None
         
-        trie = self._trie
+        n = len(self._values)
+        ind = int(n / 2)
 
-        for index in range(self.size, -1, -1):
-            bit = bool(item & (1 << index))
-            
-            if bit not in trie:
-                trie[bit] = {}
-            
-            trie = trie[bit]
+        return self._values[ind] if n % 2 == 1 else sum(self._values[ind-1:ind+1]) / 2
 
-    def find_max_xor(self, item):
-        trie = self._trie
-        xor = 0
+    def insert(self, value):
 
-        for index in range(self.size, -1, -1):
-            bit = bool(item & (1 << index))
+        self._values.append(value)
+        self._values = sorted(self._values)
 
-            if (1 - bit) in trie:
-                xor |= (1 << index)
-                trie = trie[1 - bit]
-            else:
-                trie = trie[bit]
+values = [2, 1, 5, 7, 2, 0, 5]
 
-        return xor
+rm = RunningMedian1()
 
-values = [4, 7, 6]
-mx = MaxXOR(values)
-
-
-print(mx.find_max_xor(2))
+for val in values:
+    rm.insert(val)
+    print(rm.median())
