@@ -1,6 +1,6 @@
 import ctypes
 
-''' 1.29
+''' XOR List.
 
 An XOR linked list is a more memory efficent doubly linked list.
 

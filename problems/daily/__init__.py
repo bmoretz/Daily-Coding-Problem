@@ -1,4 +1,4 @@
-'''1.27
+'''First missing.
 
 Given an array of integers, find the first missing positive integer in linear time and constant space. In other words, find the lowest positive integer that does not exist in the array. The array can contain duplicates and negative numbers as well.
 
@@ -34,7 +34,7 @@ def first_missing2(values):
 
     return counter
 
-''' 1.28
+''' Construct Pair.
 
 cons(a, b) constructs a pair, and car(pair) and cdr(pair) returns the first and last element of that pair. For example, car(cons(3, 4)) returns 3, and cdr(cons(3, 4)) returns 4.
 
@@ -59,7 +59,7 @@ def car(pair):
 def cdr(pair):
     return pair(lambda a, b: b)
 
-'''1.30
+'''Decoding.
 
 Given the mapping a = 1, b = 2, ... z = 26, and an encoded message, count the number of ways it can be decoded.
 

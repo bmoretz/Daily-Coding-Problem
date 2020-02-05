@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-'''5.0
+'''Two Sum.
 
 Given a list of numbers and a number k, return whether any two numbers from the list add up to k.
 
@@ -23,7 +23,7 @@ def two_sum1(lst, k):
 
     return False
 
-'''5.1
+'''LRU Cache.
 
 Implement a LRU (Least Recently Used) cache. The cache should be able to be initialized with cache size n, and provide the following methods:
 
@@ -100,7 +100,7 @@ class LRUCache():
 
             return n.val
 
-'''5.2
+'''Cut Brick Wall.
 
 A wall consists of several rows of bricks and various integer lengths and uniform height. 
 
@@ -134,9 +134,7 @@ def fewest_cuts1(wall):
 
     return len(wall) - max(cuts.values())
 
-'''5.3
-
-Implement a sparse array.
+'''Implement a sparse array.
 
 You have a large array, most of whose elements are zero.
 
@@ -180,9 +178,7 @@ class SparseArray:
 
         return self._values.get(index, 0)
 
-'''5.4
-
-Implement a sparse matrix.
+'''Implement a sparse matrix.
 
 You have a large n by m array of data, most of whose elements are zero.
 

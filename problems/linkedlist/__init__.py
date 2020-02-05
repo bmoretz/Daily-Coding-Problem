@@ -75,7 +75,8 @@ class SLinkedList:
 
         return length
 
-    '''3.1
+    '''Reverse Linked List.
+    
     Given the head of a singly linked list, reverse it in-place.
 
     O(N) Solution

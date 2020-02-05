@@ -27,7 +27,7 @@ class Stack:
     def length(self):
         return self._length
         
-'''4.1
+'''Max stack.
 
 Implement a max stack that has the following methods.
 
@@ -62,7 +62,7 @@ class MaxStack(Stack):
 
         return self._max[-1]
 
-'''4.2
+'''Is Well-Formed?
 
 Given a string of round, curly, and square opening and closing brackers, return whether the brackets are balanced (well-formed).
 
@@ -109,9 +109,7 @@ def bracket_balanced2(instr):
 
     return len(stack) == 0
 
-'''4.3
-
-Compute maximum of k-length subarrays
+'''Compute maximum of k-length subarrays.
 
 Given an array of integers and a number k, where 1 <= k <= array length, compute the maximum value of each subarray of lengh k.
 

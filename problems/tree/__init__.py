@@ -56,7 +56,8 @@ def get_width(root):
 
     return _max
 
-'''6.1
+'''Count Univeral Value.
+
 A unival tree (which stands for "universal value") is a tree where all nodes under it have the same value.
 
 Given the root to a binary tree, count the number of unival subtrees.
@@ -124,7 +125,7 @@ def count_unival_subtrees2(tree):
 
     return count_univariate(tree)
 
-''' 6.5
+'''Serialize Tree.
 
 Given the root to a binary tree, implement serialize(root), which serializes the tree into a string, and deserialize(s), which deserializes the string back into the tree.
 
@@ -154,7 +155,8 @@ def deserialize(data):
 
     return helper()
 
-''' 6.2
+''' Construct Tree.
+
 Given pre-order and in-order traversals of a binary tree, write a function to reconstruct the tree.
 
 For example, given the following pre-order traversal:
@@ -217,7 +219,7 @@ def reconstruct2(preorder, inorder):
     return reconstruct(preorder, inorder)
 
 
-''' 6.3
+''' Evaluate Arithmetic.
 
 Suppose an arithmetic expression is given as a binary tree. Each leaf is an integer and each internal node is one of +, -, * or /.
 
@@ -260,7 +262,7 @@ def evaluate1(root):
 
     return evaluate(root)
 
-''' 6.4
+'''Minimum Sum Tree.
 
 Get tree level with minimum sum
 
