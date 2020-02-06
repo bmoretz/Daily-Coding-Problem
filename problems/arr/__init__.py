@@ -1,6 +1,8 @@
 import bisect
 
-''' Given an array of integers, return a new array such that each element at index i of the new array
+''' Products.
+
+Given an array of integers, return a new array such that each element at index i of the new array
 is the product of all the numbers in the original array except the one at i.
 
 For example, if our input was [1, 2, 3, 4, 5], 
@@ -64,7 +66,7 @@ def product3(arr):
 
     return results
 
-''' smallest window
+'''Smallest Window.
 
 Given an array of integers that are out of order, determine the bounds of the smallest window
 that must be sorted in order for the entire array to be sorted.
@@ -96,7 +98,9 @@ def window1(arr):
 
     return (begin, end)
 
-'''Given an array of numbers, find the maximum sum of any contiguous subarray of the array.
+'''Sum contigous subarray.
+
+Given an array of numbers, find the maximum sum of any contiguous subarray of the array.
 
 For example, 
 

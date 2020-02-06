@@ -3,6 +3,7 @@ import unittest
 from problems.daily import first_missing1, first_missing2
 from problems.daily import cons, car, cdr
 from problems.daily import num_encoding1
+from problems.daily import longest_substring1, longest_substring2
 
 class Test_FirstMissing1(unittest.TestCase):
     
@@ -58,3 +59,20 @@ class Test_NumEncodings(unittest.TestCase):
 
     def test_case3(self):
         assert num_encoding1('602') == 0
+
+
+class Test_LongestSubstring1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):      
+        assert longest_substring1('abcba', 2) == 3
+
+class Test_LongestSubstring2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):      
+        assert longest_substring2('abcba', 2) == 3

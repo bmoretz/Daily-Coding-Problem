@@ -1,4 +1,5 @@
-'''
+'''Anagrams.
+
 Given a word w and a string s, find all indices in s which are the starting locations of anagrams of w.
 
 For example, given w is ab and s is abxaba, return [0, 3, 4].
@@ -27,7 +28,9 @@ def anagram1(s, w):
 
     return results
 
-'''Given a list of words, find all pairs of kunique indices such that the concatenation of the two words is a palindrome.
+'''Palindromes.
+
+Given a list of words, find all pairs of k unique indices such that the concatenation of the two words is a palindrome.
 
 For example, given the list ["code", "edoc", "da", "d"], return [(0, 1), (1, 0), (2, 3)]
 '''
@@ -76,7 +79,9 @@ def palindrome2(words):
 
     return result
 
-'''Given a string and a number of lines k, print the string in zigzag form.
+'''Zigzag.
+
+Given a string and a number of lines k, print the string in zigzag form.
 
 In zigzag, characters are printed out diagonally from top left to bottom right until reaching the k^th line, then back up to top right, and so on.
 

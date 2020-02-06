@@ -76,7 +76,7 @@ class SLinkedList:
         return length
 
     '''Reverse Linked List.
-    
+
     Given the head of a singly linked list, reverse it in-place.
 
     O(N) Solution
@@ -109,7 +109,8 @@ class SLinkedList:
 def initialize(ll, vals):
     for x in vals: ll.push_back(x)
 
-'''3.2
+''' Sum Linked List.
+
 We can represent an integer in a linked list format by having each node represent a digit in the number. The nodes are connected in reverse order, such that the number
 
 54321
@@ -168,7 +169,8 @@ def add_numbers2(node0, node1, carry = 0):
 
     return Node(total % 10, add_numbers2(node0_next, node1_next, carry_next))
 
-'''3.3
+'''Alternating Linked List.
+
 Given a linked list, rearrange the node values such that they appear in alternating
 
 low -> high -> low -> high ... form.
@@ -222,7 +224,8 @@ def alternate2(items):
 
     return items
 
-'''3.4
+'''Linked List Intersection.
+
 Given two singly linked lists that intersect at some point, find the intersecting node.
 
 Assume the lists are non-cyclical.
