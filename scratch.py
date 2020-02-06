@@ -1,42 +1,57 @@
-'''Running Median
+from collections import defaultdict
+import heapq
 
-Compute the running median of a sequence of numbers. That is, given a stream of numbers, print out the median of the list so far after each new element.
+'''Similar Websites.
 
-For example, giveen the sequence [2, 1, 5, 7, 2, 0, 5],
+You are given a list of (website, user) pairs that represent users visting websites.
 
-Your algorithm should print out:
+Come up with a program that identifies the top k pairs of websites with the greatest similarity.
 
-2
-1.5
-2
-3.5
-2
-2
-2
+For example, suppose k = 1, and the list of tuples is:
+
+[('google.com', 1), ('google.com', 3), ('google.com', 5),
+('pets.com', 1), ('pets.com', 2), ('yahoo.com', 6), ('yahoo.com', 2), 
+('yahoo.com', 3), ('yahoo.com', 4), ('yahoo.com', 5),
+('wikipedia.org', 4), ('wikipedia.org', 5), ('wikipedia.org', 6),
+('wikipedia.org', 7), ('bing.com', 1), ('bing.com', 3), ('bing.com', 5),
+('bing.com', 6)]
+
+To compute the similarity between two websites you should compute the number of users they have in common divided by the number of users who have visited either site in total. This is known as the Jaccard index.
+
+For example, in this case, we would conclude that google.com and bing.com are the most similar, with a score of 3/4 or 0.75
 '''
 
-class RunningMedian1():
+sites = [('google.com', 1), ('google.com', 3), ('google.com', 5), \
+        ('pets.com', 1), ('pets.com', 2), ('yahoo.com', 6), ('yahoo.com', 2), \
+        ('yahoo.com', 3), ('yahoo.com', 4), ('yahoo.com', 5), \
+        ('wikipedia.org', 4), ('wikipedia.org', 5), ('wikipedia.org', 6), \
+        ('wikipedia.org', 7), ('bing.com', 1), ('bing.com', 3), ('bing.com', 5), \
+        ('bing.com', 6)]
 
-    def __init__(self):
-        self._values = []
+def similarity1(log, k):
 
-    def median(self):
-        if not self._values: return None
-        
-        n = len(self._values)
-        ind = int(n / 2)
+    def jaccard_index(a, b, visitors):
+        return len(visitors[a] & visitors[b]) / len(visitors[a] | visitors[b])
 
-        return self._values[ind] if n % 2 == 1 else sum(self._values[ind-1:ind+1]) / 2
+    visitors = defaultdict(set)
 
-    def insert(self, value):
+    for site, user in log:
+        visitors[site].add(user)
 
-        self._values.append(value)
-        self._values = sorted(self._values)
+    pairs = []
+    sites = list(visitors.keys())
 
-values = [2, 1, 5, 7, 2, 0, 5]
+    for _ in range(k):
+        heapq.heappush(pairs, (0, ('', '')))
+    
+    for i in range(len(sites) - 1):
+        for j in range(i + 1, len(sites)):
+            score = jaccard_index(sites[i], sites[j], visitors)
+            heapq.heappushpop(pairs, (score, (sites[i], sites[j])))
 
-rm = RunningMedian1()
+    return [pair[1] for pair in pairs]
 
-for val in values:
-    rm.insert(val)
-    print(rm.median())
+
+sim = similarity1(sites, 2)
+
+print(sim)
