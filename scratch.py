@@ -1,37 +1,19 @@
+import heapq
+
 from collections import defaultdict
+from problems.heap import regular_numbers1, regular_numbers2
 
-'''Longest substring.
+'''Regular Numbers.
 
-Given an integer k and a string s, find the length of the longest substring that contains at most k distinct characters.
+A regular number in mathematics is defined as one which evenly divides some power of 60. Equivalently, we can say that a regular number is one whose only prime divisors are 2, 3, and 5.
 
-For example, given s = "abcba" and k = 2, the longest substring with k distinct characters is "bcb".
+These numbers have had many applications, from helping ancient Babylonians keep time to tuning instruments according to the diatonic scale.
+
+Given an integer n, write a program that generates, in order, the first n regular numbers.
 '''
 
-s, k = "abcba", 2
+reg2 = regular_numbers2(10)
+reg1 = regular_numbers1(10)
 
-'''O(n * k) time O(k) space.'''
-def longest_substring2(s, k):
-    if k == 0:
-        return 0
-    
-    # Running Window
-    bounds = (0, 0)
-    h = {}
-    max_length = 0
-
-    for i, char in enumerate(s):
-        h[char] = i
-
-        if len(h) <= k:
-            new_lower_bound = bounds[0] # keep lower bound
-        else:
-            # otherwise, pop last occuring char
-            key_to_pop = min(h, key = h.get)
-            new_lower_bound = h.pop(key_to_pop) + 1
-
-        bounds = (new_lower_bound, bounds[1] + 1)
-        max_length = max(max_length, bounds[1] - bounds[0])
-
-    return max_length
-
-longest_substring2(s, k)
+print(reg1)
+print(list(reg2))
