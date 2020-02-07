@@ -1,7 +1,7 @@
 from random import uniform
 from math import pow
 
-'''Estimate pi.
+'''Estimate Pi.
 
 The area of a circle is defined as πr^2. Estimate π to 3 decimal places using a Monte Carlo method.
 '''
@@ -23,8 +23,3 @@ def estimate_pi(iters : int = 10e6):
     pi_over_four = in_circle / iters
 
     return pi_over_four * 4
-
-
-pi_est1 = estimate_pi(10e4)
-
-print(pi_est1)
