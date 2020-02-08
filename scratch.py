@@ -1,30 +1,67 @@
-from random import uniform
-from math import pow
+from collections import defaultdict
+import heapq
 
-'''Estimate pi.
+'''Huffman tree.
 
-The area of a circle is defined as πr^2. Estimate π to 3 decimal places using a Monte Carlo method.
+Huffman coding is a method of encoding characters based on their frequency. Each letter is assigned a variable-length binary string, where shorter lengths ccorrespond to more common letters. 
+
+To accomplish this, a binary tree is built such that the path from the root to any leaf uniquely maps to a character. When traversing the path, descending to a left child corresponds to a 0 in the prefix,
+while descending right corresponds to 1.
+
 '''
 
-def estimate_pi(iters : int = 10e6):
+value = 'aaacccccceeeeeeeeff'
 
-    def generate():
-        return (uniform(-1, 1), uniform(-1, 1))
-    
-    def is_in_circle(coords):
-        return coords[0] * coords[0] + coords[1] * coords[1] < 1
+class Node:
+    def __init__(self, char, left=None, right=None):
+        self.char = char
+        self.left = left
+        self.right = right
 
-    in_circle = 0
+def huffman_coding(value):
 
-    for _ in range(int(iters)):
-        if is_in_circle(generate()):
-            in_circle += 1
+    def get_frequencies(value):
+        freq = defaultdict(int)
 
-    pi_over_four = in_circle / iters
+        for val in value:
+            freq[val] += 1
 
-    return pi_over_four * 4
+        return freq
 
+    def build_tree(frequencies):
+        nodes = []
+        
+        for char, frequency in frequencies.items():
+            heapq.heappush(nodes, (frequency, Node(char)))
 
-pi_est1 = estimate_pi(10e4)
+        while len(nodes) > 1:
+            f1, n1 = heapq.heappop(nodes)
+            f2, n2 = heapq.heappop(nodes)
+            node = Node('*', left=n1, right=n2)
+            heapq.heappush(nodes, (f1 + f2, node))
 
-print(pi_est1)
+        root = nodes[0][1]
+
+        return root
+
+    def encode(root, string='', mapping={}):
+        if not root:
+            return
+
+        if not root.left and not root.right:
+            mapping[root.char] = string
+        
+        encode(root.left, string + '0', mapping)
+        encode(root.right, string + '1', mapping)
+
+        return mapping
+
+    freq = get_frequencies(value)
+    tree = build_tree(freq)
+    encoded = encode(tree)
+
+    return encoded
+
+code = huffman_coding(value)
+
+print(code)

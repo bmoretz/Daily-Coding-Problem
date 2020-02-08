@@ -3,6 +3,7 @@ import unittest
 from problems.heap import RunningMedian1, running_median2
 from problems.heap import similarity1
 from problems.heap import regular_numbers1, regular_numbers2
+from problems.heap import huffman_coding1
 
 class Test_RunningMedian1(unittest.TestCase):
     
@@ -85,3 +86,21 @@ class Test_RegularNumbers2(unittest.TestCase):
 
     def test_case1(self):      
         assert list(regular_numbers2(10)) == self.regulars[:10]
+
+class Test_HuffmanCoding1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):       
+        value = 'aaacccccceeeeeeeeff'
+
+        coded = huffman_coding1(value)
+
+        assert coded['a'] == '101'
+        assert coded['c'] == '11'
+        assert coded['e'] == '0'
+        assert coded['f'] == '100'
+        
+    def test_case2(self):
+        pass
