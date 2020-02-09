@@ -1,12 +1,6 @@
-from collections import defaultdict
+import unittest
 
 from problems.graph import Graph
-
-'''Determine if a cycle exists.
-
-Given an undirected graph, determine if it contains a cycle.
-'''
-
 
 """
 a       b
@@ -42,17 +36,10 @@ graph_2 = {
     "f" : []
 }
 
-def DFS(graph, start, visited=set()):
-    visited.add(start)
+class Test_GraphTests1(unittest.TestCase):
+    
+    def setUp(self):
+        self.graph = Graph(graph_1)
 
-    for neighbor in graph.neighbors(start):
-        if neighbor not in visited:
-            DFS(graph, neighbor, visited)
-
-    return visited
-
-graph = Graph(graph_1)
-
-items = DFS(graph, "a")
-
-print(graph)
+    def test_case1(self):       
+        
