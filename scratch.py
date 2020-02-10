@@ -1,7 +1,8 @@
 from collections import defaultdict
 
-from problems.graph import Graph
-
+from problems.graph.adj_mat_graph import AMGraph
+from problems.graph.adj_list_graph import ALGraph
+ 
 '''Determine if a cycle exists.
 
 Given an undirected graph, determine if it contains a cycle.
@@ -42,17 +43,29 @@ graph_2 = {
     "f" : []
 }
 
-def DFS(graph, start, visited=set()):
-    visited.add(start)
+"""
+a       b
+| \     |  \
+|   c   |    f
+|     \ |
+d       e
+"""
 
-    for neighbor in graph.neighbors(start):
-        if neighbor not in visited:
-            DFS(graph, neighbor, visited)
+graph_3 = { 
+    "a" : ["c", "d"],
+    "b" : ["e", "f"],
+    "c" : ["a", "e"],
+    "d" : ["a"],
+    "e" : ["c", "b"],
+    "f" : ["b"]
+}
 
-    return visited
 
-graph = Graph(graph_1)
 
-items = DFS(graph, "a")
+graph = AMGraph(graph_1)
 
-print(graph)
+verts = graph.vertices()
+edges = graph.edges()
+
+print(edges)
+
