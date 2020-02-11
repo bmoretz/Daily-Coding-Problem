@@ -24,11 +24,8 @@ class AMGraph(implements(IGraph)):
 
                 self._connections.append(row)
 
-
-
     def vertices(self):
         return list(self._indices.keys())
-
 
     def edges(self):
         
@@ -38,22 +35,37 @@ class AMGraph(implements(IGraph)):
 
         for col, row in enumerate(self._connections):
             for index, connection in enumerate(row):
-                if connection:
-                    edges.append({index_lookup[col] : index_lookup[index]})
+                vertex, neighbor = index_lookup[col], index_lookup[index]
+                if connection and (neighbor, vertex) not in edges:
+                    edges.append({vertex : neighbor})
 
         return edges    
 
     def neighbors(self, vertex):
-        pass
+
+        index = self._indices[vertex]
+        
+        vertices = list(self._indices.keys())
+
+        neighbors = [vertices[index] for index, vertex in enumerate(self._connections[index]) if vertex == 1]
+
+        return neighbors
 
     def add_vertex(self, vertex):
-        pass
+        
+        n = len(self._indices)
+
+        self._indices[vertex] = n
+        self._connections.append([0] * n)
 
     def add_edge(self, edge):
-        pass
+        """ assumes that edge is of type set, tuple or list;
+            between two vertices can be multiple edges.
+        """
 
-    def search(self, vertex, visited, parent):
-        pass
+        edge = set(edge)
+        (vertex1, vertex2) = tuple(edge)
 
-    def has_cycle(self):
-        pass
+        index1, index2 = self._indices[vertex1], self._indices[vertex2]
+        
+        self._connections[index1][index2] = 1

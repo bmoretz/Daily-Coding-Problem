@@ -15,7 +15,7 @@ class ALGraph(implements(IGraph)):
         if graph_dict == None:
             graph_dict = {}
         
-        self.__graph_dict = graph_dict
+        self.__graph_dict = graph_dict.copy()
 
     def vertices(self):
         return list(self.__graph_dict.keys())
@@ -62,31 +62,6 @@ class ALGraph(implements(IGraph)):
                 if (neighbor, vertex) not in edges:
                     edges.append({vertex, neighbor})
         return edges
-
-    def search(self, vertex, visited, parent):
-        """depth first search the graph."""
-        visited[vertex] = True
-
-        for neighbor in self.neighbors(vertex):
-            if not visited[neighbor]:
-                if self.search(neighbor, visited, vertex):
-                    return True
-
-            elif parent != neighbor:
-                return True
-
-        return False
-
-    def has_cycle(self):
-        """Static method to determine if the graph contains a cycle."""
-        visited = { v : False for v in self.vertices()}
-
-        for vertex in self.vertices():
-            if not visited[vertex]:
-                if self.search(vertex, visited, None):
-                    return True
-
-        return False
             
     def __str__(self):
         res = "vertices: "

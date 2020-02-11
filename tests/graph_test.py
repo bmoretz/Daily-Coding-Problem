@@ -63,11 +63,24 @@ class Test_AdjListGraphTests(unittest.TestCase):
 
     def test_case1(self):       
         assert self.graph1.vertices() == ['a', 'b', 'c', 'd', 'e', 'f']
-        assert self.graph2.vertices() == ['a', 'b', 'c', 'd', 'e', 'f']
-        assert self.graph3.vertices() == ['a', 'b', 'c', 'd', 'e', 'f']
 
     def test_case2(self):
-        assert self.graph1.edges() == [{'a', 'c'}, {'b', 'c'}, {'b', 'e'}, {'a', 'c'}, {'b', 'c'}, {'d', 'c'}, {'e', 'c'}, {'d', 'c'}, {'e', 'c'}, {'b', 'e'}]
+        
+        assert self.graph1.edges() == [{'c', 'a'}, {'c', 'b'}, {'e', 'b'}, {'c', 'a'}, {'c', 'b'}, {'c', 'd'}, {'e', 'c'}, {'c', 'd'}, {'e', 'c'}, {'e', 'b'}]
+
+
+class Test_AdjListGraphAddTeest(unittest.TestCase):
+
+    def setUp(self):
+        self.graph = ALGraph(graph_1)
+
+    def test_case1(self):
+
+        assert self.graph.vertices() == ['a', 'b', 'c', 'd', 'e', 'f']
+
+        self.graph.add_vertex('g')
+
+        assert self.graph.vertices() == ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 
 class Test_AdjMatrixGraphTests(unittest.TestCase):
     

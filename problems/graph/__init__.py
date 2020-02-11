@@ -34,9 +34,34 @@ class IGraph(Interface):
         """
         pass
 
-    def search(self, vertex, visited, parent):
-        """Search the graph. """
-        pass
+def search(graph : IGraph, vertex, visited, parent):
+    """ depth-first search the given graph."""
 
-    def has_cycle(self):
-        """ static method to determine if the graph contains a cylce. """
+    visited[vertex] = True
+
+    for neighbor in graph.neighbors(vertex):
+
+        if not visited[neighbor]:
+            if search(graph, neighbor, visited, vertex):
+                return True
+
+        elif parent != neighbor:
+            return True
+
+    return False
+
+'''Determine if a cycle exists.
+
+Given an undirected graph, determine if it contains a cycle.
+'''
+
+def has_cycle(graph):
+    """Static method to determine if the graph contains a cycle."""
+    visited = { v : False for v in graph.vertices()}
+
+    for vertex in graph.vertices():
+        if not visited[vertex]:
+            if search(graph, vertex, visited, None):
+                return True
+
+    return False
