@@ -41,6 +41,17 @@ class AMGraph(implements(IGraph)):
 
         return edges    
 
+    def isolated(self):
+        
+        isolated = []
+
+        for index, row in enumerate(self._connections):
+            if sum(row) == 0:
+                isolated += self.vertices()[index]
+
+        return isolated
+
+
     def neighbors(self, vertex):
 
         index = self._indices[vertex]
@@ -67,5 +78,6 @@ class AMGraph(implements(IGraph)):
         (vertex1, vertex2) = tuple(edge)
 
         index1, index2 = self._indices[vertex1], self._indices[vertex2]
-        
+
         self._connections[index1][index2] = 1
+

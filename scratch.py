@@ -1,52 +1,50 @@
-from collections import defaultdict
+class Node():
+    
+    def __init__(self, value, nxt = None):
+        self.value = value
+        self.next = nxt
 
-from problems.graph import search, has_cycle
-from problems.graph.adj_mat_graph import AMGraph
-from problems.graph.adj_list_graph import ALGraph
 
-'''Remove edges to create even trees.
 
-You are given a tree with an even number of nodes. Consider each connection between a parent and child node to be an "edge".
+A = Node(3, Node(7, Node(8, Node(10))))
+B = Node(-99, Node(1, Node(8, Node(10))))
 
-You would like to remove some of these edges, such that the disconnected subtrees that remain each have an even number of nodes.
 
-For example, supose your input is the following tree:
+''' O(N * M)'''
+def intersect1(lnode, rnode):
 
-        1
-      /   \
-    2      3
-         /   \
-       4       5
-     / | \
-    6  7  8
+    l, r = lnode, rnode
 
-In this case, if we remove the edge (3, 4), both resulting subtrees will be even.
+    while l != None:
 
-Write a funciton that returns the maximum number of edges you can remove while still satisfying this requirement.
-'''
+        while r != None:
 
-graph_4 = {
-    1 : [2, 3],
-    2 : [],
-    3 : [4, 5],
-    4 : [6, 7, 8],
-    5 : [],
-    6 : [],
-    7 : [],
-    8 : [],
-}
+            if l.value == r.value:
+                return l
 
-graph = AMGraph(graph_4)
+            r = r.next
+        l = l.next
+        r = rnode
+    return None
+                
 
-verts = graph.vertices()
-edges = graph.edges()
-print(edges)
+def intersect2(lnode, rnode):
 
-bn = graph.neighbors('b')
+    left = []
 
-cycle = has_cycle(graph)
+    while lnode != None:
+        left += [lnode.value]
+        lnode = lnode.next
 
-graph.add_vertex('g')
-graph.add_edge(('a', 'g'))
-print(edges)
+    while rnode != None:
+        if rnode.value in left:
+            return rnode.value
 
+        rnode = rnode.next
+
+    return None
+    
+int1 = intersect1(A, B)
+int2 = intersect2(A, B)
+
+print(int2)

@@ -23,6 +23,16 @@ class ALGraph(implements(IGraph)):
     def edges(self):
         return self.__generate_edges()
 
+    def isolated(self):
+        
+        isolated = []
+
+        for node in self.__graph_dict:
+            if not self.__graph_dict[node]:
+                isolated += node
+
+        return isolated
+
     def neighbors(self, vertex):
 
         if vertex not in self.__graph_dict: raise InvalidState

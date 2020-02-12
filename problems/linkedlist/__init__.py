@@ -284,3 +284,20 @@ def intersect3(list1, list2):
         cur_b = cur_b.next
 
     return cur_a
+
+'''O(N + M)'''
+def intersect4(list1, list2):
+
+    vals = []
+
+    while list1 != None:
+        vals += [list1.value]
+        list1 = list1.next
+
+    while list2 != None:
+        if list2.value in vals:
+            return list2.value
+
+        list2 = list2.next
+
+    return None

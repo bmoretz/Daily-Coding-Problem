@@ -3,7 +3,7 @@ from collections import defaultdict
 from interface import Interface
 
 class InvalidState(ValueError):
-    """Exception raised when the state is invalid."""
+    '''Exception raised when the state is invalid.'''
     
     def __repr__(self):
         return 'The state of the graph is invalid for this operation.'
@@ -11,31 +11,34 @@ class InvalidState(ValueError):
 class IGraph(Interface):
 
     def vertices(self):
-        """ returns the verticies of the graph.""" 
+        ''' returns the verticies of the graph.''' 
         pass
 
     def edges(self):
-        """ return the edges of the graph. """
+        ''' return the edges of the graph. '''
         pass
     
+    def isolated(self):
+        ''' returns isolated nodes in the graph. '''
+        
     def neighbors(self, vertex):
         """ return the neighbors of a given vertex. """
         pass
-
+    
     def add_vertex(self, vertex):
-        """ If the vertex, "vertex", is not in
+        ''' If the vertex, "vertex", is not in
         the graph, a new "vertex" with an empty
         association is added to the dictionary.
-        """
+        '''
         pass
-
+    
     def add_edge(self, edge):
-        """
-        """
+        '''
+        '''
         pass
 
 def search(graph : IGraph, vertex, visited, parent):
-    """ depth-first search the given graph."""
+    ''' depth-first search the given graph.'''
 
     visited[vertex] = True
 
@@ -55,8 +58,8 @@ def search(graph : IGraph, vertex, visited, parent):
 Given an undirected graph, determine if it contains a cycle.
 '''
 
-def has_cycle(graph):
-    """Static method to determine if the graph contains a cycle."""
+def has_cycle(graph : IGraph):
+    """determine if the graph contains a cycle."""
     visited = { v : False for v in graph.vertices()}
 
     for vertex in graph.vertices():
@@ -65,3 +68,25 @@ def has_cycle(graph):
                 return True
 
     return False
+
+
+def find_paths(graph : IGraph, start, end, path = None):
+    ''' finds a path (if exists) from start -> end'''
+
+    if not path: path = []
+
+    path = path + [start]
+
+    if start == end: 
+        return [path]
+
+    paths = []
+
+    for neighbor in graph.neighbors(start):
+        if neighbor not in path:
+            extended_path = find_paths(graph, neighbor, end, path)
+
+            if extended_path != None:
+                paths.append(extended_path)
+            
+    return paths
