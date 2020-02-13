@@ -73,6 +73,13 @@ class ALGraph(implements(IGraph)):
                     edges.append({vertex, neighbor})
         return edges
             
+    def root(self):
+        
+        if len(self.__graph_dict) == 0:
+            raise InvalidState('Empty Graph')
+
+        return list(self.__graph_dict)[0]
+        
     def __str__(self):
         res = "vertices: "
         for k in self.__graph_dict:

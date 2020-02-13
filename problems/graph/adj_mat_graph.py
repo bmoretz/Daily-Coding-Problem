@@ -20,7 +20,7 @@ class AMGraph(implements(IGraph)):
 
                 for connection in graph_dict[vertex]:
                     index = self._indices[connection]
-                    row[index] = 1                
+                    row[index] = 1
 
                 self._connections.append(row)
 
@@ -81,3 +81,9 @@ class AMGraph(implements(IGraph)):
 
         self._connections[index1][index2] = 1
 
+    def root(self):
+        
+        if len(self._indices) == 0:
+            raise InvalidState('No nodes in graph')
+
+        return list(self._indices.keys())[0]

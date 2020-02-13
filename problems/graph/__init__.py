@@ -20,7 +20,7 @@ class IGraph(Interface):
     
     def isolated(self):
         ''' returns isolated nodes in the graph. '''
-        
+
     def neighbors(self, vertex):
         """ return the neighbors of a given vertex. """
         pass
@@ -35,6 +35,10 @@ class IGraph(Interface):
     def add_edge(self, edge):
         '''
         '''
+        pass
+
+    def root(self):
+        ''' return root node '''
         pass
 
 def search(graph : IGraph, vertex, visited, parent):
@@ -90,3 +94,43 @@ def find_paths(graph : IGraph, start, end, path = None):
                 paths.append(extended_path)
             
     return paths
+
+''' Remove edges to create even trees.
+
+You are given a tree with an even number of nodes. Consider each connection between a parent and child node to be an "edge". You
+would like to remove some of these edges, such that the disconnected subtrees that remain each have an even number of nodes.
+
+For example, suppose your input is the following tree:
+
+        1
+      /   \
+    2      3
+          /  \
+         4    5
+       / | \
+      6  7  8
+
+In this case, if we remove the edge (3, 4), both resulting subtrees will be even.
+
+Write a function that returns the maximum number of edges you can remove while still satisfying this requirement.
+'''
+
+def max_edges1(graph):
+
+    def traverse(graph : IGraph, curr, result):
+        descendants = 0
+
+        for child in graph.neighbors(curr):
+            num_nodes, result = traverse(graph, child, result)
+
+            result[child] += num_nodes - 1
+            descendants += num_nodes
+
+        return descendants + 1, result
+
+    start = graph.root()
+    vertices = defaultdict(int)
+
+    _, descendants = traverse(graph, start, vertices)
+
+    return len([val for val in descendants.values() if val % 2 == 1])

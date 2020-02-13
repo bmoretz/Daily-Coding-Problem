@@ -6,3 +6,4 @@ pem
 pub
 
 __pycache__
+.vscode/.ropeproject/

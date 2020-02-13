@@ -2,6 +2,7 @@ import unittest
 
 from problems.graph.adj_list_graph import ALGraph
 from problems.graph.adj_mat_graph import AMGraph
+from problems.graph import max_edges1
 
 """
 a       b
@@ -54,6 +55,29 @@ graph_3 = {
     "f" : ["b"]
 }
 
+
+"""
+      1
+    /   \
+   2     3
+        /  \
+        4    5
+    / | \
+   6  7  8
+"""
+
+graph_4 = {
+    1 : [2, 3],
+    2 : [],
+    3 : [4, 5],
+    4 : [6, 7, 8],
+    5 : [],
+    6 : [],
+    7 : [],
+    8 : [],
+}
+
+
 class Test_AdjListGraphTests(unittest.TestCase):
     
     def setUp(self):
@@ -98,3 +122,26 @@ class Test_AdjMatrixGraphTests(unittest.TestCase):
     def test_case2(self):
 
         assert self.graph1.edges() == [{'a': 'c'}, {'b': 'c'}, {'b': 'e'}, {'c': 'a'}, {'c': 'b'}, {'c': 'd'}, {'c': 'e'}, {'d': 'c'}, {'e': 'b'}, {'e': 'c'}]
+
+
+class Test_MaxEdgesAL(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        graph = ALGraph(graph_4)
+
+        assert max_edges1(graph) == 2
+
+class Test_MaxEdgesAM(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        graph = AMGraph(graph_4)
+
+        assert max_edges1(graph) == 2
