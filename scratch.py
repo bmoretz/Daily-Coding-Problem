@@ -1,68 +1,69 @@
 from collections import defaultdict
 
-from problems.graph import IGraph
+from problems.graph import IGraph, find_path
 from problems.graph.adj_list_graph import ALGraph
 from problems.graph.adj_mat_graph import AMGraph
 
-''' Remove edges to create even trees.
+''' Create stepword chain.
 
-You are given a tree with an even number of nodes. Consider each connection between a parent and child node to be an "edge". You
-would like to remove some of these edges, such that the disconnected subtrees that remain each have an even number of nodes.
+Given a start word, an end word, and a dictionary of valid words, find the shortest transformation sequence from start to end
+such that only one letter is changed at each step of the sequence, and each transformed word exists in the dictionary. If
+there is no possible transformation, return null. Each word in the dictionary has the same length as start and end and is lowercase.
 
-For example, suppose your input is the following tree:
+For example, 
 
-        1
-      /   \
-    2      3
-          /  \
-         4    5
-       / | \
-      6  7  8
+given start = "dog", end = "cat", and dictionary = {"dot", "dop", "dat", "cat"},
 
-In this case, if we remove the edge (3, 4), both resulting subtrees will be even.
+return ["dog", "dot", "dat", "cat"]
 
-Write a function that returns the maximum number of edges you can remove while still satisfying this requirement.
+given start = "dog", end = "cat", and dictionary = {"dot", "tod", "dat", "dar"},
+return null as there is no possible transformation from "dog" to "cat".
 '''
 
-graph_4 = {
-    1 : [2, 3],
-    2 : [],
-    3 : [4, 5],
-    4 : [6, 7, 8],
-    5 : [],
-    6 : [],
-    7 : [],
-    8 : [],
-}
+start, end = "dog", "cat"
+words = {"dot", "dop", "dat", "cat"}
 
-graph = ALGraph(graph_4)
+''' ***************** '''
 
-def max_edges2(graph : IGraph):
+def word_ladder1(start, end, words):
 
-    def child_count(graph : IGraph, current, counts=None):
+    all_words = set(words) | set([start, end])
 
-        if not counts:
-            counts = defaultdict(int)
+    def are_similar(word1, word2):
+        ''' return true if words are seperated by only 1 character '''
+        n1, n2 = len(word1), len(word2)
 
-        if not counts[current]: counts[current] = 0
+        if n1 != n2: 
+            return False
 
-        for neighbor in graph.neighbors(current):
+        differences = 0
 
-            if not counts[neighbor]:
-                child_count(graph, neighbor, counts)
-                counts[current] += 1
+        for index in range(n1):
+            if word1[index] != word2[index]:
+                differences += 1
 
-            counts[current] += counts[neighbor]
+        return differences <= 1
 
-        return counts
+    def gen_links(words):
+        ''' returns dictionary of words seperated by 1 char or less '''
+        links = defaultdict(list)
 
-    counts = child_count(graph, graph.root())
+        for word1 in all_words:
+            for word2 in all_words:
 
+                if word1 == word2: 
+                    continue
 
-    return counts
+                if are_similar(word1, word2):
+                    links[word1].append(word2)
+        return links
 
+    links = gen_links(all_words)
 
-counts = max_edges2(graph)
+    graph = ALGraph(links)
 
+    path = find_path(graph, start, end)
 
-print(counts)
+    return path
+
+print(word_ladder1(start, end, words))

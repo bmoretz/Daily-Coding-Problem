@@ -3,6 +3,7 @@ import unittest
 from problems.graph.adj_list_graph import ALGraph
 from problems.graph.adj_mat_graph import AMGraph
 from problems.graph import max_edges1
+from problems.graph import word_ladder1
 
 """
 a       b
@@ -135,13 +136,16 @@ class Test_MaxEdgesAL(unittest.TestCase):
 
         assert max_edges1(graph) == 2
 
-class Test_MaxEdgesAM(unittest.TestCase):
+class Test_WordLadderAM(unittest.TestCase):
 
     def setUp(self):
         pass
 
     def test_case1(self):
 
-        graph = AMGraph(graph_4)
+        start, end = "dog", "cat"
+        words = {"dot", "dop", "dat", "cat"}
 
-        assert max_edges1(graph) == 2
+        ladder = word_ladder1(start, end, words)
+
+        assert ladder == ['dog', 'dop', 'dot', 'dat', 'cat']
