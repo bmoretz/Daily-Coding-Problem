@@ -1,69 +1,59 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 from problems.graph import IGraph, find_path
 from problems.graph.adj_list_graph import ALGraph
 from problems.graph.adj_mat_graph import AMGraph
 
-''' Create stepword chain.
+''' Beat snakes and ladders.
 
-Given a start word, an end word, and a dictionary of valid words, find the shortest transformation sequence from start to end
-such that only one letter is changed at each step of the sequence, and each transformed word exists in the dictionary. If
-there is no possible transformation, return null. Each word in the dictionary has the same length as start and end and is lowercase.
+Snakes and Ladders is a game played on a 10x10 board, the goal of which is getting from square 1 to square 100. On each turn
+players will roll a six-sided die and move forward a number of spaces equal to the result. If they land on a square that represents
+a snake or ladders, they will be transported ahead or behind, respectively, to a new square.
 
-For example, 
+Find the smallest number of turns it takes to play snakes and ladders.
 
-given start = "dog", end = "cat", and dictionary = {"dot", "dop", "dat", "cat"},
-
-return ["dog", "dot", "dat", "cat"]
-
-given start = "dog", end = "cat", and dictionary = {"dot", "tod", "dat", "dar"},
-return null as there is no possible transformation from "dog" to "cat".
+For convenince, here are the squares representing snakes and ladders, and their outcomes:
 '''
 
-start, end = "dog", "cat"
-words = {"dot", "dop", "dat", "cat"}
+snakes = {17 : 13, 52 : 29, 57 : 40, 62 : 22, 88 : 18, 95 : 51, 97 : 79}
+ladders = {3 : 21, 8 : 30, 28 : 84, 58 : 77, 75 : 86, 80 : 100, 90 : 91}
+
+n_squares = 100
 
 ''' ***************** '''
 
-def word_ladder1(start, end, words):
+def minimum_turns1(snakes, ladders, n_squares):
 
-    all_words = set(words) | set([start, end])
+    def build_board(snakes, ladders, n_squares):
+        board = {square : square for square in range(1, n_squares + 1)}
 
-    def are_similar(word1, word2):
-        ''' return true if words are seperated by only 1 character '''
-        n1, n2 = len(word1), len(word2)
+        for start, end in snakes.items():
+            board[start] = end
 
-        if n1 != n2: 
-            return False
+        for start, end in ladders.items():
+            board[start] = end
 
-        differences = 0
+        return board
 
-        for index in range(n1):
-            if word1[index] != word2[index]:
-                differences += 1
+    board = build_board(snakes, ladders, n_squares)
+    
+    start, end = 0, 100
+    turns = 0
 
-        return differences <= 1
+    path = deque([(start, turns)])
+    visited = set()
 
-    def gen_links(words):
-        ''' returns dictionary of words seperated by 1 char or less '''
-        links = defaultdict(list)
+    while path:
+        square, turns = path.popleft()
 
-        for word1 in all_words:
-            for word2 in all_words:
+        for move in range(square + 1, square + 7):
+            if move >= end:
+                return turns + 1
 
-                if word1 == word2: 
-                    continue
+            if move not in visited:
+                visited.add(move)
+                path.append((board[move], turns + 1))
 
-                if are_similar(word1, word2):
-                    links[word1].append(word2)
-        return links
+min_turns = minimum_turns1(snakes, ladders, n_squares)
 
-    links = gen_links(all_words)
-
-    graph = ALGraph(links)
-
-    path = find_path(graph, start, end)
-
-    return path
-
-print(word_ladder1(start, end, words))
+print(min_turns)

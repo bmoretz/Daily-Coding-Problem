@@ -4,6 +4,7 @@ from problems.graph.adj_list_graph import ALGraph
 from problems.graph.adj_mat_graph import AMGraph
 from problems.graph import max_edges1
 from problems.graph import word_ladder1
+from problems.graph import minimum_turns1
 
 """
 a       b
@@ -149,3 +150,17 @@ class Test_WordLadderAM(unittest.TestCase):
         ladder = word_ladder1(start, end, words)
 
         assert ladder == ['dog', 'dop', 'dot', 'dat', 'cat']
+
+class Test_SnakesLadders1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        snakes = {17 : 13, 52 : 29, 57 : 40, 62 : 22, 88 : 18, 95 : 51, 97 : 79}
+        ladders = {3 : 21, 8 : 30, 28 : 84, 58 : 77, 75 : 86, 80 : 100, 90 : 91}
+
+        n_squares = 100
+
+        assert minimum_turns1(snakes, ladders, n_squares)
