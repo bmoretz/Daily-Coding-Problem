@@ -1,59 +1,66 @@
 from collections import defaultdict, deque
 
-from problems.graph import IGraph, find_path
-from problems.graph.adj_list_graph import ALGraph
-from problems.graph.adj_mat_graph import AMGraph
+'''Topological sort.
 
-''' Beat snakes and ladders.
+We are given a hasmap associating each courseId key with a list of courseIds values, which tells us that the prerequisites of courseId
+are course Ids. Return a sorted ordering of courses such that we can complete the curriculum.
 
-Snakes and Ladders is a game played on a 10x10 board, the goal of which is getting from square 1 to square 100. On each turn
-players will roll a six-sided die and move forward a number of spaces equal to the result. If they land on a square that represents
-a snake or ladders, they will be transported ahead or behind, respectively, to a new square.
+Return null if there is no such ordering.
 
-Find the smallest number of turns it takes to play snakes and ladders.
+For example, given the following prerequsites:
 
-For convenince, here are the squares representing snakes and ladders, and their outcomes:
+{
+    'CSC300' : ['CSC100', 'CSC200'],
+    'CSC200' : ['CSC100'],
+    'CSC100' : []
+}
+
+You should return ['CSC100', 'CSC200', 'CSC300'].
 '''
 
-snakes = {17 : 13, 52 : 29, 57 : 40, 62 : 22, 88 : 18, 95 : 51, 97 : 79}
-ladders = {3 : 21, 8 : 30, 28 : 84, 58 : 77, 75 : 86, 80 : 100, 90 : 91}
+courses = {
+    'CSC300' : ['CSC100', 'CSC200'],
+    'CSC200' : ['CSC100'],
+    'CSC100' : []
+}
 
-n_squares = 100
+def find_order1(courses_to_prereqs : dict):
 
-''' ***************** '''
+    # Copy list values into a set for faster removal
+    course_to_prereqs = {c : set(p) for c, p in courses_to_prereqs.items()}
 
-def minimum_turns1(snakes, ladders, n_squares):
+    # Start off our list with all courses without prerequisites.
+    todo = deque([c for c, p in course_to_prereqs.items() if not p])
 
-    def build_board(snakes, ladders, n_squares):
-        board = {square : square for square in range(1, n_squares + 1)}
+    # Create a new data structure to map prereqs to successor courses.
+    prereq_to_courses = defaultdict(list)
 
-        for start, end in snakes.items():
-            board[start] = end
+    for course, prereqs in course_to_prereqs.items():
+        for prereq in prereqs:
+            prereq_to_courses[prereq].append(course)
 
-        for start, end in ladders.items():
-            board[start] = end
+    result = []
 
-        return board
+    while todo:
+        prereq = todo.popleft()
+        result.append(prereq)
 
-    board = build_board(snakes, ladders, n_squares)
-    
-    start, end = 0, 100
-    turns = 0
+        # Remove this prereq from all successor courses.
+        # If any course now does not have any prereqs, add it to todo.
 
-    path = deque([(start, turns)])
-    visited = set()
+        for c in prereq_to_courses[prereq]:
+            course_to_prereqs[c].remove(prereq)
 
-    while path:
-        square, turns = path.popleft()
+            if not course_to_prereqs[c]:
+                todo.append(c)
 
-        for move in range(square + 1, square + 7):
-            if move >= end:
-                return turns + 1
+    # Circular dependency
+    if len(result) < len(course_to_prereqs):
+        return None
 
-            if move not in visited:
-                visited.add(move)
-                path.append((board[move], turns + 1))
+    return result
 
-min_turns = minimum_turns1(snakes, ladders, n_squares)
 
-print(min_turns)
+order = find_order1(courses)
+
+print(order)

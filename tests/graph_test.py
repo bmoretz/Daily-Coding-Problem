@@ -5,6 +5,7 @@ from problems.graph.adj_mat_graph import AMGraph
 from problems.graph import max_edges1
 from problems.graph import word_ladder1
 from problems.graph import minimum_turns1
+from problems.graph import find_order1
 
 """
 a       b
@@ -164,3 +165,18 @@ class Test_SnakesLadders1(unittest.TestCase):
         n_squares = 100
 
         assert minimum_turns1(snakes, ladders, n_squares)
+    
+class Test_TopologicalSort1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        courses = {
+            'CSC300' : ['CSC100', 'CSC200'],
+            'CSC200' : ['CSC100'],
+            'CSC100' : []
+        }        
+
+        assert find_order1(courses) == ['CSC100', 'CSC200', 'CSC300']
