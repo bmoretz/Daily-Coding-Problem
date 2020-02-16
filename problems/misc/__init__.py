@@ -11,10 +11,6 @@ You can assume that all values get cleared at the end of the day, and that you w
 that wrap around midnight.
 '''
 
-subscribers = [4, 8, 1, 9, 3, 5, 5, 3]
-
-''' ******************************* '''
-
 '''naive O(N) solution. '''
 class Subscribers1():
 
@@ -64,12 +60,3 @@ class Subscribers2:
     def query(self, start, end):
         # Shift start and end indices forward as our array is 1-based.
         return self.bit.query(end + 1) - self.bit.query(start)
-
-
-subs1, subs2 = Subscribers1(subscribers), Subscribers2(subscribers)
-
-
-q1 = subs1.query(0, 4)
-q2 = subs2.query(0, 4)
-
-print(f'{q1} - {q2}')
