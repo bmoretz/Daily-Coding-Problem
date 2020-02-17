@@ -1,7 +1,10 @@
 import unittest
 
+from random import uniform
+
 from problems.misc import Subscribers1, Subscribers2
 from problems.misc import DisjointSet, friend_groups
+from problems.misc import BloomFilter
 
 '''Classic Dictionary'''
 class Test_Subscribers1(unittest.TestCase):
@@ -23,7 +26,6 @@ class Test_Subscribers2(unittest.TestCase):
 
 '''Disjoint set.'''
 
-
 class Test_FriendGroups(unittest.TestCase):
     
     def setUp(self):
@@ -39,3 +41,19 @@ class Test_FriendGroups(unittest.TestCase):
 
     def test_case1(self):
         assert friend_groups(self.friends) == 3
+
+class Test_BloomFilter(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        bf, nums = BloomFilter(), []
+
+        for _ in range(100):
+            n = int(uniform(0, 1000))
+            bf.add(n)
+            nums += [n]
+
+        for n in nums:
+            assert bf.check(n) == True
