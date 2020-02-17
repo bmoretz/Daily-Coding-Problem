@@ -1,75 +1,76 @@
-'''Fenwick tree.
+'''Disjoint-set.
 
-You are given an array of length 24, where each element represents the number of new subscribers during the corresponding hour. 
-Implement a data structure that efficiently supports the following:
+A classroom consists of n students, whose friendships can be represented in an adjacency list. For example, the following describes
+a situation where 0 is friends with 1 and 2, 3 is friends with 6, and so on.
 
-update (hour, value): increment the element at index hour by value.
+{ 0: [1, 2],
+  1: [0, 5],
+  2: [0],
+  3: [6],
+  4: [],
+  5: [1],
+  6: [3]
+}
 
-query(start, end) retrieve the numbner of subscribers that have signed up between start and end (inclusive).
+Each student can be placed in a friend group, which can be defined as the transitive closure of that student's relations. In other words,
+this is the smallest set such that no student in the group has any friends outside this group. For the example above, the friend group
+would be:
 
-You can assume that all values get cleared at the end of the day, and that you will not be asked for start and end values
-that wrap around midnight.
+{0, 1, 2, 5}, {3, 6}, {4}
+
+Given a friendship list such as the one above, determine the number of friend groups in the class.
 '''
 
-subscribers = [4, 8, 1, 9, 3, 5, 5, 3]
+friends = {
+    0: [1, 2],
+    1: [0, 5],
+    2: [0],
+    3: [6],
+    4: [],
+    5: [1],
+    6: [3]
+}
 
-''' ******************************* '''
+class DisjointSet:
 
-'''naive O(N) solution. '''
-class Subscribers1():
+    def __init__(self, n):
+        self.sets = list(range(n))
+        self.sizes = [1] * n
+        self.count = n
 
-    def __init__(self, nums):
+    def union(self, x, y):
+        x, y = self.find(x), self.find(y)
 
-        self.counter = {index : value for index, value in enumerate(nums)}
+        if x != y:
+            # Union by size: always add students to the bigger set.
 
-    def update(self, hour, value):
-        
-        self.counter[hour] += value
+            if self.sizes[x] < self.sizes[y]:
+                x, y = y, x
 
-    def query(self, start, end):
-        values = [self.counter[index] for index in range(start, end + 1)]
-        return sum( values )
+            self.sets[y] = x
+            self.sizes[x] += self.sizes[y]
+            self.count -= 1
 
+    def find(self, x):
+        group = self.sets[x]
 
-class BIT:
-    def __init__(self, nums):
-        # Prepend a zero to our array to use lowest set bit trick.
-        self.tree = [0 for _ in range(len(nums) + 1)]
-        for i, num in enumerate(nums):
-            self.update(i + 1, num)
+        while group != self.sets[group]:
+            group = self.sets[group]
 
-    def update(self, index, value):
-        while index < len(self.tree):
-            self.tree[index] += value
-            index += index & -index
+        # Path compression: reassign x to the correct group.
+        self.sets[x] = group
 
-    def query(self, index):
-        total = 0
-        while index > 0:
-            total += self.tree[index]
-            index -= index & -index
-        return total
+        return group
 
-'''O(log n) solution. '''
-class Subscribers2:
-    
-    def __init__(self, nums):
-        self.bit = BIT(nums)
-        self.nums = nums
+def friend_groups(students):
 
-    def update(self, hour, value):
-        self.bit.update(hour, value - self.nums[hour])
-        self.nums[hour] = value
+    groups = DisjointSet(len(students))
 
-    def query(self, start, end):
-        # Shift start and end indices forward as our array is 1-based.
-        return self.bit.query(end + 1) - self.bit.query(start)
+    for student, friends in students.items():
+        for friend in friends:
+            groups.union(student, friend)
+
+    return groups.count
 
 
-subs1, subs2 = Subscribers1(subscribers), Subscribers2(subscribers)
-
-
-q1 = subs1.query(0, 4)
-q2 = subs2.query(0, 4)
-
-print(f'{q1} - {q2}')
+print(friend_groups(friends))

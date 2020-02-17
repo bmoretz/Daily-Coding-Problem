@@ -1,6 +1,7 @@
 import unittest
 
 from problems.misc import Subscribers1, Subscribers2
+from problems.misc import DisjointSet, friend_groups
 
 '''Classic Dictionary'''
 class Test_Subscribers1(unittest.TestCase):
@@ -19,3 +20,22 @@ class Test_Subscribers2(unittest.TestCase):
 
     def test_case1(self):
         assert self.subs.query(0, 4) == 25
+
+'''Disjoint set.'''
+
+
+class Test_FriendGroups(unittest.TestCase):
+    
+    def setUp(self):
+        self.friends = {
+            0: [1, 2],
+            1: [0, 5],
+            2: [0],
+            3: [6],
+            4: [],
+            5: [1],
+            6: [3]
+        }
+
+    def test_case1(self):
+        assert friend_groups(self.friends) == 3
