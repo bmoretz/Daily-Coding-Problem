@@ -1,46 +1,51 @@
-'''Bloom filter.
+'''Regular expressions.
 
-Implement a data structure which carries out the following operations without resizing the underlying array:
+Implement regular expression matching with the following special characters.
 
-add(value): add a value to the set of values.
+- . (period) which matches any single character.
 
-check(value): check whether a value is in the set.
+- * (asterisk) which matches zero or more of the preceeding element.
 
-The check method may return occasional false positives (in other words, incorrectly identifying an element as part of the set), but
-should always correctly identify a true element.
+That is, implement a function that takes in a string and a valid regular expression and returns whether or not the string matches
+the regular expression.
+
+For example, given the regular expression ra. and the string "ray", your function should return True. The same regular expression
+on the string "raymond" should return false.
+
+Given the regular expression .*at and the string "chat", your function  should return true. The same regular expression on the
+string "chats" should return false.
 '''
 
-import hashlib
+def matches_first_char(s, r):
+    return s[0] == r[0] or (r[0] == '.' and len(s) > 0)
 
-class BloomFilter:
+def matches(r, s):
 
-    def __init__(self, n=1000, k=3):
-        self.array = [False] * n
-        self.hash_algorithms = [
-            hashlib.md5,
-            hashlib.sha1,
-            hashlib.sha256,
-            hashlib.sha384,
-            hashlib.sha512
-        ]
-        self.hashes = [self._get_hash(f) for f in self.hash_algorithms[:k]]
+    if r == '':
+        return s == ''
 
-    def _get_hash(self, f):
-        def hash_function(value):
-            h = f(str(value).encode('utf-8')).hexdigest()
-            return int(h, 16) % len(self.array)
-        
-        return hash_function
+    if len(r) == 1 or r[1] != '*':
+        # The first character in the regex is not succeded by a *.
+        if matches_first_char(r, s):
+            return matches(s[1:], r[1:])
+        else:
+            return False
 
-    def add(self, value):
-        for h in self.hashes:
-            v = h(value)
-            self.array[v] = True
+    else:
+        # The first character is succeded by a *.
+        # First, try zero length.
+        if matches(s, r[2:]):
+            return True
 
-    def check(self, value):
-        for h in self.hashes:
-            v = h(value)
-            if not self.array[v]:
-                return False
-        
-        return True
+        # If that doesn't match straight away, try globbing more prefixes
+        # until the first character of the string doesn't match anymore.
+        i = 0
+        while matches_first_char(s[i:], r):
+            if matches(s[i+1:], r[2:]):
+                return True
+
+            i += 1
+
+result = matches("ray", "ra.")
+
+print(result)
