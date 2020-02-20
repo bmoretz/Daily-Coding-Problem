@@ -7,3 +7,6 @@ pub
 
 __pycache__
 .vscode/.ropeproject/
+
+dcp/Scripts/
+dcp/Lib/

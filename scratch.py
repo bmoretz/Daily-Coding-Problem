@@ -1,51 +1,41 @@
-'''Regular expressions.
+'''Find array extremes efficiently.
 
-Implement regular expression matching with the following special characters.
-
-- . (period) which matches any single character.
-
-- * (asterisk) which matches zero or more of the preceeding element.
-
-That is, implement a function that takes in a string and a valid regular expression and returns whether or not the string matches
-the regular expression.
-
-For example, given the regular expression ra. and the string "ray", your function should return True. The same regular expression
-on the string "raymond" should return false.
-
-Given the regular expression .*at and the string "chat", your function  should return true. The same regular expression on the
-string "chats" should return false.
+Given an array of numbers of length n,, find both the minimum and maximum using less than 2 * (n -2) comparisons.
 '''
 
-def matches_first_char(s, r):
-    return s[0] == r[0] or (r[0] == '.' and len(s) > 0)
+nums = [4, 2, 7, 5, -1, 3, 6]
 
-def matches(r, s):
+''' straight forward enumeration '''
+def min_and_max1(arr):
 
-    if r == '':
-        return s == ''
+    min_element = max_element  = arr[0]
 
-    if len(r) == 1 or r[1] != '*':
-        # The first character in the regex is not succeded by a *.
-        if matches_first_char(r, s):
-            return matches(s[1:], r[1:])
-        else:
-            return False
+    compare = lambda x, y: (x, y) if y > x else (y, x)
 
+    # Make the list odd so we can pair up the remaining elements neatly.
+    if len(arr) % 2 == 0:
+        arr.append(arr[-1])
+
+    for i in range(1, len(arr), 2):
+        smaller, bigger = compare(arr[i], arr[i + 1])
+        min_element = min(min_element, smaller)
+        max_element = max(max_element, bigger)
+
+    return min_element, max_element
+
+''' divide & conquer approach '''
+def min_and_max2(arr):
+    if len(arr) == 1:
+        return arr[0], arr[0]
+
+    elif len(arr) == 2:
+        return (arr[0], arr[1]) if arr[0] < arr[1] else (arr[1], arr[0])
+    
     else:
-        # The first character is succeded by a *.
-        # First, try zero length.
-        if matches(s, r[2:]):
-            return True
+        n = len(arr) // 2
+        lmin, lmax = min_and_max2(arr[:n])
+        rmin, rmax = min_and_max2(arr[n:])
+        return min(lmin, rmin), max(lmax, rmax)
 
-        # If that doesn't match straight away, try globbing more prefixes
-        # until the first character of the string doesn't match anymore.
-        i = 0
-        while matches_first_char(s[i:], r):
-            if matches(s[i+1:], r[2:]):
-                return True
-
-            i += 1
-
-result = matches("ray", "ra.")
-
-print(result)
+print(min_and_max1(nums))
+print(min_and_max2(nums))

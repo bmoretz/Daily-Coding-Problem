@@ -56,7 +56,7 @@ def get_width(root):
 
     return _max
 
-'''Count Univeral Value.
+'''Count Unival Value.
 
 A unival tree (which stands for "universal value") is a tree where all nodes under it have the same value.
 
@@ -127,7 +127,7 @@ def count_unival_subtrees2(tree):
 
 '''Serialize Tree.
 
-Given the root to a binary tree, implement serialize(root), which serializes the tree into a string, and deserialize(s), which deserializes the string back into the tree.
+Given the root to a binary tree, implement serialize(root), which serializes the tree into a string, and deserialize(s), which will deserialize the string back into the tree.
 
 '''
 
@@ -223,7 +223,7 @@ def reconstruct2(preorder, inorder):
 
 Suppose an arithmetic expression is given as a binary tree. Each leaf is an integer and each internal node is one of +, -, * or /.
 
-Given the root to such a tree, write a function to evalutate it.
+Given the root to such a tree, write a function to evaluate it.
 
 For example, given the following tree:
 
@@ -266,7 +266,7 @@ def evaluate1(root):
 
 Get tree level with minimum sum
 
-Given a binary tree, return the level of the tree that has the minimum sum. The level of a node is defined as the number of connections requred to get to the root, with the root having level zero.
+Given a binary tree, return the level of the tree that has the minimum sum. The level of a node is defined as the number of connections required to get to the root, with the root having level zero.
 
 For example,
 
@@ -274,7 +274,7 @@ For example,
     2       3
         4       5
 
-In this tree, level 0 has sum 1, level 1 has sum 5, and level 2 has sum 9, so the level with the minimuim sum is zero.
+In this tree, level 0 has sum 1, level 1 has sum 5, and level 2 has sum 9, so the level with the minimum sum is zero.
 '''
 
 def minsum1(root):
