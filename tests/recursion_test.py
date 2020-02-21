@@ -2,6 +2,7 @@ import unittest
 
 from problems.recursion import matches
 from problems.recursion import min_and_max1, min_and_max2
+from problems.recursion import nim1, nim2
 
 class Test_RegularExpression(unittest.TestCase):
     
@@ -20,13 +21,28 @@ class Test_RegularExpression(unittest.TestCase):
 
         assert matches(s, r) == False
 
-class Test_RegularExpression(unittest.TestCase):
+class Test_MinMax(unittest.TestCase):
     
     def setUp(self):
         pass
 
     def test_case1(self):
+    
+        assert min_and_max1([4, 2, 7, 5, -1, 3, 6]) == (-1, 7)
 
-        s, r = 'ray', 'ra.'
+    def test_case2(self):
 
-        assert matches(s, r) == True
+        assert min_and_max2([4, 2, 7, 5, -1, 3, 6]) == (-1, 7)
+
+class Test_PlayNim(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+    
+        assert nim1([3, 4, 5]) == True
+
+    def test_case2(self):
+
+        assert nim2([3, 4, 5]) == True
