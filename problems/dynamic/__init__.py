@@ -38,11 +38,3 @@ def staircase2(n, X):
         else:
             return sum(staircase(n - x, X) for x in X if x < n)
     return staircase(n, X)
-
-stairs = staircase1(4, range(1, 4))
-
-print(stairs)
-
-stairs = staircase2(4, range(1, 4))
-
-print(stairs)
