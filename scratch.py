@@ -1,48 +1,51 @@
-'''Number of ways to climb a staircase.
+from collections import defaultdict
 
-There exists a staircase with N steps, and you can climb up either 1 or 2 steps at a time.
+'''Number of ways to decode a string.
 
-Given N, write a function that returns the number of unique ways you can climb the staircase.
-The order of the steps matters.
+Given the mapping a = 1, b = 2, ..., z = 26, and an encoded message, count the number of ways it can be decoded.
 
-For example, if N is 4, then there are 5 unique ways:
+For example, the message "111" should be 3, since it could be decoded as "aaa", "ka", and "ak".
 
-1, 1, 1, 1
-2, 1, 1
-1, 2, 1
-1, 1, 2
-2, 2
-
-What if, instead of being able to climb 1 or 2 steps at a time, you could climb any number from a set of positive integers X? For example, if X = {1, 3, 5}, you could climb 1, 3, or 5 steps at a time.
-
+You can assume that the messages are always decodable. For example, "001" is not allowed.
 '''
 
-def staircase1(n, X):
-    def staircase(n, X):
-        if n < 0:
+stri = "111"
+
+def num_encodings1(s):
+
+    def num_encodings(s, total=0):
+        # There are no valid encodings if the string starts with 0.
+        if s.startswith('0'):
             return 0
-        elif n == 0:
+
+        # Both the empty string and a single character should return 1.
+        elif len(s) <= 1:
             return 1
+
+        total += num_encodings(s[1:])
+
+        if int(s[:2]) <= 26:
+            total += num_encodings(s[2:])
+
+        return total
+    
+    return num_encodings(s)
+
+def num_encodings2(s):
+    cache = defaultdict(int)
+    cache[len(s)] = 1
+
+    for i in reversed(range(len(s))):
+        if s[i].startswith('0'):
+            cache[i] = 0
+        elif i == len(s) - 1:
+            cache[i] = 1
         else:
-            return sum(staircase(n - step, X) for step in X)
-    return staircase(n, X)
+            cache[i] += cache[i + 1]
 
-def staircase2(n, X):
-    def staircase(n, X):
-        if n < 0:
-            return 0
-        elif n == 0:
-            return 1
-        elif n in X:
-            return 1 + sum(staircase(n - x, X) for x in X if x < n)
-        else:
-            return sum(staircase(n - x, X) for x in X if x < n)
-    return staircase(n, X)
+            if int(s[i:i + 2]) <= 26:
+                cache[i] = cache[i + 2]
 
-stairs = staircase1(4, range(1, 4))
+    return cache[0]
 
-print(stairs)
-
-stairs = staircase2(4, range(1, 4))
-
-print(stairs)
+print(num_encodings2(stri))
