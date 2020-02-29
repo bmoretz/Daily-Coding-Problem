@@ -1,51 +1,40 @@
 from collections import defaultdict
 
-'''Number of ways to decode a string.
+''' Paint houses.
 
-Given the mapping a = 1, b = 2, ..., z = 26, and an encoded message, count the number of ways it can be decoded.
+A builder is looking to build a row of N houses that can be of K different colors. He has a goal of minimizing cost while 
+ensuring that no two neighboring houses are of the same color.
 
-For example, the message "111" should be 3, since it could be decoded as "aaa", "ka", and "ak".
-
-You can assume that the messages are always decodable. For example, "001" is not allowed.
+Given an N by K matrix where the nth row and kth column represents the cost to build the nth house with kth color, 
+return the minimum cost which achieves this goal.
 '''
 
-stri = "111"
+cost_matrix = [
+    [11, 12, 13],
+    [14, 15, 16],
+    [17, 18, 19]
+]
 
-def num_encodings1(s):
+''' O(n*k*k) solution. '''
+def build_houses(matrix):
 
-    def num_encodings(s, total=0):
-        # There are no valid encodings if the string starts with 0.
-        if s.startswith('0'):
-            return 0
+    n = len(matrix)
+    k = len(matrix[0])
+    solution_matrix = [[0] * k]
 
-        # Both the empty string and a single character should return 1.
-        elif len(s) <= 1:
-            return 1
+    # Solution matrix: matrix[i][j] represents the minimum cost to build house i with color j.
+    # build house i with color j.
+    for r, row in enumerate(matrix):
+        row_cost = []
+        for c, val in enumerate(row):
+            row_cost.append(min(solution_matrix[r][i]
+                            for i in range(k)
+                            if i != c) + val)
+        solution_matrix.append(row_cost)
 
-        total += num_encodings(s[1:])
+    return min(solution_matrix[-1])
 
-        if int(s[:2]) <= 26:
-            total += num_encodings(s[2:])
+cost = build_houses(cost_matrix)
 
-        return total
-    
-    return num_encodings(s)
+print(cost)
 
-def num_encodings2(s):
-    cache = defaultdict(int)
-    cache[len(s)] = 1
-
-    for i in reversed(range(len(s))):
-        if s[i].startswith('0'):
-            cache[i] = 0
-        elif i == len(s) - 1:
-            cache[i] = 1
-        else:
-            cache[i] += cache[i + 1]
-
-            if int(s[i:i + 2]) <= 26:
-                cache[i] = cache[i + 2]
-
-    return cache[0]
-
-print(num_encodings2(stri))
