@@ -43,8 +43,7 @@ class RunningMedian1():
 def get_median(min_heap, max_heap):
 
     if len(min_heap) > len(max_heap):
-        min_val = heapq.heappop(min_heap)
-        heapq.heappush(min_heap, min_val)
+        min_val = min_heap[-1]
         return min_val
     
     elif len(min_heap) < len(max_heap):
@@ -53,10 +52,10 @@ def get_median(min_heap, max_heap):
         return max_val
     
     else:
-        min_val = heapq.heappop(min_heap)
-        heapq.heappush(min_heap, min_val)
+        min_val = min_heap[-1]
         max_val = heapq.heappop(max_heap)
         heapq.heappush(max_heap, max_val)
+        
         return (min_val + max_val) / 2
 
 def add(num, min_heap, max_heap):
@@ -67,7 +66,7 @@ def add(num, min_heap, max_heap):
 
     median = get_median(min_heap, max_heap)
 
-    if num > median:
+    if num < median:
         # add it to the min heap
         heapq.heappush(min_heap, num)
     else:
@@ -76,7 +75,7 @@ def add(num, min_heap, max_heap):
 def rebalance(min_heap, max_heap):
 
     if len(min_heap) > len(max_heap) + 1:
-        root = heapq.heappop(min_heap)
+        root = min_heap.pop()
         heapq.heappush(max_heap, root)
 
     elif len(max_heap) > len(min_heap) + 1:
@@ -90,7 +89,7 @@ def running_median2(stream):
     for num in stream:
         add(num, min_heap, max_heap)
         rebalance(min_heap, max_heap)
-        results.append(get_median(min_heap, max_heap))
+        results += [get_median(min_heap, max_heap)]
 
     return results
 

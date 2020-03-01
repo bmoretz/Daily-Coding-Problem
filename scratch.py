@@ -1,43 +1,80 @@
-from collections import defaultdict
+import heapq
 
-''' N Queens.
+'''Running Median
 
-The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+Compute the running median of a sequence of numbers. That is, given a stream of numbers, print out the median of the list so far after each new element.
 
-Given an integer n, return all distinct solutions to the n-queens puzzle.
+For example, given the sequence [2, 1, 5, 7, 2, 0, 5],
 
-Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
+Your algorithm should print out:
+
+2
+1.5
+2
+3.5
+2
+2
+2
 '''
 
-def n_queens(n, board=[]):
+'''Heapify'd'''
+def get_median(min_heap, max_heap):
 
-    if n == len(board):
-        return 1
-
-    count = 0
-
-    for col in range(n):
-        board.append(col)
-
-        if is_valid(board):
-            count += n_queens(n, board)
-        board.pop()
-
-    return count
-
-def is_valid(board):
-    current_queen_row, current_queen_col = len(board) - 1, board[-1]
-
-    # Check if any queens can attack the last queen.
-    for row, col in enumerate(board[:-1]):
-
-        diff = abs(current_queen_col - col)
-
-        if diff == 0 or diff == current_queen_row - row:
-            return False
+    if len(min_heap) > len(max_heap):
+        min_val = min_heap[-1]
+        return min_val
     
-    return True
+    elif len(min_heap) < len(max_heap):
+        max_val = heapq.heappop(max_heap)
+        heapq.heappush(max_heap, max_val)
+        return max_val
+    
+    else:
+        min_val = min_heap[-1]
+        max_val = heapq.heappop(max_heap)
+        heapq.heappush(max_heap, max_val)
+        
+        return (min_val + max_val) / 2
 
-nq = n_queens(8)
+def add(num, min_heap, max_heap):
+    # If empty, just add to the new max heap.
+    if len(min_heap) + len(max_heap) <= 1:
+        heapq.heappush(max_heap, num)
+        return
 
-print(nq)
+    median = get_median(min_heap, max_heap)
+
+    if num < median:
+        # add it to the min heap
+        heapq.heappush(min_heap, num)
+    else:
+        heapq.heappush(max_heap, num)
+
+def rebalance(min_heap, max_heap):
+
+    if len(min_heap) > len(max_heap) + 1:
+        root = min_heap.pop()
+        heapq.heappush(max_heap, root)
+
+    elif len(max_heap) > len(min_heap) + 1:
+        root = heapq.heappop(max_heap)
+        heapq.heappush(min_heap, root)
+
+'''O(n log n)'''
+def running_median2(stream):
+    min_heap, max_heap, results = [], [], []
+    
+    for num in stream:
+        add(num, min_heap, max_heap)
+        rebalance(min_heap, max_heap)
+        results += [get_median(min_heap, max_heap)]
+
+    return results
+
+
+values = [2, 1, 5, 7, 2, 0, 5]
+
+medians = running_median2(values)
+
+assert medians == [2.0, 1.5, 2.0, 3.5, 2.0, 2.0, 2.0]
+
