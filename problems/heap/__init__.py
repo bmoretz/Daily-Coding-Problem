@@ -5,7 +5,7 @@ from collections import defaultdict
 
 Compute the running median of a sequence of numbers. That is, given a stream of numbers, print out the median of the list so far after each new element.
 
-For example, giveen the sequence [2, 1, 5, 7, 2, 0, 5],
+For example, given the sequence [2, 1, 5, 7, 2, 0, 5],
 
 Your algorithm should print out:
 
@@ -60,7 +60,7 @@ def get_median(min_heap, max_heap):
         return (min_val + max_val) / 2
 
 def add(num, min_heap, max_heap):
-    # If empty, jusjt add to the new max heap.
+    # If empty, just add to the new max heap.
     if len(min_heap) + len(max_heap) <= 1:
         heapq.heappush(max_heap, num)
         return
@@ -96,7 +96,7 @@ def running_median2(stream):
 
 '''Similar Websites.
 
-You are given a list of (website, user) pairs that represent users visting websites.
+You are given a list of (website, user) pairs that represent users visiting websites.
 
 Come up with a program that identifies the top k pairs of websites with the greatest similarity.
 

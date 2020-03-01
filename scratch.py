@@ -1,40 +1,43 @@
 from collections import defaultdict
 
-''' Paint houses.
+''' N Queens.
 
-A builder is looking to build a row of N houses that can be of K different colors. He has a goal of minimizing cost while 
-ensuring that no two neighboring houses are of the same color.
+The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
 
-Given an N by K matrix where the nth row and kth column represents the cost to build the nth house with kth color, 
-return the minimum cost which achieves this goal.
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
 '''
 
-cost_matrix = [
-    [11, 12, 13],
-    [14, 15, 16],
-    [17, 18, 19]
-]
+def n_queens(n, board=[]):
 
-''' O(n*k*k) solution. '''
-def build_houses(matrix):
+    if n == len(board):
+        return 1
 
-    n = len(matrix)
-    k = len(matrix[0])
-    solution_matrix = [[0] * k]
+    count = 0
 
-    # Solution matrix: matrix[i][j] represents the minimum cost to build house i with color j.
-    # build house i with color j.
-    for r, row in enumerate(matrix):
-        row_cost = []
-        for c, val in enumerate(row):
-            row_cost.append(min(solution_matrix[r][i]
-                            for i in range(k)
-                            if i != c) + val)
-        solution_matrix.append(row_cost)
+    for col in range(n):
+        board.append(col)
 
-    return min(solution_matrix[-1])
+        if is_valid(board):
+            count += n_queens(n, board)
+        board.pop()
 
-cost = build_houses(cost_matrix)
+    return count
 
-print(cost)
+def is_valid(board):
+    current_queen_row, current_queen_col = len(board) - 1, board[-1]
 
+    # Check if any queens can attack the last queen.
+    for row, col in enumerate(board[:-1]):
+
+        diff = abs(current_queen_col - col)
+
+        if diff == 0 or diff == current_queen_row - row:
+            return False
+    
+    return True
+
+nq = n_queens(8)
+
+print(nq)
