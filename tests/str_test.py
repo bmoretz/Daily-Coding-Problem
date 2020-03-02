@@ -3,6 +3,7 @@ import unittest
 from problems.str import anagram1
 from problems.str import is_palindrome, palindrome1, palindrome2
 from problems.str import zigzag1
+from problems.str import is_unique1
 
 class Test_Anagram1(unittest.TestCase):
     
@@ -63,3 +64,19 @@ class Test_Zigzag1(unittest.TestCase):
 
     def test_case1(self):
         assert zigzag1("thisisazigzag", 4) == zigzag_out
+
+class Test_IsUnique1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert is_unique1("abcdefg") == True
+
+    def test_case2(self):
+        assert is_unique1("abcdeffg") == False
+    
+    def test_case3(self):
+        assert is_unique1(None) == False
+
+    

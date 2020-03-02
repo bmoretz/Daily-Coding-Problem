@@ -128,3 +128,28 @@ def zigzag1(stri, k):
         return result
 
     return zigzag(stri, k)
+
+''' Unique characters.
+
+Implement an algorithm to determine if a string has all unique characters.
+
+What if you can't use additional data structures?
+'''
+
+def is_unique1(s):
+    if s is None: return False
+    return len(s) == len(set(s))
+    
+def is_unique2(string):
+    values = 0
+    for char in string:
+
+        current = ord(char) - ord('a')
+
+        val = values & (1 << current)
+        
+        if val > 0: return False
+        
+        values |= (1 << current)
+
+    return True
