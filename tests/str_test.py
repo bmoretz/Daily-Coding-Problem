@@ -3,7 +3,9 @@ import unittest
 from problems.str import anagram1
 from problems.str import is_palindrome, palindrome1, palindrome2
 from problems.str import zigzag1
-from problems.str import is_unique1
+from problems.str import is_unique1, is_unique2
+from problems.str import is_permutation
+from problems.str import urlify1, urlify2
 
 class Test_Anagram1(unittest.TestCase):
     
@@ -79,4 +81,61 @@ class Test_IsUnique1(unittest.TestCase):
     def test_case3(self):
         assert is_unique1(None) == False
 
+class Test_IsUnique2(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert is_unique1("abcdefg") == True
+
+    def test_case2(self):
+        assert is_unique1("abcdeffg") == False
     
+    def test_case3(self):
+        assert is_unique1(None) == False
+
+class Test_IsPermutation(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert is_permutation("abc", "bca") == True
+
+    def test_case2(self):
+        assert is_unique1("abc", "bce") == False
+    
+    def test_case3(self):
+        assert is_unique1(None) == False
+
+class Test_Urlify1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert urlify1(None) == None
+
+    def test_case2(self):
+        assert urlify1("http://www.test.com/s/this is a web call/to a svc/") == 'http://www.test.com/s/this%20is%20a%20web%20call/to%20a%20svc/'
+    
+    def test_case3(self):
+        assert urlify1('a a') == 'a%20a'
+
+    def test_case4(self):
+        assert urlify1('Mr John Smith') == 'Mr%20John%20Smith'
+
+class Test_Urlify2(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert urlify2(None) == None
+
+    def test_case2(self):
+        assert urlify2("http://www.test.com/s/this is a web call/to a svc/") == 'http://www.test.com/s/this%20is%20a%20web%20call/to%20a%20svc/'
+    
+    def test_case3(self):
+        assert urlify2('a a') == 'a%20a'

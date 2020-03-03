@@ -12,5 +12,8 @@
         "./tests",
         "-p",
         "*_test.py"
+    ],
+    "cSpell.words": [
+        "urlify"
     ]
 }

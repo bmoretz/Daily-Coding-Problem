@@ -139,7 +139,7 @@ What if you can't use additional data structures?
 def is_unique1(s):
     if s is None: return False
     return len(s) == len(set(s))
-    
+
 def is_unique2(string):
     values = 0
     for char in string:
@@ -153,3 +153,77 @@ def is_unique2(string):
         values |= (1 << current)
 
     return True
+
+'''Check Permutation.
+
+Given two strings, write a method to decide if one is a permutation of the other.
+'''
+
+def is_permutation(s1, s2):
+
+    if s1 == None or s2 == None: return False
+    if len(s1) != len(s2): return False
+
+    check = set(s1)
+    is_perm = True
+
+    for char in s2:
+        is_perm &= char in check
+
+    return is_perm
+
+'''URLify.
+
+Write a method to replace all spaces in a string with '%20'. You may assume that the string
+has sufficient space at the end to hold the additional characters, and that you are given
+the "true" length of the string.
+'''
+
+''' Forward insertion approach, O(N) runtime, O(1) space. '''
+def urlify1(url):
+
+    def to_str(s):
+        return ''.join(s)
+
+    if url is None: return None
+    
+    characters = list(url)
+
+    for index in range(len(characters) + 1):
+
+        if characters[index].isspace():
+            characters[index] = '%'
+            characters.insert(index + 1, '20')
+
+    return to_str(characters)
+
+''' Backward fill, O(N) runtime, O(n) space. '''
+def urlify2(url):
+
+    def count_spaces(s):
+        return sum([1 if c.isspace() else 0 for c in s])
+
+    def to_str(s):
+        return ''.join(s)
+
+    if url is None: return None
+    
+    n = len(url) + count_spaces(url) * 2
+    characters = [''] * n
+
+    index, cur = len(url) - 1, n - 1
+
+    while index > -1:
+
+        if url[index].isspace():
+            characters[cur] = '0'
+            characters[cur - 1] = '2'
+            characters[cur - 2] = '%'
+            cur -= 3
+        else:
+            characters[cur] = url[index]
+            cur -= 1
+
+        index -= 1
+
+    return to_str(characters)

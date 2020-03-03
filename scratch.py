@@ -1,31 +1,48 @@
 
-''' Unique characters.
+'''URLify.
 
-Implement an algorithm to determine if a string has all unique characters.
-
-What if you can't use additional data structures?
+Write a method to replace all spaces in a string with '%20'. You may assume that the string
+has sufficient space at the end to hold the additional characters, and that you are given
+the "true" length of the string.
 '''
 
-s1 = "abbbcdeffg"
-s2 = "abcdefg"
-s3 = None
+url = "Mr John Smith"
+expected = "Mr%20John%20Smith"
 
-def is_unique2(string):
-    values = 0
-    for char in string:
+url = 'a a'
 
-        current = ord(char) - ord('a')
+''' O(N) runtime, O(n) space. '''
+def urlify(url):
 
-        val = values & (1 << current)
-        
-        if val > 0:
-            return False
+    def count_spaces(s):
+        return sum([1 if c.isspace() else 0 for c in s])
 
-        values |= (1 << current)
+    def to_str(s):
+        return ''.join(s)
 
-    return True
+    if url is None: return None
+    
+    n = len(url) + count_spaces(url) * 2
+    characters = [''] * n
 
+    index, cur = len(url) - 1, n - 1
 
-#print(2 & 1)
-print(is_unique2(s1))
+    while index > -1:
 
+        if url[index].isspace():
+            characters[cur] = '0'
+            characters[cur - 1] = '2'
+            characters[cur - 2] = '%'
+            cur -= 3
+        else:
+            characters[cur] = url[index]
+            cur -= 1
+
+        index -= 1
+
+    return to_str(characters)
+
+r = urlify(url)
+
+print(url)
+print(r)
