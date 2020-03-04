@@ -1,36 +1,52 @@
 from collections import Counter
 
-'''Palindrome Permutation:
+'''One Away:
 
-Given a string, write a function to check if it is a permutation of a palindrome.
+There are three types of edits that can be performed on strings:
 
-A palindrome is a word or phrase that is the same forwads or backwards.
-A permutation is a rearrangement of letters.
+insert a character,
+remove a character,
+replace a character
 
-They do not have to be real words.
+Given two strings, write a function to check if they are one edit (or zero edits) away.
 
 Example:
 
-Input: Tact Coa
-Output: True (permutations: "taco cat", "atco cta", etc.)
+pale, ple -> true
+pales, pale -> true
+pale, bale -> true
+pale, bake -> false
 '''
 
-s1 = 'Tact Coa'
-s2 = 'aba'
-s3 = 'ab'
-s4 = 'abcd'
-s5 = 'tactcoapapa'
+p1 = ['pale' , 'ple']
+p2 = ['pales', 'pale']
+p3 = ['pale', 'bale']
+p4 = ['pale', 'bake']
 
-def is_palindrome_perm1(s):
+def one_away(s1, s2):
 
-    if s is None: return False
-    if len(s) <= 2: return True
+    def get_differences(s1, s2):
 
-    occurrences = Counter(s.replace(' ', '').lower())
+        ordered = (s1, s2) if len(s1) > len(s2) else (s2, s1)
 
-    n_odd = sum([0 if v % 2 == 0 else 1 for v in occurrences.values()])
+        primary, secondary = ordered[0], ordered[1]
+        
+        for c in secondary:
 
-    return n_odd == 1
+            index = primary.find(c)
 
-print(is_palindrome_perm1(s5))
+            if index != -1:
+                primary = primary[0 : index : ] + primary[index + 1 ::]
+
+        return len(primary)
+
+    if s1 is None or s1 is None: return False
+    if len(s1) == 1 and len(s2) == 1: return True
+
+    return get_differences(s1, s2) <= 1
+
+print(one_away(p1[0], p1[1]))
+print(one_away(p2[0], p2[1]))
+print(one_away(p3[0], p3[1]))
+print(one_away(p4[0], p4[1]))
 

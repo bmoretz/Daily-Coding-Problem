@@ -7,6 +7,7 @@ from problems.str import is_unique1, is_unique2
 from problems.str import is_permutation
 from problems.str import urlify1, urlify2
 from problems.str import is_palindrome_perm1
+from problems.str import is_one_away1
 
 class Test_Anagram1(unittest.TestCase):
     
@@ -166,3 +167,26 @@ class Test_IsPalindromePerm(unittest.TestCase):
 
     def test_case6(self):
         assert is_palindrome_perm1('tactcoapapa') == True
+
+class Test_IsOneAway1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert is_one_away1(None) == False
+
+    def test_case2(self):
+        assert is_one_away1('pale', 'ple') == True
+
+    def test_case3(self):
+        assert is_one_away1('pales', 'pale') == True
+    
+    def test_case4(self):
+        assert is_one_away1('pale', 'bale') == True
+
+    def test_case5(self):
+        assert is_one_away1('pale', 'bake') == False
+
+    def test_case6(self):
+        assert is_one_away1('pale', 'apaled') == False
