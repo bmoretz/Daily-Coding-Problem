@@ -1,48 +1,36 @@
+from collections import Counter
 
-'''URLify.
+'''Palindrome Permutation:
 
-Write a method to replace all spaces in a string with '%20'. You may assume that the string
-has sufficient space at the end to hold the additional characters, and that you are given
-the "true" length of the string.
+Given a string, write a function to check if it is a permutation of a palindrome.
+
+A palindrome is a word or phrase that is the same forwads or backwards.
+A permutation is a rearrangement of letters.
+
+They do not have to be real words.
+
+Example:
+
+Input: Tact Coa
+Output: True (permutations: "taco cat", "atco cta", etc.)
 '''
 
-url = "Mr John Smith"
-expected = "Mr%20John%20Smith"
+s1 = 'Tact Coa'
+s2 = 'aba'
+s3 = 'ab'
+s4 = 'abcd'
+s5 = 'tactcoapapa'
 
-url = 'a a'
+def is_palindrome_perm1(s):
 
-''' O(N) runtime, O(n) space. '''
-def urlify(url):
+    if s is None: return False
+    if len(s) <= 2: return True
 
-    def count_spaces(s):
-        return sum([1 if c.isspace() else 0 for c in s])
+    occurrences = Counter(s.replace(' ', '').lower())
 
-    def to_str(s):
-        return ''.join(s)
+    n_odd = sum([0 if v % 2 == 0 else 1 for v in occurrences.values()])
 
-    if url is None: return None
-    
-    n = len(url) + count_spaces(url) * 2
-    characters = [''] * n
+    return n_odd == 1
 
-    index, cur = len(url) - 1, n - 1
+print(is_palindrome_perm1(s5))
 
-    while index > -1:
-
-        if url[index].isspace():
-            characters[cur] = '0'
-            characters[cur - 1] = '2'
-            characters[cur - 2] = '%'
-            cur -= 3
-        else:
-            characters[cur] = url[index]
-            cur -= 1
-
-        index -= 1
-
-    return to_str(characters)
-
-r = urlify(url)
-
-print(url)
-print(r)

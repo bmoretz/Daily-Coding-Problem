@@ -1,3 +1,5 @@
+from collections import Counter
+
 '''Anagrams.
 
 Given a word w and a string s, find all indices in s which are the starting locations of anagrams of w.
@@ -227,3 +229,29 @@ def urlify2(url):
         index -= 1
 
     return to_str(characters)
+
+'''Palindrome Permutation:
+
+Given a string, write a function to check if it is a permutation of a palindrome.
+
+A palindrome is a word or phrase that is the same forwads or backwards.
+A permutation is a rearrangement of letters.
+
+They do not have to be real words.
+
+Example:
+
+Input: Tact Coa
+Output: True (permutations: "taco cat", "atco cta", etc.)
+'''
+
+def is_palindrome_perm1(s):
+
+    if s is None: return False
+    if len(s) <= 2: return True
+
+    occurrences = Counter(s.replace(' ', '').lower())
+
+    n_odd = sum([0 if v % 2 == 0 else 1 for v in occurrences.values()])
+
+    return n_odd == 1

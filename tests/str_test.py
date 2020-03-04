@@ -6,6 +6,7 @@ from problems.str import zigzag1
 from problems.str import is_unique1, is_unique2
 from problems.str import is_permutation
 from problems.str import urlify1, urlify2
+from problems.str import is_palindrome_perm1
 
 class Test_Anagram1(unittest.TestCase):
     
@@ -104,10 +105,10 @@ class Test_IsPermutation(unittest.TestCase):
         assert is_permutation("abc", "bca") == True
 
     def test_case2(self):
-        assert is_unique1("abc", "bce") == False
+        assert is_permutation("abc", "bce") == False
     
     def test_case3(self):
-        assert is_unique1(None) == False
+        assert is_permutation(None, None) == False
 
 class Test_Urlify1(unittest.TestCase):
 
@@ -139,3 +140,29 @@ class Test_Urlify2(unittest.TestCase):
     
     def test_case3(self):
         assert urlify2('a a') == 'a%20a'
+    
+    def test_case4(self):
+        assert urlify2('Mr John Smith') == 'Mr%20John%20Smith'
+
+class Test_IsPalindromePerm(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert is_palindrome_perm1(None) == False
+
+    def test_case2(self):
+        assert is_palindrome_perm1('Tact Coa') == True
+
+    def test_case3(self):
+        assert is_palindrome_perm1('aba') == True
+    
+    def test_case4(self):
+        assert is_palindrome_perm1('ab') == True
+
+    def test_case5(self):
+        assert is_palindrome_perm1('abcd') == False
+
+    def test_case6(self):
+        assert is_palindrome_perm1('tactcoapapa') == True
