@@ -208,3 +208,20 @@ class Test_Compress1(unittest.TestCase):
     
     def test_case4(self):
         assert compress1('aa') == 'aa'
+
+class Test_Rotate1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert compress1(None) == None
+
+    def test_case2(self):
+        assert compress1('aabcccccaaa') == 'a2b1c5a3'
+
+    def test_case3(self):
+        assert compress1('aabbbbcccaaaeeert') == 'a2b4c3a3e3r1t1'
+    
+    def test_case4(self):
+        assert compress1('aa') == 'aa'

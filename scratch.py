@@ -1,39 +1,50 @@
-from collections import Counter
+'''Rotate Matrix.
 
-'''String Compression.
+Given an image represented by an NxN matrix, where each pixel in the image is 4 bytes,
+write a method to rotate the image by 90 degrees.
 
-Implement a methods to perform basic string compression using the counts of repeating characters.
-
-For example,
-
-The string aabcccccaaa would become a2b1c5a3.
-
-If the "compressed" string would not become smaller than the original string, your methods should return the original string.
-
-You can assume the string has only uppercase and lowercase letters (a-z).
+Can you do it in place?
 '''
 
-stri = 'aabbbbcccaaaeeert'
+def build_mat(n, m):
+    if not isinstance(n, int) or not isinstance(m, int):
+        raise TypeError('n and m must be integers')
+    if n <= 0 or m <= 0:
+        raise ValueError('n and m must be greater than zero')
 
-def compress(s):
+    mat = [[None] * m for _ in range(n)]
 
-    if s == None: return None
+    for row in range(n):
+        for column in range(m):
+            mat[row][column] = (row * m) + column + 1
+    return mat
 
-    result, prev, counter = '', s[0], 1
-
-    for char in s[1:]:
-
-        if char != prev:
-            result += f'{prev}{counter}'
-            prev, counter = char, 1
-        else:
-            counter += 1
+def rotate1(mat):
     
-    result += f'{prev}{counter}'
+    if mat is None: return None
 
-    return result if len(result) < len(s) else s
+    rows = len(mat)
+    cols = len(mat[0])
 
-r = compress(stri)
+    ret = [[None] * cols for _ in range(rows)]
 
-print(r)
+    for row in range(rows):
+
+        for index, value in enumerate(mat[row]):
+            ret[index][cols - row - 1] = value
+
+    return ret
+
+def rotate2(mat):
+    return list(zip(*mat[::-1]))
+
+
+n, m = 5, 5
+
+mat = build_mat(n, m)
+
+print(mat)
+
+print(rotate1(mat))
+print(rotate2(mat))
 
