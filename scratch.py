@@ -1,52 +1,39 @@
 from collections import Counter
 
-'''One Away:
+'''String Compression.
 
-There are three types of edits that can be performed on strings:
+Implement a methods to perform basic string compression using the counts of repeating characters.
 
-insert a character,
-remove a character,
-replace a character
+For example,
 
-Given two strings, write a function to check if they are one edit (or zero edits) away.
+The string aabcccccaaa would become a2b1c5a3.
 
-Example:
+If the "compressed" string would not become smaller than the original string, your methods should return the original string.
 
-pale, ple -> true
-pales, pale -> true
-pale, bale -> true
-pale, bake -> false
+You can assume the string has only uppercase and lowercase letters (a-z).
 '''
 
-p1 = ['pale' , 'ple']
-p2 = ['pales', 'pale']
-p3 = ['pale', 'bale']
-p4 = ['pale', 'bake']
+stri = 'aabbbbcccaaaeeert'
 
-def one_away(s1, s2):
+def compress(s):
 
-    def get_differences(s1, s2):
+    if s == None: return None
 
-        ordered = (s1, s2) if len(s1) > len(s2) else (s2, s1)
+    result, prev, counter = '', s[0], 1
 
-        primary, secondary = ordered[0], ordered[1]
-        
-        for c in secondary:
+    for char in s[1:]:
 
-            index = primary.find(c)
+        if char != prev:
+            result += f'{prev}{counter}'
+            prev, counter = char, 1
+        else:
+            counter += 1
+    
+    result += f'{prev}{counter}'
 
-            if index != -1:
-                primary = primary[0 : index : ] + primary[index + 1 ::]
+    return result if len(result) < len(s) else s
 
-        return len(primary)
+r = compress(stri)
 
-    if s1 is None or s1 is None: return False
-    if len(s1) == 1 and len(s2) == 1: return True
-
-    return get_differences(s1, s2) <= 1
-
-print(one_away(p1[0], p1[1]))
-print(one_away(p2[0], p2[1]))
-print(one_away(p3[0], p3[1]))
-print(one_away(p4[0], p4[1]))
+print(r)
 

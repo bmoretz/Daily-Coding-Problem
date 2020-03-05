@@ -8,6 +8,7 @@ from problems.str import is_permutation
 from problems.str import urlify1, urlify2
 from problems.str import is_palindrome_perm1
 from problems.str import is_one_away1
+from problems.str import compress1
 
 class Test_Anagram1(unittest.TestCase):
     
@@ -174,7 +175,7 @@ class Test_IsOneAway1(unittest.TestCase):
         pass
 
     def test_case1(self):
-        assert is_one_away1(None) == False
+        assert is_one_away1(None, '') == False
 
     def test_case2(self):
         assert is_one_away1('pale', 'ple') == True
@@ -190,3 +191,20 @@ class Test_IsOneAway1(unittest.TestCase):
 
     def test_case6(self):
         assert is_one_away1('pale', 'apaled') == False
+
+class Test_Compress1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert compress1(None) == None
+
+    def test_case2(self):
+        assert compress1('aabcccccaaa') == 'a2b1c5a3'
+
+    def test_case3(self):
+        assert compress1('aabbbbcccaaaeeert') == 'a2b4c3a3e3r1t1'
+    
+    def test_case4(self):
+        assert compress1('aa') == 'aa'
