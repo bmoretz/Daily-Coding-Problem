@@ -1,56 +1,35 @@
-'''Zero Matrix.
+'''String Rotation.
 
-Write an algorithm such that if an element in an MxN matrix is 0, its entire row and column are set to zero.
+Assume you have a method is_substring which checks if one word is a substring of another. Given two strings, s1 and s2, write code
+to check if s2 is a rotation of s1 using only one call to is_substring (e.g., "waterbottle" is a rotation of "erbottlewat").
 '''
 
-m, n = 4, 4
+def is_substring(s1, s2):
+    return s1.index(s2) != -1
 
-mat = [[1] * n for _ in range(m)]
+def is_rotation1(s1, s2):
 
-mat[0][1] = 0
-mat[1][2] = 0
-mat[3][0] = 0
+    def rotate(s, n):
+        return s[n:] + s[:n]
 
-def print_mat(mat, col_width=2):
+    if s1 is None or s2 is None: return None
 
-    if mat is None: return None
+    if not isinstance(s1, str) or not isinstance(s2, str):
+        raise TypeError('s1 and s2 must be strings.')
 
-    rows = len(mat)
+    if len(s1) <= 1: return True
 
-    for row in range(rows):
-        print(''.join(str(element).ljust(col_width) for element in mat[row]))
+    rotations = ''
 
-def zero_mat1(mat):
+    for index in range(len(s1)):
+        rotations += '|'.join([rotate(s1, index)])
 
-    def zero_column(mat, col):
-        for row in range(len(mat)):
-            mat[row][col] = 0
-    
-    def zero_row(mat, row):
-        for col in range(len(mat[0])):
-            mat[row][col] = 0
-        
-    if mat is None: return None
+    return is_substring(rotations, s2)
 
-    rows = len(mat)
-    cols = len(mat[0])
+s1 = 'waterbottle'
+s2 = 'erbottlewat'
 
-    zeros = []
-    
-    for row in range(rows):
-        for column in range(cols):
-            if mat[row][column] == 0:
 
-                zeros += [(row, column)]
+is_rot = is_rotation1(s1, s2)
 
-    for val in zeros:
-        zero_row(mat, val[0])
-        zero_column(mat, val[1])
-
-    return mat
-
-print_mat(mat)
-
-zero_mat = zero_mat1(mat)
-print_mat(zero_mat)
-print(zero_mat)
+print(is_rot)

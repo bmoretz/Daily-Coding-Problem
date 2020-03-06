@@ -55,7 +55,7 @@ def rotate2(mat):
 Write an algorithm such that if an element in an MxN matrix is 0, its entire row and column are set to zero.
 '''
 
-''' O(M * N) solution '''
+''' O(M * N) run-time / O(N) space solution '''
 
 def zero1(mat):
 

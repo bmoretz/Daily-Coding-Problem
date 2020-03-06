@@ -153,4 +153,3 @@ class Test_Zero1(unittest.TestCase):
         mat[1][2] = 0
 
         assert zero1(mat) == expected
-         

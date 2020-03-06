@@ -9,6 +9,7 @@ from problems.str import urlify1, urlify2
 from problems.str import is_palindrome_perm1
 from problems.str import is_one_away1
 from problems.str import compress1
+from problems.str import is_rotation1
 
 class Test_Anagram1(unittest.TestCase):
     
@@ -208,3 +209,23 @@ class Test_Compress1(unittest.TestCase):
     
     def test_case4(self):
         assert compress1('aa') == 'aa'
+
+class Test_IsRotation1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        assert is_rotation1('s1', None) == None
+
+    def test_case2(self):
+        assert is_rotation1(None, 's1') == None
+
+    def test_case3(self):
+        assert is_rotation1('waterbottle', 'erbottlewat') == True
+    
+    def test_case4(self):
+        assert is_rotation1('waterbottle', 'bottlewatter') == True
+
+    def test_case5(self):
+        assert is_rotation1('waterbottle', 'bottewater')
