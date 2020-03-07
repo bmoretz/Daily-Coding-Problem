@@ -109,6 +109,22 @@ class SLinkedList:
 def initialize(ll, vals):
     for x in vals: ll.push_back(x)
 
+def build_list(values):
+
+    head, prev = None, None
+
+    for value in values:
+        node = Node(value)
+
+        if head == None:
+            head, prev = node, node
+        else:
+            prev.next = node
+
+        prev = node
+        
+    return head
+
 ''' Sum Linked List.
 
 We can represent an integer in a linked list format by having each node represent a digit in the number. The nodes are connected in reverse order, such that the number
@@ -236,7 +252,7 @@ A = 3 -> 7 -> 8 -> 10, B = 99 -> 1 -> 8 -> 10
 
 return the node with value 8. In this example, assume nodes with the same value are the exact same objects.
 
-Do this in O(m + n) time (where m and n are the lenghts of the list) and constant space.
+Do this in O(m + n) time (where m and n are the lengths of the list) and constant space.
 '''
 
 '''O(m + n) Solution'''
@@ -301,3 +317,65 @@ def intersect4(list1, list2):
         list2 = list2.next
 
     return None
+
+'''Remove Duplicates.
+
+Write code to remove duplicates from an unsorted linked list.-
+'''
+
+''' O(N) run-time, O(N) space '''
+
+def dedup1(node):
+
+    if node == None: return None
+
+    values = set()
+    head, prev = None, None
+
+    while node != None:
+        if node.data not in values:
+            values.add(node.data)
+            new = Node(node.data)
+            
+            if head == None:
+                head, prev = new, new
+            else:
+                prev.next = new
+                prev = prev.next
+
+        node = node.next
+
+    return head
+
+''' O(N^2) run-time, O(1) space. '''
+def dedup2(node):
+
+    def in_list(node, value):
+
+        while node != None:
+
+            if node.data == value:
+                return True
+
+            node = node.next
+
+        return False
+
+    if node == None: return None
+
+    head, prev = None, None
+
+    while node != None:
+        
+        if not in_list(head, node.data):
+            new = Node(node.data)
+            
+            if head == None:
+                head, prev = new, new
+            else:
+                prev.next = new
+                prev = prev.next    
+        
+        node = node.next
+
+    return head

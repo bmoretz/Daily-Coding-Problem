@@ -1,35 +1,55 @@
-'''String Rotation.
+'''Remove Duplicates.
 
-Assume you have a method is_substring which checks if one word is a substring of another. Given two strings, s1 and s2, write code
-to check if s2 is a rotation of s1 using only one call to is_substring (e.g., "waterbottle" is a rotation of "erbottlewat").
+Write code to remove duplicates from an unsorted linked list.
+
+How about if a temporary buffer is not allowed?
 '''
 
-def is_substring(s1, s2):
-    return s1.index(s2) != -1
+from problems.linkedlist import build_list
 
-def is_rotation1(s1, s2):
+class Node():
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = next
 
-    def rotate(s, n):
-        return s[n:] + s[:n]
+''' O(N^2) run-time, O(1) space. '''
 
-    if s1 is None or s2 is None: return None
+def dedup2(node):
 
-    if not isinstance(s1, str) or not isinstance(s2, str):
-        raise TypeError('s1 and s2 must be strings.')
+    def in_list(node, value):
 
-    if len(s1) <= 1: return True
+        while node != None:
 
-    rotations = ''
+            if node.data == value:
+                return True
 
-    for index in range(len(s1)):
-        rotations += '|'.join([rotate(s1, index)])
+            node = node.next
 
-    return is_substring(rotations, s2)
+        return False
 
-s1 = 'waterbottle'
-s2 = 'erbottlewat'
+    if node == None: return None
 
+    head, prev = None, None
 
-is_rot = is_rotation1(s1, s2)
+    while node != None:
+        
+        if not in_list(head, node.data):
+            new = Node(node.data)
+            
+            if head == None:
+                head, prev = new, new
+            else:
+                prev.next = new
+                prev = prev.next    
+        
+        node = node.next
 
-print(is_rot)
+    return head
+
+values = build_list([1, 2, 3, 4, 3, 5, 2])
+
+unique = dedup2(values)
+
+print(values)
+
+print(unique)

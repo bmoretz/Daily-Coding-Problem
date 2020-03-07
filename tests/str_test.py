@@ -225,7 +225,4 @@ class Test_IsRotation1(unittest.TestCase):
         assert is_rotation1('waterbottle', 'erbottlewat') == True
     
     def test_case4(self):
-        assert is_rotation1('waterbottle', 'bottlewatter') == True
-
-    def test_case5(self):
-        assert is_rotation1('waterbottle', 'bottewater')
+        assert is_rotation1('waterbottle', 'bottlewater') == True
