@@ -1,8 +1,6 @@
-'''Remove Duplicates.
+'''Return Kth to last.
 
-Write code to remove duplicates from an unsorted linked list.
-
-How about if a temporary buffer is not allowed?
+Implement an algorithm to find the kth to last element of a singly linked list.
 '''
 
 from problems.linkedlist import build_list
@@ -12,44 +10,31 @@ class Node():
         self.data = data
         self.next = next
 
-''' O(N^2) run-time, O(1) space. '''
+''' O(N) run-time, O(1) space '''
+def klast2(node, k):
+    
+    if node == None or k < 0: return None
+    
+    target, index = None, 0
 
-def dedup2(node):
-
-    def in_list(node, value):
-
-        while node != None:
-
-            if node.data == value:
-                return True
-
-            node = node.next
-
-        return False
-
-    if node == None: return None
-
-    head, prev = None, None
+    head = node
 
     while node != None:
         
-        if not in_list(head, node.data):
-            new = Node(node.data)
-            
-            if head == None:
-                head, prev = new, new
-            else:
-                prev.next = new
-                prev = prev.next    
-        
+        if index - k - 1 == 0:
+            target = head
+
+        if target is not None:
+            target = target.next
+
+        index += 1
         node = node.next
 
-    return head
+    return target.data if target else head.data
 
-values = build_list([1, 2, 3, 4, 3, 5, 2])
+values = build_list([1, 2, 3, 4, 5, 6, 7])
 
-unique = dedup2(values)
+target = klast2(values, 6)
 
-print(values)
 
-print(unique)
+print(target)

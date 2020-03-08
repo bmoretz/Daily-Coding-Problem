@@ -5,7 +5,8 @@ from problems.linkedlist import build_list
 from problems.linkedlist import add_numbers1, add_numbers2
 from problems.linkedlist import alternate1, alternate2
 from problems.linkedlist import intersect1, intersect2
-from problems.linkedlist import dedup1, dedup2
+from problems.linkedlist import dedupe1, dedupe2
+from problems.linkedlist import klast1, klast2
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -139,13 +140,13 @@ class Test_Dedupe1(unittest.TestCase):
         pass
 
     def test_case1(self):
-        assert dedup1(None) == None
+        assert dedupe1(None) == None
 
     def test_case2(self):
 
-        expected = build_list([1] )
+        expected = build_list([1])
 
-        actual = dedup1(build_list([1]))
+        actual = dedupe1(build_list([1]))
 
         assert expected == actual
         
@@ -153,7 +154,7 @@ class Test_Dedupe1(unittest.TestCase):
 
         expected = build_list([1, 2, 3, 4, 5])
 
-        actual = dedup1(build_list([1, 2, 3, 4, 3, 5, 2]))
+        actual = dedupe1(build_list([1, 2, 3, 4, 3, 5, 2]))
         
         assert expected == actual 
 
@@ -161,7 +162,7 @@ class Test_Dedupe1(unittest.TestCase):
 
         expected = build_list([1, 2])
 
-        actual = dedup1(build_list([1, 2, 2, 2, 2]))
+        actual = dedupe1(build_list([1, 2, 2, 2, 2]))
 
         assert expected == actual 
 
@@ -169,7 +170,7 @@ class Test_Dedupe1(unittest.TestCase):
 
         expected = build_list([3, 4])
 
-        actual =  dedup1(build_list([3, 3, 3, 4]))
+        actual =  dedupe1(build_list([3, 3, 3, 4]))
 
         assert expected == actual
 
@@ -179,13 +180,13 @@ class Test_Dedupe2(unittest.TestCase):
         pass
 
     def test_case1(self):
-        assert dedup2(None) == None
+        assert dedupe2(None) == None
 
     def test_case2(self):
 
-        expected = build_list([1] )
+        expected = build_list([1])
 
-        actual = dedup2(build_list([1]))
+        actual = dedupe2(build_list([1]))
 
         assert expected == actual
         
@@ -193,7 +194,7 @@ class Test_Dedupe2(unittest.TestCase):
 
         expected = build_list([1, 2, 3, 4, 5])
 
-        actual = dedup2(build_list([1, 2, 3, 4, 3, 5, 2]))
+        actual = dedupe2(build_list([1, 2, 3, 4, 3, 5, 2]))
         
         assert expected == actual 
 
@@ -201,7 +202,7 @@ class Test_Dedupe2(unittest.TestCase):
 
         expected = build_list([1, 2])
 
-        actual = dedup2(build_list([1, 2, 2, 2, 2]))
+        actual = dedupe2(build_list([1, 2, 2, 2, 2]))
 
         assert expected == actual 
 
@@ -209,6 +210,96 @@ class Test_Dedupe2(unittest.TestCase):
 
         expected = build_list([3, 4])
 
-        actual =  dedup2(build_list([3, 3, 3, 4]))
+        actual =  dedupe2(build_list([3, 3, 3, 4]))
+
+        assert expected == actual
+
+class Test_KLast1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert klast1(None, 0) == None
+
+    def test_case2(self):
+        
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast1(values, 0)
+        expected = 7
+        
+        assert actual == expected
+        
+    def test_case3(self):
+
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast1(values, 2)
+        expected = 5
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast1(values, 6)
+        expected = 1
+        
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast1(values, 3)
+        expected = 4
+
+        assert expected == actual
+
+class Test_KLast2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert klast2(None, 0) == None
+
+    def test_case2(self):
+        
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast2(values, 0)
+        expected = 7
+        
+        assert actual == expected
+        
+    def test_case3(self):
+
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast2(values, 2)
+        expected = 5
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast2(values, 6)
+        expected = 1
+        
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = build_list([1, 2, 3, 4, 5, 6, 7])
+
+        actual = klast2(values, 3)
+        expected = 4
 
         assert expected == actual
