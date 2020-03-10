@@ -1,6 +1,9 @@
-'''Return Kth to last.
+'''Partition.
 
-Implement an algorithm to find the kth to last element of a singly linked list.
+Write code to partition a linked list around a value x, such that all nodes less than x come before all nodes greater than or equal to x.
+
+If x is contained within the list, the values of x only need to be after the elements less than x. The partition element x can appear
+anywhere in the "right partition"; it does not need to appear between the left and right partitions.
 '''
 
 from problems.linkedlist import build_list
@@ -10,31 +13,31 @@ class Node():
         self.data = data
         self.next = next
 
-''' O(N) run-time, O(1) space '''
-def klast2(node, k):
+def delete_middle1(node):
     
-    if node == None or k < 0: return None
-    
-    target, index = None, 0
+    if node == None: return None
 
-    head = node
+    prev = None
 
-    while node != None:
-        
-        if index - k - 1 == 0:
-            target = head
-
-        if target is not None:
-            target = target.next
-
-        index += 1
+    while node.next != None:
+        node.next.data, node.data = node.data, node.next.data
+        prev = node
         node = node.next
 
-    return target.data if target else head.data
+    if prev != None:
+        prev.next = None
 
-values = build_list([1, 2, 3, 4, 5, 6, 7])
+head, target = build_list(['a', 'b', 'c', 'd', 'e', 'f']), 'f'
 
-target = klast2(values, 6)
+node = head
 
+while node.data != target:
+    node = node.next
 
-print(target)
+delete_middle1(node)
+
+node = head
+
+while node != None:
+    print(node.data)
+    node = node.next
