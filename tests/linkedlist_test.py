@@ -8,6 +8,7 @@ from problems.linkedlist import intersect1, intersect2
 from problems.linkedlist import dedupe1, dedupe2
 from problems.linkedlist import klast1, klast2
 from problems.linkedlist import delete_middle1
+from problems.linkedlist import partition1
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -344,7 +345,7 @@ class Test_DeleteMiddle2(unittest.TestCase):
         
         assert actual == expected
 
-    def test_case3(self):
+    def test_case4(self):
         
         actual, target = build_list(['a', 'b', 'c', 'd', 'e', 'f']), 'd'
 
@@ -359,7 +360,7 @@ class Test_DeleteMiddle2(unittest.TestCase):
         
         assert actual == expected
 
-    def test_case3(self):
+    def test_case5(self):
         
         actual, target = build_list(['a', 'b', 'c', 'd', 'e', 'f']), 'f'
 
@@ -371,5 +372,54 @@ class Test_DeleteMiddle2(unittest.TestCase):
         delete_middle1(node)
 
         expected = build_list(['a', 'b', 'c', 'd', 'e', 'f'])
+        
+        assert actual == expected
+
+class Test_Partition1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert partition1(None, 0) == None
+
+    def test_case2(self):
+        
+        head, partition = build_list([3, 5, 8, 5, 10, 2, 1]), 3
+
+        actual = partition1(head, partition)
+
+        expected = build_list([2, 1, 3, 5, 8, 5, 10])
+        
+        assert actual == expected
+        
+    def test_case3(self):
+        
+        head, partition = build_list([3, 5, 8, 5, 10, 2, 1]), 5
+
+        actual = partition1(head, partition)
+
+        expected = build_list([3, 2, 1, 5, 8, 5, 10])
+        
+        assert actual == expected
+
+    def test_case4(self):
+        
+        head, partition = build_list([3, 5, 8, 5, 10, 2, 1]), 10
+
+        actual = partition1(head, partition)
+
+        expected = build_list([3, 5, 8, 5, 2, 1, 10])
+        
+        assert actual == expected
+
+    def test_case5(self):
+        
+        head, partition = build_list([3, 5, 8, 5, 10, 2, 1]), 1
+
+        actual = partition1(head, partition)
+
+        expected = build_list([3, 5, 8, 5, 10, 2, 1])
         
         assert actual == expected

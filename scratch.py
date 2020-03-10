@@ -4,6 +4,11 @@ Write code to partition a linked list around a value x, such that all nodes less
 
 If x is contained within the list, the values of x only need to be after the elements less than x. The partition element x can appear
 anywhere in the "right partition"; it does not need to appear between the left and right partitions.
+
+Example:
+
+Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1 [partition = 5]
+Output: 3 -> 1 -> 2 -> 10 -> 5 -> 5 -> 8
 '''
 
 from problems.linkedlist import build_list
@@ -13,31 +18,48 @@ class Node():
         self.data = data
         self.next = next
 
-def delete_middle1(node):
-    
-    if node == None: return None
 
-    prev = None
+def partition(node, partition):
 
-    while node.next != None:
-        node.next.data, node.data = node.data, node.next.data
-        prev = node
+    if node == None or partition == None: return None
+
+    lhead, uhead = None, None
+    lower, upper = None, None
+
+    while node != None:
+
+        if node.data < partition:
+
+            if lower == None:
+                lower, lhead = node, node
+            else:
+                lower.next = node
+                lower = lower.next
+
+        if node.data >= partition:
+
+            if upper == None:
+                upper, uhead = node, node
+            else:
+                upper.next = node
+                upper = upper.next
+            
         node = node.next
 
-    if prev != None:
-        prev.next = None
+    if upper != None:
+        upper.next = None
 
-head, target = build_list(['a', 'b', 'c', 'd', 'e', 'f']), 'f'
+    if lower != None:
+        lower.next = uhead
 
-node = head
+    return lhead if lhead != None else uhead
 
-while node.data != target:
-    node = node.next
+head, p = build_list([3, 5, 8, 5, 10, 2, 1]), 1
 
-delete_middle1(node)
+phead = partition(head, p)
 
-node = head
+while phead != None:
 
-while node != None:
-    print(node.data)
-    node = node.next
+    print(phead.data)
+
+    phead = phead.next
