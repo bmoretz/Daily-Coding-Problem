@@ -9,6 +9,7 @@ from problems.linkedlist import dedupe1, dedupe2
 from problems.linkedlist import klast1, klast2
 from problems.linkedlist import delete_middle1
 from problems.linkedlist import partition1
+from problems.linkedlist import rev_sum1, fwd_sum1
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -421,5 +422,103 @@ class Test_Partition1(unittest.TestCase):
         actual = partition1(head, partition)
 
         expected = build_list([3, 5, 8, 5, 10, 2, 1])
+        
+        assert actual == expected
+
+class Test_ReverseSum1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert rev_sum1(None, None) == None
+
+    def test_case2(self):
+        
+        n1, n2 = build_list([7, 1, 6]), build_list([5, 9, 3])
+
+        actual = rev_sum1(n1, n2)
+
+        expected = build_list([1, 0, 1, 2])
+        
+        assert actual == expected
+        
+    def test_case3(self):
+        
+        n1, n2 = build_list([7, 1, 6]), build_list([5, 9, 2])
+
+        actual = rev_sum1(n1, n2)
+
+        expected = build_list([9, 1 , 2])
+        
+        assert actual == expected
+
+    def test_case4(self):
+        
+        n1, n2 = build_list([1]), build_list([1])
+
+        actual = rev_sum1(n1, n2)
+
+        expected = build_list([2])
+        
+        assert actual == expected
+
+    def test_case5(self):
+        
+        n1, n2 = build_list([0, 0, 0, 0]), build_list([9, 9, 9, 9])
+
+        actual = rev_sum1(n1, n2)
+
+        expected = build_list([9, 9, 9, 9])
+        
+        assert actual == expected
+
+class Test_FwdSum1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert rev_sum1(None, None) == None
+
+    def test_case2(self):
+        
+        n1, n2 = build_list([6, 1, 7]), build_list([2, 9, 5])
+
+        actual = fwd_sum1(n1, n2)
+
+        expected = build_list([9, 1, 2])
+        
+        assert actual == expected
+        
+    def test_case3(self):
+        
+        n1, n2 = build_list([6, 1, 7]), build_list([3, 9, 5])
+
+        actual = fwd_sum1(n1, n2)
+
+        expected = build_list([1, 0, 1, 2])
+        
+        assert actual == expected
+
+    def test_case4(self):
+        
+        n1, n2 = build_list([1]), build_list([1])
+
+        actual = rev_sum1(n1, n2)
+
+        expected = build_list([2])
+        
+        assert actual == expected
+
+    def test_case5(self):
+        
+        n1, n2 = build_list([0, 0, 0, 0]), build_list([9, 9, 9, 9])
+
+        actual = rev_sum1(n1, n2)
+
+        expected = build_list([9, 9, 9, 9])
         
         assert actual == expected
