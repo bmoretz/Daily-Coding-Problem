@@ -34,6 +34,27 @@ class Node:
     def set_next(self, node):
         self.next = node
 
+''' equality is by reference. '''
+class RefNode():
+
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = next
+
+def build_ref_list(values):
+    head, prev = None, None
+
+    for val in values:
+        node = RefNode(val)
+
+        if head == None:            
+            head, prev = node, node
+        else:
+            prev.next = node
+            prev = node
+
+    return head
+
 '''Singly Linked List Implementation.'''
 class SLinkedList:
     
@@ -624,26 +645,6 @@ of the first list is the exact same node (by reference), as the jth node of the 
 then they are intersecting.
 '''
 
-class RefNode():
-
-    def __init__(self, data, next=None):
-        self.data = data
-        self.next = next
-
-def build_ref_list(values):
-    head, prev = None, None
-
-    for val in values:
-        node = RefNode(val)
-
-        if head == None:            
-            head = node, prev = node
-        else:
-            prev.next = node
-            prev = node
-
-    return head
-
 def tail(node):
     if node == None: return None
     
@@ -680,27 +681,54 @@ def intersect5(node1, node2):
 ''' O(N + K) run-time, O(1) space.'''
 def intersect6(node1, node2):
 
-    def to_stack(node):
-
-        stack = []
-
-        while node != None:
-            stack.append(node)
-            node = node.next
-        return stack
-
-    def tail(node):
+    def tail_info(node):
         
-        prev = None
+        prev, length = None, 0
         
         while node != None:
+            length += 1
             prev = node
             node = node.next
         
-        return prev
+        return (prev, length)
     
     if node1 == None or node2 == None: return None
 
-    s = to_stack(node1)
+    i1, i2 = tail_info(node1), tail_info(node2)
 
-    return s[0] if s[-1] == tail(node2) else None
+    if i1[0] == i2[0]:
+        
+        return node1 if i1[1] < i2[1] else node2
+
+    return None
+
+'''Loop Detection.
+
+Given a circular linked list, implement an algorithm that returns the node at the beginning of the loop.
+
+Definition:
+
+Circular linked list: A (corrupt) linked list in which a node's next pointer points to an earlier node, so
+as to make a loop in the linked list.
+
+Example:
+
+Input: A -> B -> C -> D -> E -> C [the same C as earlier]
+Output: C
+'''
+
+def detect_loop1(node):
+    if node == None: return None
+
+    nodes = set()
+
+    while node != None:
+        
+        if node in nodes:
+            return node
+
+        nodes.add(node)
+
+        node = node.next
+
+    return None

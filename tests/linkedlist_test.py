@@ -13,6 +13,7 @@ from problems.linkedlist import partition1
 from problems.linkedlist import rev_sum1, fwd_sum1
 from problems.linkedlist import is_palindrome1
 from problems.linkedlist import intersect5, intersect6
+from problems.linkedlist import detect_loop1
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -664,7 +665,11 @@ class Test_Intersect6(unittest.TestCase):
 
         tail(h2).next = h1
 
-        assert intersect6(h1, h2) == h1
+        actual = intersect6(h1, h2)
+        
+        expected = h1
+
+        assert actual == expected
         
     def test_case3(self):
         
@@ -706,5 +711,62 @@ class Test_Intersect6(unittest.TestCase):
         actual = intersect6(h1, h2)
         
         expected = h2
+
+        assert actual == expected
+
+class Test_DetectLoop1(unittest.TestCase):
+
+    @staticmethod
+    def set_loop(node, loop_back):
+
+        loop_node, prev = None, None
+
+        while node != None:
+            if node.data == loop_back:
+                loop_node = node
+            prev = node
+            node = node.next
+
+        prev.next = loop_node
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert detect_loop1(None) == None
+
+    def test_case2(self):
+        
+        node = build_ref_list(['A', 'B', 'C', 'D', 'E'])
+
+        self.set_loop(node, 'C')
+
+        actual = detect_loop1(node).data
+
+        expected = 'C'
+
+        assert actual == expected
+        
+    def test_case3(self):
+
+        node = build_ref_list(['A', 'B', 'C', 'D', 'E'])
+
+        self.set_loop(node, 'A')
+
+        actual = detect_loop1(node).data
+
+        expected = 'A'
+
+        assert actual == expected
+
+    def test_case4(self):
+        node = build_ref_list(['A', 'B', 'C', 'D', 'E'])
+
+        self.set_loop(node, 'D')
+
+        actual = detect_loop1(node).data
+
+        expected = 'D'
 
         assert actual == expected

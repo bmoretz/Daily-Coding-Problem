@@ -1,58 +1,52 @@
-'''Intersection.
+'''Loop Detection.
 
-Given two (singly) linked lists, determine if the two lists intersect. Return the intersecting node.
+Given a circular linked list, implement an algorithm that returns the node at the beginning of the loop.
 
-Note that the intersection is defined based on reference, not value. That is, if the kth node
-of the first list is the exact same node (by reference), as the jth node of the second list,
-then they are intersecting.
+Definition:
+
+Circular linked list: A (corrupt) linked list in which a node's next pointer points to an earlier node, so
+as to make a loop in the linked list.
+
+Example:
+
+Input: A -> B -> C -> D -> E -> C [the same C as earlier]
+Output: C
 '''
 
-from problems.linkedlist import build_list
+from problems.linkedlist import build_ref_list
 
+def set_loop(node, loop_back):
 
-def tail(node):
-    if node == None: return None
-    
-    prev = None
+    loop_node, prev = None, None
 
     while node != None:
+        if node.data == loop_back:
+            loop_node = node
         prev = node
         node = node.next
 
-    return prev
+    prev.next = loop_node    
 
-h1 = build_list([1, 2, 3, 4])
-h2 = build_list([5, 6])
+def detect_loop(node):
+    if node == None: return None
 
-#tail(h2).next = h1
+    nodes = set()
 
-def intersect6(node1, node2):
-
-    def to_stack(node):
-
-        stack = []
-
-        while node != None:
-            stack.append(node)
-            node = node.next
-        return stack
-
-    def tail(node):
+    while node != None:
         
-        prev = None
-        
-        while node != None:
-            prev = node
-            node = node.next
-        
-        return prev
-    
-    if node1 == None or node2 == None: return None
+        if node in nodes:
+            return node
 
-    s = to_stack(node1)
+        nodes.add(node)
 
-    return s[0] if s[-1] == tail(node2) else None
+        node = node.next
 
-intersect = intersect(h1, h2)
+    return None
 
-print(intersect)
+head = build_ref_list(['A', 'B', 'C', 'D', 'E'])
+
+# set_loop(head, 'C')
+
+loop_node = detect_loop(head)
+
+print(loop_node)
