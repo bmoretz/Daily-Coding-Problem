@@ -1,42 +1,58 @@
-from copy import deepcopy
+'''Intersection.
 
-'''Palindrome.
+Given two (singly) linked lists, determine if the two lists intersect. Return the intersecting node.
 
-Implement a function to check if a linked list is a palindrome.
+Note that the intersection is defined based on reference, not value. That is, if the kth node
+of the first list is the exact same node (by reference), as the jth node of the second list,
+then they are intersecting.
 '''
 
 from problems.linkedlist import build_list
 
 
-def is_palindrome(node):
+def tail(node):
+    if node == None: return None
     
-    def reverse(node):
+    prev = None
 
-        prev = None
+    while node != None:
+        prev = node
+        node = node.next
+
+    return prev
+
+h1 = build_list([1, 2, 3, 4])
+h2 = build_list([5, 6])
+
+#tail(h2).next = h1
+
+def intersect6(node1, node2):
+
+    def to_stack(node):
+
+        stack = []
 
         while node != None:
+            stack.append(node)
+            node = node.next
+        return stack
 
-            nxt = node.next
-            node.next = prev
+    def tail(node):
+        
+        prev = None
+        
+        while node != None:
             prev = node
-            node = nxt
+            node = node.next
         
         return prev
+    
+    if node1 == None or node2 == None: return None
 
-    if node == None: return None
+    s = to_stack(node1)
 
-    orig = deepcopy(node)
-    rev = reverse(node)
+    return s[0] if s[-1] == tail(node2) else None
 
-    is_pal = True
+intersect = intersect(h1, h2)
 
-    while orig != None:
-        is_pal &= orig.data == rev.data
-
-        orig, rev = orig.next, rev.next
-
-    return is_pal
-
-head = build_list(['a', 'b', 'c', 'b', 'a'])
-
-print(is_palindrome(head))
+print(intersect)

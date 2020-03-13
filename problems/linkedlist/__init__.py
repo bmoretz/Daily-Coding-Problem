@@ -614,3 +614,93 @@ def is_palindrome1(node):
         orig, rev = orig.next, rev.next
 
     return is_pal
+
+'''Intersection.
+
+Given two (singly) linked lists, determine if the two lists intersect. Return the intersecting node.
+
+Note that the intersection is defined based on reference, not value. That is, if the kth node
+of the first list is the exact same node (by reference), as the jth node of the second list,
+then they are intersecting.
+'''
+
+class RefNode():
+
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = next
+
+def build_ref_list(values):
+    head, prev = None, None
+
+    for val in values:
+        node = RefNode(val)
+
+        if head == None:            
+            head = node, prev = node
+        else:
+            prev.next = node
+            prev = node
+
+    return head
+
+def tail(node):
+    if node == None: return None
+    
+    prev = None
+
+    while node != None:
+        prev = node
+        node = node.next
+
+    return prev
+
+''' O(N^2) run-time, O(1) space.'''
+def intersect5(node1, node2):
+
+    if node1 == None or node2 == None: return None
+
+    orig = node2
+
+    while node1 != None:
+
+        node2 = orig
+
+        while node2 != None:
+
+            if node1 == node2:
+                return node1
+            
+            node2 = node2.next
+
+        node1 = node1.next
+    
+    return None
+
+''' O(N + K) run-time, O(1) space.'''
+def intersect6(node1, node2):
+
+    def to_stack(node):
+
+        stack = []
+
+        while node != None:
+            stack.append(node)
+            node = node.next
+        return stack
+
+    def tail(node):
+        
+        prev = None
+        
+        while node != None:
+            prev = node
+            node = node.next
+        
+        return prev
+    
+    if node1 == None or node2 == None: return None
+
+    s = to_stack(node1)
+
+    return s[0] if s[-1] == tail(node2) else None

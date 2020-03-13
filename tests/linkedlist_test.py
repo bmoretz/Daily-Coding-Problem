@@ -1,7 +1,8 @@
 import unittest
 
 from problems.linkedlist import Node, SLinkedList
-from problems.linkedlist import build_list
+from problems.linkedlist import build_list, tail, build_ref_list
+
 from problems.linkedlist import add_numbers1, add_numbers2
 from problems.linkedlist import alternate1, alternate2
 from problems.linkedlist import intersect1, intersect2
@@ -11,6 +12,7 @@ from problems.linkedlist import delete_middle1
 from problems.linkedlist import partition1
 from problems.linkedlist import rev_sum1, fwd_sum1
 from problems.linkedlist import is_palindrome1
+from problems.linkedlist import intersect5, intersect6
 
 class Test_SingleLinkedList(unittest.TestCase):
     
@@ -582,3 +584,127 @@ class Test_FwdSum1(unittest.TestCase):
         data = build_list(['b', 'b', 'c', 'b', 'a'])
 
         assert is_palindrome1(data) == False
+
+class Test_Intersect5(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([5, 6])
+
+        assert intersect5(h1, h2) == None
+
+    def test_case2(self):
+        
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([5, 6])
+
+        tail(h2).next = h1
+
+        assert intersect5(h1, h2) == h1
+        
+    def test_case3(self):
+        
+        h1, h2 = build_ref_list([5, 6]), build_ref_list([1, 2, 3, 4])
+
+        tail(h1).next = h2
+
+        actual = intersect5(h1, h2)
+        
+        expected = h2
+
+        assert actual == expected
+
+    def test_case4(self):
+        h1, h2 = build_ref_list([5, 6]), build_ref_list([1, 2, 3, 4])
+
+        tail(h1).next = h2
+
+        actual = intersect5(h1, h2)
+        
+        expected = h2
+
+        assert actual == expected
+
+    def test_case5(self):
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([1, 2, 3, 4])
+
+        actual = intersect5(h1, h2)
+        
+        expected = None
+
+        assert actual == expected
+
+    def test_case6(self):
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([1, 2, 3, 4])
+
+        tail(h1).next = h2
+
+        actual = intersect5(h1, h2)
+        
+        expected = h2
+
+        assert actual == expected
+
+class Test_Intersect6(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([5, 6])
+
+        assert intersect6(h1, h2) == None
+
+    def test_case2(self):
+        
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([5, 6])
+
+        tail(h2).next = h1
+
+        assert intersect6(h1, h2) == h1
+        
+    def test_case3(self):
+        
+        h1, h2 = build_ref_list([5, 6]), build_ref_list([1, 2, 3, 4])
+
+        tail(h1).next = h2
+
+        actual = intersect6(h1, h2)
+        
+        expected = h2
+
+        assert actual == expected
+
+    def test_case4(self):
+        h1, h2 = build_ref_list([5, 6]), build_ref_list([1, 2, 3, 4])
+
+        tail(h1).next = h2
+
+        actual = intersect6(h1, h2)
+        
+        expected = h2
+
+        assert actual == expected
+
+    def test_case5(self):
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([1, 2, 3, 4])
+
+        actual = intersect6(h1, h2)
+        
+        expected = None
+
+        assert actual == expected
+
+    def test_case6(self):
+        h1, h2 = build_ref_list([1, 2, 3, 4]), build_ref_list([1, 2, 3, 4])
+
+        tail(h1).next = h2
+
+        actual = intersect6(h1, h2)
+        
+        expected = h2
+
+        assert actual == expected
