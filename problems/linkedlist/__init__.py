@@ -697,9 +697,8 @@ def intersect6(node1, node2):
     i1, i2 = tail_info(node1), tail_info(node2)
 
     if i1[0] == i2[0]:
-        
         return node1 if i1[1] < i2[1] else node2
-
+         
     return None
 
 '''Loop Detection.

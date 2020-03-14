@@ -3,6 +3,7 @@ import unittest
 from problems.stack_queue import Stack, MaxStack
 from problems.stack_queue import bracket_balanced1, bracket_balanced2
 from problems.stack_queue import max_subarray1, max_subarray2, max_subarray3
+from problems.stack_queue import tristack1
 
 class Test_BaseStack(unittest.TestCase):
     
@@ -31,7 +32,6 @@ class Test_MaxStack(unittest.TestCase):
             s.push(i)
 
         assert s.max() == 5
-
 
 class Test_BracketBalanced1(unittest.TestCase):
     
@@ -111,4 +111,45 @@ class Test_MaxSub3(unittest.TestCase):
         arr, k = [1, 2, 3, 4, 5, 6, 7, 8, 9], 3
 
         assert max_subarray3(arr, k) == [3, 4, 5, 6, 7, 8, 9]
- 
+
+
+class Test_Tristack1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        stack = tristack1()
+
+        assert stack.is_empty(0) == True
+        assert stack.is_empty(1) == True
+
+        assert stack.peek(0) == None
+
+        stack.push(0, "A")
+
+        assert stack.pop(0) == "A"
+
+        assert stack.is_empty(0) == True
+
+        stack.push(1, "B")
+        stack.push(0, "A")
+
+        assert stack.is_empty(1) == False
+        assert stack.peek(0) == "A"
+        assert stack.peek(1) == "B"
+        assert stack.is_empty(2) == True
+
+        stack.push(0, "D")
+        stack.push(1, "B")
+        stack.push(2, "C")
+
+        assert stack.peek(2) == "C"
+
+        assert stack.pop(2) == "C"
+
+        stack.push(0, "D")
+
+        assert stack.pop(0) == "D"
+
+        assert len(stack.data) == 6

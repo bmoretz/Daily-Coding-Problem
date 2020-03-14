@@ -1,52 +1,97 @@
-'''Loop Detection.
+'''Three in one.
 
-Given a circular linked list, implement an algorithm that returns the node at the beginning of the loop.
-
-Definition:
-
-Circular linked list: A (corrupt) linked list in which a node's next pointer points to an earlier node, so
-as to make a loop in the linked list.
-
-Example:
-
-Input: A -> B -> C -> D -> E -> C [the same C as earlier]
-Output: C
+Use a single array to implement three stacks.
 '''
 
-from problems.linkedlist import build_ref_list
+class tristack():
 
-def set_loop(node, loop_back):
+    def __init__(self):
+        self.n_stacks = 3
+        self.data = []
+        self.lengths = [0] * self.n_stacks
+    
+    def pop(self, index):
+        self.__check_index_range(index)
 
-    loop_node, prev = None, None
+        if self.is_empty(index): return None
 
-    while node != None:
-        if node.data == loop_back:
-            loop_node = node
-        prev = node
-        node = node.next
+        value = self.__top()[index]
+        self.data[index] = None
+        self.lengths[index] -= 1
 
-    prev.next = loop_node    
+        if all(v is None for v in self.__top()):
+            self.data = self.data[self.n_stacks:]
 
-def detect_loop(node):
-    if node == None: return None
+        return value
 
-    nodes = set()
-
-    while node != None:
+    def push(self, index, item):
+        self.__check_index_range(index)
         
-        if node in nodes:
-            return node
+        capacity = len(self.data) / self.n_stacks
 
-        nodes.add(node)
+        if self.lengths[index] >= capacity:
+            values = [None] * self.n_stacks
+            values[index] = item
 
-        node = node.next
+            self.data = values + self.data
 
-    return None
+            self.lengths[index] += 1
+        else:
+            offset = self.lengths[index] + index
+            self.data[offset] = item
+            self.lengths[index] += 1
 
-head = build_ref_list(['A', 'B', 'C', 'D', 'E'])
+    def peek(self, index):
+        self.__check_index_range(index)
 
-# set_loop(head, 'C')
+        if self.lengths[index] <= 0:
+            return None
 
-loop_node = detect_loop(head)
+        return self.__top()[index]
 
-print(loop_node)
+    def is_empty(self, index):
+        self.__check_index_range(index)
+
+        return self.lengths[index] == 0
+
+    def __check_index_range(self, index):
+        if index < 0 or index > self.n_stacks: 
+            raise IndexError(f'{index} is not a valid index.')
+
+    def __top(self):
+        return self.data[:self.n_stacks]
+
+stack = tristack()
+
+assert stack.is_empty(0) == True
+assert stack.is_empty(1) == True
+
+assert stack.peek(0) == None
+
+stack.push(0, "A")
+
+assert stack.pop(0) == "A"
+
+assert stack.is_empty(0) == True
+
+stack.push(1, "B")
+stack.push(0, "A")
+
+assert stack.is_empty(1) == False
+assert stack.peek(0) == "A"
+assert stack.peek(1) == "B"
+assert stack.is_empty(2) == True
+
+stack.push(0, "D")
+stack.push(1, "B")
+stack.push(2, "C")
+
+assert stack.peek(2) == "C"
+
+assert stack.pop(2) == "C"
+
+stack.push(0, "D")
+
+assert stack.pop(0) == "D"
+
+assert len(stack.data) == 6
