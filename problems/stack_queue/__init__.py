@@ -178,7 +178,7 @@ def max_subarray3(arr, k):
 Use a single array to implement three stacks.
 '''
 
-class tristack1():
+class nstack1():
 
     def __init__(self):
         self.n_stacks = 3

@@ -3,9 +3,9 @@
 Use a single array to implement three stacks.
 '''
 
-class tristack():
+class nstack():
 
-    def __init__(self):
+    def __init__(self, n = 3):
         self.n_stacks = 3
         self.data = []
         self.lengths = [0] * self.n_stacks
@@ -61,37 +61,16 @@ class tristack():
     def __top(self):
         return self.data[:self.n_stacks]
 
-stack = tristack()
+stack = nstack(3)
 
-assert stack.is_empty(0) == True
-assert stack.is_empty(1) == True
+stack.push(0, 'A')
+stack.push(1, 'B')
+stack.push(2, 'C')
 
-assert stack.peek(0) == None
+stack.push(0, 'B')
 
-stack.push(0, "A")
+assert stack.pop(0) == 'B'
 
-assert stack.pop(0) == "A"
+assert len(stack.data) == 3
 
-assert stack.is_empty(0) == True
-
-stack.push(1, "B")
-stack.push(0, "A")
-
-assert stack.is_empty(1) == False
-assert stack.peek(0) == "A"
-assert stack.peek(1) == "B"
-assert stack.is_empty(2) == True
-
-stack.push(0, "D")
-stack.push(1, "B")
-stack.push(2, "C")
-
-assert stack.peek(2) == "C"
-
-assert stack.pop(2) == "C"
-
-stack.push(0, "D")
-
-assert stack.pop(0) == "D"
-
-assert len(stack.data) == 6
+assert nstack.data == ['C', 'B', 'A']

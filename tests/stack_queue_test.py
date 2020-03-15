@@ -3,7 +3,7 @@ import unittest
 from problems.stack_queue import Stack, MaxStack
 from problems.stack_queue import bracket_balanced1, bracket_balanced2
 from problems.stack_queue import max_subarray1, max_subarray2, max_subarray3
-from problems.stack_queue import tristack1
+from problems.stack_queue import nstack1
 
 class Test_BaseStack(unittest.TestCase):
     
@@ -119,7 +119,20 @@ class Test_Tristack1(unittest.TestCase):
         pass
 
     def test_case1(self):
-        stack = tristack1()
+        stack = nstack1(3)
+
+        assert stack.is_empty(0) == True
+        assert stack.is_empty(1) == True
+        assert stack.is_empty(2) == True
+
+        assert stack.peek(0) == None
+        assert stack.peek(1) == None
+        assert stack.peek(2) == None
+
+        assert stack.data = []
+        
+    def test_case2(self):
+        stack = nstack1()
 
         assert stack.is_empty(0) == True
         assert stack.is_empty(1) == True
@@ -153,3 +166,35 @@ class Test_Tristack1(unittest.TestCase):
         assert stack.pop(0) == "D"
 
         assert len(stack.data) == 6
+
+    def test_case3(self):
+
+        stack = nstack1(3)
+
+        stack.push(0, 'A')
+        stack.push(0, 'B')
+        stack.push(0, 'C')
+
+        assert stack.pop(0) == "C"
+        assert stack.pop(0) == "B"
+        assert stack.pop(0) == "A"
+
+        assert stack.is_empty(0)
+
+        assert stack.data == []
+
+    def test_case4(self):
+
+        stack = nstack1(3)
+
+        stack.push(0, 'A')
+        stack.push(1, 'B')
+        stack.push(2, 'C')
+
+        stack.push(0, 'B')
+
+        assert stack.pop(0) == 'B'
+
+        assert len(stack.data) == 3
+
+        assert stack.data == ['A', 'B', 'C']        
