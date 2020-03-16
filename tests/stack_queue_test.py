@@ -4,6 +4,7 @@ from problems.stack_queue import Stack, MaxStack
 from problems.stack_queue import bracket_balanced1, bracket_balanced2
 from problems.stack_queue import max_subarray1, max_subarray2, max_subarray3
 from problems.stack_queue import nstack1, nstack2
+from problems.stack_queue import minstack
 
 class Test_BaseStack(unittest.TestCase):
     
@@ -334,3 +335,133 @@ class Test_Tristack2(unittest.TestCase):
         assert stack.is_empty(1)
 
         assert stack.data == []
+
+class Test_MinStack(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        stack = minstack()
+
+        assert stack.is_empty() == True
+        assert stack.peek() == None
+        assert stack.min() == None
+
+        stack.push(0)
+
+        assert stack.is_empty() == False
+        assert stack.min() == 0
+        assert stack.peek() == 0
+
+        assert stack.pop() == 0
+        assert stack.is_empty()
+
+    def test_case2(self):
+        stack = minstack()
+
+        stack.push(0)
+        stack.push(1)
+        stack.push(2)
+        stack.push(3)
+
+        assert stack.is_empty() == False
+        assert stack.min() == 0
+        assert stack.peek() == 3
+
+        assert stack.pop() == 3
+        assert stack.min() == 0
+
+        assert stack.pop() == 2
+        assert stack.min() == 0
+
+        assert stack.pop() == 1
+        assert stack.min() == 0
+
+        assert stack.pop() == 0
+
+        assert stack.is_empty() == True
+
+    def test_case3(self):
+        stack = minstack()
+
+        stack.push(4)
+        stack.push(3)
+        stack.push(2)
+        stack.push(1)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+        assert stack.min() == 0
+        assert stack.peek() == 0
+
+        assert stack.pop() == 0
+        assert stack.pop() == 1
+        assert stack.pop() == 2
+        assert stack.pop() == 3
+        assert stack.pop() == 4
+
+    def test_case4(self):
+        stack = minstack()
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+        assert stack.min() == -1
+        assert stack.peek() == 0
+
+        assert stack.pop() == 0
+        assert stack.min() == -1
+
+        assert stack.pop() == 2
+        assert stack.min() == -1
+
+        assert stack.pop() == 5
+        assert stack.min() == -1
+
+        assert stack.pop() == -1
+        assert stack.min() == 2
+
+        assert stack.pop() == 2
+        
+        assert stack.min() == 4
+        assert stack.pop() == 4
+
+        assert stack.is_empty() == True
+        
+    def test_case5(self):
+        stack = minstack()
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+        assert stack.min() == -1
+        assert stack.peek() == 0
+
+        assert stack.pop() == 0
+        assert stack.min() == -1
+
+        assert stack.pop() == 2
+        assert stack.min() == -1
+
+        assert stack.pop() == 5
+        assert stack.min() == -1
+
+        assert stack.pop() == -1
+        assert stack.min() == 2
+
+        assert stack.pop() == 2
+        assert stack.min() == 4
+        assert stack.pop() == 4
+
+        assert stack.is_empty() == True
