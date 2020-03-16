@@ -5,6 +5,7 @@ from problems.stack_queue import bracket_balanced1, bracket_balanced2
 from problems.stack_queue import max_subarray1, max_subarray2, max_subarray3
 from problems.stack_queue import nstack1, nstack2
 from problems.stack_queue import minstack
+from problems.stack_queue import set_stack
 
 class Test_BaseStack(unittest.TestCase):
     
@@ -465,3 +466,144 @@ class Test_MinStack(unittest.TestCase):
         assert stack.pop() == 4
 
         assert stack.is_empty() == True
+class Test_StackOfStacks(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        stack = set_stack(3)
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+
+        assert stack.peek() == 0
+        assert stack.pop() == 0
+
+        assert stack.peek() == 2
+        assert stack.pop() == 2
+
+        assert stack.peek() == 5
+        assert stack.pop() == 5
+
+        assert stack.peek() == -1
+        assert stack.pop() == -1
+
+        assert stack.peek() == 2
+        assert stack.pop() == 2
+
+        assert stack.peek() == 4
+        assert stack.pop() == 4
+
+        assert stack.is_empty() == True
+
+    def test_case2(self):
+        stack = set_stack(3)
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+
+        assert stack.pop_at(1) == -1
+        assert stack.pop_at(1) == 2
+        assert stack.pop_at(1) == 4
+
+        assert stack.pop_at(1) == None
+
+        assert stack.pop() == 0
+        assert stack.pop() == 2
+        assert stack.pop() == 5
+
+    def test_case3(self):
+        stack = set_stack(3)
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+
+        assert stack.pop_at(1) == -1
+
+        assert stack.pop() == 0
+        assert stack.pop() == 2
+        assert stack.pop() == 5
+
+        assert stack.pop() == 2
+        assert stack.pop() == 4
+
+        assert stack.pop_at(1) == None
+
+
+    def test_case4(self):
+        stack = set_stack(3)
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+
+        assert stack.pop_at(1) == -1
+        assert stack.pop_at(1) == 2
+
+        assert stack.pop() == 0
+        assert stack.pop() == 2
+        assert stack.pop() == 5
+
+        assert stack.pop() == 4
+
+        assert stack.pop_at(1) == None
+        
+    def test_case5(self):
+        stack = set_stack(3)
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        stack.push(3)
+        stack.push(8)
+        stack.push(7)
+
+        assert stack.is_empty() == False
+
+        assert stack.pop_at(1) == 0
+        assert stack.pop_at(2) == 2
+
+        assert stack.pop() == 7
+
+        assert stack.pop_at(2) == None
+
+        assert stack.pop_at(1) == 5
+
+        assert stack.pop() == 8
+
+        assert stack.pop_at(1) == 4
+
+        assert stack.pop() == 3
+        assert stack.pop() == 2
+        assert stack.pop() == -1
+
+        assert stack.pop_at(1) == None
