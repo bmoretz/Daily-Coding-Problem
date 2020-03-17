@@ -14,8 +14,6 @@ Follow-up:
 Implement a function popAt(index) which performs a pop operation on a specific sub-stack.
 '''
 
-from math import ceil
-
 class set_stack():
 
     def __init__(self, n = 5):
@@ -23,45 +21,34 @@ class set_stack():
         self.max_len = n
 
     def pop(self):
-        return self.pop_at(0)
+        
+        if self.is_empty(): return None
+
+        value = self.data[0]
+
+        self.data = self.data[1:]
+
+        return value
 
     def push(self, item):
+        
         if item != None:
-            if self.data and len(self.data[0]) == self.max_len:
-                self.data.insert(0, [])
-
-            if not self.data: self.data = [[]]
-
-            self.data[0] = [item] + self.data[0]
+            self.data = [item] + self.data
 
     def pop_at(self, index):
         
-        if len(self.data) <= index: return None
-        if len(self.data[index]) <= 0: return None
-
-        value = self.data[index][0]
+        offset = self.max_len * index
         
-        data = []
-        for row, items in enumerate(self.data[index:]):
+        if offset >= len(self.data): return None
 
-            for col, val in enumerate(items):
-                if row == 0 and col == 0:
-                    continue
-                data += [val]
-        
-        new_rows = ceil(len(data) / self.max_len)
-        newdata = [[] * self.max_len] * new_rows
+        value = self.data[offset]
 
-        for row in range(0, new_rows):
-            begin, end = row * (self.max_len), min(self.max_len * (row + 1), len(data))
-            newdata[row] = data[begin:end]
-
-        self.data[index:] = newdata
+        self.data = self.data[:offset] + self.data[offset + 1:]
 
         return value
 
     def peek(self):
-        return self.data[0][0] if not self.is_empty() else None
+        return self.data[0] if not self.is_empty() else None
 
     def is_empty(self):
         return len(self.data) == 0
