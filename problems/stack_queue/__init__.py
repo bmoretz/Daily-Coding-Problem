@@ -489,3 +489,46 @@ class set_stack2():
 
     def is_empty(self):
         return len(self.data) == 0
+
+
+'''Queue of Stacks.
+
+Implement a MyQueue class which implements a queue using two stacks.
+'''
+
+class my_queue1():
+
+    def __init__(self):
+        self.stack = []
+
+    def enqueue(self, item):
+        
+        if item == None: return
+
+        self.stack = [item] + self.stack
+
+    def dequeue(self):
+        
+        if self.stack == []: return None
+
+        top = self.stack.pop()
+
+        queue = []
+
+        while self.stack:
+            queue.append(self.stack.pop())
+        
+        stack = []
+
+        for item in queue:
+            stack = [item] + stack
+
+        self.stack = stack
+
+        return top
+
+    def peek(self):
+        return self.stack[len(self.stack) - 1] if self.stack else None
+
+    def is_empty(self):
+        return self.stack == []

@@ -1,89 +1,67 @@
-'''Stack of Plates.
+'''Queue of Stacks.
 
-Imagine a (literal) stack of plates. If the stack gets too high, it might topple. Therefore, in real life,
-we would likely start a new stack when the previous stacks exceeds some threshold.
-
-Implement a data structure SetOfStacks that mimics this. SetOfStacks should be composed of several stacks
-and should create a new stack once the previous one exceeds capacity.
-
-SetOfStacks should behave identically to a single stack (that is, pop() should return the same
-values as it would if there were just a single stack).
-
-Follow-up:
-
-Implement a function popAt(index) which performs a pop operation on a specific sub-stack.
+Implement a MyQueue class which implements a queue using two stacks.
 '''
 
-class set_stack():
+class my_queue1():
 
-    def __init__(self, n = 5):
-        self.data = []
-        self.max_len = n
+    def __init__(self):
+        self.stack = []
 
-    def pop(self):
+    def enqueue(self, item):
         
-        if self.is_empty(): return None
+        if item == None: return
 
-        value = self.data[0]
+        self.stack = [item] + self.stack
 
-        self.data = self.data[1:]
-
-        return value
-
-    def push(self, item):
+    def dequeue(self):
         
-        if item != None:
-            self.data = [item] + self.data
+        if self.stack == []: return None
 
-    def pop_at(self, index):
+        top = self.stack.pop()
+
+        queue = []
+
+        while self.stack:
+            queue.append(self.stack.pop())
         
-        offset = self.max_len * index
-        
-        if offset >= len(self.data): return None
+        stack = []
 
-        value = self.data[offset]
+        for item in queue:
+            stack = [item] + stack
 
-        self.data = self.data[:offset] + self.data[offset + 1:]
+        self.stack = stack
 
-        return value
+        return top
 
     def peek(self):
-        return self.data[0] if not self.is_empty() else None
+        return self.stack[len(self.stack) - 1] if self.stack else None
 
     def is_empty(self):
-        return len(self.data) == 0
+        return self.stack == []
 
-stack = set_stack(3)
+queue = my_queue1()
 
-stack.push(4)
-stack.push(2)
-stack.push(-1)
+queue.enqueue(1)
 
-stack.push(5)
-stack.push(2)
-stack.push(0)
+assert queue.dequeue() == 1
 
-stack.push(3)
-stack.push(8)
-stack.push(7)
+assert queue.is_empty() == True
 
-assert stack.is_empty() == False
+queue.enqueue(2)
 
-assert stack.pop_at(1) == 0
-assert stack.pop_at(2) == 2
+assert queue.peek() == 2
 
-assert stack.pop() == 7
+queue.enqueue(3)
 
-assert stack.pop_at(2) == None
+assert queue.peek() == 2
 
-assert stack.pop_at(1) == 5
+queue.enqueue(4)
 
-assert stack.pop() == 8
+assert queue.peek() == 2
 
-assert stack.pop_at(1) == 4
+queue.enqueue(5)
 
-assert stack.pop() == 3
-assert stack.pop() == 2
-assert stack.pop() == -1
+assert queue.peek() == 2
 
-assert stack.pop_at(1) == None
+assert queue.is_empty() == False

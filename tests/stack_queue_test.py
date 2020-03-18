@@ -3,9 +3,6 @@ import unittest
 from problems.stack_queue import Stack, MaxStack
 from problems.stack_queue import bracket_balanced1, bracket_balanced2
 from problems.stack_queue import max_subarray1, max_subarray2, max_subarray3
-from problems.stack_queue import nstack1, nstack2
-from problems.stack_queue import minstack
-from problems.stack_queue import set_stack1, set_stack2
 
 class Test_BaseStack(unittest.TestCase):
     
@@ -114,7 +111,7 @@ class Test_MaxSub3(unittest.TestCase):
 
         assert max_subarray3(arr, k) == [3, 4, 5, 6, 7, 8, 9]
 
-
+from problems.stack_queue import nstack1
 class Test_Tristack1(unittest.TestCase):
     
     def setUp(self):
@@ -229,7 +226,7 @@ class Test_Tristack1(unittest.TestCase):
 
         assert stack.data == []
 
-
+from problems.stack_queue import nstack2
 class Test_Tristack2(unittest.TestCase):
     
     def setUp(self):
@@ -337,6 +334,7 @@ class Test_Tristack2(unittest.TestCase):
 
         assert stack.data == []
 
+from problems.stack_queue import minstack
 class Test_MinStack(unittest.TestCase):
     
     def setUp(self):
@@ -466,6 +464,8 @@ class Test_MinStack(unittest.TestCase):
         assert stack.pop() == 4
 
         assert stack.is_empty() == True
+
+from problems.stack_queue import set_stack1
 class Test_StackOfStacks1(unittest.TestCase):
     
     def setUp(self):
@@ -607,7 +607,7 @@ class Test_StackOfStacks1(unittest.TestCase):
 
         assert stack.pop_at(1) == None
 
-
+from problems.stack_queue import set_stack2
 class Test_StackOfStacks2(unittest.TestCase):
     
     def setUp(self):
@@ -748,3 +748,128 @@ class Test_StackOfStacks2(unittest.TestCase):
         assert stack.pop() == -1
 
         assert stack.pop_at(1) == None
+
+from problems.stack_queue import my_queue1
+class Test_MyQueue1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        queue = my_queue1()
+
+        queue.enqueue(1)
+
+        assert queue.dequeue() == 1
+
+        assert queue.is_empty() == True
+
+        queue.enqueue(2)
+
+        assert queue.peek() == 2
+
+        queue.enqueue(3)
+
+        assert queue.peek() == 2
+
+        queue.enqueue(4)
+
+        assert queue.peek() == 2
+
+        queue.enqueue(5)
+
+        assert queue.peek() == 2
+
+        assert queue.is_empty() == False
+        
+    def test_case2(self):
+        queue = my_queue1()
+
+        assert queue.is_empty() == True
+
+        queue.enqueue(1)
+
+        assert queue.peek() == 1
+
+        queue.enqueue(2)
+
+        assert queue.peek() == 1
+
+        queue.enqueue(3)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 1
+
+        assert queue.dequeue() == 1
+        assert queue.peek() == 2
+
+        assert queue.dequeue() == 2
+        assert queue.peek() == 3
+
+        assert queue.dequeue() == 3
+
+        assert queue.is_empty() == True
+
+    def test_case3(self):
+        queue = my_queue1()
+
+        assert queue.peek() == None
+        assert queue.dequeue() == None
+
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+        queue.enqueue(4)
+        queue.enqueue(5)
+
+        assert queue.peek() == 1
+        assert queue.dequeue() == 1
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        assert queue.peek() == 3
+        assert queue.dequeue() == 3
+
+        queue.enqueue(2)
+
+        assert queue.peek() == 4
+        assert queue.dequeue() == 4
+
+        assert queue.peek() == 5
+        assert queue.dequeue() == 5
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        assert queue.is_empty() == True
+
+    def test_case4(self):
+        queue = my_queue1()
+
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+
+        assert queue.peek() == 1
+        assert queue.dequeue() == 1
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        queue.enqueue(4)
+
+        assert queue.peek() == 3
+
+        queue.enqueue(5)
+
+        assert queue.peek() == 3
+
+        assert queue.dequeue() == 3
+
+        assert queue.peek() == 4
+        assert queue.dequeue() == 4
+
+        assert queue.dequeue() == 5
+
+        assert queue.is_empty() == True
