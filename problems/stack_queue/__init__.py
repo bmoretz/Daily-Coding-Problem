@@ -1,32 +1,47 @@
-from collections import deque
+'''Stack.
 
-'''Vanilla Stack'''
-class Stack:
+push, pop, peek, is_empty.
+'''
+class Stack():
+    
+    def __init__(self):
+        self.data = []
+    
+    def push(self, item):
+        self.data.append(item)
+
+    def pop(self):
+        return self.data.pop() if len(self.data) > 0 else None
+
+    def peek(self):
+        return self.data[-1] if len(self.data) > 0 else None
+
+    def is_empty(self):
+        return len(self.data) == 0
+
+'''Queue.
+
+enqueue, dequeue, peek, is_empty.
+'''
+class Queue:
 
     def __init__(self):
-        self._stack = []
-        self._length = 0
+        self.data = []
 
-    '''N(1) insert item'''
-    def push(self, val):
-        self._stack.append(val)
-        self._length = self._length + 1
+    def enqueue(self, item):
+        self.data = [item] + self.data
 
-    '''N(1) Remove and return top element'''
-    def pop(self):
-        if self._length > 0:
-            self._length = self._length - 1
-            return self._stack.pop()
-        else:
-            return IndexError("Empty stack, cannot pop element.")
+    def dequeue(self):
+        if len(self.data) == 0: return None
 
-    '''O(1) peek current element'''
-    def peek(self):
-        return self._stack[-1]
-
-    def length(self):
-        return self._length
+        return self.data.pop()
         
+    def peek(self):
+        return self.data[-1] if len(self.data) > 0 else None
+
+    def is_empty(self):
+        return len(self.data) == 0
+
 '''Max stack.
 
 Implement a max stack that has the following methods.
@@ -64,7 +79,7 @@ class MaxStack(Stack):
 
 '''Is Well-Formed?
 
-Given a string of round, curly, and square opening and closing brackers, return whether the brackets are balanced (well-formed).
+Given a string of round, curly, and square opening and closing brackets, return whether the brackets are balanced (well-formed).
 
 For example, 
 
@@ -81,13 +96,13 @@ def bracket_balanced1(instr):
         if char in braces.values():
             stack.push(char)
         elif char in braces.keys():
-            if stack.length() == 0: 
+            if stack.is_empty(): 
                 return False
 
             if braces.get(char) == stack.peek():
                 stack.pop()
 
-    return stack.length() == 0
+    return stack.is_empty()
 
 def bracket_balanced2(instr):
     stack = []
@@ -148,6 +163,7 @@ def max_subarray2(arr, k):
         results.append(max(arr[i:i + k]))
     return results
 
+from collections import deque 
 '''O(n) Solution'''
 def max_subarray3(arr, k):
     q, result = deque(), []
@@ -532,3 +548,60 @@ class my_queue1():
 
     def is_empty(self):
         return self.stack == []
+
+'''Sort Stack.
+
+Write a program to sort a stack such that the smallest items are on top. You can use an 
+additional temporary stack, but you mat not copy the elements into any other data structure
+(such as an array). The stack supports the following operations:
+
+push, pop, peek, and is_empty.
+'''
+
+def sort_stack1(stack):
+
+    def shift_min(stack, cutoff):
+        temp, maximum, n = Stack(), None, 0
+
+        while not stack.is_empty() and n < cutoff:
+            
+            current = stack.pop()
+
+            if maximum is None or current > maximum:
+                maximum = current
+
+            temp.push(current)
+            n += 1
+        
+        stack.push(maximum)
+
+        while not temp.is_empty():
+
+            current = temp.pop()
+
+            if current == maximum:
+                minimum = None
+                continue
+
+            stack.push(current)
+        
+        return stack
+
+    def get_len(stack):
+
+        temp, n = Stack(), 0
+
+        while not stack.is_empty():
+            temp.push(stack.pop())
+            n += 1
+
+        return (temp, n)
+
+    if stack is None: return
+
+    stack, n = get_len(stack)
+
+    for index in reversed(range(1, n + 1)):
+        stack = shift_min(stack, index)
+
+    return stack

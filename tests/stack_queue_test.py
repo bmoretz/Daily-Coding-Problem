@@ -1,23 +1,312 @@
 import unittest
 
-from problems.stack_queue import Stack, MaxStack
-from problems.stack_queue import bracket_balanced1, bracket_balanced2
-from problems.stack_queue import max_subarray1, max_subarray2, max_subarray3
-
-class Test_BaseStack(unittest.TestCase):
+from problems.stack_queue import Stack
+class Test_Stack(unittest.TestCase):
     
     def setUp(self):
         pass
 
     def test_case1(self):
+        stack = Stack()
 
-        s = Stack()
+        assert stack.is_empty() == True
 
-        for i in range(0, 5):
-            s.push(i)
+        assert stack.pop() == None
 
-        assert s.length() == 5
+    def test_case2(self):
 
+        stack = Stack()
+
+        assert stack.is_empty() == True
+
+        stack.push(2)
+
+        assert stack.is_empty() == False
+        assert stack.peek() == 2
+
+        stack.push(3)
+
+        assert stack.is_empty() == False
+        assert stack.peek() == 3
+
+        stack.push(5)
+
+        assert stack.is_empty() == False
+        assert stack.peek() == 5
+
+        stack.push(1)
+
+        assert stack.is_empty() == False
+        assert stack.peek() == 1
+
+        stack.push(4)
+
+        assert stack.is_empty() == False
+        assert stack.peek() == 4
+
+    def test_case3(self):
+        stack = Stack()
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+
+        assert stack.peek() == 0
+        assert stack.pop() == 0
+
+        assert stack.peek() == 2
+        assert stack.pop() == 2
+
+        assert stack.peek() == 5
+        assert stack.pop() == 5
+
+        assert stack.peek() == -1
+        assert stack.pop() == -1
+
+        assert stack.peek() == 2
+        assert stack.pop() == 2
+
+        assert stack.peek() == 4
+        assert stack.pop() == 4
+
+        assert stack.is_empty() == True
+
+    def test_case4(self):
+        stack = Stack()
+
+        stack.push(4)
+        stack.push(2)
+        stack.push(-1)
+
+        assert stack.is_empty() == False
+
+        assert stack.peek() == -1
+
+        stack.push(5)
+        
+        assert stack.peek() == 5
+
+        stack.push(2)
+        
+        assert stack.peek() == 2
+
+        stack.push(0)
+
+        assert stack.peek() == 0
+
+        assert stack.pop() == 0
+        assert stack.pop() == 2
+        assert stack.pop() == 5
+
+        assert stack.peek() == -1
+
+        assert stack.pop() == -1
+        assert stack.pop() == 2
+        assert stack.pop() == 4
+
+        assert stack.is_empty() == True
+
+    def test_case5(self):
+        stack = Stack()
+
+        stack.push(4)
+
+        assert stack.is_empty() == False
+
+        assert stack.peek() == 4
+        assert stack.pop() == 4
+
+        assert stack.is_empty() == True
+
+        stack.push(2)
+        stack.push(-1)
+        stack.push(5)
+
+        assert stack.is_empty() == False
+
+        assert stack.peek() == 5
+        assert stack.pop() == 5
+
+        assert stack.peek() == -1
+        assert stack.pop() == -1
+
+        assert stack.peek() == 2
+        assert stack.pop() == 2
+
+        assert stack.is_empty() == True
+
+        stack.push(2)
+        stack.push(0)
+
+        assert stack.is_empty() == False
+
+        assert stack.pop() == 0
+        assert stack.pop() == 2
+
+        assert stack.is_empty() == True
+
+from problems.stack_queue import Queue
+class Test_Queue(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        queue = Queue()
+
+        queue.enqueue(1)
+
+        assert queue.dequeue() == 1
+
+        assert queue.is_empty() == True
+
+        queue.enqueue(2)
+
+        assert queue.peek() == 2
+
+        queue.enqueue(3)
+
+        assert queue.peek() == 2
+
+        queue.enqueue(4)
+
+        assert queue.peek() == 2
+
+        queue.enqueue(5)
+
+        assert queue.peek() == 2
+
+        assert queue.is_empty() == False
+        
+    def test_case2(self):
+        queue = Queue()
+
+        assert queue.is_empty() == True
+
+        queue.enqueue(1)
+
+        assert queue.peek() == 1
+
+        queue.enqueue(2)
+
+        assert queue.peek() == 1
+
+        queue.enqueue(3)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 1
+
+        assert queue.dequeue() == 1
+        assert queue.peek() == 2
+
+        assert queue.dequeue() == 2
+        assert queue.peek() == 3
+
+        assert queue.dequeue() == 3
+
+        assert queue.is_empty() == True
+
+    def test_case3(self):
+        queue = Queue()
+
+        assert queue.peek() == None
+        assert queue.dequeue() == None
+
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+        queue.enqueue(4)
+        queue.enqueue(5)
+
+        assert queue.peek() == 1
+        assert queue.dequeue() == 1
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        assert queue.peek() == 3
+        assert queue.dequeue() == 3
+
+        queue.enqueue(2)
+
+        assert queue.peek() == 4
+        assert queue.dequeue() == 4
+
+        assert queue.peek() == 5
+        assert queue.dequeue() == 5
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        assert queue.is_empty() == True
+
+    def test_case4(self):
+        queue = Queue()
+
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+
+        assert queue.peek() == 1
+        assert queue.dequeue() == 1
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        queue.enqueue(4)
+
+        assert queue.peek() == 3
+
+        queue.enqueue(5)
+
+        assert queue.peek() == 3
+
+        assert queue.dequeue() == 3
+
+        assert queue.peek() == 4
+        assert queue.dequeue() == 4
+
+        assert queue.dequeue() == 5
+
+        assert queue.is_empty() == True
+
+    def test_case6(self):
+
+        queue = Queue()
+
+        assert queue.is_empty() == True
+
+        queue.enqueue(2)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 2
+
+        queue.enqueue(3)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 2
+
+        queue.enqueue(5)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 2
+
+        queue.enqueue(1)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 2
+
+        queue.enqueue(4)
+
+        assert queue.is_empty() == False
+        assert queue.peek() == 2
+
+from problems.stack_queue import MaxStack
 class Test_MaxStack(unittest.TestCase):
     
     def setUp(self):
@@ -32,6 +321,7 @@ class Test_MaxStack(unittest.TestCase):
 
         assert s.max() == 5
 
+from problems.stack_queue import bracket_balanced1
 class Test_BracketBalanced1(unittest.TestCase):
     
     def setUp(self):
@@ -49,6 +339,7 @@ class Test_BracketBalanced1(unittest.TestCase):
     def test_case4(self):
         assert bracket_balanced1("((()") == False
 
+from problems.stack_queue import bracket_balanced2
 class Test_BracketBalanced2(unittest.TestCase):
     
     def setUp(self):
@@ -66,6 +357,7 @@ class Test_BracketBalanced2(unittest.TestCase):
     def test_case4(self):
         assert bracket_balanced2("((()") == False
 
+from problems.stack_queue import max_subarray1
 class Test_MaxSub1(unittest.TestCase):
     
     def setUp(self):
@@ -81,6 +373,7 @@ class Test_MaxSub1(unittest.TestCase):
 
         assert max_subarray1(arr, k) == [3, 4, 5, 6, 7, 8, 9]
 
+from problems.stack_queue import max_subarray2
 class Test_MaxSub2(unittest.TestCase):
     
     def setUp(self):
@@ -96,6 +389,7 @@ class Test_MaxSub2(unittest.TestCase):
 
         assert max_subarray2(arr, k) == [3, 4, 5, 6, 7, 8, 9]
 
+from problems.stack_queue import max_subarray3
 class Test_MaxSub3(unittest.TestCase):
     
     def setUp(self):
@@ -873,3 +1167,86 @@ class Test_MyQueue1(unittest.TestCase):
         assert queue.dequeue() == 5
 
         assert queue.is_empty() == True
+
+from problems.stack_queue import sort_stack1
+
+class Test_SortStack1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        data = Stack()
+
+        data.push(2)
+        data.push(3)
+        data.push(5)
+        data.push(1)
+        data.push(4)
+
+        result = sort_stack1(data)
+
+        assert result.pop() == 1
+        assert result.pop() == 2
+        assert result.pop() == 3
+        assert result.pop() == 4
+        assert result.pop() == 5
+
+        assert result.is_empty() == True
+        
+    def test_case2(self):
+        data = Stack()
+
+        data.push(5)
+        data.push(4)
+        data.push(3)
+        data.push(2)
+        data.push(1)
+
+        result = sort_stack1(data)
+
+        assert result.pop() == 1
+        assert result.pop() == 2
+        assert result.pop() == 3
+        assert result.pop() == 4
+        assert result.pop() == 5
+
+        assert result.is_empty() == True
+
+    def test_case3(self):
+        data = Stack()
+
+        data.push(-2)
+        data.push(-3)
+        data.push(-5)
+        data.push(-1)
+        data.push(-4)
+
+        result = sort_stack1(data)
+
+        assert result.pop() == -1
+        assert result.pop() == -2
+        assert result.pop() == -3
+        assert result.pop() == -4
+        assert result.pop() == -5
+
+        assert result.is_empty() == True
+
+    def test_case4(self):
+        data = Stack()
+
+        data.push(1)
+        data.push(2)
+        data.push(3)
+        data.push(4)
+        data.push(5)
+
+        result = sort_stack1(data)
+
+        assert result.pop() == 1
+        assert result.pop() == 2
+        assert result.pop() == 3
+        assert result.pop() == 4
+        assert result.pop() == 5
+
+        assert result.is_empty() == True

@@ -1,67 +1,71 @@
-'''Queue of Stacks.
+from problems.stack_queue import Stack
 
-Implement a MyQueue class which implements a queue using two stacks.
+'''Sort Stack.
+
+Write a program to sort a stack such that the smallest items are on top. You can use an 
+additional temporary stack, but you mat not copy the elements into any other data structure
+(such as an array). The stack supports the following operations:
+
+push, pop, peek, and is_empty.
 '''
 
-class my_queue1():
+def sort_stack(stack):
 
-    def __init__(self):
-        self.stack = []
+    def shift_min(stack, cutoff):
+        temp, maximum, n = Stack(), None, 0
 
-    def enqueue(self, item):
+        while not stack.is_empty() and n < cutoff:
+            
+            current = stack.pop()
+
+            if maximum is None or current > maximum:
+                maximum = current
+
+            temp.push(current)
+            n += 1
         
-        if item == None: return
+        stack.push(maximum)
 
-        self.stack = [item] + self.stack
+        while not temp.is_empty():
 
-    def dequeue(self):
+            current = temp.pop()
+
+            if current == maximum:
+                minimum = None
+                continue
+
+            stack.push(current)
         
-        if self.stack == []: return None
+        return stack
 
-        top = self.stack.pop()
+    def get_len(stack):
 
-        queue = []
+        temp, n = Stack(), 0
 
-        while self.stack:
-            queue.append(self.stack.pop())
-        
-        stack = []
+        while not stack.is_empty():
+            temp.push(stack.pop())
+            n += 1
 
-        for item in queue:
-            stack = [item] + stack
+        return (temp, n)
 
-        self.stack = stack
+    if stack is None: return
 
-        return top
+    stack, n = get_len(stack)
 
-    def peek(self):
-        return self.stack[len(self.stack) - 1] if self.stack else None
+    for index in reversed(range(1, n + 1)):
+        stack = shift_min(stack, index)
 
-    def is_empty(self):
-        return self.stack == []
+    return stack
 
-queue = my_queue1()
+data = Stack()
 
-queue.enqueue(1)
+data.push(2)
+data.push(3)
+data.push(5)
+data.push(1)
+data.push(4)
 
-assert queue.dequeue() == 1
+actual = sort_stack(data)
 
-assert queue.is_empty() == True
-
-queue.enqueue(2)
-
-assert queue.peek() == 2
-
-queue.enqueue(3)
-
-assert queue.peek() == 2
-
-queue.enqueue(4)
-
-assert queue.peek() == 2
-
-queue.enqueue(5)
-
-assert queue.peek() == 2
-
-assert queue.is_empty() == False
+while not actual.is_empty():
+    print(actual.pop())
