@@ -14,6 +14,7 @@ You may use the built-in LinkedList data structure.
 '''
 
 from enum import Enum
+from datetime import datetime
 
 class Species(Enum):
     Dog = 1
@@ -30,14 +31,14 @@ class Animal():
     def __init__(self, name, species):
         self.name = name
         self.species = species
-      
-class AnimalShelter():
+        self.arrival_time = datetime.now()
+
+class AnimalQueue():
 
     def __init__(self):
-        self.head, self.tail = None, None
- 
-    def enqueue(self, animal):
-        
+        self.head, tail = None, None
+
+    def enqueue(self, animal : Animal):
         node = Node(animal)
 
         if self.head == None:
@@ -46,38 +47,53 @@ class AnimalShelter():
             self.tail.next = node
             self.tail = node
 
-    def dequeue_any(self):
-        
+    def dequeue(self):
         if self.head == None: return None
 
-        adopted = self.head.data
+        item = self.head.data
         self.head = self.head.next
-        return adopted
+        return item
+    
+    def peek(self):
+        return self.head.data if self.head != None else None
 
-    def __dequeue_species(self, species):
+class AnimalShelter():
+
+    def __init__(self):
+        self.cats, self.dogs = AnimalQueue(), AnimalQueue()
+ 
+    def enqueue(self, animal : Animal):
         
-        current, prev = self.head, None
+        if animal == None: return
 
-        while current != None and current.data.species != species:
-            prev =  current
-            current = current.next
+        if not isinstance(animal, Animal):
+            raise TypeError(f'Can only accept types of Animal, not {type(animal)}')
 
-        if current == None: return None
+        if animal.species == Species.Dog:
+            self.dogs.enqueue(animal) 
+        elif animal.species == Species.Cat:
+            self.cats.enqueue(animal)
 
-        adopted = current.data
+    def dequeue_any(self):
+        
+        if self.dogs.peek() == None and self.cats.peek() == None: return None
 
-        if prev != None:
-            prev.next = current.next
-        else:
-            self.head = current.next
+        queue = None
 
-        return adopted
+        if self.dogs.peek() != None and self.cats.peek() == None:
+            queue = self.dogs
+        elif self.dogs.peek() == None and self.cats.peek() != None:
+            queue = self.cats
+        elif self.dogs.peek() != None and self.cats.peek() != None:
+            queue = self.dogs if self.dogs.peek().arrival_time < self.cats.peek().arrival_time else self.cats
+
+        return queue.dequeue()
 
     def dequeue_dog(self):
-        return self.__dequeue_species(Species.Dog)
+        return self.dogs.dequeue()
 
     def dequeue_cat(self):
-        return self.__dequeue_species(Species.Cat)
+        return self.cats.dequeue()
 
 shelter = AnimalShelter()
 
@@ -105,6 +121,8 @@ adopt4 = shelter.dequeue_dog()
 assert adopt4.name == "Burt" and adopt4.species == Species.Dog
 
 adopt5 = shelter.dequeue_dog()
+
+
 assert adopt5.name == "Ernie" and adopt5.species == Species.Dog
 
 adopt6 = shelter.dequeue_dog()
