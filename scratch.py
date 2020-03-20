@@ -1,71 +1,115 @@
-from problems.stack_queue import Stack
+'''Animal Shelter.
 
-'''Sort Stack.
+An animal shelter, which holds only dogs and cats, operates on a strictly "first in, 
+first out" basis. People must adopt either the "oldest" (based on arrival time) of 
+all animals in the shelter, or they can select whether they would prefer a dog or a cat 
+(and will receive the oldest animal of that type). They cannot select which specific 
+animal they would like. 
 
-Write a program to sort a stack such that the smallest items are on top. You can use an 
-additional temporary stack, but you mat not copy the elements into any other data structure
-(such as an array). The stack supports the following operations:
+Create the data structures to maintain this system and implement operations such as:
 
-push, pop, peek, and is_empty.
+enqueue, dequeueAny, dequeueDog and dequeue cat.
+
+You may use the built-in LinkedList data structure.
 '''
 
-def sort_stack(stack):
+from enum import Enum
 
-    def shift_min(stack, cutoff):
-        temp, maximum, n = Stack(), None, 0
+class Species(Enum):
+    Dog = 1
+    Cat = 2
 
-        while not stack.is_empty() and n < cutoff:
-            
-            current = stack.pop()
+class Node():
 
-            if maximum is None or current > maximum:
-                maximum = current
+    def __init__(self, data, next=None):
+        self.data = data
+        self.next = None
 
-            temp.push(current)
-            n += 1
+class Animal():
+
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+      
+class AnimalShelter():
+
+    def __init__(self):
+        self.head, self.tail = None, None
+ 
+    def enqueue(self, animal):
         
-        stack.push(maximum)
+        node = Node(animal)
 
-        while not temp.is_empty():
+        if self.head == None:
+            self.head, self.tail = node, node
+        else:
+            self.tail.next = node
+            self.tail = node
 
-            current = temp.pop()
-
-            if current == maximum:
-                minimum = None
-                continue
-
-            stack.push(current)
+    def dequeue_any(self):
         
-        return stack
+        if self.head == None: return None
 
-    def get_len(stack):
+        adopted = self.head.data
+        self.head = self.head.next
+        return adopted
 
-        temp, n = Stack(), 0
+    def __dequeue_species(self, species):
+        
+        current, prev = self.head, None
 
-        while not stack.is_empty():
-            temp.push(stack.pop())
-            n += 1
+        while current != None and current.data.species != species:
+            prev =  current
+            current = current.next
 
-        return (temp, n)
+        if current == None: return None
 
-    if stack is None: return
+        adopted = current.data
 
-    stack, n = get_len(stack)
+        if prev != None:
+            prev.next = current.next
+        else:
+            self.head = current.next
 
-    for index in reversed(range(1, n + 1)):
-        stack = shift_min(stack, index)
+        return adopted
 
-    return stack
+    def dequeue_dog(self):
+        return self.__dequeue_species(Species.Dog)
 
-data = Stack()
+    def dequeue_cat(self):
+        return self.__dequeue_species(Species.Cat)
 
-data.push(2)
-data.push(3)
-data.push(5)
-data.push(1)
-data.push(4)
+shelter = AnimalShelter()
 
-actual = sort_stack(data)
+assert shelter.dequeue_any() == None
 
-while not actual.is_empty():
-    print(actual.pop())
+shelter.enqueue(Animal("Burt", Species.Dog))
+shelter.enqueue(Animal("Ernie", Species.Dog))
+shelter.enqueue(Animal("Angus", Species.Dog))
+shelter.enqueue(Animal("Garfield", Species.Cat))
+shelter.enqueue(Animal("Whiskers", Species.Cat))
+shelter.enqueue(Animal("Grumpy", Species.Cat))
+
+adopt1 = shelter.dequeue_cat()
+assert adopt1.name == "Garfield" and adopt1.species == Species.Cat
+
+adopt2 = shelter.dequeue_cat()
+assert adopt2.name == "Whiskers" and adopt2.species == Species.Cat
+
+adopt3 = shelter.dequeue_cat()
+assert adopt3.name == "Grumpy" and adopt3.species == Species.Cat
+
+assert shelter.dequeue_cat() == None
+
+adopt4 = shelter.dequeue_dog()
+assert adopt4.name == "Burt" and adopt4.species == Species.Dog
+
+adopt5 = shelter.dequeue_dog()
+assert adopt5.name == "Ernie" and adopt5.species == Species.Dog
+
+adopt6 = shelter.dequeue_dog()
+assert adopt6.name == "Angus" and adopt6.species == Species.Dog
+
+assert shelter.dequeue_cat() == None
+assert shelter.dequeue_dog() == None
+assert shelter.dequeue_any() == None

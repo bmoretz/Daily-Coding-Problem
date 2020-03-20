@@ -1250,3 +1250,108 @@ class Test_SortStack1(unittest.TestCase):
         assert result.pop() == 5
 
         assert result.is_empty() == True
+
+from problems.stack_queue import Animal, AnimalShelter, Species
+
+class Test_SortStack1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        
+        shelter = AnimalShelter()
+
+        assert shelter.dequeue_any() == None
+        assert shelter.dequeue_cat() == None
+        assert shelter.dequeue_dog() == None
+
+    def test_case2(self):
+        shelter = AnimalShelter()
+
+        shelter.enqueue(Animal("Burt", Species.Dog))
+        shelter.enqueue(Animal("Ernie", Species.Dog))
+        shelter.enqueue(Animal("Garfield", Species.Cat))
+        shelter.enqueue(Animal("Whiskers", Species.Cat))
+        shelter.enqueue(Animal("Angus", Species.Dog))
+
+        adopt1 = shelter.dequeue_any()
+
+        assert adopt1.name == "Burt" and adopt1.species == Species.Dog
+
+        adopt2 = shelter.dequeue_cat()
+
+        assert adopt2.name == "Garfield" and adopt2.species == Species.Cat
+
+        adopt3 = shelter.dequeue_dog()
+
+        assert adopt3.name == "Ernie" and adopt3.species == Species.Dog
+
+        adopt4 = shelter.dequeue_any()
+
+        assert adopt4.name == "Whiskers" and adopt4.species == Species.Cat
+
+        adopt5 = shelter.dequeue_cat()
+
+        assert adopt5 == None
+
+        adopt6 = shelter.dequeue_dog()
+
+        assert adopt6.name == "Angus" and adopt6.species == Species.Dog
+
+    def test_case3(self):
+        shelter = AnimalShelter()
+
+        assert shelter.dequeue_any() == None
+
+        shelter.enqueue(Animal("Burt", Species.Dog))
+        shelter.enqueue(Animal("Ernie", Species.Dog))
+
+        adopt1 = shelter.dequeue_any()
+
+        assert adopt1.name == "Burt" and adopt1.species == Species.Dog
+
+        assert shelter.dequeue_cat() == None
+
+        adopt2 = shelter.dequeue_any()
+
+        assert adopt2.name == "Ernie" and adopt2.species == Species.Dog
+
+        assert shelter.dequeue_any() == None
+
+
+    def test_case4(self):
+        shelter = AnimalShelter()
+
+        assert shelter.dequeue_any() == None
+
+        shelter.enqueue(Animal("Burt", Species.Dog))
+        shelter.enqueue(Animal("Ernie", Species.Dog))
+        shelter.enqueue(Animal("Angus", Species.Dog))
+        shelter.enqueue(Animal("Garfield", Species.Cat))
+        shelter.enqueue(Animal("Whiskers", Species.Cat))
+        shelter.enqueue(Animal("Grumpy", Species.Cat))
+
+        adopt1 = shelter.dequeue_cat()
+        assert adopt1.name == "Garfield" and adopt1.species == Species.Cat
+
+        adopt2 = shelter.dequeue_cat()
+        assert adopt2.name == "Whiskers" and adopt2.species == Species.Cat
+
+        adopt3 = shelter.dequeue_cat()
+        assert adopt3.name == "Grumpy" and adopt3.species == Species.Cat
+
+        assert shelter.dequeue_cat() == None
+
+        adopt4 = shelter.dequeue_dog()
+        assert adopt4.name == "Burt" and adopt4.species == Species.Dog
+
+        adopt5 = shelter.dequeue_dog()
+        assert adopt5.name == "Ernie" and adopt5.species == Species.Dog
+
+        adopt6 = shelter.dequeue_dog()
+        assert adopt6.name == "Angus" and adopt6.species == Species.Dog
+
+        assert shelter.dequeue_cat() == None
+        assert shelter.dequeue_dog() == None
+        assert shelter.dequeue_any() == None
