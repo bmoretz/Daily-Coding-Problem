@@ -624,6 +624,8 @@ You may use the built-in LinkedList data structure.
 ''' common types for animal shelters. '''
 
 from enum import Enum
+from datetime import datetime
+from time import sleep
 
 class Species(Enum):
     Dog = 1
@@ -657,7 +659,7 @@ class AnimalShelter1():
     def enqueue(self, animal : Animal):
         
         if animal == None: return None
-        
+
         if not isinstance(animal, Animal):
             raise TypeError(f'Can only accept types of Animal, not {type(animal)}')
 
@@ -668,6 +670,8 @@ class AnimalShelter1():
         else:
             self.tail.next = node
             self.tail = node
+
+        sleep(.01) # added-for unit test
 
     def dequeue_any(self):
         
@@ -709,7 +713,7 @@ Implement an animal queue class, and composition pattern in the shelter such tha
 a shelter has N queues, where N is the number of species.
 
 pros: efficient and maintable. Could be improved with a list of queues to be more extendable.
-cons: 
+cons: the dequeue_any method could be cleaner.
 '''
 
 class AnimalQueue():

@@ -1357,6 +1357,7 @@ class Test_AnimalShelter1(unittest.TestCase):
         assert shelter.dequeue_any() == None
 
 from problems.stack_queue import AnimalShelter2
+from time import sleep
 class Test_AnimalShelter2(unittest.TestCase):
     
     def setUp(self):
@@ -1374,9 +1375,13 @@ class Test_AnimalShelter2(unittest.TestCase):
         shelter = AnimalShelter2()
 
         shelter.enqueue(Animal("Burt", Species.Dog))
+        sleep(.01)
         shelter.enqueue(Animal("Ernie", Species.Dog))
+        sleep(.01)
         shelter.enqueue(Animal("Garfield", Species.Cat))
+        sleep(.01)
         shelter.enqueue(Animal("Whiskers", Species.Cat))
+        sleep(.01)
         shelter.enqueue(Animal("Angus", Species.Dog))
 
         adopt1 = shelter.dequeue_any()
