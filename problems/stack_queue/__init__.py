@@ -625,7 +625,6 @@ You may use the built-in LinkedList data structure.
 
 from enum import Enum
 from datetime import datetime
-from time import sleep
 
 class Species(Enum):
     Dog = 1
@@ -670,8 +669,6 @@ class AnimalShelter1():
         else:
             self.tail.next = node
             self.tail = node
-
-        sleep(.01) # added-for unit test
 
     def dequeue_any(self):
         

@@ -1,6 +1,6 @@
 from collections import defaultdict, deque
 
-from interface import Interface
+from abc import ABC
 
 class InvalidState(ValueError):
     '''Exception raised when the state is invalid.'''
@@ -8,10 +8,10 @@ class InvalidState(ValueError):
     def __repr__(self):
         return 'The state of the graph is invalid for this operation.'
 
-class IGraph(Interface):
+class IGraph(ABC):
 
     def vertices(self):
-        ''' returns the verticies of the graph.''' 
+        ''' returns the vertices of the graph.''' 
         pass
 
     def edges(self):
@@ -196,7 +196,7 @@ a snake or ladders, they will be transported ahead or behind, respectively, to a
 
 Find the smallest number of turns it takes to play snakes and ladders.
 
-For convenince, here are the squares representing snakes and ladders, and their outcomes:
+For convenience, here are the squares representing snakes and ladders, and their outcomes:
 '''
 
 def minimum_turns1(snakes, ladders, n_squares):
@@ -238,7 +238,7 @@ are course Ids. Return a sorted ordering of courses such that we can complete th
 
 Return null if there is no such ordering.
 
-For example, given the following prerequsites:
+For example, given the following prerequisites:
 
 {
     'CSC300' : ['CSC100', 'CSC200'],
@@ -284,3 +284,26 @@ def find_order1(courses_to_prereqs : dict):
         return None
 
     return result
+
+'''Route Between Nodes.
+
+Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
+'''
+
+def has_route1(graph, node1, node2):
+
+  def has_route(graph, node1, node2, visited = []):
+    
+    if node1 == node2:
+      return True
+
+    for neighbor in graph[node1]:
+
+      if neighbor not in visited:
+        visited.append(neighbor)
+
+        if has_route(graph, neighbor, node2, visited): return True
+    
+    return False
+    
+  return has_route(graph, node1, node2)

@@ -1,9 +1,10 @@
 from collections import defaultdict
-from interface import implements
+
+from abc import ABCMeta
 
 from problems.graph import IGraph, InvalidState
 
-class AMGraph(implements(IGraph)):
+class AMGraph(metaclass=ABCMeta):
     """Adjacency matrix graph implementation."""
 
     def __init__(self, graph_dict=None):
