@@ -514,40 +514,41 @@ Implement a MyQueue class which implements a queue using two stacks.
 
 class my_queue1():
 
-    def __init__(self):
-        self.stack = []
+  def __init__(self):
+        self.data = Stack()
+        self.top = None
 
-    def enqueue(self, item):
-        
-        if item == None: return
+  def enqueue(self, item):
+    
+    if item is None: return
 
-        self.stack = [item] + self.stack
+    self.data.push(item)
 
-    def dequeue(self):
-        
-        if self.stack == []: return None
+    if self.top == None:
+        self.top = item
+  
+  def dequeue(self):
+    
+    if self.data.is_empty() : return None
 
-        top = self.stack.pop()
+    temp = Stack()
 
-        queue = []
+    while not self.data.is_empty():
+        temp.push(self.data.pop())
 
-        while self.stack:
-            queue.append(self.stack.pop())
-        
-        stack = []
+    item = temp.pop()
+    self.top = temp.peek()
 
-        for item in queue:
-            stack = [item] + stack
+    while not temp.is_empty():
+        self.data.push(temp.pop())
 
-        self.stack = stack
+    return item
 
-        return top
+  def peek(self):
+      return self.top
 
-    def peek(self):
-        return self.stack[len(self.stack) - 1] if self.stack else None
-
-    def is_empty(self):
-        return self.stack == []
+  def is_empty(self):
+      return self.data.is_empty()
 
 '''Sort Stack.
 

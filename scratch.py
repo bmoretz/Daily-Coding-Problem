@@ -1,59 +1,85 @@
-'''Route Between Nodes.
+'''Queue of Stacks.
 
-Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
+Implement a MyQueue class which implements a queue using two stacks.
 '''
 
-'''
-Graph 1:
-
-A ---------> B
-  \             \
-    \ 
-       C            \
-    /     \
-D --------> F ------> G
-    \       |            \
-       E    |             H
-          \ |
-            I
-'''
-
-graph = {
-  'A' : ['B', 'C'],
-  'B' : ['G'],
-  'C' : ['F'],
-  'D' : ['C', 'F', 'E'],
-  'E' : ['I'],
-  'F' : ['I'],
-  'G' : ['H'],
-  'H' : [],
-  'I' : []
-}
+from problems.stack_queue import Stack
 
 
-def has_route1(graph, node1, node2):
+class my_queue1():
 
-  def has_route(graph, node1, node2, visited = []):
+  def __init__(self):
+    self.data = Stack()
+    self.top = None
+
+  def enqueue(self, item):
     
-    if node1 == node2:
-      return True
+    if item is None: return
 
-    for neighbor in graph[node1]:
+    self.data.push(item)
 
-      if neighbor not in visited:
-        visited.append(neighbor)
-
-        if has_route(graph, neighbor, node2, visited): return True
-    
-    return False
+    if self.top == None:
+      self.top = item
   
-  if graph == None: return None
-  if node1 == None or node2 == None: return None
+  def dequeue(self):
+    
+    if self.data.is_empty() : return None
 
-  if node1 not in graph.keys or node2 not in graph.keys: return False
+    temp = Stack()
 
-  return has_route(graph, node1, node2)
+    while not self.data.is_empty():
+      temp.push(self.data.pop())
 
-ag_route = has_route1(graph, 'A', 'I')
+    item = temp.pop()
+    self.top = temp.peek()
 
-print(ag_route)
+    while not temp.is_empty():
+      self.data.push(temp.pop())
+
+    return item
+
+  def peek(self):
+    return self.top
+
+  def is_empty(self):
+    return self.data.is_empty()
+
+queue = my_queue1()
+
+assert queue.is_empty()
+
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
+queue.enqueue(4)
+queue.enqueue(5)
+
+assert queue.peek() == 1
+assert queue.dequeue() == 1
+
+assert queue.peek() == 2
+assert queue.dequeue() == 2
+
+assert queue.peek() == 3
+assert queue.dequeue() == 3
+
+queue.enqueue(6)
+queue.enqueue(7)
+queue.enqueue(8)
+
+assert queue.peek() == 4
+assert queue.dequeue() == 4
+
+assert queue.peek() == 5
+assert queue.dequeue() == 5
+
+assert queue.peek() == 6
+assert queue.dequeue() == 6
+
+assert queue.peek() == 7
+assert queue.dequeue() == 7
+
+assert queue.peek() == 8
+assert queue.dequeue() == 8
+
+assert queue.is_empty()

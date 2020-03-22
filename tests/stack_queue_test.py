@@ -1168,6 +1168,47 @@ class Test_MyQueue1(unittest.TestCase):
 
         assert queue.is_empty() == True
 
+    def test_case5(self):
+        queue = my_queue1()
+
+        assert queue.is_empty()
+
+        queue.enqueue(1)
+        queue.enqueue(2)
+        queue.enqueue(3)
+        queue.enqueue(4)
+        queue.enqueue(5)
+
+        assert queue.peek() == 1
+        assert queue.dequeue() == 1
+
+        assert queue.peek() == 2
+        assert queue.dequeue() == 2
+
+        assert queue.peek() == 3
+        assert queue.dequeue() == 3
+
+        queue.enqueue(6)
+        queue.enqueue(7)
+        queue.enqueue(8)
+
+        assert queue.peek() == 4
+        assert queue.dequeue() == 4
+
+        assert queue.peek() == 5
+        assert queue.dequeue() == 5
+
+        assert queue.peek() == 6
+        assert queue.dequeue() == 6
+
+        assert queue.peek() == 7
+        assert queue.dequeue() == 7
+
+        assert queue.peek() == 8
+        assert queue.dequeue() == 8
+
+        assert queue.is_empty()
+
 from problems.stack_queue import sort_stack1
 
 class Test_SortStack1(unittest.TestCase):
