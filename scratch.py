@@ -1,85 +1,65 @@
-'''Queue of Stacks.
+'''Minimal Tree.
 
-Implement a MyQueue class which implements a queue using two stacks.
+Given a sorted (increasing order) array with unique integer elements, write
+an algorithm to create a binary search tree with minimal height.
 '''
 
-from problems.stack_queue import Stack
+class MinTree1():
 
+    class Node():
 
-class my_queue1():
+        def __init__(self, data):
+            self.data = data
+            self.left = None
+            self.right = None
+        
+        def is_full(self):
+            return self.left != None and self.right != None
 
-  def __init__(self):
-    self.data = Stack()
-    self.top = None
+        def is_leaf(self):
+            return self.left == None and self.right == None
 
-  def enqueue(self, item):
-    
-    if item is None: return
+    def __init__(self, values):
+        
+        self.root = None
+        
+        if values == None: return
 
-    self.data.push(item)
+        self.root = self.__create_tree(values)
 
-    if self.top == None:
-      self.top = item
-  
-  def dequeue(self):
-    
-    if self.data.is_empty() : return None
+    def __create_tree(self, values):
+        
+        n = len(values)
 
-    temp = Stack()
+        if n == 0: return None
 
-    while not self.data.is_empty():
-      temp.push(self.data.pop())
+        mid = n // 2
 
-    item = temp.pop()
-    self.top = temp.peek()
+        root = self.Node(values[mid])
 
-    while not temp.is_empty():
-      self.data.push(temp.pop())
+        if n > 1:
+            root.left = self.__create_tree(values[:mid])
+            root.right = self.__create_tree(values[mid + 1:])
 
-    return item
+        return root
 
-  def peek(self):
-    return self.top
+    def height(self):
 
-  def is_empty(self):
-    return self.data.is_empty()
+        def height(self, parent, level=0):
+            
+            if parent == None: 
+                return level
 
-queue = my_queue1()
+            level = max(height(self, parent.left, level + 1), height(self, parent.right, level + 1))
 
-assert queue.is_empty()
+            return level
 
-queue.enqueue(1)
-queue.enqueue(2)
-queue.enqueue(3)
-queue.enqueue(4)
-queue.enqueue(5)
+        return height(self, self.root)
 
-assert queue.peek() == 1
-assert queue.dequeue() == 1
+# values = [1, 2, 3, 4, 5, 6]
 
-assert queue.peek() == 2
-assert queue.dequeue() == 2
+mt = MinTree1([1, 2, 3, 4, 5, 6, 7])
 
-assert queue.peek() == 3
-assert queue.dequeue() == 3
+h = mt.height()
 
-queue.enqueue(6)
-queue.enqueue(7)
-queue.enqueue(8)
-
-assert queue.peek() == 4
-assert queue.dequeue() == 4
-
-assert queue.peek() == 5
-assert queue.dequeue() == 5
-
-assert queue.peek() == 6
-assert queue.dequeue() == 6
-
-assert queue.peek() == 7
-assert queue.dequeue() == 7
-
-assert queue.peek() == 8
-assert queue.dequeue() == 8
-
-assert queue.is_empty()
+print(mt)

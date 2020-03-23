@@ -1,13 +1,6 @@
 import unittest
 
 from problems.tree import Node
-from problems.tree import populate_pre_order
-from problems.tree import get_height, get_width
-from problems.tree import serialize, deserialize
-from problems.tree import count_unival_subtrees1, count_unival_subtrees2
-from problems.tree import reconstruct1, reconstruct2
-from problems.tree import evaluate1
-from problems.tree import minsum1
 
 tree1 = [0,
         [1, [], []],
@@ -23,6 +16,8 @@ tree2 = ['a',
             ['a', [], ['b']]
         ]]
 
+from problems.tree import populate_pre_order
+from problems.tree import get_height, get_width
 class Test_InitTree(unittest.TestCase):
     
     def setUp(self):
@@ -42,6 +37,7 @@ class Test_InitTree(unittest.TestCase):
     def test_case4(self):
         assert get_width(self.tree2) == 2
 
+from problems.tree import count_unival_subtrees1
 class Test_CountUnivalSubtree1(unittest.TestCase):
     
     def setUp(self):
@@ -59,6 +55,7 @@ class Test_CountUnivalSubtree1(unittest.TestCase):
 
         assert subtrees == 3
 
+from problems.tree import count_unival_subtrees2
 class Test_CountUnivalSubtree2(unittest.TestCase):
     
     def setUp(self):
@@ -76,6 +73,7 @@ class Test_CountUnivalSubtree2(unittest.TestCase):
 
         assert subtrees == 5
 
+from problems.tree import serialize, deserialize
 class Test_Serialization(unittest.TestCase):
 
     def setUp(self):
@@ -92,6 +90,7 @@ class Test_Serialization(unittest.TestCase):
         assert tree1.left.data == 1
         assert tree1.right.data == 0
 
+from problems.tree import reconstruct1
 class Test_Reconstruct1(unittest.TestCase):
 
     def setUp(self):
@@ -120,7 +119,7 @@ class Test_Reconstruct1(unittest.TestCase):
         assert right.left.data == 'f'
         assert right.right.data == 'g'
 
-
+from problems.tree import reconstruct2
 class Test_Reconstruct2(unittest.TestCase):
 
     def setUp(self):
@@ -149,7 +148,7 @@ class Test_Reconstruct2(unittest.TestCase):
         assert right.left.data == 'f'
         assert right.right.data == 'g'
 
-
+from problems.tree import evaluate1
 class Test_Arithmetic1(unittest.TestCase):
 
     def setUp(self):
@@ -191,7 +190,7 @@ class Test_Arithmetic1(unittest.TestCase):
 
         assert result == 10
 
-
+from problems.tree import minsum1
 class Test_MinSum1(unittest.TestCase):
 
     def setUp(self):
@@ -219,3 +218,62 @@ class Test_MinSum1(unittest.TestCase):
         min_level = minsum1(tree)
 
         assert min_level == 1
+
+from problems.tree import MinTree1
+class Test_MinTree1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        tree = MinTree1(None)
+
+        assert tree.root == None
+
+    def test_case2(self):
+        tree = MinTree1([1, 2, 3])
+
+        assert tree.height() == 2
+
+        assert tree.root.data == 2
+        assert tree.root.left.data == 1
+        assert tree.root.right.data == 3
+
+    def test_case3(self):
+        tree = MinTree1([1, 2])
+
+        assert tree.height() == 2
+
+        assert tree.root.data == 2
+        assert tree.root.left.data == 1
+
+    def test_case4(self):
+        tree = MinTree1([1, 2, 3, 4])
+
+        assert tree.height() == 3
+
+        assert tree.root.data == 3
+
+        assert tree.root.left.data == 2
+        assert tree.root.left.left.data == 1
+
+        assert tree.root.right.data == 4
+
+    def test_case5(self):
+        tree = MinTree1([1, 2, 3, 4, 5, 6, 7])
+
+        assert tree.height() == 3
+
+        assert tree.root.data == 4
+
+        left = tree.root.left
+
+        assert left.data == 2
+        assert left.right.data == 3
+        assert left.left.data == 1
+
+        right = tree.root.right
+
+        assert right.data == 6
+        assert right.left.data == 5
+        assert right.right.data == 7

@@ -308,7 +308,6 @@ def has_route1(graph, node1, node2):
 
     if graph == None: return None
     if node1 == None or node2 == None: return None
-
     if node1 not in graph or node2 not in graph: return False
-    
+
     return has_route(graph, node1, node2)
