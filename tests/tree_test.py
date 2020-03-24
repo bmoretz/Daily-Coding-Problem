@@ -590,3 +590,95 @@ class Test_DepthList(unittest.TestCase):
                 assert values[2].next.data == 3
                 assert values[2].next.next.data == 5
                 assert values[2].next.next.next.data == 7
+
+from problems.tree import is_balanced, TreeNode
+class Test_IsBalanced(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        
+        root = None
+
+        assert is_balanced(root) == True
+
+    '''
+    Tree 1:
+                4
+              /
+            3
+          /
+        2
+      /
+    1
+    '''
+    def test_case2(self):
+        root = TreeNode(4)
+        root.left = TreeNode(3)
+        root.left.left = TreeNode(2)
+        root.left.left.left = TreeNode(1)
+
+        assert is_balanced(root) == False
+
+    '''
+    Tree 2:
+        2
+      /   \
+    1       3
+    '''
+    def test_case3(self):
+
+        root = TreeNode(2)
+
+        root.left = TreeNode(1)
+        root.right = TreeNode(3)
+
+        assert is_balanced(root) == True
+
+    '''
+    Tree 3:
+        2
+      /   \
+    1       3
+              \
+                4
+                   \
+                     5
+    '''
+    def test_case3(self):
+
+        root = TreeNode(2)
+
+        root.left = TreeNode(1)
+        
+        root.right = TreeNode(3)
+        root.right.right = TreeNode(4)
+        root.right.right.right = TreeNode(5)
+
+        assert is_balanced(root) == False
+
+    '''
+    Tree 4:
+           2
+         /   \
+        1      3
+      /          \
+    0              4
+                    \
+                      5
+    '''
+    def test_case3(self):
+
+        root = TreeNode(2)
+
+        root.left = TreeNode(1)
+        root.left.left = TreeNode(0)
+
+        root.right = TreeNode(3)
+        root.right.right = TreeNode(4)
+        root.right.right.right = TreeNode(5)
+
+        assert is_balanced(root) == True
+
+        

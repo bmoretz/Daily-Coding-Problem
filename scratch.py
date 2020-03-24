@@ -1,96 +1,48 @@
-'''List of Depths.
+'''Check Balanced.
 
-Given a binary tree, design an algorithm which creates a linked list of all the nodes
-at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).
+Implement a function to check if a binary tree is balanced.
+
+For the purposes of this question, a balanced tree is defined to be a tree such
+that the heights of the two subtrees of any node never differ by more than one.
 '''
 
-class DepthList1():
+class TreeNode():
 
-    class Node():
-        def __init__(self, data):
-            self.data = data
-            self.next = None
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
 
-    class BinaryTree():
+def is_balanced(tree):
 
-        class Node():
-            def __init__(self, data):
-                self.data = data
-                self.left = None
-                self.right = None
-                
-        def __init__(self, values):
-            self.root = None
+    def leaf_count(node, count=0):
 
-            if len(values) > 0:
-                self.root = self.__create_tree(values)
+        if node == None: return count
 
-        def __create_tree(self, values):
-            
-            n = len(values)
+        level_count = 0
 
-            if n == 0: return None
-
-            mid = n // 2
-
-            root = self.Node(values[mid])
-
-            if n > 1:
-                root.left = self.__create_tree(values[:mid])
-                root.right = self.__create_tree(values[mid + 1:])
-
-            return root
-
-        def height(self, node=None, level=0):
-            
-            if level == 0:
-                node = self.root
-
-            if node == None:
-                return level
-
-            level = max(self.height(node.left, level + 1), self.height(node.right, level + 1))
-
-            return level
-
-    def __init__(self, values):
-
-        self.tree = None
-
-        if values != None:
-            self.tree = self.BinaryTree(values)
-    
-    def build_level(self, node, level=0, levels=[]):
-    
-        lst_node = self.Node(node.data)
-
-        if len(levels) == level:
-            levels.append(lst_node)
-        else:
-            
-            current, prev = levels[level], None
-
-            while current != None:
-                prev = current
-                current = current.next
-
-            prev.next = lst_node
-
-        if node.left: self.build_level(node.left, level + 1, levels)
-        if node.right: self.build_level(node.right, level + 1, levels)
-
-        return levels
+        if node.left:
+            level_count += leaf_count(node.left, count)
+            level_count += 1
         
-    def depth_list2(self):
+        if node.right:
+            level_count -= leaf_count(node.right, count)
+            level_count -= 1
 
-        return self.build_level(self.tree.root)
+        return level_count
 
-values = [1, 2, 3, 4, 5, 6, 7]
+    return abs(leaf_count(tree)) <= 1
 
-dl = DepthList1(values)
+root = TreeNode(4)
+root.left = TreeNode(3)
+root.left.left = TreeNode(2)
+root.left.left.left = TreeNode(1)
 
-height = dl.tree.height()
+# root.right = right
 
-elements = dl.depth_list()
+balanced = is_balanced(root)
 
-print(elements)
+print(balanced)
+
+
+
