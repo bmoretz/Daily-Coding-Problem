@@ -59,40 +59,31 @@ class DepthList1():
 
         if values != None:
             self.tree = self.BinaryTree(values)
+    
+    def build_level(self, node, level=0, levels=[]):
+    
+        lst_node = self.Node(node.data)
 
-    def process_level(self, nodes):
-        
-        children = []
-        head, prev = None, None
-
-        for node in nodes:
+        if len(levels) == level:
+            levels.append(lst_node)
+        else:
             
-            ln = self.Node(node.data)
+            current, prev = levels[level], None
 
-            if head == None:
-                head, prev = ln, ln
-            else:
-                prev.next = ln
+            while current != None:
+                prev = current
+                current = current.next
 
-            if node.left: children.append(node.left)
-            if node.right: children.append(node.right)
+            prev.next = lst_node
 
-            prev = ln
-        
-        return (head, children)
-
-    def depth_list(self):
-        
-        levels, nodes = [], [self.tree.root]
-
-        while nodes:
-
-            lvl = self.process_level(nodes)
-
-            levels.append(lvl[0])
-            nodes = lvl[1]
+        if node.left: self.build_level(node.left, level + 1, levels)
+        if node.right: self.build_level(node.right, level + 1, levels)
 
         return levels
+        
+    def depth_list2(self):
+
+        return self.build_level(self.tree.root)
 
 values = [1, 2, 3, 4, 5, 6, 7]
 

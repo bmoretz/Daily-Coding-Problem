@@ -363,7 +363,7 @@ Given a binary tree, design an algorithm which creates a linked list of all the 
 at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).
 '''
 
-class DepthList1():
+class DepthList():
 
     class Node():
         def __init__(self, data):
@@ -418,6 +418,29 @@ class DepthList1():
 
         if values: self.tree = self.BinaryTree(values)
 
+    ''' Solution #1
+    
+    This solution is iterative in nature. We process the current node
+    building a linked list of values from the data in the tree nodes,
+    and at the same time putting the children of that levels nodes
+    into a seprate list to be processed during the next iteration.
+
+    run-time: O(N), space: O(N) 
+    '''
+
+    def depth_list1(self):
+        
+        levels, nodes = [], [self.tree.root]
+
+        while nodes:
+
+            lvl = self.process_level(nodes)
+
+            levels.append(lvl[0])
+            nodes = lvl[1]
+
+        return levels
+
     def process_level(self, nodes):
         
         children = []
@@ -439,15 +462,38 @@ class DepthList1():
         
         return (head, children)
 
-    def depth_list(self):
-        
-        levels, nodes = [], [self.tree.root]
+    ''' Solution #2
 
-        while nodes:
+    This solution is recursive in nature, processing each node independently.
 
-            lvl = self.process_level(nodes)
+    When we process a node, we check to see if the level has a linked list head
+    element, if not we add it. Then, as we process the elements down the tree,
+    we get the list associated with that level and traverse to the end, appending
+    that node to the tail of the list.
 
-            levels.append(lvl[0])
-            nodes = lvl[1]
+    run-time O(n), space: O(n log n) 
+    '''
+    def depth_list2(self):
 
-        return levels
+        return self.build_level(self.tree.root)  
+
+    def build_level(self, node, level=0, levels=[]):
+    
+        lst_node = self.Node(node.data)
+
+        if len(levels) == level:
+            levels.append(lst_node)
+        else:
+            
+            current, prev = levels[level], None
+
+            while current != None:
+                prev = current
+                current = current.next
+
+            prev.next = lst_node
+
+        if node.left: self.build_level(node.left, level + 1, levels)
+        if node.right: self.build_level(node.right, level + 1, levels)
+
+        return levels      
