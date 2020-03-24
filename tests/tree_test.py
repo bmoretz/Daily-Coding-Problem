@@ -277,3 +277,166 @@ class Test_MinTree1(unittest.TestCase):
         assert right.data == 6
         assert right.left.data == 5
         assert right.right.data == 7
+
+from problems.tree import DepthList1
+class Test_DepthList1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        
+        dl = DepthList1(None)
+
+        assert dl
+        assert not dl.tree
+
+    '''
+    tree 1:
+
+        2
+       / \
+      1   3
+    '''
+    def test_case2(self):
+
+        dl = DepthList1([1, 2, 3])
+
+        assert dl
+        assert dl.tree.height() == 2
+
+        assert dl.tree.root.data == 2
+        assert dl.tree.root.left.data == 1
+        assert dl.tree.root.right.data == 3
+
+        values = dl.depth_list()
+
+        assert len(values) == 2
+
+        # Level 1
+        assert values[0].data == 2
+
+        # Level 2
+        assert values[1].data == 1
+        assert values[1].next.data == 3
+
+    '''
+    tree 2:
+    
+        3
+       / \
+      2   4
+     /
+    1
+    '''
+    def test_case3(self):
+
+        dl = DepthList1([1, 2, 3, 4])
+
+        assert dl
+        assert dl.tree.height() == 3
+
+        assert dl.tree.root.data == 3
+        assert dl.tree.root.left.data == 2
+        assert dl.tree.root.left.left.data == 1
+        assert dl.tree.root.right.data == 4
+
+        values = dl.depth_list()
+
+        assert len(values) == 3
+
+        # Level 1
+        assert values[0].data == 3
+
+        # Level 2
+        assert values[1].data == 2
+        assert values[1].next.data == 4
+
+        # Level 3
+        assert values[2].data == 1
+
+    '''
+    tree 3:
+    
+        3
+       /  \
+      2    5
+     /    /  
+    1    4 
+    '''
+    def test_case4(self):
+
+        dl = DepthList1([1, 2, 3, 4, 5])
+
+        assert dl
+        assert dl.tree.height() == 3
+
+        assert dl.tree.root.data == 3
+
+        assert dl.tree.root.left.data == 2
+        assert dl.tree.root.left.left.data == 1
+
+        assert dl.tree.root.right.data == 5
+        assert dl.tree.root.right.left.data == 4
+
+        values = dl.depth_list()
+
+        assert len(values) == 3
+
+        # Level 1
+        assert values[0].data == 3
+
+        # Level 2
+        assert values[1].data == 2
+        assert values[1].next.data == 5
+
+        # Level 3
+        assert values[2].data == 1
+        assert values[2].next.data == 4
+
+    '''
+    tree 4:
+    
+         4
+       /   \
+      2     6
+     / \   /  \ 
+    1   3 5    7
+    '''
+    def test_case5(self):
+
+        dl = DepthList1([1, 2, 3, 4, 5, 6, 7])
+
+        assert dl
+        assert dl.tree.height() == 3
+
+        assert dl.tree.root.data == 4
+
+        left = dl.tree.root.left
+
+        assert left.data == 2
+        assert left.left.data == 1
+        assert left.right.data == 3
+
+        right = dl.tree.root.right
+
+        assert right.data == 6
+        assert right.left.data == 5
+        assert right.right.data == 7
+
+        values = dl.depth_list()
+
+        assert len(values) == 3
+
+        # Level 1
+        assert values[0].data == 4
+
+        # Level 2
+        assert values[1].data == 2
+        assert values[1].next.data == 6
+
+        # Level 3
+        assert values[2].data == 1
+        assert values[2].next.data == 3
+        assert values[2].next.next.data == 5
+        assert values[2].next.next.next.data == 7
