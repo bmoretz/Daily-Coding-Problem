@@ -506,13 +506,6 @@ For the purposes of this question, a balanced tree is defined to be a tree such
 that the heights of the two subtrees of any node never differ by more than one.
 '''
 
-class TreeNode():
-
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
 def is_balanced(tree):
 
     def leaf_count(node, count=0):
@@ -534,3 +527,26 @@ def is_balanced(tree):
     count = leaf_count(tree)
 
     return abs(leaf_count(tree)) <= 1
+
+'''Validate BST.
+
+Implement a function to check if a binary tree is a binary search tree.
+'''
+
+def is_bst(node):
+
+    if node is None: return False
+
+    is_valid = True
+
+    if node.left:
+        is_valid &= is_bst(node.left)
+        is_valid &= node.left.data < node.data
+
+    if not is_valid: return is_valid
+    
+    if node.right:
+        is_valid &= is_bst(node.right)
+        is_valid &= node.right.data >= node.data
+
+    return is_valid

@@ -591,7 +591,7 @@ class Test_DepthList(unittest.TestCase):
                 assert values[2].next.next.data == 5
                 assert values[2].next.next.next.data == 7
 
-from problems.tree import is_balanced, TreeNode
+from problems.tree import is_balanced, Node
 class Test_IsBalanced(unittest.TestCase):
 
     def setUp(self):
@@ -614,10 +614,10 @@ class Test_IsBalanced(unittest.TestCase):
     1
     '''
     def test_case2(self):
-        root = TreeNode(4)
-        root.left = TreeNode(3)
-        root.left.left = TreeNode(2)
-        root.left.left.left = TreeNode(1)
+        root = Node(4)
+        root.left = Node(3)
+        root.left.left = Node(2)
+        root.left.left.left = Node(1)
 
         assert is_balanced(root) == False
 
@@ -629,10 +629,10 @@ class Test_IsBalanced(unittest.TestCase):
     '''
     def test_case3(self):
 
-        root = TreeNode(2)
+        root = Node(2)
 
-        root.left = TreeNode(1)
-        root.right = TreeNode(3)
+        root.left = Node(1)
+        root.right = Node(3)
 
         assert is_balanced(root) == True
 
@@ -648,13 +648,13 @@ class Test_IsBalanced(unittest.TestCase):
     '''
     def test_case3(self):
 
-        root = TreeNode(2)
+        root = Node(2)
 
-        root.left = TreeNode(1)
+        root.left = Node(1)
         
-        root.right = TreeNode(3)
-        root.right.right = TreeNode(4)
-        root.right.right.right = TreeNode(5)
+        root.right = Node(3)
+        root.right.right = Node(4)
+        root.right.right.right = Node(5)
 
         assert is_balanced(root) == False
 
@@ -670,15 +670,133 @@ class Test_IsBalanced(unittest.TestCase):
     '''
     def test_case3(self):
 
-        root = TreeNode(2)
+        root = Node(2)
 
-        root.left = TreeNode(1)
-        root.left.left = TreeNode(0)
+        root.left = Node(1)
+        root.left.left = Node(0)
 
-        root.right = TreeNode(3)
-        root.right.right = TreeNode(4)
-        root.right.right.right = TreeNode(5)
+        root.right = Node(3)
+        root.right.right = Node(4)
+        root.right.right.right = Node(5)
 
         assert is_balanced(root) == True
 
+from problems.tree import is_bst
+class Test_IsBST(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        tree = None
+
+        assert is_bst(tree) == False
+    
+    '''
+    Tree #1:
+
+            3
+          /   \
+        2       4
+      /
+     1 
+    '''
+    def test_case2(self):
+
+        tree = Node(3)
+
+        tree.left = Node(2)
+        tree.left.left = Node(1)
+
+        tree.right = Node(4)
         
+        assert is_bst(tree) == True
+
+    '''
+    Tree #2 (ties):
+
+            3
+          /   \
+        2       4
+      /           \
+     1              4
+    '''
+    def test_case2(self):
+
+        tree = Node(3)
+
+        tree.left = Node(2)
+        tree.left.left = Node(1)
+
+        tree.right = Node(4)
+        tree.right.right = Node(4)
+
+        assert is_bst(tree) == True
+
+    '''
+    Tree #3:
+
+            1
+          /   \
+        2       3
+      /           \
+     4              4
+    '''
+    def test_case3(self):
+
+        tree = Node(1)
+
+        tree.left = Node(2)
+        tree.left.left = Node(4)
+
+        tree.right = Node(3)
+        tree.right.right = Node(4)
+        
+        assert is_bst(tree) == False
+
+    '''
+    Tree #3:
+
+            4
+          /   \
+        2       6
+      /  \     /  \
+     1     3  5     5
+    '''
+    def test_case4(self):
+
+        tree = Node(4)
+
+        tree.left = Node(2)
+        tree.left.left = Node(1)
+        tree.left.right = Node(3)
+
+        tree.right = Node(6)
+        tree.right.left = Node(5)
+        tree.right.right = Node(5)
+
+        assert is_bst(tree) == False
+
+    '''
+    Tree #4:
+
+            4
+          /   \
+        2       6
+      /  \     /  \
+     1     3  5     7
+    '''
+    def test_case5(self):
+
+        tree = Node(4)
+
+        tree.left = Node(2)
+        tree.left.left = Node(1)
+        tree.left.right = Node(3)
+
+        tree.right = Node(6)
+        tree.right.left = Node(5)
+        tree.right.right = Node(7)
+
+        assert is_bst(tree) == True
