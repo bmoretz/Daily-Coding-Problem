@@ -1,43 +1,97 @@
-'''Validate BST.
+'''Successor.
 
-Implement a function to check if a binary tree is a binary search tree.
+Write an algorithm to find the "next" node (i.e., in-order successor) of a given node in a binary search tree.
+
+You may assume that each node has a link to its parent.
 '''
 
 from problems.tree import Node
 
-def is_bst(node):
+def successor(tree, value):
 
-    def check_bst(node, flr=None, ceil=None):
+    def path(tree, value):
 
-        if node == None: return True
+        if tree == None: return None
 
-        is_valid = False
+        path = []
 
-        if (node.left == None or node.left.data < node.data) and (node.right == None or node.right.data > node.data):
-            if (flr == None or flr < node.data) and (ceil == None or ceil > node.data):
-                is_valid = True
+        while tree != None:
 
-        if node.left:
-            is_valid &= check_bst(node.left, flr, node.data)
+            path.append(tree)
 
-        if node.right:
-            is_valid &= check_bst(node.right, node.data, ceil)
+            if tree.data == value:
+                break
+            elif tree.data >= value:
+                tree = tree.left
+            elif tree.data < value:
+                tree = tree.right
+        
+        return path
 
-        return is_valid
+    if tree == None or value == None: return None
 
-    if node is None: return False
+    target_path = path(tree, value)
+    
+    target = target_path.pop()
 
-    return check_bst(node)
+    #  node does not exist
+    if target == None or target.data != value: return None
 
-tree = Node(20)
+    if target.right == None:
+        
+        target = target_path.pop()
 
-tree.left = Node(10)
-tree.left.right = Node(25)
+        while target.data < value and target_path:
+            target = target_path.pop()
 
-tree.right = Node(30)
+        return target if target_path else None
+    else:
+        nxt = target.right
+
+        while nxt.left != None:
+            nxt = nxt.left
+
+        return nxt
+'''
+Tree :1
+
+successor(20) == 21
+
+          3
+        /   \
+      2      20
+          /     \
+        10        30
+      /          /  \
+    5          25    33
+              /  \
+            23   28
+           /
+          21
+'''
+
+tree = Node(3)
+
+tree.left = Node(2)
+tree.right = Node(20)
+
+tree.right.left = Node(10)
+tree.right.left.left = Node(5)
+
+tree.right.right = Node(30)
+tree.right.right.left = Node(25)
+
+tree.right.right.left.left = Node(23)
+tree.right.right.left.left.left = Node(21)
+tree.right.right.left.right = Node(28)
+
+tree.right.right.right = Node(33)
+
+suc = successor(tree, 33)
+
+print(tree)
 
 
-v = is_bst(tree)
-
-
-print(v)
+assert successor(tree, 20).data == 21
+assert successor(tree, 3).data == 5
+assert successor(tree, 30).data == 33

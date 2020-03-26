@@ -870,3 +870,185 @@ class Test_IsBST(unittest.TestCase):
         tree.right.right = Node(7)
 
         assert is_bst(tree) == False
+
+from problems.tree import successor
+class Test_Successor(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert successor(None, 21) == None
+
+    def test_case2(self):
+
+        tree = Node(20)
+
+        assert successor(tree, 10) == None
+
+    '''
+    successor(33) == None
+
+            3
+         /    \
+        2      20
+            /     \
+          10        30
+        /          /  \
+       5          25    33
+                /  \
+              23    28
+            /
+           21
+    '''
+    def test_case3(self):
+
+        tree = Node(3)
+
+        tree.left = Node(2)
+        tree.right = Node(20)
+
+        tree.right.left = Node(10)
+        tree.right.left.left = Node(5)
+
+        tree.right.right = Node(30)
+        tree.right.right.left = Node(25)
+
+        tree.right.right.left.left = Node(23)
+
+        tree.right.right.left.left.left = Node(21)
+
+        tree.right.right.left.right = Node(28)
+
+        tree.right.right.right = Node(33)
+
+        # case where we want the successor to the max value node
+        # which should be None
+        assert successor(tree, 33) == None
+
+    '''
+    successor(20) == 21
+
+            3
+         /    \
+        2      20
+            /     \
+          10        30
+        /          /  \
+       5          25    33
+                /  \
+              23    28
+            /
+           21
+    '''
+    def test_case4(self):
+
+        tree = Node(3)
+
+        tree.left = Node(2)
+        tree.right = Node(20)
+
+        tree.right.left = Node(10)
+        tree.right.left.left = Node(5)
+
+        tree.right.right = Node(30)
+        tree.right.right.left = Node(25)
+
+        tree.right.right.left.left = Node(23)
+
+        tree.right.right.left.left.left = Node(21)
+
+        tree.right.right.left.right = Node(28)
+
+        tree.right.right.right = Node(33)
+
+        # case where we want the successor to be in the
+        # right tree.
+        actual = successor(tree, 20)
+
+        assert actual.data == 21
+
+    '''
+    successor(3) == 5
+
+            3
+         /    \
+        2      20
+            /     \
+          10        30
+        /          /  \
+       5          25    33
+                /  \
+              23    28
+            /
+           21
+    '''
+    def test_case5(self):
+
+        tree = Node(3)
+
+        tree.left = Node(2)
+        tree.right = Node(20)
+
+        tree.right.left = Node(10)
+        tree.right.left.left = Node(5)
+
+        tree.right.right = Node(30)
+        tree.right.right.left = Node(25)
+
+        tree.right.right.left.left = Node(23)
+
+        tree.right.right.left.left.left = Node(21)
+
+        tree.right.right.left.right = Node(28)
+
+        tree.right.right.right = Node(33)
+
+        # case where we want the successor to be in the
+        # right tree.
+
+        actual = successor(tree, 3)
+
+        assert actual.data == 5
+
+    '''
+    successor(28) == 30
+
+            3
+         /    \
+        2      20
+            /     \
+          10        30
+        /          /  \
+       5          25    33
+                /  \
+              23    28
+            /
+           21
+    '''
+    def test_case6(self):
+
+        tree = Node(3)
+
+        tree.left = Node(2)
+        tree.right = Node(20)
+
+        tree.right.left = Node(10)
+        tree.right.left.left = Node(5)
+
+        tree.right.right = Node(30)
+        tree.right.right.left = Node(25)
+
+        tree.right.right.left.left = Node(23)
+
+        tree.right.right.left.left.left = Node(21)
+
+        tree.right.right.left.right = Node(28)
+
+        tree.right.right.right = Node(33)
+
+        # case where we want the successor to be in the
+        # previously traversed path.
+        actual = successor(tree, 28)
+        assert actual.data == 30

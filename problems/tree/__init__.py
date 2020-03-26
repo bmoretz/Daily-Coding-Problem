@@ -556,3 +556,57 @@ def is_bst(node):
     if node is None: return False
 
     return check_bst(node)
+
+'''Successor.
+
+Write an algorithm to find the "next" node (i.e., in-order successor) of a given node in a binary search tree.
+
+You may assume that each node has a link to its parent.
+'''
+
+def successor(tree, value):
+
+    def path(tree, value):
+
+        if tree == None: return None
+
+        path = []
+
+        while tree != None:
+
+            path.append(tree)
+
+            if tree.data == value:
+                break
+            elif tree.data >= value:
+                tree = tree.left
+            elif tree.data < value:
+                tree = tree.right
+        
+        return path
+
+    if tree == None or value == None: return None
+
+    target_path = path(tree, value)
+    
+    target = target_path.pop()
+
+    #  node does not exist
+    if target == None or target.data != value: return None
+
+    if target.right == None:
+        # check the up-ward path
+        target = target_path.pop()
+
+        while target.data < value and target_path:
+            target = target_path.pop()
+
+        return target if target_path else None
+    else:
+        # traverse the right sub-tree
+        nxt = target.right
+
+        while nxt.left != None:
+            nxt = nxt.left
+
+        return nxt
