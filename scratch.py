@@ -5,32 +5,39 @@ Implement a function to check if a binary tree is a binary search tree.
 
 from problems.tree import Node
 
-root = Node(3)
-
-root.left = Node(2)
-root.left.left = Node(1)
-
-root.right = Node(4)
-root.right.right = Node(4)
-
 def is_bst(node):
+
+    def check_bst(node, flr=None, ceil=None):
+
+        if node == None: return True
+
+        is_valid = False
+
+        if (node.left == None or node.left.data < node.data) and (node.right == None or node.right.data > node.data):
+            if (flr == None or flr < node.data) and (ceil == None or ceil > node.data):
+                is_valid = True
+
+        if node.left:
+            is_valid &= check_bst(node.left, flr, node.data)
+
+        if node.right:
+            is_valid &= check_bst(node.right, node.data, ceil)
+
+        return is_valid
 
     if node is None: return False
 
-    is_valid = True
+    return check_bst(node)
 
-    if node.left:
-        is_valid &= is_bst(node.left)
-        is_valid &= node.left.data < node.data
+tree = Node(20)
 
-    if not is_valid: return is_bst
-    
-    if node.right:
-        is_valid &= is_bst(node.right)
-        is_valid &= node.right.data >= node.data
+tree.left = Node(10)
+tree.left.right = Node(25)
 
-    return is_valid
+tree.right = Node(30)
 
-v = is_bst(root)
+
+v = is_bst(tree)
+
 
 print(v)

@@ -732,7 +732,7 @@ class Test_IsBST(unittest.TestCase):
         tree.right = Node(4)
         tree.right.right = Node(4)
 
-        assert is_bst(tree) == True
+        assert is_bst(tree) == False
 
     '''
     Tree #3:
@@ -800,3 +800,73 @@ class Test_IsBST(unittest.TestCase):
         tree.right.right = Node(7)
 
         assert is_bst(tree) == True
+
+    '''
+    Tree #5:
+
+           20
+          /   \
+        10     30
+         \    
+          25  
+    '''
+    def test_case6(self):
+
+        tree = Node(20)
+
+        tree.left = Node(10)
+        tree.left.right = Node(25)
+
+        tree.right = Node(30)
+
+        assert is_bst(tree) == False
+
+    '''
+    Tree #6:
+
+           20
+          /  \
+        10    30
+       /  \    
+      5    15
+     /  \    \
+    3    7    17
+    '''
+    def test_case7(self):
+
+        tree = Node(20)
+
+        tree.left = Node(10)
+        tree.left.left = Node(5)
+        tree.left.left.left = Node(3)
+        tree.left.left.right = Node(7)
+
+        tree.left.right = Node(15)
+        tree.left.right.right = Node(17)
+
+        tree.right = Node(30)
+
+        assert is_bst(tree) == True
+
+    '''
+    Tree #7:
+
+            4
+          /   \
+        2       5
+      /  \     /  \
+     1     3  6     7
+    '''
+    def test_case5(self):
+
+        tree = Node(4)
+
+        tree.left = Node(2)
+        tree.left.left = Node(1)
+        tree.left.right = Node(3)
+
+        tree.right = Node(5)
+        tree.right.left = Node(6)
+        tree.right.right = Node(7)
+
+        assert is_bst(tree) == False
