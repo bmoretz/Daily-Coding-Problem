@@ -1,6 +1,6 @@
 import unittest
 
-from problems.xorlist import Node, XorLinkedList
+from py.problems.xorlist import Node, XorLinkedList
 
 class Test_XORList1(unittest.TestCase):
     

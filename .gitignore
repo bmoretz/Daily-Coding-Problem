@@ -10,3 +10,9 @@ __pycache__
 
 dcp/Scripts/
 dcp/Lib/
+*.db
+*.opendb
+*.ipch
+.vs/*
+output/*
+packages/*

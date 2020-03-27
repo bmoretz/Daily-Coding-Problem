@@ -66,7 +66,8 @@ class Builder1():
 
             built.append(dependencies)
             # reset the build list after completion
-            dependencies = [project]        
+            dependencies = [project]
+
         return dependencies
 
     def dep_list(self):

@@ -1,8 +1,6 @@
 import unittest
 
-from problems.trie import Autocomplete1, Autocomplete2
-from problems.trie import PrefixMapSum1, PrefixMapSum2
-from problems.trie import MaxXOR1
+from py.problems.trie import Autocomplete1
 
 class Test_Autocomplete1(unittest.TestCase):
     
@@ -21,6 +19,7 @@ class Test_Autocomplete1(unittest.TestCase):
         assert 'deer' in results
         assert 'deal' in results
 
+from py.problems.trie import Autocomplete2
 class Test_Autocomplete2(unittest.TestCase):
     
     def setUp(self):
@@ -32,30 +31,13 @@ class Test_Autocomplete2(unittest.TestCase):
 
         ac = Autocomplete2()
         ac.insert_words(values)
-
-        results = ac.get_matches(search)
-
-        assert 'deer' in results
-        assert 'deal' in results
-
-class Test_Autocomplete3(unittest.TestCase):
-    
-    def setUp(self):
-        pass
-
-    def test_case1(self):       
         
-        values, search = ['dog', 'deer', 'deal', 'deed'], "de"
-
-        ac = Autocomplete2()
-        ac.insert_words(values)
-
         results = ac.get_matches(search)
 
         assert 'deer' in results
         assert 'deal' in results
-        assert 'deed' in results
 
+from py.problems.trie import PrefixMapSum1
 class Test_MapSum1(unittest.TestCase):
     
     def setUp(self):
@@ -71,7 +53,7 @@ class Test_MapSum1(unittest.TestCase):
         mapsum.insert("column", 2)
         assert mapsum.sum("col") == 5
 
-
+from problems.trie import PrefixMapSum2
 class Test_MapSum2(unittest.TestCase):
     
     def setUp(self):
@@ -87,7 +69,7 @@ class Test_MapSum2(unittest.TestCase):
         mapsum.insert("column", 2)
         assert mapsum.sum("col") == 5
 
-
+from problems.trie import MaxXOR1
 class Test_MaxXOR(unittest.TestCase):
     
     def setUp(self):

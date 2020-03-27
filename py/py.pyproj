@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{b0fed849-78f1-47ce-9ef8-ba0c9bd1d344}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>__init__.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>MSBuild|dcp|$(MSBuildProjectFullPath)</InterpreterId>
+    <TestFramework>unittest</TestFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="problems\arr\__init__.py" />
+    <Compile Include="problems\backtrack\__init__.py" />
+    <Compile Include="problems\bst\__init__.py" />
+    <Compile Include="problems\daily\__init__.py" />
+    <Compile Include="problems\dynamic\__init__.py" />
+    <Compile Include="problems\graph\adj_list_graph.py" />
+    <Compile Include="problems\graph\adj_mat_graph.py" />
+    <Compile Include="problems\graph\__init__.py" />
+    <Compile Include="problems\hashtable\__init__.py" />
+    <Compile Include="problems\heap\__init__.py" />
+    <Compile Include="problems\linkedlist\__init__.py" />
+    <Compile Include="problems\matrix\__init__.py" />
+    <Compile Include="problems\misc\__init__.py" />
+    <Compile Include="problems\recursion\__init__.py" />
+    <Compile Include="problems\simulation\__init__.py" />
+    <Compile Include="problems\stack_queue\__init__.py" />
+    <Compile Include="problems\str\__init__.py" />
+    <Compile Include="problems\tree\__init__.py" />
+    <Compile Include="problems\trie\__init__.py" />
+    <Compile Include="problems\xorlist\__init__.py" />
+    <Compile Include="problems\__init__.py" />
+    <Compile Include="tests\arr_test.py" />
+    <Compile Include="tests\backtrack_test.py" />
+    <Compile Include="tests\bst_test.py" />
+    <Compile Include="tests\daily_test.py" />
+    <Compile Include="tests\dynamic_test.py" />
+    <Compile Include="tests\graph_test.py" />
+    <Compile Include="tests\hashtable_test.py" />
+    <Compile Include="tests\heap_test.py" />
+    <Compile Include="tests\linkedlist_test.py" />
+    <Compile Include="tests\matrix_test.py" />
+    <Compile Include="tests\misc_test.py" />
+    <Compile Include="tests\recursion_test.py" />
+    <Compile Include="tests\simulation_test.py" />
+    <Compile Include="tests\stack_queue_test.py" />
+    <Compile Include="tests\str_test.py" />
+    <Compile Include="tests\tree_test.py" />
+    <Compile Include="tests\trie_test.py" />
+    <Compile Include="tests\xorlist_test.py" />
+    <Compile Include="tests\__init__.py" />
+    <Compile Include="__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="problems" />
+    <Folder Include="problems\arr" />
+    <Folder Include="problems\backtrack" />
+    <Folder Include="problems\bst" />
+    <Folder Include="problems\daily" />
+    <Folder Include="problems\dynamic" />
+    <Folder Include="problems\graph" />
+    <Folder Include="problems\hashtable" />
+    <Folder Include="problems\heap" />
+    <Folder Include="problems\linkedlist" />
+    <Folder Include="problems\matrix" />
+    <Folder Include="problems\misc" />
+    <Folder Include="problems\recursion" />
+    <Folder Include="problems\simulation" />
+    <Folder Include="problems\stack_queue" />
+    <Folder Include="problems\str" />
+    <Folder Include="problems\tree" />
+    <Folder Include="problems\trie" />
+    <Folder Include="problems\xorlist" />
+    <Folder Include="tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="..\dcp\">
+      <Id>dcp</Id>
+      <Version>3.8</Version>
+      <Description>dcp (Python 3.8 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>
