@@ -1,97 +1,112 @@
-'''Successor.
+'''Build Order.
 
-Write an algorithm to find the "next" node (i.e., in-order successor) of a given node in a binary search tree.
+You are given a list of projects and a list of dependencies (which is
+a list of pairs of projects, where the second project is dependent on
+the first project). All of a project's dependencies must be built before
+the project is. Find a build order that will allow the projects to be built. If
+there is no valid build order, return an error.
 
-You may assume that each node has a link to its parent.
+EXAMPLE
+
+Input:
+    projects: a, b, c, d, e, f
+    dependencies: (a, d), (f, b), (b, d), (f, a), (d, c)
+Output:
+    f, e, a, b, d, c
 '''
 
-from problems.tree import Node
+class Builder1():
 
-def successor(tree, value):
+    class CircularReferenceError(ReferenceError):
 
-    def path(tree, value):
+        def __init__(self):
+            pass
 
-        if tree == None: return None
+    def __init__(self, projects, dependencies):
+        self.projects = {}
 
-        path = []
+        if projects is None: return
 
-        while tree != None:
+        for proj in projects:
+            self.__add_project(proj)
 
-            path.append(tree)
+        if dependencies is None: return
 
-            if tree.data == value:
-                break
-            elif tree.data >= value:
-                tree = tree.left
-            elif tree.data < value:
-                tree = tree.right
+        for dep in dependencies:
+            self.__add_dependency(dep[0], dep[1])
+
+    def __add_project(self, project):
+        self.projects[project] = []
+
+    def __add_dependency(self, project, dep):
+        self.projects[project].append(dep)
+
+    def __get_dependencies(self, project, prior=[], pending=[]):
+        dependencies, subprojects = [project], self.projects[project]
         
-        return path
+        if subprojects != []:
+            for sub in subprojects:
+                if sub in pending:
+                    raise self.CircularReferenceError()
 
-    if tree == None or value == None: return None
+                if sub not in prior:
+                    dependencies += self.__get_dependencies(sub, prior, pending)
 
-    target_path = path(tree, value)
-    
-    target = target_path.pop()
+        return dependencies
 
-    #  node does not exist
-    if target == None or target.data != value: return None
-
-    if target.right == None:
+    def build_project(self, project):
         
-        target = target_path.pop()
+        dependencies = [project]
+        built = []
 
-        while target.data < value and target_path:
-            target = target_path.pop()
+        for proj in self.projects[project]:
+            dep = self.__get_dependencies(proj, built, dependencies)
 
-        return target if target_path else None
-    else:
-        nxt = target.right
+            dependencies += dep
 
-        while nxt.left != None:
-            nxt = nxt.left
+            built.append(dependencies)
+            # reset the build list after completion
+            dependencies = [project]        
+        return dependencies
 
-        return nxt
-'''
-Tree :1
+    def dep_list(self):
+        dep_list = {}
 
-successor(20) == 21
+        for proj in projects:
+            dep_list[proj] = len(self.build_project(proj)) - 1
 
-          3
-        /   \
-      2      20
-          /     \
-        10        30
-      /          /  \
-    5          25    33
-              /  \
-            23   28
-           /
-          21
-'''
+        return dep_list
 
-tree = Node(3)
+    def build_all(self):
+        
+        to_build = list(self.projects.keys())
 
-tree.left = Node(2)
-tree.right = Node(20)
+        if to_build == None: return None
 
-tree.right.left = Node(10)
-tree.right.left.left = Node(5)
+        built = []
 
-tree.right.right = Node(30)
-tree.right.right.left = Node(25)
+        while len(to_build) > 0:
 
-tree.right.right.left.left = Node(23)
-tree.right.right.left.left.left = Node(21)
-tree.right.right.left.right = Node(28)
+            current = to_build.pop()
 
-tree.right.right.right = Node(33)
+            dependencies = self.build_project(current)
 
-suc = successor(tree, 33)
+            for dep in dependencies:
 
-print(tree)
+                if dep in to_build: 
+                    to_build.remove(dep)
 
+                if dep not in built:
+                    built = built + [dep]
 
-assert successor(tree, 20).data == 21
-assert successor(tree, 3).data == 5
-assert successor(tree, 30).data == 33
+        return built
+
+builder = Builder1(
+    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], 
+    [('a', 'e'), ('b', 'a'), ('c', 'a'), ('f', 'a'), ('f', 'c'), ('f', 'b'), ('b', 'e'), ('d', 'g'), ('b', 'h'), ('e', 'f')])
+
+# build_order = builder.build_all()
+
+d = builder.build_project('f')
+
+print(d)

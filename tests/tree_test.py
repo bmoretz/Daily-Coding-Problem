@@ -1051,4 +1051,5 @@ class Test_Successor(unittest.TestCase):
         # case where we want the successor to be in the
         # previously traversed path.
         actual = successor(tree, 28)
+        
         assert actual.data == 30
