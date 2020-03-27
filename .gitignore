@@ -10,3 +10,6 @@ __pycache__
 
 dcp/Scripts/
 dcp/Lib/
+.vs/*
+packages/*
+output/*
