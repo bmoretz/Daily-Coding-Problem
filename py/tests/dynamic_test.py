@@ -1,10 +1,6 @@
 import unittest
 
-from problems.dynamic import fib1, fib2
-from problems.dynamic import staircase1, staircase2
-from problems.dynamic import num_encodings1, num_encodings2
-from problems.dynamic import build_houses
-
+from py.problems.dynamic import fib1
 class Test_Fibonacci(unittest.TestCase):
     
     def setUp(self):
@@ -14,11 +10,18 @@ class Test_Fibonacci(unittest.TestCase):
 
         assert fib1(10) == 55
 
-    def test_case2(self):
+from py.problems.dynamic import fib2
+class Test_Fibonacci(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
         
         assert fib2(10) == 55
 
-class Test_Staircase(unittest.TestCase):
+from py.problems.dynamic import staircase1
+class Test_Staircase2(unittest.TestCase):
     
     def setUp(self):
         pass
@@ -29,13 +32,20 @@ class Test_Staircase(unittest.TestCase):
 
         assert staircase1(n, range(1, n)) == 7
 
-    def test_case2(self):
+from py.problems.dynamic import staircase2
+class Test_Staircase2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
 
         n = 4
         
         assert staircase2(n, range(1, n)) == 7
 
-class Test_NumEncodings(unittest.TestCase):
+from py.problems.dynamic import num_encodings1
+class Test_NumEncodings1(unittest.TestCase):
     
     def setUp(self):
         pass
@@ -44,10 +54,18 @@ class Test_NumEncodings(unittest.TestCase):
 
         assert num_encodings1('111') == 3
 
-    def test_case2(self):
+from py.problems.dynamic import num_encodings2
+class Test_NumEncodings2(unittest.TestCase):
 
-        assert num_encodings2('111') == 3
+    def setUp(self):
+        pass
 
+    def test_case1(self):
+        actual, expected = num_encodings2('111'), 3
+
+        assert expected == 3
+
+from py.problems.dynamic import build_houses
 class Test_PaintHouses(unittest.TestCase):
     
     def setUp(self):

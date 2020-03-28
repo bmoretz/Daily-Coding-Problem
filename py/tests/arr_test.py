@@ -1,11 +1,6 @@
 import unittest
 
-from problems.arr import product1, product2, product3
-from problems.arr import window1
-from problems.arr import max_subarray_sum1
-from problems.arr import smaller_counts1
-from problems.arr import build_mat, rotate1, rotate2
-
+from py.problems.arr import product1
 class Test_ArrayProduct1(unittest.TestCase):
     
     def setUp(self):
@@ -17,6 +12,7 @@ class Test_ArrayProduct1(unittest.TestCase):
     def test_case2(self):
         assert product1( [3, 2, 1] ) == [2, 3, 6]
 
+from py.problems.arr import product2
 class Test_ArrayProduct2(unittest.TestCase):
     
     def setUp(self):
@@ -28,7 +24,7 @@ class Test_ArrayProduct2(unittest.TestCase):
     def test_case2(self):
         assert product2( [3, 2, 1] ) == [2, 3, 6]
 
-
+from py.problems.arr import product3
 class Test_ArrayProduct3(unittest.TestCase):
 
     def setUp(self):
@@ -40,6 +36,7 @@ class Test_ArrayProduct3(unittest.TestCase):
     def test_case2(self):
         assert product3( [3, 2, 1] ) == [2, 3, 6]
 
+from py.problems.arr import window1
 class Test_SmallestWindow(unittest.TestCase):
 
     def setUp(self):
@@ -51,6 +48,7 @@ class Test_SmallestWindow(unittest.TestCase):
     def test_case2(self):
         assert window1( [3, 7, 5, 6, 9, 2, 3, 14, 15, 16, 17, 1.5]) == (1, 11)
 
+from py.problems.arr import max_subarray_sum1
 class Test_MaxSubarraySum(unittest.TestCase):
 
     def setUp(self):
@@ -62,7 +60,7 @@ class Test_MaxSubarraySum(unittest.TestCase):
     def test_case2(self):
         assert max_subarray_sum1( [-5, -1, 8, -9]) == 0
 
-
+from py.problems.arr import smaller_counts1
 class Test_SmallerCounts1(unittest.TestCase):
 
     def setUp(self):

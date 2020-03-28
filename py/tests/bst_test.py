@@ -1,10 +1,8 @@
 import unittest
 
-from problems.bst import Node, BST
-from problems.bst import floor_ceiling1
-from problems.bst import built_bst1
-from problems.bst import make_trees1
+from py.problems.bst import Node, BST
 
+from py.problems.bst import floor_ceiling1
 class Test_FloorCeiling1(unittest.TestCase):
     
     def setUp(self):
@@ -28,6 +26,7 @@ class Test_FloorCeiling1(unittest.TestCase):
 
         assert floor_ceiling1(tree.root, 6) == (6, 6)
 
+from py.problems.bst import built_bst1
 class Test_BuildBST1(unittest.TestCase):
     
     def setUp(self):
@@ -66,6 +65,7 @@ class Test_BuildBST1(unittest.TestCase):
 
         assert root.right.data == 4
 
+from py.problems.bst import make_trees1
 class Test_MakeTrees1(unittest.TestCase):
     
     def setUp(self):

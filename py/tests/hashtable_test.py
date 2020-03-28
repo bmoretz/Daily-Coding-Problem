@@ -1,10 +1,6 @@
 import unittest
 
-from problems.hashtable import two_sum1
-from problems.hashtable import LRUCache
-from problems.hashtable import fewest_cuts1
-from problems.hashtable import SparseArray, SparseMatrix
-
+from py.problems.hashtable import two_sum1
 class Test_TwoSum1(unittest.TestCase):
     
     def setUp(self):
@@ -16,6 +12,7 @@ class Test_TwoSum1(unittest.TestCase):
 
         assert two_sum1(arr, k) == True
 
+from py.problems.hashtable import LRUCache, Node, LinkedList
 class Test_LRUCache(unittest.TestCase):
 
     def setUp(self):
@@ -30,6 +27,7 @@ class Test_LRUCache(unittest.TestCase):
 
         assert list( cache.dict.keys() ) == [5, 6, 7, 8, 9]
 
+from py.problems.hashtable import fewest_cuts1
 class Test_FewestCuts(unittest.TestCase):
 
     def setUp(self):
@@ -57,6 +55,7 @@ class Test_FewestCuts(unittest.TestCase):
                 
         assert fewest_cuts1(wall2) == 2
 
+from py.problems.hashtable import SparseArray
 class Test_SparseArray(unittest.TestCase):
 
     def setUp(self):
@@ -77,7 +76,7 @@ class Test_SparseArray(unittest.TestCase):
             else:
                 assert sa.get(index) == 0
 
-
+from py.problems.hashtable import SparseMatrix
 class Test_SparseMatrix(unittest.TestCase):
 
     def setUp(self):

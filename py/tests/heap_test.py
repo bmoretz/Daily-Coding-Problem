@@ -1,10 +1,6 @@
 import unittest
 
-from problems.heap import RunningMedian1, running_median2
-from problems.heap import similarity1
-from problems.heap import regular_numbers1, regular_numbers2
-from problems.heap import huffman_coding1
-
+from py.problems.heap import RunningMedian1
 class Test_RunningMedian1(unittest.TestCase):
     
     def setUp(self):
@@ -24,6 +20,7 @@ class Test_RunningMedian1(unittest.TestCase):
     def test_case2(self):
         pass
 
+from py.problems.heap import running_median2
 class Test_RunningMedian2(unittest.TestCase):
     
     def setUp(self):
@@ -39,6 +36,7 @@ class Test_RunningMedian2(unittest.TestCase):
     def test_case2(self):
         pass
 
+from py.problems.heap import similarity1
 class Test_SiteSimilarity1(unittest.TestCase):
     
     def setUp(self):
@@ -59,6 +57,7 @@ class Test_SiteSimilarity1(unittest.TestCase):
                         ('google.com', 'bing.com')]
 
 
+from py.problems.heap import regular_numbers1
 class Test_RegularNumbers1(unittest.TestCase):
     
     def setUp(self):
@@ -73,6 +72,7 @@ class Test_RegularNumbers1(unittest.TestCase):
     def test_case1(self):      
         assert regular_numbers1(10) == self.regulars[:10]
 
+from py.problems.heap import regular_numbers2
 class Test_RegularNumbers2(unittest.TestCase):
     
     def setUp(self):
@@ -87,6 +87,7 @@ class Test_RegularNumbers2(unittest.TestCase):
     def test_case1(self):      
         assert list(regular_numbers2(10)) == self.regulars[:10]
 
+from py.problems.heap import huffman_coding1
 class Test_HuffmanCoding1(unittest.TestCase):
     
     def setUp(self):

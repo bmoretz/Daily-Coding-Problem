@@ -1,6 +1,6 @@
 import unittest
 
-from problems.stack_queue import Stack
+from py.problems.stack_queue import Stack
 class Test_Stack(unittest.TestCase):
     
     def setUp(self):
@@ -150,7 +150,7 @@ class Test_Stack(unittest.TestCase):
 
         assert stack.is_empty() == True
 
-from problems.stack_queue import Queue
+from py.problems.stack_queue import Queue
 class Test_Queue(unittest.TestCase):
     
     def setUp(self):
@@ -306,7 +306,7 @@ class Test_Queue(unittest.TestCase):
         assert queue.is_empty() == False
         assert queue.peek() == 2
 
-from problems.stack_queue import MaxStack
+from py.problems.stack_queue import MaxStack
 class Test_MaxStack(unittest.TestCase):
     
     def setUp(self):
@@ -321,7 +321,7 @@ class Test_MaxStack(unittest.TestCase):
 
         assert s.max() == 5
 
-from problems.stack_queue import bracket_balanced1
+from py.problems.stack_queue import bracket_balanced1
 class Test_BracketBalanced1(unittest.TestCase):
     
     def setUp(self):
@@ -339,7 +339,7 @@ class Test_BracketBalanced1(unittest.TestCase):
     def test_case4(self):
         assert bracket_balanced1("((()") == False
 
-from problems.stack_queue import bracket_balanced2
+from py.problems.stack_queue import bracket_balanced2
 class Test_BracketBalanced2(unittest.TestCase):
     
     def setUp(self):
@@ -357,7 +357,7 @@ class Test_BracketBalanced2(unittest.TestCase):
     def test_case4(self):
         assert bracket_balanced2("((()") == False
 
-from problems.stack_queue import max_subarray1
+from py.problems.stack_queue import max_subarray1
 class Test_MaxSub1(unittest.TestCase):
     
     def setUp(self):
@@ -373,7 +373,7 @@ class Test_MaxSub1(unittest.TestCase):
 
         assert max_subarray1(arr, k) == [3, 4, 5, 6, 7, 8, 9]
 
-from problems.stack_queue import max_subarray2
+from py.problems.stack_queue import max_subarray2
 class Test_MaxSub2(unittest.TestCase):
     
     def setUp(self):
@@ -389,7 +389,7 @@ class Test_MaxSub2(unittest.TestCase):
 
         assert max_subarray2(arr, k) == [3, 4, 5, 6, 7, 8, 9]
 
-from problems.stack_queue import max_subarray3
+from py.problems.stack_queue import max_subarray3
 class Test_MaxSub3(unittest.TestCase):
     
     def setUp(self):
@@ -405,7 +405,7 @@ class Test_MaxSub3(unittest.TestCase):
 
         assert max_subarray3(arr, k) == [3, 4, 5, 6, 7, 8, 9]
 
-from problems.stack_queue import nstack1
+from py.problems.stack_queue import nstack1
 class Test_Tristack1(unittest.TestCase):
     
     def setUp(self):
@@ -520,7 +520,7 @@ class Test_Tristack1(unittest.TestCase):
 
         assert stack.data == []
 
-from problems.stack_queue import nstack2
+from py.problems.stack_queue import nstack2
 class Test_Tristack2(unittest.TestCase):
     
     def setUp(self):
@@ -628,7 +628,7 @@ class Test_Tristack2(unittest.TestCase):
 
         assert stack.data == []
 
-from problems.stack_queue import minstack
+from py.problems.stack_queue import minstack
 class Test_MinStack(unittest.TestCase):
     
     def setUp(self):
@@ -759,7 +759,7 @@ class Test_MinStack(unittest.TestCase):
 
         assert stack.is_empty() == True
 
-from problems.stack_queue import set_stack1
+from py.problems.stack_queue import set_stack1
 class Test_StackOfStacks1(unittest.TestCase):
     
     def setUp(self):
@@ -901,7 +901,7 @@ class Test_StackOfStacks1(unittest.TestCase):
 
         assert stack.pop_at(1) == None
 
-from problems.stack_queue import set_stack2
+from py.problems.stack_queue import set_stack2
 class Test_StackOfStacks2(unittest.TestCase):
     
     def setUp(self):
@@ -1043,7 +1043,7 @@ class Test_StackOfStacks2(unittest.TestCase):
 
         assert stack.pop_at(1) == None
 
-from problems.stack_queue import my_queue1
+from py.problems.stack_queue import my_queue1
 class Test_MyQueue1(unittest.TestCase):
     
     def setUp(self):
@@ -1209,8 +1209,7 @@ class Test_MyQueue1(unittest.TestCase):
 
         assert queue.is_empty()
 
-from problems.stack_queue import sort_stack1
-
+from py.problems.stack_queue import sort_stack1
 class Test_SortStack1(unittest.TestCase):
     
     def setUp(self):
@@ -1292,8 +1291,8 @@ class Test_SortStack1(unittest.TestCase):
 
         assert result.is_empty() == True
 
-from problems.stack_queue import Animal, Species
-from problems.stack_queue import AnimalShelter1
+from py.problems.stack_queue import Animal, Species
+from py.problems.stack_queue import AnimalShelter1
 class Test_AnimalShelter1(unittest.TestCase):
     
     def setUp(self):
@@ -1397,7 +1396,7 @@ class Test_AnimalShelter1(unittest.TestCase):
         assert shelter.dequeue_dog() == None
         assert shelter.dequeue_any() == None
 
-from problems.stack_queue import AnimalShelter2
+from py.problems.stack_queue import AnimalShelter2
 from time import sleep
 class Test_AnimalShelter2(unittest.TestCase):
     

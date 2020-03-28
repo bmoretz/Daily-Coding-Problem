@@ -98,8 +98,7 @@ graph_5 = {
     'I' : []
 }
 
-from problems.graph.adj_list_graph import ALGraph
-
+from py.problems.graph.adj_list_graph import ALGraph
 class Test_AdjListGraphTests(unittest.TestCase):
     
     def setUp(self):
@@ -114,7 +113,6 @@ class Test_AdjListGraphTests(unittest.TestCase):
         
         assert self.graph1.edges() == [{'c', 'a'}, {'c', 'b'}, {'e', 'b'}, {'c', 'a'}, {'c', 'b'}, {'c', 'd'}, {'e', 'c'}, {'c', 'd'}, {'e', 'c'}, {'e', 'b'}]
 
-
 class Test_AdjListGraphAddTest(unittest.TestCase):
 
     def setUp(self):
@@ -128,8 +126,7 @@ class Test_AdjListGraphAddTest(unittest.TestCase):
 
         assert self.graph.vertices() == ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 
-from problems.graph.adj_mat_graph import AMGraph
-
+from py.problems.graph.adj_mat_graph import AMGraph
 class Test_AdjMatrixGraphTests(unittest.TestCase):
     
     def setUp(self):
@@ -147,7 +144,7 @@ class Test_AdjMatrixGraphTests(unittest.TestCase):
 
         assert self.graph1.edges() == [{'a': 'c'}, {'b': 'c'}, {'b': 'e'}, {'c': 'a'}, {'c': 'b'}, {'c': 'd'}, {'c': 'e'}, {'d': 'c'}, {'e': 'b'}, {'e': 'c'}]
 
-from problems.graph import max_edges1
+from py.problems.graph import max_edges1
 class Test_MaxEdgesAL(unittest.TestCase):
 
     def setUp(self):
@@ -159,7 +156,7 @@ class Test_MaxEdgesAL(unittest.TestCase):
 
         assert max_edges1(graph) == 2
 
-from problems.graph import word_ladder1
+from py.problems.graph import word_ladder1
 class Test_WordLadderAM(unittest.TestCase):
 
     def setUp(self):
@@ -174,7 +171,7 @@ class Test_WordLadderAM(unittest.TestCase):
 
         assert ladder == ['dog', 'dop', 'dot', 'dat', 'cat']
 
-from problems.graph import minimum_turns1
+from py.problems.graph import minimum_turns1
 class Test_SnakesLadders1(unittest.TestCase):
 
     def setUp(self):
@@ -189,7 +186,7 @@ class Test_SnakesLadders1(unittest.TestCase):
 
         assert minimum_turns1(snakes, ladders, n_squares)
 
-from problems.graph import find_order1
+from py.problems.graph import find_order1
 class Test_TopologicalSort1(unittest.TestCase):
 
     def setUp(self):
@@ -205,7 +202,7 @@ class Test_TopologicalSort1(unittest.TestCase):
 
         assert find_order1(courses) == ['CSC100', 'CSC200', 'CSC300']
 
-from problems.graph import has_route1
+from py.problems.graph import has_route1
 class Test_HasRoute1(unittest.TestCase):
 
     def setUp(self):
@@ -233,7 +230,7 @@ class Test_HasRoute1(unittest.TestCase):
     def test_case7(self):
         assert has_route1(graph_5, 'C', 'H') == False
 
-from problems.graph import Builder1
+from py.problems.graph import Builder1
 class Test_Builder1(unittest.TestCase):
 
     def setUp(self):

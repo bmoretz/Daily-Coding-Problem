@@ -1,7 +1,6 @@
 import unittest
 
-from problems.backtrack import num_queens1
-
+from py.problems.backtrack import num_queens1
 class Test_NumEncodings(unittest.TestCase):
     
     def setUp(self):

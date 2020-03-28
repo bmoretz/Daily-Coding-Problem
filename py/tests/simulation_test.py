@@ -1,7 +1,6 @@
 import unittest
 
-from problems.simulation import estimate_pi
-
+from py.problems.simulation import estimate_pi
 class Test_SimulatePi(unittest.TestCase):
     
     def setUp(self):

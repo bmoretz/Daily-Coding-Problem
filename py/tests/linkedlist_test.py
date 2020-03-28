@@ -1,20 +1,6 @@
 import unittest
 
-from problems.linkedlist import Node, SLinkedList
-from problems.linkedlist import build_list, tail, build_ref_list
-
-from problems.linkedlist import add_numbers1, add_numbers2
-from problems.linkedlist import alternate1, alternate2
-from problems.linkedlist import intersect1, intersect2
-from problems.linkedlist import dedupe1, dedupe2
-from problems.linkedlist import klast1, klast2
-from problems.linkedlist import delete_middle1
-from problems.linkedlist import partition1
-from problems.linkedlist import rev_sum1, fwd_sum1
-from problems.linkedlist import is_palindrome1
-from problems.linkedlist import intersect5, intersect6
-from problems.linkedlist import detect_loop1
-
+from py.problems.linkedlist import Node, SLinkedList
 class Test_SingleLinkedList(unittest.TestCase):
     
     def setUp(self):
@@ -47,6 +33,7 @@ class Test_SingleLinkedListReverse1(unittest.TestCase):
 
         assert sl.elements() == [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
+from py.problems.linkedlist import add_numbers1
 class Test_SingleLinkedListAdd1(unittest.TestCase):
     
     def setUp(self):
@@ -63,6 +50,7 @@ class Test_SingleLinkedListAdd1(unittest.TestCase):
         
         assert result.elements() == [4, 2, 1]
 
+from py.problems.linkedlist import add_numbers2
 class Test_SingleLinkedListAdd2(unittest.TestCase):
     
     def setUp(self):
@@ -79,6 +67,7 @@ class Test_SingleLinkedListAdd2(unittest.TestCase):
         
         assert result.elements() == [4, 2, 1]
 
+from py.problems.linkedlist import alternate1
 class Test_SingleLinkedListAlt1(unittest.TestCase):
     
     def setUp(self):
@@ -95,6 +84,7 @@ class Test_SingleLinkedListAlt1(unittest.TestCase):
 
         assert result.elements() == [1, 3, 2, 5, 4]
 
+from py.problems.linkedlist import alternate2
 class Test_SingleLinkedListAlt2(unittest.TestCase):
     
     def setUp(self):
@@ -111,6 +101,7 @@ class Test_SingleLinkedListAlt2(unittest.TestCase):
 
         assert result.elements() == [1, 3, 2, 5, 4]
 
+from py.problems.linkedlist import intersect1
 class Test_SingleLinkedListIntersect1(unittest.TestCase):
     
     def setUp(self):
@@ -125,6 +116,7 @@ class Test_SingleLinkedListIntersect1(unittest.TestCase):
 
         assert intersect1(list1, list2) == 8
 
+from py.problems.linkedlist import intersect2
 class Test_SingleLinkedListIntersect2(unittest.TestCase):
     
     def setUp(self):
@@ -141,6 +133,8 @@ class Test_SingleLinkedListIntersect2(unittest.TestCase):
 
         assert result.data == 8
 
+from py.problems.linkedlist import build_list, tail, build_ref_list
+from py.problems.linkedlist import dedupe1
 class Test_Dedupe1(unittest.TestCase):
     
     def setUp(self):
@@ -181,6 +175,7 @@ class Test_Dedupe1(unittest.TestCase):
 
         assert expected == actual
 
+from py.problems.linkedlist import dedupe2
 class Test_Dedupe2(unittest.TestCase):
     
     def setUp(self):
@@ -221,6 +216,7 @@ class Test_Dedupe2(unittest.TestCase):
 
         assert expected == actual
 
+from py.problems.linkedlist import klast1
 class Test_KLast1(unittest.TestCase):
     
     def setUp(self):
@@ -266,6 +262,7 @@ class Test_KLast1(unittest.TestCase):
 
         assert expected == actual
 
+from py.problems.linkedlist import klast2
 class Test_KLast2(unittest.TestCase):
     
     def setUp(self):
@@ -311,6 +308,7 @@ class Test_KLast2(unittest.TestCase):
 
         assert expected == actual
 
+from py.problems.linkedlist import delete_middle1
 class Test_DeleteMiddle2(unittest.TestCase):
     
     def setUp(self):
@@ -380,6 +378,7 @@ class Test_DeleteMiddle2(unittest.TestCase):
         
         assert actual == expected
 
+from py.problems.linkedlist import partition1
 class Test_Partition1(unittest.TestCase):
     
     def setUp(self):
@@ -429,6 +428,7 @@ class Test_Partition1(unittest.TestCase):
         
         assert actual == expected
 
+from py.problems.linkedlist import rev_sum1
 class Test_ReverseSum1(unittest.TestCase):
     
     def setUp(self):
@@ -488,6 +488,7 @@ class Test_ReverseSum1(unittest.TestCase):
         
         assert actual == expected
 
+from py.problems.linkedlist import fwd_sum1
 class Test_FwdSum1(unittest.TestCase):
     
     def setUp(self):
@@ -547,7 +548,8 @@ class Test_FwdSum1(unittest.TestCase):
         
         assert actual == expected
 
-class Test_FwdSum1(unittest.TestCase):
+from py.problems.linkedlist import is_palindrome1
+class Test_IsPalindrome1(unittest.TestCase):
     
     def setUp(self):
         pass
@@ -586,6 +588,7 @@ class Test_FwdSum1(unittest.TestCase):
 
         assert is_palindrome1(data) == False
 
+from py.problems.linkedlist import intersect5
 class Test_Intersect5(unittest.TestCase):
     
     def setUp(self):
@@ -648,6 +651,7 @@ class Test_Intersect5(unittest.TestCase):
 
         assert actual == expected
 
+from py.problems.linkedlist import intersect6
 class Test_Intersect6(unittest.TestCase):
     
     def setUp(self):
@@ -714,6 +718,7 @@ class Test_Intersect6(unittest.TestCase):
 
         assert actual == expected
 
+from py.problems.linkedlist import detect_loop1
 class Test_DetectLoop1(unittest.TestCase):
 
     @staticmethod

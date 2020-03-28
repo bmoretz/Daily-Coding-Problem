@@ -2,10 +2,8 @@ import unittest
 
 from random import uniform
 
-from problems.misc import Subscribers1, Subscribers2
-from problems.misc import DisjointSet, friend_groups
-from problems.misc import BloomFilter
 
+from py.problems.misc import Subscribers1
 '''Classic Dictionary'''
 class Test_Subscribers1(unittest.TestCase):
     
@@ -15,6 +13,7 @@ class Test_Subscribers1(unittest.TestCase):
     def test_case1(self):
         assert self.subs.query(0, 4) == 25
 
+from py.problems.misc import Subscribers2
 '''Fenwick Tree'''
 class Test_Subscribers2(unittest.TestCase):
     
@@ -24,8 +23,8 @@ class Test_Subscribers2(unittest.TestCase):
     def test_case1(self):
         assert self.subs.query(0, 4) == 25
 
+from py.problems.misc import DisjointSet, friend_groups
 '''Disjoint set.'''
-
 class Test_FriendGroups(unittest.TestCase):
     
     def setUp(self):
@@ -42,6 +41,7 @@ class Test_FriendGroups(unittest.TestCase):
     def test_case1(self):
         assert friend_groups(self.friends) == 3
 
+from py.problems.misc import BloomFilter
 class Test_BloomFilter(unittest.TestCase):
     
     def setUp(self):

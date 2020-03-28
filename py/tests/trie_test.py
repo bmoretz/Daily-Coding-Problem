@@ -1,7 +1,6 @@
 import unittest
 
 from py.problems.trie import Autocomplete1
-
 class Test_Autocomplete1(unittest.TestCase):
     
     def setUp(self):
@@ -53,7 +52,7 @@ class Test_MapSum1(unittest.TestCase):
         mapsum.insert("column", 2)
         assert mapsum.sum("col") == 5
 
-from problems.trie import PrefixMapSum2
+from py.problems.trie import PrefixMapSum2
 class Test_MapSum2(unittest.TestCase):
     
     def setUp(self):
@@ -69,7 +68,7 @@ class Test_MapSum2(unittest.TestCase):
         mapsum.insert("column", 2)
         assert mapsum.sum("col") == 5
 
-from problems.trie import MaxXOR1
+from py.problems.trie import MaxXOR1
 class Test_MaxXOR(unittest.TestCase):
     
     def setUp(self):
