@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "str.h"
 
+#include <set>
+
 using namespace std;
 
 namespace str_problems 
@@ -14,17 +16,21 @@ namespace str_problems
 	/// the current character, return false as the
 	/// string is not unique.
 	/// </summary>
-	/// <param name="str"></param>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="str">the string to check</param>
 	/// <returns></returns>
-	bool str::is_unique1( std::string str )
+	bool str::is_unique1( const std::string & str )
 	{
-		auto unique = false;
+		if( str.empty() ) return false;
 
-		set<char> words = set<char>();
+		auto words = set<char>();
 
-		for( auto iter = str.begin(); iter != str.end(); iter++ )
+		for( auto iter = str.begin(); iter != str.end(); ++iter )
 		{
-			auto current = ( *iter );
+			const auto current = *iter;
 
 			if( words.find( current ) != words.end() )
 				return false;
@@ -43,18 +49,24 @@ namespace str_problems
 	/// have that characters bit set when we see it again, return
 	/// false to indicate the string does not contain all unique characters.
 	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(1)</space>
+	/// </complexity>
 	/// <param name="str">string to test</param>
 	/// <returns></returns>
-	bool str::is_unique2( std::string str )
+	bool str::is_unique2( const std::string & str )
 	{
-		int seen = 0;
-		int offset = ( int )'a';
+		if( str.empty() ) return false;
 
-		for( int index = 0; index < str.length(); ++index )
+		auto seen = 0;
+
+		const auto offset = static_cast<int>('a');
+
+		for( auto character : str )
 		{
-			int value = ( ( int )str.at( index ) - offset );
-
-			int position = 0x1 << value;
+			const auto value = character - offset;
+			const auto position = 0x1 << value;
 
 			if( seen >> value & 0x1 )
 				return false;
@@ -63,5 +75,66 @@ namespace str_problems
 		}
 
 		return true;
+	}
+
+	/// <summary>
+	/// is_permutation1
+	/// 
+	/// This approach uses a character occurence map
+	/// of the two strings. If there are any differences 
+	/// in the two maps, we return false (first one, short-circuit).
+	/// </summary>
+	/// <param name="p"></param>
+	/// <param name="q"></param>
+	/// <returns>true if p and q are permutations of each other.</returns>
+	bool str::is_permutation1( const string & p, const string & q )
+	{
+		if( p.empty() || q.empty() ) return false;
+		if( p.length() != q.length() ) return false;
+
+		auto p_map = utility::char_map( p ), q_map = utility::char_map( q );
+
+		for( auto item : p_map )
+		{
+			auto other = q_map.find( item.first );
+
+			if( other == q_map.end() || item.second != other->second )
+				return false;
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// char_map
+	/// 
+	/// Creates a map of the number of occurrences of a 
+	/// character has in the passed in string.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="s">the string</param>
+	/// <returns>map of occurrences</returns>
+	map<char, int> utility::char_map( const string & s )
+	{
+		map<char, int> mp;
+
+		for( auto character : s )
+		{
+			auto it = mp.find( character );
+
+			if( it == mp.end() )
+			{
+				mp[ character ] = 0;
+			}
+			else
+			{
+				it->second++;
+			}
+		}
+
+		return mp;
 	}
 }
