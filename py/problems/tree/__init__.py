@@ -610,3 +610,50 @@ def successor(tree, value):
             nxt = nxt.left
 
         return nxt
+
+'''First Common Ancestor:
+
+Design an algorithm and write code to find the first common ancestor of two
+nodes in a binary tree. Avoid storing additional nodes in a data structure.
+
+NOTE: This is not necessarily a binary search tree.
+'''
+
+'''
+Solution #1:
+
+use DFS to find paths to p and q
+take elements from both p and q while they are the same
+
+return the last element that matches in both paths.
+''' 
+def first_common_ancestor1(tree, p, q):
+
+    def find(tree, value, prev=[]):
+
+        if tree == None: return None
+
+        if tree.data == value:
+            return prev + [tree.data]
+
+        left = find(tree.left, value, prev + [tree.data])
+
+        if left: return left
+
+        right = find(tree.right, value, prev + [tree.data])
+
+        if right: return right
+
+    if not tree or not q or not p: return None
+
+    p_path, q_path = find(tree, p), find(tree, q)
+
+    if not (p_path and q_path): return None
+
+    ancestor, index = None, 0
+    
+    while p_path[index] == q_path[index]:
+        ancestor = p_path[index]
+        index += 1
+
+    return ancestor if ancestor else None

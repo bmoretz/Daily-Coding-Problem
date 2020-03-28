@@ -1,113 +1,74 @@
-'''Build Order.
+'''First Common Ancestor:
 
-You are given a list of projects and a list of dependencies (which is
-a list of pairs of projects, where the second project is dependent on
-the first project). All of a project's dependencies must be built before
-the project is. Find a build order that will allow the projects to be built. If
-there is no valid build order, return an error.
+Design an algorithm and write code to find the first common ancestor of two
+nodes in a binary tree. Avoid storing additional nodes in a data structure.
 
-EXAMPLE
-
-Input:
-    projects: a, b, c, d, e, f
-    dependencies: (a, d), (f, b), (b, d), (f, a), (d, c)
-Output:
-    f, e, a, b, d, c
+NOTE: This is not necessarily a binary search tree.
 '''
 
-class Builder1():
 
-    class CircularReferenceError(ReferenceError):
+from problems.tree import Node
 
-        def __init__(self):
-            pass
+'''
+Tree #1:
 
-    def __init__(self, projects, dependencies):
-        self.projects = {}
+        5
+      /   \
+    3       8
+  /   \    /  \
+ 12    10 2     7
+         / \
+        6   18
+'''
 
-        if projects is None: return
+'''
+Naive Method that uses an array of nodes to store the path to each node p and q.
+''' 
+def first_common_ancestor1(tree, p, q):
 
-        for proj in projects:
-            self.__add_project(proj)
+    def find(tree, value, prev=[]):
 
-        if dependencies is None: return
+        if tree == None: return None
 
-        for dep in dependencies:
-            self.__add_dependency(dep[0], dep[1])
+        if tree.data == value:
+            return prev + [tree.data]
 
-    def __add_project(self, project):
-        self.projects[project] = []
+        left = find(tree.left, value, prev + [tree.data])
 
-    def __add_dependency(self, project, dep):
-        self.projects[project].append(dep)
+        if left: return left
 
-    def __get_dependencies(self, project, prior=[], pending=[]):
-        dependencies, subprojects = [project], self.projects[project]
-        
-        if subprojects != []:
-            for sub in subprojects:
-                if sub in pending:
-                    raise self.CircularReferenceError()
+        right = find(tree.right, value, prev + [tree.data])
 
-                if sub not in prior:
-                    dependencies += self.__get_dependencies(sub, prior, pending)
+        if right: return right
 
-        return dependencies
+    if not tree or not q or not p: return None
 
-    def build_project(self, project):
-        
-        dependencies = [project]
-        built = []
+    p_path, q_path = find(tree, p), find(tree, q)
 
-        for proj in self.projects[project]:
-            dep = self.__get_dependencies(proj, built, dependencies)
+    if not (p_path and q_path): return None
 
-            dependencies += dep
+    ancestor, index = None, 0
+    
+    while p_path[index] == q_path[index]:
+        ancestor = p_path[index]
+        index += 1
 
-            built.append(dependencies)
-            # reset the build list after completion
-            dependencies = [project]
+    return ancestor if ancestor else None
 
-        return dependencies
+tree = Node(5)
 
-    def dep_list(self):
-        dep_list = {}
+tree.left = Node(3)
+tree.left.left = Node(12)
+tree.left.right = Node(10)
 
-        for proj in projects:
-            dep_list[proj] = len(self.build_project(proj)) - 1
+tree.right = Node(8)
+tree.right.left = Node(2)
+tree.right.left.left = Node(6)
+tree.right.left.right = Node(18)
 
-        return dep_list
+tree.right.right = Node(7)
 
-    def build_all(self):
-        
-        to_build = list(self.projects.keys())
+fca1 = first_common_ancestor1(tree, 2, 7)
 
-        if to_build == None: return None
+print(tree)
 
-        built = []
-
-        while len(to_build) > 0:
-
-            current = to_build.pop()
-
-            dependencies = self.build_project(current)
-
-            for dep in dependencies:
-
-                if dep in to_build: 
-                    to_build.remove(dep)
-
-                if dep not in built:
-                    built = built + [dep]
-
-        return built
-
-builder = Builder1(
-    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'], 
-    [('a', 'e'), ('b', 'a'), ('c', 'a'), ('f', 'a'), ('f', 'c'), ('f', 'b'), ('b', 'e'), ('d', 'g'), ('b', 'h'), ('e', 'f')])
-
-# build_order = builder.build_all()
-
-d = builder.build_project('f')
-
-print(d)

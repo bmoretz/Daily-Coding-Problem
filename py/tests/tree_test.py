@@ -1053,3 +1053,103 @@ class Test_Successor(unittest.TestCase):
         actual = successor(tree, 28)
         
         assert actual.data == 30
+
+from py.problems.tree import first_common_ancestor1
+class Test_FirstCommonAncestor1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert first_common_ancestor1(None, Node(3), Node(5)) == None
+        assert first_common_ancestor1(None, None, None) == None
+        assert first_common_ancestor1(None, Node(3), None) == None
+        assert first_common_ancestor1(None, None, Node(4)) == None
+
+    '''
+    Tree #1:
+
+          5
+        /    \
+       3       8
+    /   \      /  \
+   12    10  2     7
+            / \
+           6   18
+    '''    
+    def test_case2(self):
+
+        tree = Node(5)
+
+        tree.left = Node(3)
+        tree.left.left = Node(12)
+        tree.left.right = Node(10)
+
+        tree.right = Node(8)
+        tree.right.left = Node(2)
+        tree.right.left.left = Node(6)
+        tree.right.left.right = Node(18)
+
+        tree.right.right = Node(7)
+
+        actual, expected = first_common_ancestor1(tree, 2, 7), 8
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        tree = Node(5)
+
+        tree.left = Node(3)
+        tree.left.left = Node(12)
+        tree.left.right = Node(10)
+
+        tree.right = Node(8)
+        tree.right.left = Node(2)
+        tree.right.left.left = Node(6)
+        tree.right.left.right = Node(18)
+
+        tree.right.right = Node(7)
+
+        actual, expected = first_common_ancestor1(tree, 6, 7), 8
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        tree = Node(5)
+
+        tree.left = Node(3)
+        tree.left.left = Node(12)
+        tree.left.right = Node(10)
+
+        tree.right = Node(8)
+        tree.right.left = Node(2)
+        tree.right.left.left = Node(6)
+        tree.right.left.right = Node(18)
+
+        tree.right.right = Node(7)
+
+        actual, expected = first_common_ancestor1(tree, 10, 18), 5
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        tree = Node(5)
+
+        tree.left = Node(3)
+        tree.left.left = Node(12)
+        tree.left.right = Node(10)
+
+        tree.right = Node(8)
+        tree.right.left = Node(2)
+        tree.right.left.left = Node(6)
+        tree.right.left.right = Node(18)
+
+        tree.right.right = Node(7)
+
+        actual, expected = first_common_ancestor1(tree, 10, 38), None
+
+        assert actual == expected

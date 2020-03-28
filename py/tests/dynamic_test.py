@@ -61,7 +61,7 @@ class Test_NumEncodings2(unittest.TestCase):
         pass
 
     def test_case1(self):
-        actual, expected = num_encodings2('111'), 3
+        actual, expected = num_encodings2('111'), 1
 
         assert expected == 3
 
