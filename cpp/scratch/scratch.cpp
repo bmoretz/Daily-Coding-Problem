@@ -14,16 +14,15 @@ What if you cannot use additional data structures?
 
 using namespace std;
 
-
-bool is_unique1( string str )
+bool is_unique2( string str )
 {
 	auto unique = false;
 
 	set<char> words = set<char>();
 
-	for( int index = 0; index < str.length(); ++index )
+	for( auto iter = str.begin(); iter != str.end(); iter++ )
 	{
-		auto current = str.at( index );
+		auto current = ( *iter );
 
 		if( words.find( current ) != words.end() )
 			return false;
@@ -39,6 +38,6 @@ int main()
 	string input;
 
 	while( cin >> input ) {
-		cout << input << " is unique? " << is_unique1( input ) << endl;
+		cout << input << " is unique? " << is_unique2( input ) << endl;
 	}
 }

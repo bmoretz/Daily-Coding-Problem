@@ -3,10 +3,13 @@
 #include <string>
 #include <set>
 
-class str
+namespace str_problems
 {
-public:
-	static bool is_unique1( std::string str );
-	static bool is_unique2( std::string str );
-};
+	class str
+	{
+	public:
+		static bool is_unique1( std::string str );
+		static bool is_unique2( std::string str );
+	};
+}
 
