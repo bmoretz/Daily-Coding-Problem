@@ -144,6 +144,48 @@ namespace str_problems
 	}
 
 	/// <summary>
+	/// urlify1
+	/// 
+	/// This approach initializes a new buffer
+	/// string the length of the expected output size
+	/// parameter, and populates each character from the
+	/// input array. We keep track of the current result
+	/// position with a second output_pos variable, incrementing
+	/// it within each character assignment operation.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="input">string to urlify</param>
+	/// <param name="length">output buffer size</param>
+	/// <returns>urlify'd string</returns>
+	string str::urlify1( const string & input, const size_t length )
+	{
+		if( input.length() == 0 ) return nullptr;
+
+		auto output = string( length, ' ' );
+		auto output_pos = 0;
+
+		for( auto current : input )
+		{
+			if( current == ' ' )
+			{
+				output[ output_pos++ ] = '%';
+				output[ output_pos++ ] = '2';
+				output[ output_pos++ ] = '0';
+				continue;
+			}
+
+			output[ output_pos++ ] = current;
+		}
+
+		_ASSERT( output.length() == length );
+
+		return output;
+	}
+
+	/// <summary>
 	/// char_map
 	/// 
 	/// Creates a map of the number of occurrences of a 

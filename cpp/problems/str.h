@@ -13,6 +13,8 @@ namespace str_problems
 
 		static bool is_permutation1( const std::string & p, const std::string & q );
 		static bool is_permutation2( std::string p, std::string q );
+
+		static std::string urlify1( const std::string & input, size_t length );
 	};
 
 	class utility

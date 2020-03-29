@@ -121,4 +121,62 @@ namespace string_tests
         EXPECT_FALSE( str::is_permutation2( "permutatio", "notatumrep" ) );
         EXPECT_FALSE( str::is_permutation2( "1 2 3 4", "3 4 1 4" ) );
     }
+
+    class urlify_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( urlify_tests, urlify1_base )
+    {
+        auto actual = str::urlify1( "t e s t", 13 );
+
+        const auto expected = "t%20e%20s%20t";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( urlify_tests, urlify1_end_space )
+    {
+        auto actual = str::urlify1( "t e s t ", 16 );
+
+        const auto expected = "t%20e%20s%20t%20";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( urlify_tests, urlify1_start_space )
+    {
+        auto actual = str::urlify1( " t e s t ", 19 );
+
+        const auto expected = "%20t%20e%20s%20t%20";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( urlify_tests, urlify1_no_space )
+    {
+        auto actual = str::urlify1( "test", 4 );
+
+        const auto expected = "test";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( urlify_tests, urlify1_all_space )
+    {
+        auto actual = str::urlify1( "   ", 9 );
+
+        const auto expected = "%20%20%20";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

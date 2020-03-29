@@ -3,58 +3,71 @@
 
 #include <iostream>
 #include <string>
-#include <map>
-#include <algorithm>
 
-/* Check Permutation.
+/* Urlify.
  *
- * Given two strings, write a method to decide if one is a permutation of the other.
+ * Write a method to replace all spaces in a string with '%20'.
+ * 
+ * You may assume that the string has sufficient space at the end
+ * to hold the additional characters, and that you are given the
+ * "true" length of the string.
+ * 
+ * Use a character array and perform this operation in place.
  */
 
 using namespace std;
 
-map<char, int> char_map( const string & s )
+string urlify1( const string & input, const size_t length )
 {
-	map<char, int> mp;
+    if( input.length() == 0 ) return nullptr;
 
-	for( auto character : s )
-	{
-		auto it = mp.find( character );
+    auto output = string( length, ' ' );
+    auto output_pos = 0;
 
-		if( it == mp.end() )
-			mp[ character ] = 0;
-		else
-			it->second++;
-	}
+    for( auto current : input )
+    {
+        if( current == ' ' )
+        {
+            output[ output_pos++ ] = '%';
+            output[ output_pos++ ] = '2';
+            output[ output_pos++ ] = '0';
+        }
+        else
+        {
+            output[ output_pos++ ] = current;
+        }
+    }
 
-	return mp;
+    _ASSERT( output.length() == length );
+
+    return output;
 }
 
-bool is_permutation( string p, string q )
+int buffer_size( const string & s )
 {
-	if( p.empty() || q.empty() ) return false;
-	if( p.length() != q.length() ) return false;
+    auto length = s.length();
 
-	sort( p.begin(), p.end() );
-	sort( q.begin(), q.end() );
+    for( auto character : s )
+    {
+        if( character == ' ' )
+            length += 2;
+    }
 
-	for( size_t index = 0; index < p.length(); ++index )
-	{
-		if( p[ index ] != q[ index ] )
-			return false;
-	}
-
-	return true;
+    return length;
 }
 
-int main()
+auto main() -> int
 {
-	string input1, input2;
+    string input;
 
-	while( cin >> input1 && cin >> input2 )
+    cout << "Enter test input:";
 
-	{
-		cout << input1 << " , " << input2 << 
-			" are permutations? " << is_permutation( input1, input2 ) << endl;
-	}
+    while( getline( cin, input ) )
+    {
+        const auto req_len = buffer_size( input );
+
+        cout << input << " urlify: " << urlify1( input, req_len ) << endl;
+
+        cout << "Enter test input:";
+    }
 }
