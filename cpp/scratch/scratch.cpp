@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include <vector>
+#include <algorithm>
 
 /* Check Permutation.
  *
@@ -30,18 +30,17 @@ map<char, int> char_map( const string & s )
 	return mp;
 }
 
-bool is_permutation( const string & p, const string & q )
+bool is_permutation( string p, string q )
 {
 	if( p.empty() || q.empty() ) return false;
 	if( p.length() != q.length() ) return false;
 
-	auto p_map = char_map( p ), q_map = char_map( q );
+	sort( p.begin(), p.end() );
+	sort( q.begin(), q.end() );
 
-	for( auto item : p_map )
+	for( size_t index = 0; index < p.length(); ++index )
 	{
-		auto other = q_map.find( item.first );
-
-		if( other == q_map.end() || item.second != other->second )
+		if( p[ index ] != q[ index ] )
 			return false;
 	}
 
@@ -52,7 +51,8 @@ int main()
 {
 	string input1, input2;
 
-	while( cin >> input1 && cin >> input2 ) 
+	while( cin >> input1 && cin >> input2 )
+
 	{
 		cout << input1 << " , " << input2 << 
 			" are permutations? " << is_permutation( input1, input2 ) << endl;

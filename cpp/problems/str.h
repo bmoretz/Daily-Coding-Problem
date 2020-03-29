@@ -12,6 +12,7 @@ namespace str_problems
 		static bool is_unique2( const std::string & str );
 
 		static bool is_permutation1( const std::string & p, const std::string & q );
+		static bool is_permutation2( std::string p, std::string q );
 	};
 
 	class utility

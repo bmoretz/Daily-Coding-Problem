@@ -149,3 +149,56 @@ def make_trees1(N):
         results.append(preorder(tree))
 
     return results
+
+'''BST Sequences.
+
+A binary search tree was created by traversing through an array from 
+left to right and inserting each element. Given a binary search tree
+with distinct elements , print all possible arrays that could have lead
+to this tree.
+
+EXAMPLE:
+        2
+      /   \
+    1       3
+
+Output: {2, 1, 3}, {2, 3, 1}
+'''
+
+def bst_sequence1(tree):
+
+    def pre_order(tree):
+
+        if tree == None: return
+
+        result = [tree.data]
+
+        right = pre_order(tree.right)
+
+        if right: result += right
+
+        left = pre_order(tree.left)
+
+        if left: result += left
+
+        return result
+
+    def in_order(tree):
+
+        if tree == None: return
+
+        result = [tree.data]
+
+        left = in_order(tree.left)
+
+        if left: result += left
+        
+        right = in_order(tree.right)
+
+        if right: result += right
+
+        return result
+
+    if tree == None: return None
+
+    return [in_order(tree)] + [pre_order(tree)]

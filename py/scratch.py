@@ -1,74 +1,57 @@
-'''First Common Ancestor:
+'''BST Sequences.
 
-Design an algorithm and write code to find the first common ancestor of two
-nodes in a binary tree. Avoid storing additional nodes in a data structure.
+A binary search tree was created by traversing through an array from 
+left to right and inserting each element. Given a binary search tree
+with distinct elements , print all possible arrays that could have lead
+to this tree.
 
-NOTE: This is not necessarily a binary search tree.
+EXAMPLE:
+        2
+      /   \
+    1       3
+
+Output: {2, 1, 3}, {2, 3, 1}
 '''
 
 
 from problems.tree import Node
 
-'''
-Tree #1:
+def bst_sequence1(tree):
 
-        5
-      /   \
-    3       8
-  /   \    /  \
- 12    10 2     7
-         / \
-        6   18
-'''
+    def weave(first, second, prefix):
+        if len(first) == 0 or len(second) == 0:
+            
 
-'''
-Naive Method that uses an array of nodes to store the path to each node p and q.
-''' 
-def first_common_ancestor1(tree, p, q):
+    def all_sequences(node):
 
-    def find(tree, value, prev=[]):
+        result = []
 
-        if tree == None: return None
+        if not node:
+            return result
 
-        if tree.data == value:
-            return prev + [tree.data]
+        prefix = [node.data]
 
-        left = find(tree.left, value, prev + [tree.data])
+        left_seq = all_sequences(node.left)
+        right_seq = all_sequences(node.right)
 
-        if left: return left
+        for left in left_seq:
+            for right in right_seq:
+                weaved = weave()
 
-        right = find(tree.right, value, prev + [tree.data])
+# tree = Node(2)
+# tree.left = Node(1)
+# tree.right = Node(3)
 
-        if right: return right
+tree = Node(4)
 
-    if not tree or not q or not p: return None
+tree.left = Node(2)
+tree.left.left = Node(1)
+tree.left.right = Node(3)
 
-    p_path, q_path = find(tree, p), find(tree, q)
-
-    if not (p_path and q_path): return None
-
-    ancestor, index = None, 0
-    
-    while p_path[index] == q_path[index]:
-        ancestor = p_path[index]
-        index += 1
-
-    return ancestor if ancestor else None
-
-tree = Node(5)
-
-tree.left = Node(3)
-tree.left.left = Node(12)
-tree.left.right = Node(10)
-
-tree.right = Node(8)
-tree.right.left = Node(2)
-tree.right.left.left = Node(6)
-tree.right.left.right = Node(18)
-
+tree.right = Node(6)
+tree.right.left = Node(5)
 tree.right.right = Node(7)
 
-fca1 = first_common_ancestor1(tree, 2, 7)
+seq = bst_sequence(tree)
 
-print(tree)
-
+print(seq)

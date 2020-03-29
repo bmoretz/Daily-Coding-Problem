@@ -80,3 +80,35 @@ class Test_MakeTrees1(unittest.TestCase):
         assert trees[2] == [2, 1, 3]
         assert trees[3] == [3, 1, 2]
         assert trees[4] == [3, 2, 1]
+
+from py.problems.bst import bst_sequence1
+class Test_Sequence1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        assert bst_sequence1(None) == None
+
+    '''
+    Tree #1:
+
+        2
+      /   \
+    1       3
+    '''
+    def test_case2(self):
+
+        tree = Node(2)
+        tree.left = Node(1)
+        tree.right = Node(3)
+
+        actual = bst_sequence1(tree)
+
+        expected = [[2, 1, 3], [2, 3, 1]]
+
+        assert actual == expected
+
+    def test_case3(self):
+        

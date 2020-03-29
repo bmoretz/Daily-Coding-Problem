@@ -2,6 +2,7 @@
 #include "str.h"
 
 #include <set>
+#include <algorithm>
 
 using namespace std;
 
@@ -84,8 +85,12 @@ namespace str_problems
 	/// of the two strings. If there are any differences 
 	/// in the two maps, we return false (first one, short-circuit).
 	/// </summary>
-	/// <param name="p"></param>
-	/// <param name="q"></param>
+	/// <complexity>
+	///		<run-time>O(PQ)</run-time>
+	///		<space>O(P + Q)</space>
+	/// </complexity>
+	/// <param name="p">string p</param>
+	/// <param name="q">string q</param>
 	/// <returns>true if p and q are permutations of each other.</returns>
 	bool str::is_permutation1( const string & p, const string & q )
 	{
@@ -99,6 +104,39 @@ namespace str_problems
 			auto other = q_map.find( item.first );
 
 			if( other == q_map.end() || item.second != other->second )
+				return false;
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// is_permutation2
+	/// 
+	/// This approach sorts both of the passed in strings
+	/// and then performs an element-by-element comparision
+	/// on the sorted results. If any difference is found
+	/// in the sorted results, we know they cannot be
+	/// permutations of each other.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(n log n)</run-time>
+	///		<space>O(P + Q)</space>
+	/// </complexity>
+	/// <param name="p">string p</param>
+	/// <param name="q">string q</param>
+	/// <returns>true if p and q are permutations of each other.</returns>
+	bool str::is_permutation2( string p, string q )
+	{
+		if( p.empty() || q.empty() ) return false;
+		if( p.length() != q.length() ) return false;
+
+		sort( p.begin(), p.end() );
+		sort( q.begin(), q.end() );
+
+		for( size_t index = 0; index < p.length(); ++index )
+		{
+			if( p[ index ] != q[ index ] )
 				return false;
 		}
 
