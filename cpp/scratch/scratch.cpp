@@ -17,43 +17,44 @@
 
 using namespace std;
 
-string urlify1( const string & input, const size_t length )
+string urlify1( string input, const size_t length )
 {
-    if( input.length() == 0 ) return nullptr;
+    if( input.length() == 0 ) return input;
 
-    auto output = string( length, ' ' );
-    auto output_pos = 0;
+    size_t n_spaces = 1;
 
-    for( auto current : input )
+    for( auto index = 0; index < input.length(); index++ )
     {
-        if( current == ' ' )
+        if( input[ index ] == ' ' )
         {
-            output[ output_pos++ ] = '%';
-            output[ output_pos++ ] = '2';
-            output[ output_pos++ ] = '0';
-        }
-        else
-        {
-            output[ output_pos++ ] = current;
+            for( auto sub = ( n_spaces * 2 - 1 ) + length; sub > index + 2; sub-- )
+            {
+                input[ sub ] = input[ sub - 2 ];
+                input[ sub - 1 ] = input[ sub - 3 ];
+            }
+
+            input[ index++ ] = '%';
+            input[ index++ ] = '2';
+            input[ index ] = '0';
+
+            n_spaces++;
         }
     }
 
-    _ASSERT( output.length() == length );
-
-    return output;
+    return input;
 }
 
-int buffer_size( const string & s )
+string to_buffer( const string & s )
 {
-    auto length = s.length();
+	auto output = string( s );
 
     for( auto character : s )
     {
         if( character == ' ' )
-            length += 2;
+            output += "  ";
     }
 
-    return length;
+    return output;
 }
 
 auto main() -> int
@@ -64,9 +65,7 @@ auto main() -> int
 
     while( getline( cin, input ) )
     {
-        const auto req_len = buffer_size( input );
-
-        cout << input << " urlify: " << urlify1( input, req_len ) << endl;
+        cout << input << " urlify: " << urlify1( to_buffer( input ), input.length() ) << endl;
 
         cout << "Enter test input:";
     }

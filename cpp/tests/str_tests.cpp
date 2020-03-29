@@ -137,43 +137,43 @@ namespace string_tests
 
     TEST_F( urlify_tests, urlify1_base )
     {
-        auto actual = str::urlify1( "t e s t", 13 );
+        auto actual = str::urlify1( "Mr John Smith    ", 13 );
 
-        const auto expected = "t%20e%20s%20t";
+        const auto expected = "Mr%20John%20Smith";
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( urlify_tests, urlify1_end_space )
     {
-        auto actual = str::urlify1( "t e s t ", 16 );
+        auto actual = str::urlify1( "MrJohnSmith   ", 11 );
 
-        const auto expected = "t%20e%20s%20t%20";
+        const auto expected = "MrJohnSmith%20";
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( urlify_tests, urlify1_start_space )
     {
-        auto actual = str::urlify1( " t e s t ", 19 );
+        auto actual = str::urlify1( " Mr John Smith      ", 14 );
 
-        const auto expected = "%20t%20e%20s%20t%20";
+        const auto expected = "%20Mr%20John%20Smith";
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( urlify_tests, urlify1_no_space )
     {
-        auto actual = str::urlify1( "test", 4 );
+        auto actual = str::urlify1( "MrJohnSmith", 4 );
 
-        const auto expected = "test";
+        const auto expected = "MrJohnSmith";
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( urlify_tests, urlify1_all_space )
     {
-        auto actual = str::urlify1( "   ", 9 );
+        auto actual = str::urlify1( "         ", 3 );
 
         const auto expected = "%20%20%20";
 

@@ -146,43 +146,47 @@ namespace str_problems
 	/// <summary>
 	/// urlify1
 	/// 
-	/// This approach initializes a new buffer
-	/// string the length of the expected output size
-	/// parameter, and populates each character from the
-	/// input array. We keep track of the current result
-	/// position with a second output_pos variable, incrementing
-	/// it within each character assignment operation.
+	/// This approach uses a forward iteration
+	/// method on the characters in the array
+	/// until a space is encountered. Once a
+	/// space is found, then we push the remaining
+	/// characters in the string backwards two places.
+	/// Once the characters have been pushed back, we
+	/// insert the delimiter character in place and continue
+	/// the forward loop.
 	/// </summary>
 	/// <complexity>
-	///		<run-time>O(N)</run-time>
-	///		<space>O(N)</space>
+	///		<run-time>O(N^2)</run-time>
+	///		<space>O(1)</space>
 	/// </complexity>
 	/// <param name="input">string to urlify</param>
 	/// <param name="length">output buffer size</param>
 	/// <returns>urlify'd string</returns>
-	string str::urlify1( const string & input, const size_t length )
+	string str::urlify1( string input, const size_t length )
 	{
-		if( input.length() == 0 ) return nullptr;
+		if( input.length() == 0 ) return input;
 
-		auto output = string( length, ' ' );
-		auto output_pos = 0;
+		size_t n_spaces = 1;
 
-		for( auto current : input )
+		for( auto index = 0; index < input.length(); index++ )
 		{
-			if( current == ' ' )
+			if( input[ index ] == ' ' )
 			{
-				output[ output_pos++ ] = '%';
-				output[ output_pos++ ] = '2';
-				output[ output_pos++ ] = '0';
-				continue;
-			}
+				for( auto sub = ( n_spaces * 2 - 1 ) + length; sub > index + 2; sub-- )
+				{
+					input[ sub ] = input[ sub - 2 ];
+					input[ sub - 1 ] = input[ sub - 3 ];
+				}
 
-			output[ output_pos++ ] = current;
+				input[ index++ ] = '%';
+				input[ index++ ] = '2';
+				input[ index ] = '0';
+
+				n_spaces++;
+			}
 		}
 
-		_ASSERT( output.length() == length );
-
-		return output;
+		return input;
 	}
 
 	/// <summary>
