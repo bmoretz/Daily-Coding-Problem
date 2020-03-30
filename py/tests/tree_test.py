@@ -1400,3 +1400,250 @@ class Test_CheckSubtree1(unittest.TestCase):
         expected = True
 
         assert actual == expected
+
+from py.problems.tree import check_subtree2
+class Test_CheckSubtree2(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    '''
+    Tree set #1
+
+               50
+            /      \
+          30         70
+        /     \   /     \ 
+      20      40 60      80
+        \       /  \    /   \
+        25     55   65 75    90
+    
+
+            60
+           /   \
+         55     65 
+    '''
+    def test_case1(self):
+        t1 = Node(50)
+
+        t1.left = Node(30)
+        t1.left.left = Node(20)
+        t1.left.left.right = Node(25)
+        t1.left.right = Node(40)
+
+        t1.right = Node(70)
+        t1.right.left = Node(60)
+        t1.right.left.left = Node(55)
+        t1.right.left.right = Node(65)
+
+        t1.right.right = Node(80)
+        t1.right.right.left = Node(75)
+        t1.right.right.right = Node(90)
+
+        t2 = Node(60)
+        t2.left = Node(55)
+        t2.right = Node(65)
+
+        actual = check_subtree2(t1, t2)
+        expected = True
+
+        assert actual == expected
+
+    '''
+    Tree set #1
+
+               50
+            /      \
+          30         70
+        /     \   /     \ 
+      20      40 60      80
+        \       /  \    /   \
+        25     55   65 75    90
+    
+
+            60
+           /
+         55
+    '''
+    def test_case2(self):
+        t1 = Node(50)
+
+        t1.left = Node(30)
+        t1.left.left = Node(20)
+        t1.left.left.right = Node(25)
+        t1.left.right = Node(40)
+
+        t1.right = Node(70)
+        t1.right.left = Node(60)
+        t1.right.left.left = Node(55)
+        t1.right.left.right = Node(65)
+
+        t1.right.right = Node(80)
+        t1.right.right.left = Node(75)
+        t1.right.right.right = Node(90)
+
+        t2 = Node(60)
+        t2.left = Node(55)
+        
+        actual = check_subtree2(t1, t2)
+        expected = False
+
+        assert actual == expected
+
+    '''
+    Tree set #1
+
+               50
+            /      \
+          30         70
+        /    \    /     \ 
+      20      40 60      80
+        \       /  \    /   \
+        25     55   65 75    90
+    
+
+            20
+           /
+          25 
+    '''
+    def test_case3(self):
+        t1 = Node(50)
+
+        t1.left = Node(30)
+        t1.left.left = Node(20)
+        t1.left.left.right = Node(25)
+        t1.left.right = Node(40)
+
+        t1.right = Node(70)
+        t1.right.left = Node(60)
+        t1.right.left.left = Node(55)
+        t1.right.left.right = Node(65)
+
+        t1.right.right = Node(20)
+        t1.right.right.left = Node(75)
+        t1.right.right.right = Node(90)
+
+        t2 = Node(20)
+        t2.left = Node(25)
+        
+        actual = check_subtree2(t1, t2)
+        expected = False
+
+        assert actual == expected
+
+    '''
+    Tree set #1
+
+               50
+            /      \
+          30         70
+        /    \    /     \ 
+      20      40 60      80
+        \       /  \    /   \
+        25     55   65 75    90
+    
+
+            20
+              \
+               25
+    '''
+    def test_case4(self):
+        t1 = Node(50)
+
+        t1.left = Node(30)
+        t1.left.left = Node(20)
+        t1.left.left.right = Node(25)
+        t1.left.right = Node(40)
+
+        t1.right = Node(70)
+        t1.right.left = Node(60)
+        t1.right.left.left = Node(55)
+        t1.right.left.right = Node(65)
+
+        t1.right.right = Node(20)
+        t1.right.right.left = Node(75)
+        t1.right.right.right = Node(90)
+
+        t2 = Node(20)
+        t2.right = Node(25)
+        
+        actual = check_subtree2(t1, t2)
+        expected = True
+
+        assert actual == expected
+
+    '''
+    Tree set #1
+
+               50
+            /      \
+          30         70
+        /    \    /     \ 
+      20      40 60      80
+        \       /  \    /   \
+        25     55   65 75    90
+    
+
+            60
+    '''
+    def test_case5(self):
+        t1 = Node(50)
+
+        t1.left = Node(30)
+        t1.left.left = Node(20)
+        t1.left.left.right = Node(25)
+        t1.left.right = Node(40)
+
+        t1.right = Node(70)
+        t1.right.left = Node(60)
+        t1.right.left.left = Node(55)
+        t1.right.left.right = Node(65)
+
+        t1.right.right = Node(20)
+        t1.right.right.left = Node(75)
+        t1.right.right.right = Node(90)
+
+        t2 = Node(60)
+        
+        actual = check_subtree2(t1, t2)
+        expected = False
+
+        assert actual == expected
+
+    '''
+    Tree set #1
+
+               50
+            /      \
+          30         70
+        /    \    /     \ 
+      20      40 60      80
+        \       /  \    /   \
+        25     55   65 75    90
+    
+
+            65
+    '''
+    def test_case6(self):
+        t1 = Node(50)
+
+        t1.left = Node(30)
+        t1.left.left = Node(20)
+        t1.left.left.right = Node(25)
+        t1.left.right = Node(40)
+
+        t1.right = Node(70)
+        t1.right.left = Node(60)
+        t1.right.left.left = Node(55)
+        t1.right.left.right = Node(65)
+
+        t1.right.right = Node(20)
+        t1.right.right.left = Node(75)
+        t1.right.right.right = Node(90)
+
+        t2 = Node(65)
+        
+        actual = check_subtree2(t1, t2)
+        expected = True
+
+        assert actual == expected

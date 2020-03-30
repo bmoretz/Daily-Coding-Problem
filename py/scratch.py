@@ -12,48 +12,64 @@ from problems.tree import Node
 
 def check_subtree(t1, t2):
 
-    def find(tree, node):
+    class ListNode():
+
+        def __init__(self, data):
+            self.data = data
+            self.next = None
+            
+    def get_nodes(node):
+        ''' creates an in order list from a tree node'''
+        if node == None:
+            return None
         
-        if tree == None: return None
-        
-        if tree.data == node.data: 
-            return tree
+        head = None
 
-        left = find(tree.left, node)
+        left = get_nodes(node.left)
 
-        if left: 
-            return left
+        if left:
+            head = left
 
-        right = find(tree.right, node)
+        current = ListNode(node.data)
 
-        if right: 
-            return right
+        if left:
+            prev = head
+            while prev.next != None:
+                prev = prev.next
+            prev.next = current
+        else:
+            head = current
 
-        return None
+        right = get_nodes(node.right)
 
-    def check_tree(tree1, tree2):
+        if right:
+            current.next = right
 
-        if not (tree1 and tree2): return False
+        if not left and right:
+            current.left = ListNode('-')
+        elif left and not right:
+            current.right = ListNode('-')
 
-        if tree1.data != tree2.data:
-            return False
+        return head
 
-        equal = True
+    if not (t1 and t2): return False
 
-        if tree1.left or tree2.left:
-            equal &= check_tree(tree1.left, tree2.left)
+    head1 = get_nodes(t1)
+    head2 = get_nodes(t2)
 
-        if tree1.right or tree2.right:
-            equal &= check_tree(tree1.right, tree2.right)
+    head2 = head2.next
 
-        return equal
-        
-    if not (t1 and t2): return None
+    while head1 and head1.data != head2.data:
+        head1 = head1.next
 
-    # find t2 root in t1
-    start = find(t1, t2)
-    
-    return check_tree(start, t2)
+    exists = True
+
+    while head2 != None:
+        exists &= head1.data == head2.data
+
+        head1, head2 = head1.next, head2.next
+
+    return exists 
 
 t1 = Node(50)
 
@@ -73,7 +89,7 @@ t1.right.right.right = Node(90)
 
 t2 = Node(60)
 t2.left = Node(55)
-t2.right = Node(65)
+# t2.right = Node(65)
 
 exists = check_subtree(t1, t2)
 

@@ -712,3 +712,59 @@ def check_subtree1(t1, t2):
     start = find(t1, t2)
     
     return check_tree(start, t2)
+
+def check_subtree2(t1, t2):
+
+    class ListNode():
+
+        def __init__(self, data, nxt=None, prev=None):
+            self.data = data
+            self.next = nxt
+            self.prev = prev
+            
+    def get_nodes(node, prev=None):
+        ''' creates an in order list from a tree node'''
+        if node == None:
+            return ListNode('-')
+        
+        head = None
+
+        left = get_nodes(node.left)
+
+        if left:
+            head = left
+        
+        current = ListNode(node.data)
+
+        if head:
+            prev = head
+            while prev.next != None:
+                prev = prev.next
+            prev.next = current
+        else:
+            head = current
+
+        right = get_nodes(node.right)
+
+        if right:
+            current.next = right
+
+        return head
+
+    if not (t1 and t2): return False
+
+    head1, head2 = get_nodes(t1), get_nodes(t2)
+
+    head2 = head2.next
+
+    while ( head1.data == '-' ) or head1.data != head2.data:
+        head1 = head1.next
+
+    exists = True
+
+    while head2 != None:
+        exists &= head1.data == head2.data
+
+        head1, head2 = head1.next, head2.next
+
+    return exists 

@@ -23,7 +23,7 @@ namespace str_problems
 	/// </complexity>
 	/// <param name="str">the string to check</param>
 	/// <returns></returns>
-	bool str::is_unique1( const std::string & str )
+	bool unique1::is_unique( const std::string & str )
 	{
 		if( str.empty() ) return false;
 
@@ -56,7 +56,7 @@ namespace str_problems
 	/// </complexity>
 	/// <param name="str">string to test</param>
 	/// <returns></returns>
-	bool str::is_unique2( const std::string & str )
+	bool unique2::is_unique( const std::string & str )
 	{
 		if( str.empty() ) return false;
 
@@ -92,12 +92,12 @@ namespace str_problems
 	/// <param name="p">string p</param>
 	/// <param name="q">string q</param>
 	/// <returns>true if p and q are permutations of each other.</returns>
-	bool str::is_permutation1( const string & p, const string & q )
+	bool is_permutation1::is_permutation( const string & p, const string & q )
 	{
 		if( p.empty() || q.empty() ) return false;
 		if( p.length() != q.length() ) return false;
 
-		auto p_map = utility::char_map( p ), q_map = utility::char_map( q );
+		auto p_map = char_map( p ), q_map = char_map( q );
 
 		for( auto item : p_map )
 		{
@@ -108,6 +108,39 @@ namespace str_problems
 		}
 
 		return true;
+	}
+
+	/// <summary>
+	/// char_map
+	/// 
+	/// Creates a map of the number of occurrences of a 
+	/// character has in the passed in string.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="s">the string</param>
+	/// <returns>map of occurrences</returns>
+	map<char, int> is_permutation1::char_map( const string & s )
+	{
+		map<char, int> mp;
+
+		for( auto character : s )
+		{
+			auto it = mp.find( character );
+
+			if( it == mp.end() )
+			{
+				mp[ character ] = 0;
+			}
+			else
+			{
+				it->second++;
+			}
+		}
+
+		return mp;
 	}
 
 	/// <summary>
@@ -126,7 +159,7 @@ namespace str_problems
 	/// <param name="p">string p</param>
 	/// <param name="q">string q</param>
 	/// <returns>true if p and q are permutations of each other.</returns>
-	bool str::is_permutation2( string p, string q )
+	bool is_permutation2::is_permutation( string p, string q )
 	{
 		if( p.empty() || q.empty() ) return false;
 		if( p.length() != q.length() ) return false;
@@ -162,7 +195,7 @@ namespace str_problems
 	/// <param name="input">string to urlify</param>
 	/// <param name="length">output buffer size</param>
 	/// <returns>urlify'd string</returns>
-	string str::urlify1( string input, const size_t length )
+	string urlify1::urlify( string input, const size_t length )
 	{
 		if( input.length() == 0 ) return input;
 
@@ -190,35 +223,89 @@ namespace str_problems
 	}
 
 	/// <summary>
-	/// char_map
+	/// count_spaces
 	/// 
-	/// Creates a map of the number of occurrences of a 
-	/// character has in the passed in string.
+	/// This method takes a string and an length and returns
+	/// the number of spaces encountered between the beginning
+	/// and the length index.
 	/// </summary>
 	/// <complexity>
 	///		<run-time>O(N)</run-time>
-	///		<space>O(N)</space>
+	///		<space>O(1)</space>
 	/// </complexity>
-	/// <param name="s">the string</param>
-	/// <returns>map of occurrences</returns>
-	map<char, int> utility::char_map( const string & s )
+	/// <param name="input">string to search</param>
+	/// <param name="length">number of characters to search</param>
+	/// <returns>number of spaces in input[0, length]</returns>
+	size_t urlify2::count_spaces( const string & input, const size_t length )
 	{
-		map<char, int> mp;
+		if( input.empty() ) return 0;
 
-		for( auto character : s )
+		auto n_spaces = size_t();
+
+		for( auto index = size_t(); index < length; ++index )
 		{
-			auto it = mp.find( character );
+			if( input[ index ] == ' ' )
+				n_spaces++;
+		}
 
-			if( it == mp.end() )
+		return n_spaces;
+	}
+
+	/// <summary>
+	/// urlify2
+	/// 
+	/// This approach uses backwards iteration to first count
+	/// the total number of spaces in the string. This number is
+	/// then used to construct an offset which points to the last
+	/// character in the array. The input array is updated by:
+	/// position = [current index]
+	/// offset = [number of spaces * 2]
+	/// Therefore,
+	/// length + offset = end of array index
+	/// when a space is encountered, we increment the space counter
+	/// so that we can decrement our offset by 2 * S, S = number of spaces.
+	/// 
+	/// This approach leaves us with room to insert the '%20' character backwards
+	/// while we are filling in the rest of the array with the offset position.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(1)</space>
+	/// </complexity>
+	/// <param name="input">the string to update</param>
+	/// <param name="length">the length of the valid string</param>
+	/// <returns>urlifiy'd string contents</returns>
+	string urlify2::urlify( string input, const size_t length )
+	{
+		if( input.length() == 0 ) return input;
+
+		const auto n_spaces = count_spaces( input, length );
+		const auto offset = n_spaces * 2;
+
+		auto encountered = 0, position = static_cast<int>(length) - 1;
+
+		do
+		{
+			const auto current = input[ position ];
+			const auto new_position = position + offset - ( encountered * 2 );
+
+			if( current == ' ' )
 			{
-				mp[ character ] = 0;
+				input[ new_position ] = '0';
+				input[ new_position - 1 ] = '2';
+				input[ new_position - 2 ] = '%';
+
+				encountered++;
 			}
 			else
 			{
-				it->second++;
+				input[ new_position ] = input[ position ];
 			}
-		}
 
-		return mp;
+			position--;
+
+		} while( position != -1 );
+
+		return input;
 	}
 }

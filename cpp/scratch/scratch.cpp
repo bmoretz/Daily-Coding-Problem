@@ -17,31 +17,50 @@
 
 using namespace std;
 
-string urlify1( string input, const size_t length )
+size_t count_spaces( const string & input, const size_t length )
 {
-    if( input.length() == 0 ) return input;
+    if( input.empty() ) return 0;
 
-    size_t n_spaces = 1;
+    auto n_spaces = size_t();
 
-    for( auto index = 0; index < input.length(); index++ )
+    for( auto index = size_t(); index < length; ++index )
     {
         if( input[ index ] == ' ' )
-        {
-            for( auto sub = ( n_spaces * 2 - 1 ) + length; sub > index + 2; sub-- )
-            {
-                input[ sub ] = input[ sub - 2 ];
-                input[ sub - 1 ] = input[ sub - 3 ];
-            }
-
-            input[ index++ ] = '%';
-            input[ index++ ] = '2';
-            input[ index ] = '0';
-
             n_spaces++;
-        }
     }
 
-    return input;
+    return n_spaces;
+}
+
+void urlify( string & input, const int length )
+{
+    if( input.length() == 0 ) return;
+
+    const auto n_spaces = count_spaces( input, length );
+    const auto offset = n_spaces * 2;
+
+    auto encountered = 0, position = length - 1;
+
+    do
+    {
+	    const auto current = input[ position ];
+        const auto new_position = position + offset - ( encountered * 2 );
+
+        if( current == ' ' ) 
+        {
+            input[ new_position ] = '0';
+            input[ new_position - 1 ] = '2';
+            input[ new_position - 2 ] = '%';
+
+            encountered++;
+        } else
+        {
+			input[ new_position ] = input[ position ];
+        }
+
+        position--;
+
+    } while( position != -1 );
 }
 
 string to_buffer( const string & s )
@@ -65,7 +84,10 @@ auto main() -> int
 
     while( getline( cin, input ) )
     {
-        cout << input << " urlify: " << urlify1( to_buffer( input ), input.length() ) << endl;
+        auto buffer = to_buffer( input );
+        urlify( buffer, input.length() );
+
+        cout << input << " urlify: " << buffer << endl;
 
         cout << "Enter test input:";
     }
