@@ -21,7 +21,7 @@ class Test_Fibonacci(unittest.TestCase):
         assert fib2(10) == 55
 
 from py.problems.dynamic import staircase1
-class Test_Staircase2(unittest.TestCase):
+class Test_Staircase1(unittest.TestCase):
     
     def setUp(self):
         pass
@@ -63,7 +63,7 @@ class Test_NumEncodings2(unittest.TestCase):
     def test_case1(self):
         actual, expected = num_encodings2('111'), 1
 
-        assert expected == 3
+        assert actual == expected
 
 from py.problems.dynamic import build_houses
 class Test_PaintHouses(unittest.TestCase):

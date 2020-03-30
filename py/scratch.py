@@ -1,57 +1,80 @@
-'''BST Sequences.
+'''Check Subtree.
 
-A binary search tree was created by traversing through an array from 
-left to right and inserting each element. Given a binary search tree
-with distinct elements , print all possible arrays that could have lead
-to this tree.
+T1 and T2 are two very large binary trees, with T1 being much bigger
+than T2. Create an algorithm to determine if T2 is a subtree of T1.
 
-EXAMPLE:
-        2
-      /   \
-    1       3
-
-Output: {2, 1, 3}, {2, 3, 1}
+A tree T2 is a subtree of T1 if there exists a node n in T1 such that
+the subtree of n is identical to T2. That is, if you cut off the
+tree at node n, the two trees would be identical.
 '''
-
 
 from problems.tree import Node
 
-def bst_sequence1(tree):
+def check_subtree(t1, t2):
 
-    def weave(first, second, prefix):
-        if len(first) == 0 or len(second) == 0:
-            
+    def find(tree, node):
+        
+        if tree == None: return None
+        
+        if tree.data == node.data: 
+            return tree
 
-    def all_sequences(node):
+        left = find(tree.left, node)
 
-        result = []
+        if left: 
+            return left
 
-        if not node:
-            return result
+        right = find(tree.right, node)
 
-        prefix = [node.data]
+        if right: 
+            return right
 
-        left_seq = all_sequences(node.left)
-        right_seq = all_sequences(node.right)
+        return None
 
-        for left in left_seq:
-            for right in right_seq:
-                weaved = weave()
+    def check_tree(tree1, tree2):
 
-# tree = Node(2)
-# tree.left = Node(1)
-# tree.right = Node(3)
+        if not (tree1 and tree2): return False
 
-tree = Node(4)
+        if tree1.data != tree2.data:
+            return False
 
-tree.left = Node(2)
-tree.left.left = Node(1)
-tree.left.right = Node(3)
+        equal = True
 
-tree.right = Node(6)
-tree.right.left = Node(5)
-tree.right.right = Node(7)
+        if tree1.left or tree2.left:
+            equal &= check_tree(tree1.left, tree2.left)
 
-seq = bst_sequence(tree)
+        if tree1.right or tree2.right:
+            equal &= check_tree(tree1.right, tree2.right)
 
-print(seq)
+        return equal
+        
+    if not (t1 and t2): return None
+
+    # find t2 root in t1
+    start = find(t1, t2)
+    
+    return check_tree(start, t2)
+
+t1 = Node(50)
+
+t1.left = Node(30)
+t1.left.left = Node(20)
+t1.left.left.right = Node(25)
+t1.left.right = Node(40)
+
+t1.right = Node(70)
+t1.right.left = Node(60)
+t1.right.left.left = Node(55)
+t1.right.left.right = Node(65)
+
+t1.right.right = Node(80)
+t1.right.right.left = Node(75)
+t1.right.right.right = Node(90)
+
+t2 = Node(60)
+t2.left = Node(55)
+t2.right = Node(65)
+
+exists = check_subtree(t1, t2)
+
+print(exists)

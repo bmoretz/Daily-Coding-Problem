@@ -110,5 +110,14 @@ class Test_Sequence1(unittest.TestCase):
 
         assert actual == expected
 
+    '''
+    Tree #2
+
+            4
+          /    \
+        2       
+      /    \
+    1       3
+    '''
     def test_case3(self):
-        
+
