@@ -3,77 +3,62 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
-/* Urlify.
+/* Palindrome Permutation.
  *
- * Write a method to replace all spaces in a string with '%20'.
- * 
- * You may assume that the string has sufficient space at the end
- * to hold the additional characters, and that you are given the
- * "true" length of the string.
- * 
- * Use a character array and perform this operation in place.
+ *Given a string, write a function to check if it is a permutation of a
+ *palindrome.
+ *
+ *A palindrome is a word or phrase that is the same forwards and backwards.
+ *A permutation is a rearrangement of letters. The palindrome does not need
+ *to be limited to just dictionary words.
+ *
+ *EXAMPLE:
+ *
+ *Input: Tact Coa
+ *Output: True (permutations: "taco cat", "atco cta", etc.)
  */
 
 using namespace std;
 
-size_t count_spaces( const string & input, const size_t length )
+map<char, int> char_map( const string & input )
 {
-    if( input.empty() ) return 0;
+    map<char, int> map;
 
-    auto n_spaces = size_t();
+    if( input.empty() ) return map;
 
-    for( auto index = size_t(); index < length; ++index )
-    {
-        if( input[ index ] == ' ' )
-            n_spaces++;
-    }
-
-    return n_spaces;
-}
-
-void urlify( string & input, const int length )
-{
-    if( input.length() == 0 ) return;
-
-    const auto n_spaces = count_spaces( input, length );
-    const auto offset = n_spaces * 2;
-
-    auto encountered = 0, position = length - 1;
-
-    do
-    {
-	    const auto current = input[ position ];
-        const auto new_position = position + offset - ( encountered * 2 );
-
-        if( current == ' ' ) 
-        {
-            input[ new_position ] = '0';
-            input[ new_position - 1 ] = '2';
-            input[ new_position - 2 ] = '%';
-
-            encountered++;
-        } else
-        {
-			input[ new_position ] = input[ position ];
-        }
-
-        position--;
-
-    } while( position != -1 );
-}
-
-string to_buffer( const string & s )
-{
-	auto output = string( s );
-
-    for( auto character : s )
+    for( auto character : input )
     {
         if( character == ' ' )
-            output += "  ";
+            continue;
+
+        const auto current = tolower( character );
+
+        if( map.find( current ) != map.end() )
+            map[ current ]++;
+        else
+            map[ current ] = 1;
     }
 
-    return output;
+    return map;
+}
+
+bool is_palindrome_permutation(const string & input)
+{
+    if( input.empty() ) return false;
+
+    auto map = char_map( input );
+
+    auto n_odd = 0;
+
+    for( auto iter = map.begin(); iter != map.end(); ++iter )
+    {
+        if( iter->second % 2 == 1 )
+            n_odd++;
+    }
+
+    return n_odd <= 1;
 }
 
 auto main() -> int
@@ -84,10 +69,7 @@ auto main() -> int
 
     while( getline( cin, input ) )
     {
-        auto buffer = to_buffer( input );
-        urlify( buffer, input.length() );
-
-        cout << input << " urlify: " << buffer << endl;
+        cout << input << " is palindrome permutation?: " << is_palindrome_permutation(input) << endl;
 
         cout << "Enter test input:";
     }

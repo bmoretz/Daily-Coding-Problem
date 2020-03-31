@@ -814,7 +814,6 @@ class RandomBinaryTree1():
             current = self.root
             
             while True:
-                prev = current
 
                 if data <= current.data:
                     if current.left == None:

@@ -308,4 +308,46 @@ namespace str_problems
 
 		return input;
 	}
+
+	map<char, int> palperm1::char_map( const string & input )
+	{
+		map<char, int> map;
+
+		if( input.empty() ) return map;
+
+		static const auto lower = static_cast<int>('a'), 
+			upper = static_cast< int >( 'z' );
+
+		for( auto character : input )
+		{
+			const auto current = tolower( character );
+			
+			if( current < lower || current > upper )
+				continue;
+
+			if( map.find( current ) != map.end() )
+				map[ current ]++;
+			else
+				map[ current ] = 1;
+		}
+
+		return map;
+	}
+
+	bool palperm1::is_palindrome_permutation( const string & input )
+	{
+		if( input.empty() ) return false;
+
+		auto map = char_map( input );
+
+		auto n_odd = 0;
+
+		for( auto iter = map.begin(); iter != map.end(); ++iter )
+		{
+			if( iter->second % 2 == 1 )
+				n_odd++;
+		}
+
+		return n_odd <= 1;
+	}
 }

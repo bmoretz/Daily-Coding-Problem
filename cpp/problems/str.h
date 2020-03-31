@@ -42,4 +42,11 @@ namespace str_problems
 		static size_t count_spaces(const std::string& input, size_t length);
 		static std::string urlify(std::string input, size_t length);
 	};
+
+	class palperm1
+	{
+	public:
+		static std::map<char, int> char_map( const std::string & input );
+		static bool is_palindrome_permutation( const std::string & input );
+	};
 }

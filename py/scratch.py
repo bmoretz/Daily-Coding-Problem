@@ -11,7 +11,7 @@ from random import uniform
 
 from problems.tree import Node
 
-class RandomBinaryTree1():
+class RandomBinaryTree2():
 
     class TreeNode():
 
@@ -19,6 +19,7 @@ class RandomBinaryTree1():
             self.data = data
             self.left = None
             self.right = None
+            self.size = 1
 
         def is_full(self):
             return self.left and self.right
@@ -30,38 +31,28 @@ class RandomBinaryTree1():
         self.root = None
 
     def insert(self, data):
+        
+        def insertInOrder(node, data):
+            if data <= node.data:
+
+                if node.left == None:
+                    node.left = self.TreeNode(data)
+                else:
+                    insertInOrder(node.left, data)
+            else:
+
+                if node.right == None:
+                    node.right = self.TreeNode(data)
+                else:
+                    insertInOrder(node.right, data)
+                
         if data == None: return None
 
-        node = self.TreeNode(data)
-        
         if self.root == None:
-            self.root = node
+            self.root = self.TreeNode(data)
         else:
-            current = self.root
-            
-            while True:
-                prev = current
-
-                if data <= current.data:
-                    if current.left == None:
-                        current.left = node
-                        break
-                    if current.right == None:
-                        current.right = node
-                        break
-                    
-                    current = current.left
-
-                elif data > current.data:
-                    if current.left == None:
-                        current.left = node
-                        break
-                    elif current.right == None:
-                        current.right = node
-                        break
-
-                    current = current.right
-
+            insertInOrder(self.root, data)
+        
             
     def find(self, value):
         
@@ -159,7 +150,7 @@ class RandomBinaryTree1():
 
         return values[index]
 
-tree = BinaryTree()
+tree = RandomBinaryTree2()
 
 tree.insert(40)
 tree.insert(30)

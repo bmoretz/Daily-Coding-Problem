@@ -249,4 +249,87 @@ namespace string_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+	/// Testing class for Palindrome Permutations.
+	/// </summary>
+    class palindrome_permutation_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Palindrome Permutations 1
+    //
+
+    TEST_F( palindrome_permutation_tests, palperm1_empty )
+    {
+        auto actual = palperm1::is_palindrome_permutation( string() );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_permutation_tests, palperm1_base )
+    {
+        auto actual = palperm1::is_palindrome_permutation( "taco cat");
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_permutation_tests, palperm1_case1 )
+    {
+        auto actual = palperm1::is_palindrome_permutation( "atco cta" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_permutation_tests, palperm1_case2 )
+    {
+        auto actual = palperm1::is_palindrome_permutation( "A nut for a jar of tuna" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_permutation_tests, palperm1_case3 )
+    {
+        auto actual = palperm1::is_palindrome_permutation( "Amore, Roma." );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_permutation_tests, palperm1_case4 )
+    {
+        auto actual = palperm1::is_palindrome_permutation( "Was it a car or a cat I saw ?" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_permutation_tests, palperm1_case5 )
+    {
+        auto actual = palperm1::is_palindrome_permutation( "Ed, I saw Harpo Marx ram Oprah W. aside." );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
