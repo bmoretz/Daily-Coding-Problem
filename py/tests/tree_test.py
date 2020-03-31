@@ -1606,7 +1606,7 @@ class Test_CheckSubtree2(unittest.TestCase):
         t2 = Node(60)
         
         actual = check_subtree2(t1, t2)
-        expected = False
+        expected = True
 
         assert actual == expected
 
@@ -1647,3 +1647,120 @@ class Test_CheckSubtree2(unittest.TestCase):
         expected = True
 
         assert actual == expected
+
+from py.problems.tree import RandomBinaryTree1
+class Test_RandomBinaryTree1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    '''
+    Tree #1:
+
+            40
+          /     \
+        30       60
+      /    \   /    \
+     10    20 50     70
+    '''
+    def test_case1(self):
+        
+        tree = RandomBinaryTree1()
+
+        node_values = [40, 30, 60, 10, 20, 50, 70]
+
+        for val in node_values:
+            tree.insert(val)
+
+        val1 = tree.find(10)
+        assert val1 != None
+
+        val2 = tree.find(88)
+        assert val2 == None
+
+        val3 = tree.find(50)
+        assert val3 != None
+
+        tree.delete(30)
+        assert tree.find(30) == None
+
+        tree.delete(40)
+        assert tree.find(40) == None
+
+    def test_case2(self):
+        
+        tree = RandomBinaryTree1()
+
+        node_values = [40, 30, 60, 10, 20, 50, 70]
+
+        for val in node_values:
+            tree.insert(val)
+
+        for _ in range(0, 5):
+
+            actual = tree.get_random_node()
+
+            assert actual in node_values
+
+    '''
+    Tree #2:
+
+            40
+          /     \
+        30       60
+      /    \   /    \
+     10    20 50     70
+     /        /         \
+   14      40             81
+    '''
+    def test_case3(self):
+        
+        tree = RandomBinaryTree1()
+
+        node_values = [40, 30, 60, 10, 20, 50, 70, 40, 14, 81]
+
+        for val in node_values:
+            tree.insert(val)
+
+        for _ in range(0, 5):
+
+            actual = tree.get_random_node()
+
+            assert actual in node_values
+
+        tree.delete(40) # dup 40
+
+        assert tree.find(40) != None
+
+        tree.delete(40)
+
+        assert tree.find(40) == None
+
+        for _ in range(0, 5):
+
+            assert tree.get_random_node() != 40
+
+    '''
+    Tree #2:
+
+            40
+          /     \
+        30       60
+      /    \   /    \
+     10    20 50     70
+     /        /         \
+   14      40             81
+    '''
+    def test_case4(self):
+        
+        tree = RandomBinaryTree1()
+
+        node_values = [40, 30, 60, 10, 20, 50, 70, 40, 14, 81]
+
+        for val in node_values:
+            tree.insert(val)
+
+        for val in node_values:
+            tree.delete(val)
+
+        assert tree.root == None

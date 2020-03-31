@@ -1,96 +1,184 @@
-'''Check Subtree.
+'''Random Node.
 
-T1 and T2 are two very large binary trees, with T1 being much bigger
-than T2. Create an algorithm to determine if T2 is a subtree of T1.
-
-A tree T2 is a subtree of T1 if there exists a node n in T1 such that
-the subtree of n is identical to T2. That is, if you cut off the
-tree at node n, the two trees would be identical.
+You are implementing a binary tree class from scratch which, in
+addition to insert, find, and delete, has a method getRandomNode()
+which returns a random node from the tree. All nodes should be equally
+likely to be chosen. Design and implement an algorithm for getRandomNode, 
+and explain how you would implement the rest of the methods.
 '''
+
+from random import uniform
 
 from problems.tree import Node
 
-def check_subtree(t1, t2):
+class RandomBinaryTree1():
 
-    class ListNode():
+    class TreeNode():
 
         def __init__(self, data):
             self.data = data
-            self.next = None
-            
-    def get_nodes(node):
-        ''' creates an in order list from a tree node'''
-        if node == None:
-            return None
+            self.left = None
+            self.right = None
+
+        def is_full(self):
+            return self.left and self.right
+
+        def is_leaf(self):
+            return not (self.left or self.right)
+
+    def __init__(self):
+        self.root = None
+
+    def insert(self, data):
+        if data == None: return None
+
+        node = self.TreeNode(data)
         
-        head = None
-
-        left = get_nodes(node.left)
-
-        if left:
-            head = left
-
-        current = ListNode(node.data)
-
-        if left:
-            prev = head
-            while prev.next != None:
-                prev = prev.next
-            prev.next = current
+        if self.root == None:
+            self.root = node
         else:
-            head = current
+            current = self.root
+            
+            while True:
+                prev = current
 
-        right = get_nodes(node.right)
+                if data <= current.data:
+                    if current.left == None:
+                        current.left = node
+                        break
+                    if current.right == None:
+                        current.right = node
+                        break
+                    
+                    current = current.left
 
-        if right:
-            current.next = right
+                elif data > current.data:
+                    if current.left == None:
+                        current.left = node
+                        break
+                    elif current.right == None:
+                        current.right = node
+                        break
 
-        if not left and right:
-            current.left = ListNode('-')
-        elif left and not right:
-            current.right = ListNode('-')
+                    current = current.right
 
-        return head
+            
+    def find(self, value):
+        
+        def find_node(node, value):
+            
+            if node == None: 
+                return None
 
-    if not (t1 and t2): return False
+            if node.data == value:
+                return node
 
-    head1 = get_nodes(t1)
-    head2 = get_nodes(t2)
+            left = find_node(node.left, value)
 
-    head2 = head2.next
+            if left: return left
+ 
+            right = find_node(node.right, value)
 
-    while head1 and head1.data != head2.data:
-        head1 = head1.next
+            if right: return right
 
-    exists = True
+        if value == None: return None 
 
-    while head2 != None:
-        exists &= head1.data == head2.data
+        return find_node(self.root, value)
+    
+    def delete(self, value):
+        
+        def delete_node(node, value, parent=None):
 
-        head1, head2 = head1.next, head2.next
+            if node == None: return
 
-    return exists 
+            if node.data == value:
+                new_node = None
 
-t1 = Node(50)
+                if node.right and node.left:
+                    new_node = node.right
 
-t1.left = Node(30)
-t1.left.left = Node(20)
-t1.left.left.right = Node(25)
-t1.left.right = Node(40)
+                    current = node.right
+                    prev = None
 
-t1.right = Node(70)
-t1.right.left = Node(60)
-t1.right.left.left = Node(55)
-t1.right.left.right = Node(65)
+                    while current != None:
+                        prev = current
+                        current = current.left
+                    
+                    prev.left = node.left
+                elif node.left and not node.right:
+                    new_node = node.left
+                elif not node.left and node.right:
+                    new_node = node.right
 
-t1.right.right = Node(80)
-t1.right.right.left = Node(75)
-t1.right.right.right = Node(90)
+                if parent == None:
+                    self.root = new_node
+                else:
+                    
+                    if node == parent.left:
+                        parent.left = new_node
+                    elif node == parent.right:
+                        parent.right = new_node
+    
+            else:
+                delete_node(node.left, value, node)
+                delete_node(node.right, value, node)
+                
+        if value == None: return None
 
-t2 = Node(60)
-t2.left = Node(55)
-# t2.right = Node(65)
+        return delete_node(self.root, value)
 
-exists = check_subtree(t1, t2)
+    def __get_values(self):
 
-print(exists)
+        def subvalues(node):
+
+            if node == None: return
+
+            values = []
+
+            if node.left:
+                values += subvalues(node.left)
+
+            values += [node.data]
+
+            if node.right:
+                values += subvalues(node.right)
+            
+            return values
+
+        if self.root == None: return []
+
+        return subvalues(self.root)
+
+    def get_random_node(self):
+        
+        if self.root == None: return None
+
+        values = self.__get_values()
+
+        index = int(uniform(0, len(values)))
+
+        return values[index]
+
+tree = BinaryTree()
+
+tree.insert(40)
+tree.insert(30)
+tree.insert(60)
+tree.insert(10)
+tree.insert(20)
+tree.insert(50)
+tree.insert(70)
+
+val = tree.find(10)
+
+print(tree.get_random_node())
+
+tree.delete(10)
+
+print(tree.get_random_node())
+
+tree.delete(40)
+
+print(tree.get_random_node())
+
+print(tree)
