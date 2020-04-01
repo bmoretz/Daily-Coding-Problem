@@ -4,73 +4,96 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <algorithm>
 
-/* Palindrome Permutation.
- *
- *Given a string, write a function to check if it is a permutation of a
- *palindrome.
- *
- *A palindrome is a word or phrase that is the same forwards and backwards.
- *A permutation is a rearrangement of letters. The palindrome does not need
- *to be limited to just dictionary words.
- *
- *EXAMPLE:
- *
- *Input: Tact Coa
- *Output: True (permutations: "taco cat", "atco cta", etc.)
+/* One Away.
+ * 
+ * There are three types of edits that can be performed on strings:
+ * 
+ * insert a character,
+ * remove a character,
+ * replace a character
+ * 
+ * Given two strings, write a function to check if they are one edit (or zero edits) away.
+ * 
+ * EXAMPLE:
+ * 
+ * pale, ple -> true
+ * pales, pale -> true
+ * pale, bale -> true
+ * pale, bake -< false
  */
 
 using namespace std;
 
-map<char, int> char_map( const string & input )
+string::size_type find_first_invariant( const std::string & str, const char search )
 {
-    map<char, int> map;
+	auto position = string::npos;
 
-    if( input.empty() ) return map;
+	for( auto iter = str.begin(); iter != str.end(); ++iter )
+	{
+		if( toupper( *iter ) == toupper( search ) ) {
+			position = iter - str.begin();
+			break;
+		}
+	}
 
-    for( auto character : input )
-    {
-        if( character == ' ' )
-            continue;
-
-        const auto current = tolower( character );
-
-        if( map.find( current ) != map.end() )
-            map[ current ]++;
-        else
-            map[ current ] = 1;
-    }
-
-    return map;
+	return position;
 }
 
-bool is_palindrome_permutation(const string & input)
+bool one_away( const string & str1, const string & str2 )
 {
-    if( input.empty() ) return false;
+	if( str1.empty() || str2.empty() ) return false;
 
-    auto map = char_map( input );
+	string longer, shorter;
 
-    auto n_odd = 0;
+	if( str1.length() > str2.length() )
+	{
+		longer = str1;
+		shorter = str2;
+	}
+	else
+	{
+		longer = str2;
+		shorter = str1;
+	}
 
-    for( auto iter = map.begin(); iter != map.end(); ++iter )
-    {
-        if( iter->second % 2 == 1 )
-            n_odd++;
-    }
+	if( longer.length() - shorter.length() > 1 ) return false;
 
-    return n_odd <= 1;
+	for( auto character : shorter )
+	{
+		const auto location = find_first_invariant( longer, character );
+
+		if( location != string::npos )
+			longer.erase( location, 1 );
+	}
+
+	return longer.length() <= 1;
+}
+
+void test_harness()
+{
+	string input1, input2;
+
+	cout << "Enter test input 1 and 2:";
+
+	while( getline( cin, input1 ) && getline( cin, input2 ) )
+	{
+		try
+		{
+			cout << input1 << " : " << input2 <<
+				" are one away?: " << ( one_away( input1, input2 ) == 1 ? "true" : "false" ) << endl;
+
+			cout << "Enter test input:";
+		}
+		catch( const exception & ex )
+		{
+			cout << ex.what();
+		}
+	}
 }
 
 auto main() -> int
 {
-    string input;
-
-    cout << "Enter test input:";
-
-    while( getline( cin, input ) )
-    {
-        cout << input << " is palindrome permutation?: " << is_palindrome_permutation(input) << endl;
-
-        cout << "Enter test input:";
-    }
+    test_harness();
 }

@@ -287,7 +287,8 @@ namespace str_problems
 		do
 		{
 			const auto current = input[ position ];
-			const auto new_position = position + offset - ( encountered * 2 );
+			const unsigned int space_offset = encountered * 2;
+			const auto new_position = position + offset - space_offset;
 
 			if( current == ' ' )
 			{
@@ -309,6 +310,22 @@ namespace str_problems
 		return input;
 	}
 
+	/// <summary>
+	/// char_map
+	/// 
+	/// This method takes a string and returns a look-up
+	/// of the characters contained in the string as keys
+	/// and the number of occurrences as values.
+	/// 
+	/// This version of char_map does not count spaces, commas,
+	/// or any non-alpha-numeric characters.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="input">the string to map</param>
+	/// <returns>map of characters and their respective counts.</returns>
 	map<char, int> palperm1::char_map( const string & input )
 	{
 		map<char, int> map;
@@ -334,6 +351,22 @@ namespace str_problems
 		return map;
 	}
 
+	/// <summary>
+	/// is_palindrome_permutation
+	///
+	/// This approach first makes a character map out of the
+	/// input string (excluding non-alpha-numeric/whitespace characters)
+	/// and then counts the occurrences of characters that have odd counts.
+	/// In order for the string to be a permutation of a palindrome, we
+	/// cannot have more than 1 occurence of an odd character, in which
+	/// case we can safely short-circuit the loop.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="input"></param>
+	/// <returns></returns>
 	bool palperm1::is_palindrome_permutation( const string & input )
 	{
 		if( input.empty() ) return false;
@@ -344,10 +377,90 @@ namespace str_problems
 
 		for( auto iter = map.begin(); iter != map.end(); ++iter )
 		{
-			if( iter->second % 2 == 1 )
+			if( iter->second % 2 == 1 ) {
 				n_odd++;
+
+				if( n_odd >= 1 )
+					break;
+			}
 		}
 
 		return n_odd <= 1;
+	}
+
+	/// <summary>
+	/// find_first_invariant
+	///
+	/// This method is essentially a case-invariant
+	/// version of std::find.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(1)</space>
+	/// </complexity>
+	/// <param name="str">The string to search</param>
+	/// <param name="search">the character to find</param>
+	/// <returns>first position of search in str</returns>
+	string::size_type find_first_invariant( const std::string & str, const char search )
+	{
+		auto position = string::npos;
+
+		for( auto iter = str.begin(); iter != str.end(); ++iter )
+		{
+			if( toupper( *iter ) == toupper( search ) ) {
+				position = iter - str.begin();
+				break;
+			}
+		}
+
+		return position;
+	}
+
+	/// <summary>
+	/// one_away1
+	///
+	/// This is a brute-force version that simply
+	/// takes the shorter string character by character
+	/// away from the longer string, and then returns
+	/// true if the remaining length of the longer string
+	/// is greater than 1. There is one short-circuit condition
+	/// on the lengths, anything greater than a delta of 1 is immediately
+	/// returned as false.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(K*J)</run-time>
+	///		<space>O(1)</space>
+	/// </complexity>
+	/// <param name="str1">first string</param>
+	/// <param name="str2">second string</param>
+	/// <returns>true if first and second are 1 edit away</returns>
+	bool one_away1::one_away( const string & str1, const string & str2 )
+	{
+		if( str1.empty() || str2.empty() ) return false;
+
+		string longer, shorter;
+
+		if( str1.length() > str2.length() )
+		{
+			longer = str1;
+			shorter = str2;
+		}
+		else
+		{
+			longer = str2;
+			shorter = str1;
+		}
+
+		if( longer.length() - shorter.length() > 1 ) return false;
+
+		for( auto character : shorter )
+		{
+			const auto location = find_first_invariant( longer, character );
+
+			if( location != string::npos )
+				longer.erase( location, 1 );
+		}
+
+		return longer.length() <= 1;
 	}
 }

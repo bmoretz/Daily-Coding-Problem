@@ -21,7 +21,7 @@ namespace str_problems
 	{
 	public:
 		static bool is_permutation( const std::string & p, const std::string & q );
-		static std::map<char, int> char_map(const std::string& s);
+		static std::map<char, int> char_map( const std::string & s );
 	};
 
 	class is_permutation2
@@ -39,8 +39,8 @@ namespace str_problems
 	class urlify2
 	{
 	public:
-		static size_t count_spaces(const std::string& input, size_t length);
-		static std::string urlify(std::string input, size_t length);
+		static size_t count_spaces( const std::string & input, size_t length );
+		static std::string urlify( std::string input, size_t length );
 	};
 
 	class palperm1
@@ -48,5 +48,11 @@ namespace str_problems
 	public:
 		static std::map<char, int> char_map( const std::string & input );
 		static bool is_palindrome_permutation( const std::string & input );
+	};
+
+	class one_away1
+	{
+	public:
+		static bool one_away( const std::string & str1, const std::string & str2 );
 	};
 }

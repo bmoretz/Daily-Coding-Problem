@@ -332,4 +332,97 @@ namespace string_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+
+    /// <summary>
+    /// Testing class for One Away.
+    /// </summary>
+    class one_away_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // One Away 1
+    //
+
+    TEST_F( one_away_tests, oneaway1_empty )
+    {
+        auto actual = one_away1::one_away( string(), string() );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case1 )
+    {
+        auto actual = one_away1::one_away( "pale", "ple" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case2 )
+    {
+        auto actual = one_away1::one_away( "pales", "pale" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case3 )
+    {
+        auto actual = one_away1::one_away( "pale", "balep" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case4 )
+    {
+        auto actual = one_away1::one_away( "pale", "bake" );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case5 )
+    {
+        auto actual = one_away1::one_away( "PALE", "baLe" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case6 )
+    {
+        auto actual = one_away1::one_away( "PALE    ", "b    aLe" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( one_away_tests, oneaway1_case7 )
+    {
+        auto actual = one_away1::one_away( "PALE", "PALEB" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
