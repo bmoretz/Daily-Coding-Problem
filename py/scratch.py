@@ -1,17 +1,15 @@
-'''Random Node.
+'''Paths with Sum.
 
-You are implementing a binary tree class from scratch which, in
-addition to insert, find, and delete, has a method getRandomNode()
-which returns a random node from the tree. All nodes should be equally
-likely to be chosen. Design and implement an algorithm for getRandomNode, 
-and explain how you would implement the rest of the methods.
+You are given a binary tree in which each node contains an integer value
+(which might be positive or negative). Design an algorithm to count the
+number of of paths that sum to a given value. The path does not need to
+start or end at the root or a leaf, but it must go downwards (traveling
+only from parent nodes to child nodes).
 '''
-
-from random import uniform
 
 from problems.tree import Node
 
-class RandomBinaryTree2():
+class SumTree():
 
     class TreeNode():
 
@@ -19,157 +17,81 @@ class RandomBinaryTree2():
             self.data = data
             self.left = None
             self.right = None
-            self.size = 1
 
-        def is_full(self):
-            return self.left and self.right
+        def path_sums(self, value):
+        
+            def child_sums(node, parent_sum):
+                
+                if node == None: return
 
-        def is_leaf(self):
-            return not (self.left or self.right)
+                path_sum = parent_sum + node.data
+
+                sums = 1 if path_sum == value else 0
+
+                if node.left:
+                    sums += child_sums(node.left, path_sum)    
+
+                if node.right:
+                    sums += child_sums(node.right, path_sum)
+
+                return sums
+
+            sums = 1 if self.data == value else 0
+
+            if self.left:
+                sums += child_sums(self.left, self.data)
+            
+            if self.right:
+                sums += child_sums(self.right, self.data)
+            
+            return sums
 
     def __init__(self):
         self.root = None
-
-    def insert(self, data):
+    
+    def insert_at(self, node, value):
         
-        def insertInOrder(node, data):
-            if data <= node.data:
+        if node == None: return
 
+        if value <= node.data:
+            node.left = self.TreeNode(value)
+        elif value >= node.data:
+            node.right = self.TreeNode(value)
+
+    def insert(self, value):
+
+        def insertInOrder(node, value):
+            
+            if node == None: return
+
+            if value <= node.data:
                 if node.left == None:
-                    node.left = self.TreeNode(data)
+                    node.left = self.TreeNode(value)
                 else:
-                    insertInOrder(node.left, data)
-            else:
-
+                    insertInOrder(node.left, value)
+            elif node.data < value:
                 if node.right == None:
-                    node.right = self.TreeNode(data)
+                    node.right = self.TreeNode(value)
                 else:
-                    insertInOrder(node.right, data)
-                
-        if data == None: return None
+                    insertInOrder(node.right, value)
 
         if self.root == None:
-            self.root = self.TreeNode(data)
+            self.root = self.TreeNode(value)
         else:
-            insertInOrder(self.root, data)
-        
-            
-    def find(self, value):
-        
-        def find_node(node, value):
-            
-            if node == None: 
-                return None
+            insertInOrder(self.root, value)
 
-            if node.data == value:
-                return node
 
-            left = find_node(node.left, value)
+tree = SumTree()
 
-            if left: return left
- 
-            right = find_node(node.right, value)
+#  [5, -5, 3, 2, -10, 10, 7, -3, -1, 6, 15, -5, 5, -15, -20]
 
-            if right: return right
+values = [5, 8, 3, 7, 4, 10, 2]
 
-        if value == None: return None 
+for value in values:
+    tree.insert(value)
 
-        return find_node(self.root, value)
-    
-    def delete(self, value):
-        
-        def delete_node(node, value, parent=None):
+tree.insert_at(tree.root.right.left, 3)
 
-            if node == None: return
+root_sums = tree.root.path_sums(8)
 
-            if node.data == value:
-                new_node = None
-
-                if node.right and node.left:
-                    new_node = node.right
-
-                    current = node.right
-                    prev = None
-
-                    while current != None:
-                        prev = current
-                        current = current.left
-                    
-                    prev.left = node.left
-                elif node.left and not node.right:
-                    new_node = node.left
-                elif not node.left and node.right:
-                    new_node = node.right
-
-                if parent == None:
-                    self.root = new_node
-                else:
-                    
-                    if node == parent.left:
-                        parent.left = new_node
-                    elif node == parent.right:
-                        parent.right = new_node
-    
-            else:
-                delete_node(node.left, value, node)
-                delete_node(node.right, value, node)
-                
-        if value == None: return None
-
-        return delete_node(self.root, value)
-
-    def __get_values(self):
-
-        def subvalues(node):
-
-            if node == None: return
-
-            values = []
-
-            if node.left:
-                values += subvalues(node.left)
-
-            values += [node.data]
-
-            if node.right:
-                values += subvalues(node.right)
-            
-            return values
-
-        if self.root == None: return []
-
-        return subvalues(self.root)
-
-    def get_random_node(self):
-        
-        if self.root == None: return None
-
-        values = self.__get_values()
-
-        index = int(uniform(0, len(values)))
-
-        return values[index]
-
-tree = RandomBinaryTree2()
-
-tree.insert(40)
-tree.insert(30)
-tree.insert(60)
-tree.insert(10)
-tree.insert(20)
-tree.insert(50)
-tree.insert(70)
-
-val = tree.find(10)
-
-print(tree.get_random_node())
-
-tree.delete(10)
-
-print(tree.get_random_node())
-
-tree.delete(40)
-
-print(tree.get_random_node())
-
-print(tree)
+print(root_sums)

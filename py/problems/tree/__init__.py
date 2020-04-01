@@ -804,37 +804,27 @@ class RandomBinaryTree1():
         self.root = None
 
     def insert(self, data):
+        
+        def insertInOrder(node, data):
+            if data <= node.data:
+
+                if node.left == None:
+                    node.left = self.TreeNode(data)
+                else:
+                    insertInOrder(node.left, data)
+            else:
+
+                if node.right == None:
+                    node.right = self.TreeNode(data)
+                else:
+                    insertInOrder(node.right, data)
+                
         if data == None: return None
 
-        node = self.TreeNode(data)
-        
         if self.root == None:
-            self.root = node
+            self.root = self.TreeNode(data)
         else:
-            current = self.root
-            
-            while True:
-
-                if data <= current.data:
-                    if current.left == None:
-                        current.left = node
-                        break
-                    if current.right == None:
-                        current.right = node
-                        break
-                    
-                    current = current.left
-
-                elif data > current.data:
-                    if current.left == None:
-                        current.left = node
-                        break
-                    elif current.right == None:
-                        current.right = node
-                        break
-
-                    current = current.right
-
+            insertInOrder(self.root, data)
             
     def find(self, value):
         
@@ -933,3 +923,83 @@ class RandomBinaryTree1():
         index = int(uniform(0, len(values)))
 
         return values[index]
+
+'''Paths with Sum.
+
+You are given a binary tree in which each node contains an integer value
+(which might be positive or negative). Design an algorithm to count the
+number of of paths that sum to a given value. The path does not need to
+start or end at the root or a leaf, but it must go downwards (traveling
+only from parent nodes to child nodes).
+'''
+
+class SumTree1():
+
+    class TreeNode():
+
+        def __init__(self, data):
+            self.data = data
+            self.left = None
+            self.right = None
+
+        def path_sums(self, value):
+        
+            def child_sums(node, parent_sum):
+                
+                if node == None: return
+
+                path_sum = parent_sum + node.data
+
+                sums = 1 if path_sum == value else 0
+
+                if node.left:
+                    sums += child_sums(node.left, path_sum)    
+
+                if node.right:
+                    sums += child_sums(node.right, path_sum)
+
+                return sums
+
+            sums = 1 if self.data == value else 0
+
+            if self.left:
+                sums += child_sums(self.left, self.data)
+            
+            if self.right:
+                sums += child_sums(self.right, self.data)
+            
+            return sums
+
+    def __init__(self):
+        self.root = None
+    
+    def insert_at(self, node, value):
+        
+        if node == None: return
+
+        if value <= node.data:
+            node.left = self.TreeNode(value)
+        elif value >= node.data:
+            node.right = self.TreeNode(value)
+
+    def insert(self, value):
+
+        def insertInOrder(node, value):
+            
+            if node == None: return
+
+            if value <= node.data:
+                if node.left == None:
+                    node.left = self.TreeNode(value)
+                else:
+                    insertInOrder(node.left, value)
+            elif node.data < value:
+                if node.right == None:
+                    node.right = self.TreeNode(value)
+                else:
+                    insertInOrder(node.right, value)
+
+        if self.root == None:
+            self.root = self.TreeNode(value)
+        else:
+            insertInOrder(self.root, value)

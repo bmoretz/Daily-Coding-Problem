@@ -1764,3 +1764,139 @@ class Test_RandomBinaryTree1(unittest.TestCase):
             tree.delete(val)
 
         assert tree.root == None
+
+from py.problems.tree import SumTree1
+class Test_SumTree1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    '''
+    Tree Sums 1:
+
+            5
+          /    \
+        3        8
+      /   \     /   \
+    2      4   7     10
+    '''
+    def test_case1(self):
+    
+        tree = SumTree1()
+
+        values = [5, 8, 3, 7, 4, 10, 2]
+
+        for value in values:
+            tree.insert(value) 
+
+        assert tree.root.path_sums(8) == 1
+
+    '''
+    Tree Sums 2:
+
+              5
+            /    \
+          3        8
+        /   \     /   \
+       2     4   7     10
+      /
+    2
+    '''
+    def test_case2(self):
+
+        tree = SumTree1()
+
+        values = [5, 8, 3, 7, 4, 10, 2, 2]
+
+        for value in values:
+            tree.insert(value) 
+
+        # 5 -> 3 -> 2 -> 2 = 12
+        # 5 -> 3 -> 4
+        assert tree.root.path_sums(12) == 2
+
+    '''
+    Tree Sums 2:
+
+              5
+            /    \
+          3        8
+        /   \     /   \
+       2     4   7     10
+      /
+    2
+    '''
+    def test_case3(self):
+
+        tree = SumTree1()
+
+        values = [5, 8, 3, 7, 4, 10, 2, 2]
+
+        for value in values:
+            tree.insert(value) 
+
+        # 3 -> 2 -> 2 = 7
+        # 3 -> 4
+        assert tree.root.left.path_sums(7) == 2
+
+    '''
+    Tree Sums 3:
+
+            5
+          /    \
+        3        8
+      /   \     /   \
+    2      4   7     10
+              /
+             3
+    '''
+    def test_case4(self):
+    
+        tree = SumTree1()
+
+        values = [5, 8, 3, 7, 4, 10, 2]
+
+        for value in values:
+            tree.insert(value) 
+
+        # insert 3 below 7
+        tree.insert_at(tree.root.right.left, 3)
+
+        actual = tree.root.right.path_sums(18)
+        expected = 2
+
+        assert actual == expected
+
+    '''
+    Tree Sums 4:
+
+            5
+          /    \
+        3        8
+      /   \     /   \
+    2      4   7     10
+              /     /
+             3    -1
+            /
+          -1
+    '''
+    def test_case5(self):
+    
+        tree = SumTree1()
+
+        values = [5, 8, 3, 7, 4, 10, 2]
+
+        for value in values:
+            tree.insert(value) 
+
+        # insert 3 below 7
+        tree.insert_at(tree.root.right.left, 3)
+        # insert -1 below 3
+        tree.insert_at(tree.root.right.left.left, -1)
+        # insert -1 below 10
+        tree.insert_at(tree.root.right.right, -1)
+
+        actual = tree.root.right.path_sums(17)
+        expected = 2
+
+        assert actual == expected 
