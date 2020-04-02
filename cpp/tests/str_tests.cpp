@@ -425,4 +425,78 @@ namespace string_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for String Compress.
+    /// </summary>
+    class str_compression_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // String Compression 1
+    //
+
+    TEST_F( str_compression_tests, compress1_empty )
+    {
+        auto actual = compress_str1::compressed( string() );
+
+        const auto expected = string();
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( str_compression_tests, compress1_case1 )
+    {
+        auto actual = compress_str1::compressed( "aabcccccaa" );
+
+        const auto expected = "a2b1c5a2";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( str_compression_tests, compress1_case2 )
+    {
+        auto actual = compress_str1::compressed( "fffff" );
+
+        const auto expected = "f5";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( str_compression_tests, compress1_case3 )
+    {
+        auto actual = compress_str1::compressed( "fffffaaaaac" );
+
+        const auto expected = "f5a5c1";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( str_compression_tests, compress1_case4 )
+    {
+        auto actual = compress_str1::compressed( "f" );
+
+        const auto expected = "f";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( str_compression_tests, compress1_case5 )
+    {
+        auto actual = compress_str1::compressed( "bb" );
+
+        const auto expected = "bb";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

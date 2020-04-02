@@ -6,83 +6,62 @@
 #include <map>
 #include <algorithm>
 
-/* One Away.
- * 
- * There are three types of edits that can be performed on strings:
- * 
- * insert a character,
- * remove a character,
- * replace a character
- * 
- * Given two strings, write a function to check if they are one edit (or zero edits) away.
- * 
- * EXAMPLE:
- * 
- * pale, ple -> true
- * pales, pale -> true
- * pale, bale -> true
- * pale, bake -< false
+/* String Compression.
+ *
+ * Implement a method to perform basic string compression using the counts of repeated characters.
+ *
+ * For example, the string aabbccccaaa would become a2b1c5a3.
+ *
+ * If the "compressed" string would not become smaller than the original string, your method
+ * should return the original string. You can assume the string has only uppercase and
+ * lowercase letters (a-z).
  */
 
 using namespace std;
 
-string::size_type find_first_invariant( const std::string & str, const char search )
+string compressed( const string & input )
 {
-	auto position = string::npos;
+	if( input.empty() ) return input;
 
-	for( auto iter = str.begin(); iter != str.end(); ++iter )
+	auto prev = input[ 0 ];
+	auto count = 1;
+
+	string compressed;
+
+	for( auto index = 1; index < input.length(); ++index )
 	{
-		if( toupper( *iter ) == toupper( search ) ) {
-			position = iter - str.begin();
-			break;
+		const auto current = input[ index ];
+
+		if( current == prev )
+		{
+			count++;
 		}
+		else
+		{
+			compressed += prev + to_string( count );
+			count = 1;
+		}
+		
+		prev = current;
 	}
 
-	return position;
-}
-
-bool one_away( const string & str1, const string & str2 )
-{
-	if( str1.empty() || str2.empty() ) return false;
-
-	string longer, shorter;
-
-	if( str1.length() > str2.length() )
-	{
-		longer = str1;
-		shorter = str2;
-	}
-	else
-	{
-		longer = str2;
-		shorter = str1;
-	}
-
-	if( longer.length() - shorter.length() > 1 ) return false;
-
-	for( auto character : shorter )
-	{
-		const auto location = find_first_invariant( longer, character );
-
-		if( location != string::npos )
-			longer.erase( location, 1 );
-	}
-
-	return longer.length() <= 1;
+	compressed += prev + to_string( count );
+	
+	return compressed.length() < input.length() ? compressed : input;
 }
 
 void test_harness()
 {
-	string input1, input2;
+	string input;;
 
-	cout << "Enter test input 1 and 2:";
+	cout << "Enter test input:";
 
-	while( getline( cin, input1 ) && getline( cin, input2 ) )
+	while( getline( cin, input ) )
 	{
 		try
 		{
-			cout << input1 << " : " << input2 <<
-				" are one away?: " << ( one_away( input1, input2 ) == 1 ? "true" : "false" ) << endl;
+			cout << input << " : " <<
+				" compressed: " << compressed( input ) << endl;
 
 			cout << "Enter test input:";
 		}

@@ -366,7 +366,7 @@ namespace str_problems
 	///		<space>O(N)</space>
 	/// </complexity>
 	/// <param name="input"></param>
-	/// <returns></returns>
+	/// <returns>if input is a palindrome permutation</returns>
 	bool palperm1::is_palindrome_permutation( const string & input )
 	{
 		if( input.empty() ) return false;
@@ -429,7 +429,7 @@ namespace str_problems
 	/// </summary>
 	/// <complexity>
 	///		<run-time>O(K*J)</run-time>
-	///		<space>O(1)</space>
+	///		<space>O(K + J)</space>
 	/// </complexity>
 	/// <param name="str1">first string</param>
 	/// <param name="str2">second string</param>
@@ -462,5 +462,56 @@ namespace str_problems
 		}
 
 		return longer.length() <= 1;
+	}
+
+	/// <summary>
+	/// compressed1
+	///
+	/// This approach simply iterates over the input
+	/// string starting at the 1st offset, having saved the
+	/// first character in the previous variable. Each iteration
+	/// we check to see if prev == current, and if so, increment,
+	/// otherwise we copy the compressed version of the character
+	/// (letter + count) to the final compressed string. After the loop
+	/// terminates we copy the remaining characters in the string to the output
+	/// buffer (this also handles the base case of a single character, many times).
+	///
+	/// We finally return the smaller of the two strings, input and compressed.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="input">string to compress</param>
+	/// <returns>the smaller of the two strings, input and compressed</returns>
+	string compress_str1::compressed( const string & input )
+	{
+		if( input.empty() ) return input;
+
+		auto prev = input[ 0 ];
+		auto count = 1;
+
+		string compressed;
+
+		for( auto index = 1; index < input.length(); ++index )
+		{
+			const auto current = input[ index ];
+
+			if( current == prev )
+			{
+				count++;
+			}
+			else
+			{
+				compressed += prev + to_string( count );
+				count = 1;
+			}
+
+			prev = current;
+		}
+
+		compressed += prev + to_string( count );
+
+		return compressed.length() < input.length() ? compressed : input;
 	}
 }
