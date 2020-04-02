@@ -109,15 +109,3 @@ class Test_Sequence1(unittest.TestCase):
         expected = [[2, 1, 3], [2, 3, 1]]
 
         assert actual == expected
-
-    '''
-    Tree #2
-
-            4
-          /    \
-        2       
-      /    \
-    1       3
-    '''
-    def test_case3(self):
-

@@ -16,7 +16,7 @@ Input: N = 10000000000, M = 10011, i = 2, j = 6
 Output: N = 10001001100
 '''
 
-def insertion(M, N, j, i):
+def insertion1(M, N, j, i):
 
     def leftshift(ba, count):
         return ba[count:] + (bitarray('0') * count)
@@ -24,11 +24,3 @@ def insertion(M, N, j, i):
     position = leftshift(N, i)
 
     return M | position
-
-
-N = bitarray('10000000000')
-M = bitarray('00000010011')
-
-r = insertion(N, M, 6, 2)
-
-print(r)
