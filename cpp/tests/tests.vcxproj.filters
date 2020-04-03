@@ -2,19 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="str_tests.cpp">
-      <Filter>str</Filter>
-    </ClCompile>
+    <ClCompile Include="str_tests.cpp" />
+    <ClCompile Include="arr_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="str">
-      <UniqueIdentifier>{9e3fdf0e-417f-4b99-ac7d-66e4e8486a2c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>
