@@ -1,87 +1,51 @@
 #pragma once
+
 #include <vector>
 
 namespace arr_problems
 {
-	/// <summary>
-	/// Simple Matrix representation using a vector of vector<int>'s.
-	///
-	/// This class is used to encapsulate simple matrix like behavior
-	/// for the matrix rotation problem (initialization, equality, etc).
-	/// </summary>
-	class Matrix
+	namespace matrix_rotation
 	{
-		std::vector<std::vector<int>> data_;
-		int width_;
-
-	public:
-		explicit Matrix( const int n )
+		/// <summary>
+		/// Simple Matrix representation using a vector of vector<int>'s.
+		///
+		/// This class is used to encapsulate simple matrix like behavior
+		/// for the matrix rotation problem (initialization, equality, etc).
+		/// </summary>
+		class Matrix
 		{
-			_ASSERT( n >= 0 );
+			std::vector<std::vector<int>> data_;
 
-			for( auto row = 1; row < ( n + 1 ); ++row )
-			{
-				auto values = std::vector<int>();
+		public:
+			explicit Matrix(const int n);
 
-				for( auto column = 1; column < ( n + 1 ); ++column )
-				{
-					auto value = ( ( row - 1 ) * n ) + column;
+			explicit Matrix(const int rows, const int columns);
 
-					values.push_back( value );
-				}
+			int height() const;
 
-				data_.push_back( values );
-			}
+			int width() const;
 
-			width_ = n;
-		}
+			explicit Matrix(const std::vector<std::vector<int>>& values);
 
-		int num_rows() const { return data_.size(); }
-		int num_cols() const { return width_; }
+			std::vector<int> get_row(const int row) const;
 
-		explicit Matrix( const std::vector<std::vector<int>> & values )
+			bool operator==(const Matrix& other) const;
+			static void set_incremental_values(Matrix& matrix);
+		};
+
+		/* Rotate Matrix.
+		 *
+		 * Given an image represented by an NxN matrix, where each pixel
+		 * in the image is 4 bytes, write a method to rotate the image by 90
+		 * degrees.
+		 *
+		 * Can you do this in place?
+		 */
+
+		class matrix_rotate1
 		{
-			data_ = values;
-			width_ = values[ 0 ].size();
-		}
-
-		std::vector<int> get_row( const int row ) const
-		{
-			_ASSERT( row >= 0 && row <= num_rows() );
-
-			return data_[ row ];
-		}
-
-		bool operator==( const Matrix & other ) const
-		{
-			if( width_ != other.width_ ) return false;
-			if( num_cols() != other.num_cols() || num_rows() != other.num_rows() ) return false;
-
-			auto equal = true;
-
-			for( auto row = 0; row < num_rows(); ++row )
-			{
-				equal &= data_[ row ] == other.data_[ row ];
-
-				if( !equal ) break;
-			}
-
-			return equal;
-		}
-	};
-
-	/* Rotate Matrix.
-	 *
-	 * Given an image represented by an NxN matrix, where each pixel
-	 * in the image is 4 bytes, write a method to rotate the image by 90
-	 * degrees.
-	 *
-	 * Can you do this in place?
-	 */
-
-	class matrix_rotate1
-	{
-	public:
-		static Matrix rotate( const Matrix & m );
-	};
+		public:
+			static Matrix rotate( const Matrix & m );
+		};
+	}
 }

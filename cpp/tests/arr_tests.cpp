@@ -8,6 +8,8 @@ using namespace arr_problems;
 
 namespace arr_tests
 {
+    using namespace matrix_rotation;
+	
     /// <summary>
     /// Testing class for is_unique.
     /// </summary>
@@ -30,8 +32,10 @@ namespace arr_tests
 
     TEST_F( matrix_rotation_tests, rotate1_case1 )
     {
-	    const auto mat = Matrix( 2 );
+	    auto mat = Matrix( 2 );
 
+        Matrix::set_incremental_values( mat );
+    	
         auto actual = matrix_rotate1::rotate( mat );
 
 	    const vector<vector<int>> matrix
@@ -47,8 +51,10 @@ namespace arr_tests
 
     TEST_F( matrix_rotation_tests, rotate1_case2 )
     {
-        const auto mat = Matrix( 3 );
+        auto mat = Matrix( 3 );
 
+        Matrix::set_incremental_values( mat );
+    	
         auto actual = matrix_rotate1::rotate( mat );
 
         const vector<vector<int>> matrix
@@ -65,8 +71,10 @@ namespace arr_tests
 
     TEST_F( matrix_rotation_tests, rotate1_case3 )
     {
-        const auto mat = Matrix( 4 );
+        auto mat = Matrix( 4 );
 
+        Matrix::set_incremental_values( mat );
+    	
         auto actual = matrix_rotate1::rotate( mat );
 
         const vector<vector<int>> matrix
@@ -84,9 +92,11 @@ namespace arr_tests
 
     TEST_F( matrix_rotation_tests, rotate1_case4 )
     {
-        const auto mat = Matrix( 5 );
+        auto mat = Matrix( 5 );
 
-        auto actual = matrix_rotate1::rotate( mat );
+        Matrix::set_incremental_values( mat );
+    	
+    	auto actual = matrix_rotate1::rotate( mat );
 
         const vector<vector<int>> matrix
         {

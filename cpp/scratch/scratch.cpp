@@ -45,8 +45,8 @@ public:
 		width_ = n;
 	}
 
-	int num_rows() const { return data_.size(); }
-	int num_cols() const { return width_; }
+	int height() const { return data_.size(); }
+	int width() const { return width_; }
 
 	explicit Matrix( const vector<vector<int>> & values)
 	{
@@ -56,28 +56,18 @@ public:
 
 	vector<int> get_row( const int row ) const
 	{
-		_ASSERT( row >= 0 && row <= num_rows() );
+		_ASSERT( row >= 0 && row <= height() );
 
 		return data_[ row ];
 	}
 };
 
-Matrix rotate( const Matrix & m )
+Matrix rotate( Matrix & matrix )
 {
-	auto matrix = vector<vector<int>>( m.num_rows() );
-
-	for( auto row = 0; row < m.num_rows(); ++row )
+	for( auto row = 0; row < matrix.height(); ++row )
 	{
-		auto values = m.get_row( row );
-
-		for( auto index = 0; index < values.size(); ++index )
+		for( auto column = 0; column < matrix.width(); ++column )
 		{
-			if( matrix[ index ].empty() )
-				matrix[ index ] = vector<int>( m.num_cols() );
-
-			const auto dest_column = static_cast< int >( m.num_rows() - row - 1 );
-
-			matrix[ index ][ dest_column ] = values[ index ];
 		}
 	}
 
