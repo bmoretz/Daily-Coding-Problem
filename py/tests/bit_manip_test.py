@@ -41,9 +41,50 @@ class Test_Insertion1(unittest.TestCase):
     def test_case4(self):
 
         N = bitarray('11000000000')
-        M = bitarray('00000001110')
+        M = bitarray('00000011110')
 
         actual = insertion1(N, M, 8, 4)
-        expected = bitarray('11011100000')
+        expected = bitarray('11111100000')
+
+        assert actual == expected
+
+from py.problems.bit_manip import binrep1
+class Test_BinaryString1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        actual = binrep1(.729)
+
+        expected = ".10111010100111111"
+
+        assert actual == expected
+
+    def test_case2(self):
+        actual = binrep1(.828)
+
+        expected = ".11010011111101111"
+
+        assert actual == expected
+
+    def test_case3(self):
+        actual = binrep1(.72)
+
+        expected = ".10111000010100011"
+
+        assert actual == expected
+
+    def test_case4(self):
+        actual = binrep1(.90210)
+
+        expected = ".111001101111"
+
+        assert actual == expected
+
+    def test_case5(self):
+        actual = binrep1(.0129214)
+
+        expected = ".00000011010011101"
 
         assert actual == expected
