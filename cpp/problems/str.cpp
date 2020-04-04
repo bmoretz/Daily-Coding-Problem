@@ -197,7 +197,7 @@ namespace str_problems
 	/// <returns>urlify'd string</returns>
 	string urlify1::urlify( string input, const size_t length )
 	{
-		if( input.length() == 0 ) return input;
+		if( input.length() == 0 ) return {};
 
 		size_t n_spaces = 1;
 
@@ -277,7 +277,7 @@ namespace str_problems
 	/// <returns>urlifiy'd string contents</returns>
 	string urlify2::urlify( string input, const size_t length )
 	{
-		if( input.length() == 0 ) return input;
+		if( input.length() == 0 ) return {};
 
 		const auto n_spaces = count_spaces( input, length );
 		const auto offset = n_spaces * 2;
@@ -486,7 +486,7 @@ namespace str_problems
 	/// <returns>the smaller of the two strings, input and compressed</returns>
 	string compress_str1::compressed( const string & input )
 	{
-		if( input.empty() ) return input;
+		if( input.empty() ) return {};
 
 		auto prev = input[ 0 ];
 		auto count = 1;
