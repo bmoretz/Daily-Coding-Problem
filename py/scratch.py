@@ -14,74 +14,37 @@ Output: 8
 
 '''
 
+from problems.bit_manip import to_binary
+
 def flip_bit(num):
     
-    def to_binary(num):
-
-        def greatest_divisor(num):
-
-            power = 0
-
-            while (2**power)/num <= 1:
-                power += 1
-            
-            return power - 1
-
-        power = greatest_divisor(num)
-        binary = []
-
-        while power >= 0:
-            
-            div = 2**power
-
-            rem = num/div
-
-            if rem >= 1:
-                binary.append(1)
-                num = num % div
-            else:
-                binary.append(0)
-
-            power -= 1
-
-        return binary
-
-    def seq(binary, index):
-
-        count = 0
-
-        left = binary[:index]
-        
-        while left and left.pop() == 1:
-            count += 1
-
-        right = binary[index + 1:]
-
-        while right and right[0] == 1:
-            right = right[1:]
-            count += 1
-
-        return count
-
     if num == None: return None
 
     binary = to_binary(num)
 
-    print(''.join([str(e) for e in binary]))
+    counter, n = 0, len(binary)
+    gaps = []
 
-    candidates = [index for index, element in enumerate(binary) if element == 0]
+    for index in range(n + 1):
 
-    # handle case of all 1's
-    if candidates == []:
-        return len(binary)
+        if index < n and binary[index] == 1:
+            counter += 1
+        else:
+            gaps.append(counter)
+            counter = 0
+    
+    if len(gaps) == 1: return gaps[0]
 
-    max_len = 0
+    max_gap = 0
 
-    for path in candidates:
-        max_len = max(max_len, seq(binary, path))
+    for start in range(len(gaps) - 1):
+        
+        end = start + 1
 
-    return 1 + max_len
+        max_gap = max( gaps[start] + gaps[end], max_gap)
 
-flip = flip_bit(1775)
+    return max_gap + 1
+
+flip = flip_bit(13331)
 
 print(flip)

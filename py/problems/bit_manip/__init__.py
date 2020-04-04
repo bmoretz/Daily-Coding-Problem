@@ -62,40 +62,48 @@ EXAMPLE:
 
 Input: 1775 (or: 11011101111)
 Output: 8
-
 '''
 
+'''
+helper for flip bit
+
+O(log2 N) run-time, O(log2 N) space for the binary
+'''
+def to_binary(num):
+
+    def greatest_divisor(num):
+
+        power = 0
+
+        while (2**power)/num <= 1:
+            power += 1
+        
+        return power - 1
+
+    power = greatest_divisor(num)
+    binary = []
+
+    while power >= 0:
+        
+        div = 2**power
+
+        rem = num/div
+
+        if rem >= 1:
+            binary.append(1)
+            num = num % div
+        else:
+            binary.append(0)
+
+        power -= 1
+
+    return binary
+
+'''
+brute force solution, try all combinations.
+O(N^2)
+'''
 def flip_bit1(num):
-    
-    def to_binary(num):
-
-        def greatest_divisor(num):
-
-            power = 0
-
-            while (2**power)/num <= 1:
-                power += 1
-            
-            return power - 1
-
-        power = greatest_divisor(num)
-        binary = []
-
-        while power >= 0:
-            
-            div = 2**power
-
-            rem = num/div
-
-            if rem >= 1:
-                binary.append(1)
-                num = num % div
-            else:
-                binary.append(0)
-
-            power -= 1
-
-        return binary
 
     def seq(binary, index):
 
@@ -129,3 +137,35 @@ def flip_bit1(num):
         max_len = max(max_len, seq(binary, path))
 
     return 1 + max_len
+
+'''
+O(N) run-time, O(1) space for the bit flip
+'''
+def flip_bit2(num):
+    
+    if num == None: return None
+
+    binary = to_binary(num)
+
+    counter, n = 0, len(binary)
+    gaps = []
+
+    for index in range(n + 1):
+
+        if index < n and binary[index] == 1:
+            counter += 1
+        else:
+            gaps.append(counter)
+            counter = 0
+    
+    if len(gaps) == 1: return gaps[0]
+
+    max_gap = 0
+
+    for start in range(len(gaps) - 1):
+        
+        end = start + 1
+
+        max_gap = max( gaps[start] + gaps[end], max_gap)
+
+    return max_gap + 1

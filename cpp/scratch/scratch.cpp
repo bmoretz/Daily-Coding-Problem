@@ -7,71 +7,57 @@
 #include <map>
 #include <algorithm>
 
-/* Rotate Matrix.
+#include "../problems/arr.h"
+
+/* Zero Matrix.
  *
- * Given an image represented by an NxN matrix, where each pixel
- * in the image is 4 bytes, write a method to rotate the image by 90
- * degrees.
- *
- * Can you do this in place?
+ * Write an algorithm such that if an element in an MxN matrix_problems is zero,
+ * its entire row and column are set to zero.
  */
 
 using namespace std;
+using namespace arr_problems::matrix_problems;
 
-class Matrix
+void zero_matrix( matrix & matrix )
 {
-	vector<vector<int>> data_;
-	int width_;
-	
-public:
-	explicit Matrix( const int n )
-	{
-		_ASSERT( n >= 0 );
-		
-		for( auto row = 1; row < ( n + 1 ); ++row )
-		{
-			auto values = vector<int>();
+	auto zero_rows = vector<int>(), zero_columns = vector<int>();
 
-			for( auto column = 1; column < ( n + 1 ); ++column )
-			{
-				auto value = ( ( row - 1 ) * n ) + column;
-
-				values.push_back( value );
-			}
-
-			data_.push_back( values );
-		}
-
-		width_ = n;
-	}
-
-	int height() const { return data_.size(); }
-	int width() const { return width_; }
-
-	explicit Matrix( const vector<vector<int>> & values)
-	{
-		data_ = values;
-		width_ = values[ 0 ].size();
-	}
-
-	vector<int> get_row( const int row ) const
-	{
-		_ASSERT( row >= 0 && row <= height() );
-
-		return data_[ row ];
-	}
-};
-
-Matrix rotate( Matrix & matrix )
-{
 	for( auto row = 0; row < matrix.height(); ++row )
 	{
 		for( auto column = 0; column < matrix.width(); ++column )
 		{
+			const auto value = matrix[ row ][ column ];
+
+			if( value == 0 )
+			{
+				if( find( zero_rows.begin(), zero_rows.end(), row ) == zero_rows.end() )
+					zero_rows.push_back( row );
+
+				if( find( zero_columns.begin(), zero_columns.end(), column ) == zero_columns.end() )
+					zero_columns.push_back( column );
+			}
 		}
 	}
 
-	return Matrix( matrix );
+	for( auto column : zero_columns )
+	{
+		for( auto row = 0; row < matrix.height(); ++row )
+		{
+			// we are going to zero the whole row latter, so ok to skip.
+			if( find( zero_rows.begin(), zero_rows.end(), row ) != zero_rows.end() )
+				continue;
+
+			matrix[ row ][ column ] = 0;
+		}
+	}
+
+	for( auto row : zero_rows )
+	{
+		for( auto column = 0; column < matrix.width(); ++column )
+		{
+			matrix[ row ][ column ] = 0;
+		}
+	}
 }
 
 void test_harness()
@@ -86,10 +72,6 @@ void test_harness()
 		{
 			cout << input << " : " <<
 				" Matrix: " << endl;
-
-			auto mat = Matrix( stoi( input ) );
-
-			auto result = rotate( mat );
 			
 			cout << "Enter test input:";
 		}
@@ -102,5 +84,14 @@ void test_harness()
 
 auto main() -> int
 {
-    test_harness();
+	auto test_mat = matrix(
+	{
+		{1, 0, 1, 1, 1},
+		{1, 1, 0, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 0},
+		{1, 1, 1, 1, 1},
+	});
+
+	zero_matrix( test_mat )
 }
