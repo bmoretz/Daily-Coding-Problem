@@ -67,25 +67,22 @@ Output: 8
 '''
 helper for flip bit
 
-O(log2 N) run-time, O(log2 N) space for the binary
+O(log2 B) run-time, O(log2 B) space for the binary representation
 '''
+from math import log2, ceil
+
 def to_binary(num):
 
-    def greatest_divisor(num):
-
-        power = 0
-
-        while (2**power)/num <= 1:
-            power += 1
-        
-        return power - 1
-
-    power = greatest_divisor(num)
+    power = ceil(log2(num))
     binary = []
 
     while power >= 0:
         
         div = 2**power
+
+        if len(binary) == 0 and div > num:
+            power -= 1
+            continue
 
         rem = num/div
 
@@ -101,7 +98,7 @@ def to_binary(num):
 
 '''
 brute force solution, try all combinations.
-O(N^2)
+O(B^2)
 '''
 def flip_bit1(num):
 
@@ -139,7 +136,7 @@ def flip_bit1(num):
     return 1 + max_len
 
 '''
-O(N) run-time, O(1) space for the bit flip
+O(B) run-time, O(1) space for the bit flip
 '''
 def flip_bit2(num):
     

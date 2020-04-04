@@ -14,37 +14,55 @@ Output: 8
 
 '''
 
-from problems.bit_manip import to_binary
+def merge_sort(values):
+    n = len(values)
 
-def flip_bit(num):
-    
-    if num == None: return None
-
-    binary = to_binary(num)
-
-    counter, n = 0, len(binary)
-    gaps = []
-
-    for index in range(n + 1):
-
-        if index < n and binary[index] == 1:
-            counter += 1
+    if n <= 2:
+        if n == 1:
+            return values[0]
+        elif values[0] <= values[1]:
+            return [values[0], values[1]]
         else:
-            gaps.append(counter)
-            counter = 0
-    
-    if len(gaps) == 1: return gaps[0]
+            return [values[1], values[0]]
 
-    max_gap = 0
+    mid = int(n/2)
 
-    for start in range(len(gaps) - 1):
-        
-        end = start + 1
+    left = values[:mid]
+    left = merge_sort(left)
 
-        max_gap = max( gaps[start] + gaps[end], max_gap)
+    right = values[mid:]
+    right = merge_sort(right)
 
-    return max_gap + 1
+    left_ptr, right_ptr = 0, 0
 
-flip = flip_bit(13331)
+    result = []
 
-print(flip)
+    for index in range(n):
+
+        if left_ptr == len(left):
+            # left set empty, fill from right
+            while right_ptr < len(right):
+                result += [right[right_ptr]]
+                right_ptr += 1
+
+        elif right_ptr == len(right):
+            # right set empty, fill from left
+            while left_ptr < len(left):
+                result += [left[left_ptr]]
+                left_ptr += 1
+
+        # take min element from both sides
+        elif left[left_ptr] <= right[right_ptr]:
+            result += [left[left_ptr]]
+            left_ptr += 1
+        else:
+            result += [right[right_ptr]]
+            right_ptr += 1
+
+    return result
+
+values = [5, 4, 1, 8, 7, 2, 6, 3]
+
+msort = merge_sort(values)
+
+print(values)
