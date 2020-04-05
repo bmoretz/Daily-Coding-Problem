@@ -4,74 +4,72 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
-#include <algorithm>
 
-#include "../problems/arr.h"
-
-/* Zero Matrix.
+/* String Rotation.
  *
- * Write an algorithm such that if an element in an MxN matrix_problems is zero,
- * its entire row and column are set to zero.
+ * Assume you have a method isSubstring which checks if one word is a
+ * substring of another. Given two strings, s1 and s2, write code to check
+ * if s2 is a rotation of s1 using only one call to isSubstring.
+ *
+ * e.g.,
+ * "waterbottle" is a rotation of "erbottlewat"
  */
 
 using namespace std;
-using namespace arr_problems::matrix_problems;
 
-void zero_matrix( matrix & matrix )
+vector<string> get_rotations( const string & input )
 {
-	auto zero_rows = vector<int>(), zero_columns = vector<int>();
+	if( input.empty() ) return vector<string>();
 
-	for( auto row = 0; row < matrix.height(); ++row )
+	auto n_rotations = input.length();
+	auto rotations = vector<string>();
+
+	auto current = input;
+
+	while( n_rotations > 0 )
 	{
-		for( auto column = 0; column < matrix.width(); ++column )
-		{
-			const auto value = matrix[ row ][ column ];
+		rotations.push_back( current );
 
-			if( value == 0 )
-			{
-				if( find( zero_rows.begin(), zero_rows.end(), row ) == zero_rows.end() )
-					zero_rows.push_back( row );
+		current.push_back( current[ 0 ] );
+		current.erase( 0, 1 );
 
-				if( find( zero_columns.begin(), zero_columns.end(), column ) == zero_columns.end() )
-					zero_columns.push_back( column );
-			}
-		}
+		n_rotations--;
 	}
 
-	for( auto column : zero_columns )
-	{
-		for( auto row = 0; row < matrix.height(); ++row )
-		{
-			// we are going to zero the whole row latter, so ok to skip.
-			if( find( zero_rows.begin(), zero_rows.end(), row ) != zero_rows.end() )
-				continue;
+	return rotations;
+}
 
-			matrix[ row ][ column ] = 0;
-		}
+bool is_substring( const string & haystack, const string & needle )
+{
+	return haystack.find( needle ) != string::npos;
+}
+
+bool is_rotation( const string & s1, const string & s2 )
+{
+	auto rotations = get_rotations( s1 );
+
+	auto rotations_string = string();
+
+	for( auto it = rotations.begin(); it != rotations.end(); ++it )
+	{
+		rotations_string += *it + "|";
 	}
 
-	for( auto row : zero_rows )
-	{
-		for( auto column = 0; column < matrix.width(); ++column )
-		{
-			matrix[ row ][ column ] = 0;
-		}
-	}
+	return is_substring( rotations_string, s2 );
 }
 
 void test_harness()
 {
-	string input;;
+	string input1, input2;
 
 	cout << "Enter test input:";
 
-	while( getline( cin, input ) )
+	while( getline( cin, input1 ) && getline( cin, input2) )
 	{
 		try
 		{
-			cout << input << " : " <<
-				" Matrix: " << endl;
+			cout << input1 << " : " << input2 <<
+				" is rotation: " << is_rotation(input1, input2) << endl;
 			
 			cout << "Enter test input:";
 		}
@@ -84,14 +82,5 @@ void test_harness()
 
 auto main() -> int
 {
-	auto test_mat = matrix(
-	{
-		{1, 0, 1, 1, 1},
-		{1, 1, 0, 1, 1},
-		{1, 1, 1, 1, 1},
-		{1, 1, 1, 1, 0},
-		{1, 1, 1, 1, 1},
-	});
-
-	zero_matrix( test_mat )
+	test_harness();
 }

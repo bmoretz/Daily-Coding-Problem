@@ -90,7 +90,7 @@ namespace arr_problems
 
 			return data_[ row ];
 		}
-		
+
 		/// <summary>
 		/// Utility method to set all the values in a matrix_problems to incremental values, i.e.,
 		/// 1 2
@@ -116,7 +116,7 @@ namespace arr_problems
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
-		
+
 		/// <summary>
 		/// rotate matrix_problems 1
 		///
@@ -173,7 +173,7 @@ namespace arr_problems
 		///		<space>O(Zr + Zc)</space>
 		/// </complexity>
 		/// <param name="matrix">the matrix to zero</param>
-		void zero1::zero(matrix& matrix)
+		void zero1::zero( matrix & matrix )
 		{
 			auto zero_rows = vector<int>(), zero_columns = vector<int>();
 

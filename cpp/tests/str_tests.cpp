@@ -429,7 +429,7 @@ namespace string_tests
     /// <summary>
     /// Testing class for String Compress.
     /// </summary>
-    class str_compression_tests :
+    class string_compression_tests :
         public ::testing::Test {
 
     protected:
@@ -446,7 +446,7 @@ namespace string_tests
     // String Compression 1
     //
 
-    TEST_F( str_compression_tests, compress1_empty )
+    TEST_F( string_compression_tests, compress1_empty )
     {
         auto actual = compress_str1::compressed( string() );
 
@@ -455,7 +455,7 @@ namespace string_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( str_compression_tests, compress1_case1 )
+    TEST_F( string_compression_tests, compress1_case1 )
     {
         auto actual = compress_str1::compressed( "aabcccccaa" );
 
@@ -464,7 +464,7 @@ namespace string_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( str_compression_tests, compress1_case2 )
+    TEST_F( string_compression_tests, compress1_case2 )
     {
         auto actual = compress_str1::compressed( "fffff" );
 
@@ -473,7 +473,7 @@ namespace string_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( str_compression_tests, compress1_case3 )
+    TEST_F( string_compression_tests, compress1_case3 )
     {
         auto actual = compress_str1::compressed( "fffffaaaaac" );
 
@@ -482,7 +482,7 @@ namespace string_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( str_compression_tests, compress1_case4 )
+    TEST_F( string_compression_tests, compress1_case4 )
     {
         auto actual = compress_str1::compressed( "f" );
 
@@ -491,11 +491,92 @@ namespace string_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( str_compression_tests, compress1_case5 )
+    TEST_F( string_compression_tests, compress1_case5 )
     {
         auto actual = compress_str1::compressed( "bb" );
 
         const auto expected = "bb";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    /// <summary>
+    /// Testing class for String Rotation.
+    /// </summary>
+    class string_rotation_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // String Rotation 1
+    //
+
+    TEST_F( string_rotation_tests, rotation1_empty )
+    {
+        EXPECT_FALSE( string_rotation1::is_rotation( string(), string() ) );
+        EXPECT_FALSE( string_rotation1::is_rotation( "test", string() ) );
+        EXPECT_FALSE( string_rotation1::is_rotation( string(), "test" ) );
+    }
+
+    TEST_F( string_rotation_tests, rotation1_case1 )
+    {
+        auto actual = string_rotation1::is_rotation( "waterbottle", "erbottlewat" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation1_case2 )
+    {
+        auto actual = string_rotation1::is_rotation( "waterbottle", "erbottlewa" );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation1_case3 )
+    {
+        auto actual = string_rotation1::is_rotation( "test", "estt" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation1_case4 )
+    {
+        auto actual = string_rotation1::is_rotation( "waterbottle", "bottlewater" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation1_case5 )
+    {
+        auto actual = string_rotation1::is_rotation( "water bottle", " bottlewater" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation1_case6 )
+    {
+        auto actual = string_rotation1::is_rotation( "water bottle", " bottle water" );
+
+        const auto expected = false;
 
         EXPECT_EQ( actual, expected );
     }

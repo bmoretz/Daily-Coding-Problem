@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 namespace str_problems
 {
@@ -125,5 +126,23 @@ namespace str_problems
 	{
 	public:
 		static std::string compressed( const std::string & input );
+	};
+
+	/* String Rotation.
+	 *
+	 * Assume you have a method isSubstring which checks if one word is a
+	 * substring of another. Given two strings, s1 and s2, write code to check
+	 * if s2 is a rotation of s1 using only one call to isSubstring.
+	 *
+	 * e.g.,
+	 * "waterbottle" is a rotation of "erbottlewat"
+	 */
+	
+	class string_rotation1
+	{
+		static std::vector<std::string> get_rotations( const std::string & input );
+		static bool is_substring( const std::string & haystack, const std::string & needle );
+	public:
+		static bool is_rotation( const std::string & s1, const std::string & s2 );
 	};
 }

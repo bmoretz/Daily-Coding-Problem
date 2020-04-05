@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace str_problems 
+namespace str_problems
 {
 	/// <summary>
 	/// is_unique1
@@ -62,7 +62,7 @@ namespace str_problems
 
 		auto seen = 0;
 
-		const auto offset = static_cast<int>('a');
+		const auto offset = static_cast< int >( 'a' );
 
 		for( auto character : str )
 		{
@@ -282,7 +282,7 @@ namespace str_problems
 		const auto n_spaces = count_spaces( input, length );
 		const auto offset = n_spaces * 2;
 
-		auto encountered = 0, position = static_cast<int>(length) - 1;
+		auto encountered = 0, position = static_cast< int >( length ) - 1;
 
 		do
 		{
@@ -332,13 +332,13 @@ namespace str_problems
 
 		if( input.empty() ) return map;
 
-		static const auto lower = static_cast<int>('a'), 
+		static const auto lower = static_cast< int >( 'a' ),
 			upper = static_cast< int >( 'z' );
 
 		for( auto character : input )
 		{
 			const auto current = tolower( character );
-			
+
 			if( current < lower || current > upper )
 				continue;
 
@@ -513,5 +513,79 @@ namespace str_problems
 		compressed += prev + to_string( count );
 
 		return compressed.length() < input.length() ? compressed : input;
+	}
+
+	/// <summary>
+	/// string_rotations
+	///
+	/// returns a set of all rotations of the passed in string.
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="input">the string to rotate</param>
+	/// <returns>all possible rotations</returns>
+	std::vector<std::string> string_rotation1::get_rotations( const std::string & input )
+	{
+		if( input.empty() ) return vector<string>();
+
+		auto n_rotations = input.length();
+		auto rotations = vector<string>();
+
+		auto current = input;
+
+		while( n_rotations > 0 )
+		{
+			rotations.push_back( current );
+
+			current.push_back( current[ 0 ] );
+			current.erase( 0, 1 );
+
+			n_rotations--;
+		}
+
+		return rotations;
+	}
+
+	/// <summary>
+	/// is_substring
+	///
+	/// returns true of needle is in haystack.
+	/// </summary>
+	/// <param name="haystack">string to search</param>
+	/// <param name="needle">what to find</param>
+	/// <returns>returns true of needle is in haystack</returns>
+	bool string_rotation1::is_substring( const std::string & haystack, const std::string & needle )
+	{
+		return haystack.find( needle ) != string::npos;
+	}
+
+	/// <summary>
+	/// is rotation 1
+	///
+	/// This approach generates all possible rotations of the input string s1,
+	/// and then generates a pipe delimited compound string that contains all the
+	/// rotations. This compound string can then be used for the single call of
+	/// is_substring to determine if s1 is a rotation of s2.
+	/// </summary>
+	/// <param name="s1">first string</param>
+	/// <param name="s2">second string</param>
+	/// <returns>true if s2 is a rotation of s1</returns>
+	bool string_rotation1::is_rotation( const std::string & s1, const std::string & s2 )
+	{
+		if( s1.empty() || s2.empty() ) return false;
+		if( s1.length() != s2.length() ) return false;
+		
+		auto rotations = get_rotations( s1 );
+
+		auto rotations_string = string();
+
+		for( auto it = rotations.begin(); it != rotations.end(); ++it )
+		{
+			rotations_string += *it + "|";
+		}
+
+		return is_substring( rotations_string, s2 );
 	}
 }
