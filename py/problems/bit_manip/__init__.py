@@ -173,6 +173,26 @@ Given a positive integer, print the next smallest and the next largest
 number that have the same number of 1 bits in their binary representation.
 '''
 
+'''
+brute force approach
+
+take the passed number, convert it to binary array
+
+smaller number is move the largest (excluding zero)
+binary digit down to the lowest non-one position
+
+e.g.: 1010011 -> 1010010
+
+larger number is move the smallest 1 bit up
+one position. if there is not another 1 bit besides
+the current bit (i.e, 64 = 1000000), then we increase
+the size of the array by 1 and make this the new msb.
+
+e.g.: 1010011 -> 1010110
+
+binary representation is passed to a bin_to_dec function that
+returns the base 10 representation.
+'''
 def next_number1(num):
 
     def bin_to_dec(binary):
