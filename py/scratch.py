@@ -1,68 +1,81 @@
-from bitarray import bitarray
-from decimal import Decimal
+'''Next Number.
 
-'''Flip Bit to Win.
-
-You have an integer and you can flip exactly one bit from 0 to 1.
-
-Write code to find the length of the longest sequence of 1s you could create.
-
-EXAMPLE:
-
-Input: 1775 (or: 11011101111)
-Output: 8
-
+Given a positive integer, print the next smallest and the next largest
+number that have the same number of 1 bits in their binary representation.
 '''
 
-def merge_sort(values):
-    n = len(values)
+from problems.bit_manip import to_binary
 
-    if n <= 2:
-        if n == 1:
-            return values[0]
-        elif values[0] <= values[1]:
-            return [values[0], values[1]]
+def next_number(num):
+
+    def bin_to_dec(binary):
+
+        if binary == None: return None
+
+        n = len(binary)
+
+        result = 0
+
+        for index in range(n):
+
+            if binary[index] == 0:
+                continue
+
+            power = n - index - 1
+            result += 2**power
+        
+        return result
+
+    def next_smaller(num):
+        if num <= 1: return None
+
+        binary = to_binary(num)
+
+        n = len(binary)
+        min_one = 0
+
+        for index in range(n - 1, 0, -1):
+            if binary[index] == 1:
+                min_one = index
+
+        binary[min_one] = 0
+        binary[min_one + 1] = 1
+
+        return binary
+
+    def next_larger(num):
+
+        binary = to_binary(num)
+
+        n = len(binary)
+        max_one, max_zero = 0, 0
+        
+        for index in range(n):
+            if binary[index] == 0:
+                max_zero = index
+            if binary[index] == 1:
+                max_one = index
+        
+        if max_one == 0:
+            binary = [1] + [0] * n
+        elif max_one == 0:
+            binary[max_one] = 0
+            binary = [1] + binary
         else:
-            return [values[1], values[0]]
+            binary[max_one] = 0
+            binary[max_zero] = 1
 
-    mid = int(n/2)
+        return binary
 
-    left = values[:mid]
-    left = merge_sort(left)
+    if num == None: return None
 
-    right = values[mid:]
-    right = merge_sort(right)
+    smaller = next_smaller(num)
+    larger = next_larger(num)
 
-    left_ptr, right_ptr = 0, 0
+    return (bin_to_dec(smaller),
+            bin_to_dec(larger))
 
-    result = []
 
-    for index in range(n):
+t = next_number(57)
 
-        if left_ptr == len(left):
-            # left set empty, fill from right
-            while right_ptr < len(right):
-                result += [right[right_ptr]]
-                right_ptr += 1
-
-        elif right_ptr == len(right):
-            # right set empty, fill from left
-            while left_ptr < len(left):
-                result += [left[left_ptr]]
-                left_ptr += 1
-
-        # take min element from both sides
-        elif left[left_ptr] <= right[right_ptr]:
-            result += [left[left_ptr]]
-            left_ptr += 1
-        else:
-            result += [right[right_ptr]]
-            right_ptr += 1
-
-    return result
-
-values = [5, 4, 1, 8, 7, 2, 6, 3]
-
-msort = merge_sort(values)
-
-print(values)
+print(t)
