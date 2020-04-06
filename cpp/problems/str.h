@@ -145,4 +145,10 @@ namespace str_problems
 	public:
 		static bool is_rotation( const std::string & s1, const std::string & s2 );
 	};
+
+	class string_rotation2
+	{
+	public:
+		static bool is_rotation( const std::string & s1, const std::string & s2 );
+	};
 }

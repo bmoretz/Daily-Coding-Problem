@@ -17,45 +17,38 @@
 
 using namespace std;
 
-vector<string> get_rotations( const string & input )
-{
-	if( input.empty() ) return vector<string>();
-
-	auto n_rotations = input.length();
-	auto rotations = vector<string>();
-
-	auto current = input;
-
-	while( n_rotations > 0 )
-	{
-		rotations.push_back( current );
-
-		current.push_back( current[ 0 ] );
-		current.erase( 0, 1 );
-
-		n_rotations--;
-	}
-
-	return rotations;
-}
-
-bool is_substring( const string & haystack, const string & needle )
-{
-	return haystack.find( needle ) != string::npos;
-}
-
 bool is_rotation( const string & s1, const string & s2 )
 {
-	auto rotations = get_rotations( s1 );
+	if( s1.empty() || s2.empty() ) return false;
+	if( s1.length() != s2.length() ) return false;
 
-	auto rotations_string = string();
+	auto i = size_t(), j = size_t();
 
-	for( auto it = rotations.begin(); it != rotations.end(); ++it )
+	while( j < s2.length() )
 	{
-		rotations_string += *it + "|";
+		if( s1[i] == s2[j] )
+		{
+			const auto prev = j;
+			
+			while( i < s1.length() && s1[ i ] == s2[ j ] )
+			{
+				i++; j++;
+
+				if( i == s1.length() )
+					return true;
+				
+				if( j == s2.length() )
+					j = 0;
+			}
+
+			i = 0;
+			j = prev;
+		}
+		
+		j++;
 	}
 
-	return is_substring( rotations_string, s2 );
+	return false;
 }
 
 void test_harness()

@@ -580,4 +580,69 @@ namespace string_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    //
+    // String Rotation 2
+    //
+
+    TEST_F( string_rotation_tests, rotation2_empty )
+    {
+        EXPECT_FALSE( string_rotation2::is_rotation( string(), string() ) );
+        EXPECT_FALSE( string_rotation2::is_rotation( "test", string() ) );
+        EXPECT_FALSE( string_rotation2::is_rotation( string(), "test" ) );
+    }
+
+    TEST_F( string_rotation_tests, rotation2_case1 )
+    {
+        auto actual = string_rotation2::is_rotation( "waterbottle", "erbottlewat" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation2_case2 )
+    {
+        auto actual = string_rotation2::is_rotation( "waterbottle", "erbottlewa" );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation2_case3 )
+    {
+        auto actual = string_rotation2::is_rotation( "test", "estt" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation2_case4 )
+    {
+        auto actual = string_rotation2::is_rotation( "waterbottle", "bottlewater" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation2_case5 )
+    {
+        auto actual = string_rotation2::is_rotation( "water bottle", " bottlewater" );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_rotation_tests, rotation2_case6 )
+    {
+        auto actual = string_rotation2::is_rotation( "water bottle", " bottle water" );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

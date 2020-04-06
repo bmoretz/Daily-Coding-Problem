@@ -569,6 +569,9 @@ namespace str_problems
 	/// rotations. This compound string can then be used for the single call of
 	/// is_substring to determine if s1 is a rotation of s2.
 	/// </summary>
+	///		<run-time>O(N)</run-time>
+	///		<space>O(N + L)</space>
+	/// </complexity>
 	/// <param name="s1">first string</param>
 	/// <param name="s2">second string</param>
 	/// <returns>true if s2 is a rotation of s1</returns>
@@ -576,7 +579,7 @@ namespace str_problems
 	{
 		if( s1.empty() || s2.empty() ) return false;
 		if( s1.length() != s2.length() ) return false;
-		
+
 		auto rotations = get_rotations( s1 );
 
 		auto rotations_string = string();
@@ -587,5 +590,57 @@ namespace str_problems
 		}
 
 		return is_substring( rotations_string, s2 );
+	}
+
+	/// <summary>
+	/// string rotation 2
+	///
+	/// This approach uses a "two pointers" approach to walking the strings,
+	/// which effectively eliminates the need for even one call to "is_substring" by
+	/// walking the pointer through s2 until we find the first character in s1. Once we find
+	/// a possible rotation start, we walk both forward while they match (looping s2 back to zero
+	/// if we reach the end), and if we can walk all the way through the end of s1 while matching,
+	/// they are rotations. If we find a discrepancy during the walk of s11, we restart the s1 pointer
+	/// and continue s2 from the previous iterations end.
+	/// </summary>
+	/// </summary>
+	///		<run-time>O(I + J)</run-time>
+	///		<space>O(1)</space>
+	/// </complexity>
+	/// <param name="s1"></param>
+	/// <param name="s2"></param>
+	/// <returns></returns>
+	bool string_rotation2::is_rotation( const std::string & s1, const std::string & s2 )
+	{
+		if( s1.empty() || s2.empty() ) return false;
+		if( s1.length() != s2.length() ) return false;
+
+		auto i = size_t(), j = size_t();
+
+		while( j < s2.length() )
+		{
+			if( s1[ i ] == s2[ j ] )
+			{
+				const auto prev = j;
+
+				while( i < s1.length() && s1[ i ] == s2[ j ] )
+				{
+					i++; j++;
+
+					if( i == s1.length() )
+						return true;
+
+					if( j == s2.length() )
+						j = 0;
+				}
+
+				i = 0;
+				j = prev;
+			}
+
+			j++;
+		}
+
+		return false;
 	}
 }
