@@ -4,8 +4,6 @@
 #include <set>
 #include <algorithm>
 
-using namespace std;
-
 namespace str_problems
 {
 	/// <summary>
@@ -27,7 +25,7 @@ namespace str_problems
 	{
 		if( str.empty() ) return false;
 
-		auto words = set<char>();
+		auto words = std::set<char>();
 
 		for( auto iter = str.begin(); iter != str.end(); ++iter )
 		{
@@ -92,7 +90,7 @@ namespace str_problems
 	/// <param name="p">string p</param>
 	/// <param name="q">string q</param>
 	/// <returns>true if p and q are permutations of each other.</returns>
-	bool is_permutation1::is_permutation( const string & p, const string & q )
+	bool is_permutation1::is_permutation( const std::string & p, const std::string & q )
 	{
 		if( p.empty() || q.empty() ) return false;
 		if( p.length() != q.length() ) return false;
@@ -122,9 +120,9 @@ namespace str_problems
 	/// </complexity>
 	/// <param name="s">the string</param>
 	/// <returns>map of occurrences</returns>
-	map<char, int> is_permutation1::char_map( const string & s )
+	std::map<char, int> is_permutation1::char_map( const std::string & s )
 	{
-		map<char, int> mp;
+		std::map<char, int> mp;
 
 		for( auto character : s )
 		{
@@ -159,7 +157,7 @@ namespace str_problems
 	/// <param name="p">string p</param>
 	/// <param name="q">string q</param>
 	/// <returns>true if p and q are permutations of each other.</returns>
-	bool is_permutation2::is_permutation( string p, string q )
+	bool is_permutation2::is_permutation( std::string p, std::string q )
 	{
 		if( p.empty() || q.empty() ) return false;
 		if( p.length() != q.length() ) return false;
@@ -195,11 +193,11 @@ namespace str_problems
 	/// <param name="input">string to urlify</param>
 	/// <param name="length">output buffer size</param>
 	/// <returns>urlify'd string</returns>
-	string urlify1::urlify( string input, const size_t length )
+	std::string urlify1::urlify( std::string input, const size_t length )
 	{
 		if( input.length() == 0 ) return {};
 
-		size_t n_spaces = 1;
+		size_t n_spaces{ 1 };
 
 		for( auto index = 0; index < input.length(); index++ )
 		{
@@ -236,7 +234,7 @@ namespace str_problems
 	/// <param name="input">string to search</param>
 	/// <param name="length">number of characters to search</param>
 	/// <returns>number of spaces in input[0, length]</returns>
-	size_t urlify2::count_spaces( const string & input, const size_t length )
+	size_t urlify2::count_spaces( const std::string & input, const size_t length )
 	{
 		if( input.empty() ) return 0;
 
@@ -275,7 +273,7 @@ namespace str_problems
 	/// <param name="input">the string to update</param>
 	/// <param name="length">the length of the valid string</param>
 	/// <returns>urlifiy'd string contents</returns>
-	string urlify2::urlify( string input, const size_t length )
+	std::string urlify2::urlify( std::string input, const size_t length )
 	{
 		if( input.length() == 0 ) return {};
 
@@ -326,9 +324,9 @@ namespace str_problems
 	/// </complexity>
 	/// <param name="input">the string to map</param>
 	/// <returns>map of characters and their respective counts.</returns>
-	map<char, int> palperm1::char_map( const string & input )
+	std::map<char, int> palperm1::char_map( const std::string & input )
 	{
-		map<char, int> map;
+		std::map<char, int> map;
 
 		if( input.empty() ) return map;
 
@@ -367,7 +365,7 @@ namespace str_problems
 	/// </complexity>
 	/// <param name="input"></param>
 	/// <returns>if input is a palindrome permutation</returns>
-	bool palperm1::is_palindrome_permutation( const string & input )
+	bool palperm1::is_palindrome_permutation( const std::string & input )
 	{
 		if( input.empty() ) return false;
 
@@ -401,9 +399,9 @@ namespace str_problems
 	/// <param name="str">The string to search</param>
 	/// <param name="search">the character to find</param>
 	/// <returns>first position of search in str</returns>
-	string::size_type find_first_invariant( const std::string & str, const char search )
+	std::string::size_type find_first_invariant( const std::string & str, const char search )
 	{
-		auto position = string::npos;
+		auto position = std::string::npos;
 
 		for( auto iter = str.begin(); iter != str.end(); ++iter )
 		{
@@ -434,11 +432,11 @@ namespace str_problems
 	/// <param name="str1">first string</param>
 	/// <param name="str2">second string</param>
 	/// <returns>true if first and second are 1 edit away</returns>
-	bool one_away1::one_away( const string & str1, const string & str2 )
+	bool one_away1::one_away( const std::string & str1, const std::string & str2 )
 	{
 		if( str1.empty() || str2.empty() ) return false;
 
-		string longer, shorter;
+		std::string longer, shorter;
 
 		if( str1.length() > str2.length() )
 		{
@@ -457,7 +455,7 @@ namespace str_problems
 		{
 			const auto location = find_first_invariant( longer, character );
 
-			if( location != string::npos )
+			if( location != std::string::npos )
 				longer.erase( location, 1 );
 		}
 
@@ -484,14 +482,14 @@ namespace str_problems
 	/// </complexity>
 	/// <param name="input">string to compress</param>
 	/// <returns>the smaller of the two strings, input and compressed</returns>
-	string compress_str1::compressed( const string & input )
+	std::string compress_str1::compressed( const std::string & input )
 	{
 		if( input.empty() ) return {};
 
 		auto prev = input[ 0 ];
 		auto count = 1;
 
-		string compressed;
+		std::string compressed;
 
 		for( auto index = 1; index < input.length(); ++index )
 		{
@@ -503,14 +501,14 @@ namespace str_problems
 			}
 			else
 			{
-				compressed += prev + to_string( count );
+				compressed += prev + std::to_string( count );
 				count = 1;
 			}
 
 			prev = current;
 		}
 
-		compressed += prev + to_string( count );
+		compressed += prev + std::to_string( count );
 
 		return compressed.length() < input.length() ? compressed : input;
 	}
@@ -528,10 +526,12 @@ namespace str_problems
 	/// <returns>all possible rotations</returns>
 	std::vector<std::string> string_rotation1::get_rotations( const std::string & input )
 	{
-		if( input.empty() ) return vector<string>();
+		using list = std::vector<std::string>;
+		
+		if( input.empty() ) return list();
 
 		auto n_rotations = input.length();
-		auto rotations = vector<string>();
+		auto rotations = list();
 
 		auto current = input;
 
@@ -558,7 +558,7 @@ namespace str_problems
 	/// <returns>returns true of needle is in haystack</returns>
 	bool string_rotation1::is_substring( const std::string & haystack, const std::string & needle )
 	{
-		return haystack.find( needle ) != string::npos;
+		return haystack.find( needle ) != std::string::npos;
 	}
 
 	/// <summary>
@@ -582,7 +582,7 @@ namespace str_problems
 
 		auto rotations = get_rotations( s1 );
 
-		auto rotations_string = string();
+		auto rotations_string = std::string();
 
 		for( auto it = rotations.begin(); it != rotations.end(); ++it )
 		{

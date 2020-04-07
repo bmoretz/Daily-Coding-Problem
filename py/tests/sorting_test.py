@@ -1,7 +1,7 @@
 import unittest
 
 from py.problems.sorting import merge_sort1
-class Test_BitFlip2(unittest.TestCase):
+class Test_MergeSort1(unittest.TestCase):
     
     def setUp(self):
         pass

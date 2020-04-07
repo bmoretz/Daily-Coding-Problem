@@ -7,13 +7,8 @@ def merge_sort1(values):
     def merge_sort(values):
         n = len(values)
 
-        if n <= 2:
-            if n == 1:
-                return [values[0]]
-            elif values[0] <= values[1]:
-                return [values[0], values[1]]
-            else:
-                return [values[1], values[0]]
+        if n <= 1:
+            return values
 
         mid = int(n/2)
 
@@ -52,5 +47,5 @@ def merge_sort1(values):
         return result
     
     if values == None: return None
-    
+
     return merge_sort(values)
