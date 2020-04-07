@@ -15,6 +15,7 @@
  * "waterbottle" is a rotation of "erbottlewat"
  */
 
+
 using namespace std;
 
 bool is_rotation( const string & s1, const string & s2 )
@@ -23,7 +24,9 @@ bool is_rotation( const string & s1, const string & s2 )
 	if( s1.length() != s2.length() ) return false;
 
 	auto i = size_t(), j = size_t();
-
+	
+	string rotated;
+	
 	while( j < s2.length() )
 	{
 		if( s1[i] == s2[j] )
@@ -40,7 +43,7 @@ bool is_rotation( const string & s1, const string & s2 )
 				if( j == s2.length() )
 					j = 0;
 			}
-
+			
 			i = 0;
 			j = prev;
 		}

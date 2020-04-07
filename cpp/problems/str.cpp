@@ -607,9 +607,9 @@ namespace str_problems
 	///		<run-time>O(I + J)</run-time>
 	///		<space>O(1)</space>
 	/// </complexity>
-	/// <param name="s1"></param>
-	/// <param name="s2"></param>
-	/// <returns></returns>
+	/// <param name="s1">string to search</param>
+	/// <param name="s2">string to find</param>
+	/// <returns>true if s1 is a rotation of s2</returns>
 	bool string_rotation2::is_rotation( const std::string & s1, const std::string & s2 )
 	{
 		if( s1.empty() || s2.empty() ) return false;
