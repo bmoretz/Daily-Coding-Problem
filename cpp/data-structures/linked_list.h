@@ -48,6 +48,8 @@ namespace data_structures
 		typedef linked_list<T>& reference;
 		typedef linked_list<T>* pointer;
 
+		typedef list_node<T> node_type;
+		
 		using node = list_node<T>*;
 		using node_pointer = typename list_node<T>::pointer;
 
@@ -102,27 +104,35 @@ namespace data_structures
 	template <typename T>
 	void linked_list<T>::push_back( T item )
 	{
-		node new_node = new list_node<T>( std::move( item ) );
+		node_pointer new_node = std::make_unique<node_type>( item );
 
-		if( tail_ )
-			tail_->next.reset( new_node );
+		if( !head_ )
+		{
+			head_ = std::move( new_node );
+			tail_ = head_.get();
+		}
 		else
-			head_.reset( new_node );
-
-		tail_ = new_node;
+		{
+			tail_->next = std::move( new_node );
+			tail_ = tail_->next.get();
+		}
 	}
 	
 	template <typename T>
 	void linked_list<T>::push_front( T item )
 	{
-		node new_node = new list_node<T>( std::move( item ) );
-		
-		if( head_ )
-			new_node->next.reset( head_.get() );
-		else
-			tail_ = new_node;
+		node_pointer new_node = std::make_unique<node_type>( item );
 
-		head_.reset( new_node );
+		if( head_ )
+		{
+			new_node->next = std::move( head_ );
+			head_ = std::move( new_node );
+		}
+		else
+		{
+			head_ = std::move( new_node );
+			tail_ = head_.get();
+		}
 	}
 
 	template <typename T>

@@ -84,11 +84,26 @@ namespace data_structure_tests
         auto list = linked_list<int>();
 
         EXPECT_EQ( list.front(), nullptr );
-        EXPECT_EQ( list.front(), nullptr );
+        EXPECT_EQ( list.back(), nullptr );
+
+        list.push_front( 3 );
+
+        EXPECT_EQ( list.front()->data, 3 );
+        EXPECT_EQ( list.back()->data, 3 );
+
+        EXPECT_EQ( list.back()->next, nullptr );
+    	
+        list.push_front( 2 );
+
+        EXPECT_NE( list.front(), list.back() );
 
         list.push_front( 1 );
 
+        EXPECT_NE( list.front(), list.back() );
+
         EXPECT_EQ( list.front()->data, 1 );
+        EXPECT_EQ( list.front()->next->data, 2 );
+        EXPECT_EQ( list.front()->next->next->data, 3 );
     }
 	
     TEST_F( linked_lists_tests, init_list )
