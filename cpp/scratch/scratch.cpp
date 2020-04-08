@@ -39,7 +39,7 @@ bool is_rotation( const string & s1, const string & s2 )
 
 				if( i == s1.length() )
 					return true;
-				
+
 				if( j == s2.length() )
 					j = 0;
 			}
