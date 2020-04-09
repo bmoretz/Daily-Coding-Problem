@@ -33,8 +33,6 @@ namespace data_structure_tests
         {
             auto list = int_list{ };
 
-            EXPECT_EQ( list.front(), nullptr );
-            EXPECT_EQ( list.back(), nullptr );
             EXPECT_EQ( list.size(), 0 );
 
             list.push_back( 5 );
@@ -47,7 +45,7 @@ namespace data_structure_tests
 
             EXPECT_EQ( list.size(), 2 );
             EXPECT_NE( list.front(), list.back() );
-            EXPECT_EQ( list.front()->next.get(), list.back() );
+            EXPECT_EQ( list.front()->next, list.back() );
             EXPECT_EQ( list.front()->data, 5 );
             EXPECT_EQ( list.front()->next->data, 4 );
             EXPECT_EQ( list.back()->data, 4 );
@@ -85,20 +83,19 @@ namespace data_structure_tests
         {
             auto list = int_list{ };
 
-            EXPECT_EQ( list.front(), nullptr );
-            EXPECT_EQ( list.back(), nullptr );
-
+            EXPECT_EQ( list.size(), 0 );
+        	
             list.push_front( 3 );
 
             EXPECT_EQ( list.front()->data, 3 );
             EXPECT_EQ( list.back()->data, 3 );
 
-            EXPECT_EQ( list.back()->next, nullptr );
-
             list.push_front( 2 );
 
             EXPECT_NE( list.front(), list.back() );
-
+            EXPECT_EQ( list.front()->data, 2 );
+            EXPECT_EQ( list.back()->data, 3 );
+        	
             list.push_front( 1 );
 
             EXPECT_NE( list.front(), list.back() );
@@ -106,6 +103,8 @@ namespace data_structure_tests
             EXPECT_EQ( list.front()->data, 1 );
             EXPECT_EQ( list.front()->next->data, 2 );
             EXPECT_EQ( list.front()->next->next->data, 3 );
+
+            EXPECT_EQ( list.back()->data, 3 );
         }
 
         TEST_F( linked_lists_tests, init_list )
@@ -320,14 +319,12 @@ namespace data_structure_tests
             EXPECT_EQ( list.back()->data, 4 );
         }
 
-        TEST_F( linked_lists_tests, insert_empty )
+        TEST_F( linked_lists_tests, push_front_empty )
         {
             auto list = int_list{ };
 
             EXPECT_EQ( list.size(), 0 );
-            EXPECT_EQ( list.front(), nullptr );
-            EXPECT_EQ( list.back(), nullptr );
-
+            
             list.push_back( 1 );
 
             EXPECT_EQ( list.size(), 1 );
@@ -349,7 +346,9 @@ namespace data_structure_tests
             EXPECT_EQ( list.front()->data, 1 );
             EXPECT_EQ( list.back()->data, 1 );
 
-            list.remove( 0 );
+            auto to_remove = list.get(1);
+        	
+            list.remove( to_remove );
 
             EXPECT_EQ( list.size(), 0 );
             EXPECT_EQ( list.front(), nullptr );
@@ -380,12 +379,16 @@ namespace data_structure_tests
         TEST_F( linked_lists_tests, remove_invalid )
         {
             auto list = int_list{ 1, 2, 3 };
-
+            auto list2 = int_list{ 5, 6 };
+        	
             EXPECT_EQ( list.front()->data, 1 );
 
             try
             {
-                list.remove( 5 );
+                auto to_remove = list2.get( 6 );
+
+                list.remove( to_remove );
+
                 FAIL() << "This should throw an error.";
             }
             catch( std::runtime_error& e )
@@ -398,7 +401,7 @@ namespace data_structure_tests
             EXPECT_EQ( list.front()->next->next->data, 3 );
         }
     	
-        TEST_F( linked_lists_tests, remove_head_single )
+        TEST_F( linked_lists_tests, remove_single )
         {
             auto list = int_list{ 1 };
 
@@ -406,14 +409,15 @@ namespace data_structure_tests
             EXPECT_EQ( list.front()->data, 1 );
             EXPECT_EQ( list.back()->data, 1 );
 
-            list.remove( 0 );
+            auto to_remove = list.get( 1 );
+            list.remove( to_remove );
 
             EXPECT_EQ( list.size(), 0 );
             EXPECT_EQ( list.front(), nullptr );
             EXPECT_EQ( list.back(), nullptr );
         }
 
-        TEST_F( linked_lists_tests, delete_head_double )
+        TEST_F( linked_lists_tests, remove_head_double )
         {
             auto list = int_list{ 1, 2 };
 
@@ -421,7 +425,8 @@ namespace data_structure_tests
             EXPECT_EQ( list.front()->data, 1 );
             EXPECT_EQ( list.front()->next->data, 2 );
 
-            list.remove( 0 );
+            auto to_remove = list.get( 1 );
+            list.remove( to_remove );
 
             EXPECT_EQ( list.size(), 1 );
             EXPECT_EQ( list.front(), list.back() );
@@ -429,7 +434,24 @@ namespace data_structure_tests
             EXPECT_EQ( list.back()->data, 2 );
         }
 
-        TEST_F( linked_lists_tests, delete_head_tripple )
+        TEST_F( linked_lists_tests, remove_tail_double )
+        {
+            auto list = int_list{ 1, 2 };
+
+            EXPECT_EQ( list.size(), 2 );
+            EXPECT_EQ( list.front()->data, 1 );
+            EXPECT_EQ( list.front()->next->data, 2 );
+
+            auto to_remove = list.get( 2 );
+            list.remove( to_remove );
+
+            EXPECT_EQ( list.size(), 1 );
+            EXPECT_EQ( list.front(), list.back() );
+            EXPECT_EQ( list.front()->data, 1 );
+            EXPECT_EQ( list.back()->data, 1 );
+        }
+
+        TEST_F( linked_lists_tests, remove_head_tripple )
         {
             auto list = int_list{ 1, 2, 3 };
 
@@ -438,7 +460,8 @@ namespace data_structure_tests
             EXPECT_EQ( list.front()->next->data, 2 );
             EXPECT_EQ( list.front()->next->next->data, 3 );
 
-            list.remove( 0 );
+            auto to_remove = list.get( 0 );
+            list.remove( to_remove );
 
             EXPECT_EQ( list.size(), 2 );
             EXPECT_EQ( list.front()->data, 2 );

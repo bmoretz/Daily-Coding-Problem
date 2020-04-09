@@ -90,14 +90,14 @@ namespace str_problems
 	/// <param name="p">string p</param>
 	/// <param name="q">string q</param>
 	/// <returns>true if p and q are permutations of each other.</returns>
-	bool is_permutation1::is_permutation( const std::string & p, const std::string & q )
+	bool is_permutation1::is_permutation( const std::string& p, const std::string& q )
 	{
 		if( p.empty() || q.empty() ) return false;
 		if( p.length() != q.length() ) return false;
 
 		auto p_map = char_map( p ), q_map = char_map( q );
 
-		for( auto item : p_map )
+		for( const auto& item : p_map )
 		{
 			auto other = q_map.find( item.first );
 

@@ -27,7 +27,7 @@ namespace data_structures
 			self_type operator++()
 			{
 				if( ptr_ )
-					ptr_ = ptr_->next.get();
+					ptr_ = ptr_->next;
 
 				return *this;
 			}
@@ -46,60 +46,69 @@ namespace data_structures
 		typedef linked_list<T>& reference;
 		typedef linked_list<T>* pointer;
 
+		typedef size_t size_type;
+
 		typedef list_node<T> node_type;
 
-		using node = list_node<T>*;
-		using node_pointer = typename list_node<T>::pointer;
+		using node = typename list_node<T>::pointer;
+		using node_reference = typename list_node<T>::reference;
+		using node_pointer = std::unique_ptr<node_type>;
 
-		node_pointer head_;
-		node tail_;
-		size_t length_;
+		node_pointer head_, tail_;
+		size_t length_{};
 
 	public:
 
-		linked_list()
-			: head_{}, tail_( nullptr ), length_{ 0 }
-		{ }
+		linked_list();
 
 		explicit linked_list( std::initializer_list<T> init_list );
-		linked_list( const self_type& other ) : linked_list() { append_list( other ); }
+		linked_list( const self_type& other );
 		linked_list( self_type&& other ) noexcept;
 
-		~linked_list() = default;
-		
+		~linked_list();
+
 		void swap( self_type& other ) noexcept;
 
 		void push_back( T item ) { insert( length_, item ); }
 		void push_front( T item ) { insert( 0, item ); }
-		void append_list( const linked_list<T>& other );
-		void remove( size_t position );
+		void append( const linked_list<T>& other );
 
-		iterator begin() { return iterator( head_.get() ); }
-		iterator end() { return iterator( tail_ ); }
+		node_reference get( const size_type position );
+		bool remove( const node_reference node );
 
-		node front() const { return head_.get(); }
-		node back() const { return tail_; }
+		iterator begin() { return iterator( head_->next ); }
+		iterator end() { return iterator( tail_->prev ); }
 
-		void insert( size_t position, T value );
+		[[nodiscard]] node front() const { return head_->next; }
+		[[nodiscard]] node back() const { return tail_->prev; }
 
-		bool empty() const { return !head_; }
-		size_t size() const { return length_; }
+		void insert( size_type position, T value );
+
+		[[nodiscard]] bool empty() const { return head_->next == tail_.get(); }
+		[[nodiscard]] size_type size() const { return length_; }
 
 		reference operator=( const self_type& other ); // NOLINT(cppcoreguidelines-c-copy-assignment-signature, misc-unconventional-assign-operator)
 		reference operator=( self_type&& other ) noexcept;  // NOLINT(cppcoreguidelines-c-copy-assignment-signature, misc-unconventional-assign-operator)
-		reference operator+( const self_type& other ) { append_list( other ); return *this; }
+		reference operator+( const self_type& other ) { append( other ); return *this; }
 
-		void operator+=( const self_type& other ) { append_list( other ); }
-		void operator+=( const T& value ) { push_back( value ); };
+		void operator+=( const self_type& other ) { append( other ); }
+		void operator+=( const T& value ) { push_back( value ); }
 	};
+
+	template <typename T>
+	linked_list<T>::linked_list()
+	{
+		head_ = std::make_unique<node_type>( 67 );
+		tail_ = std::make_unique<node_type>( 69 );
+
+		head_->next = tail_.get();
+		tail_->next = head_.get();
+	}
 
 	template <typename T>
 	linked_list<T>::linked_list( const std::initializer_list<T> init_list ) :
 		linked_list()
 	{
-		if( init_list.size() == 0 )
-			return;
-
 		for( auto& item : init_list )
 		{
 			push_back( item );
@@ -107,17 +116,40 @@ namespace data_structures
 	}
 
 	template <typename T>
+	linked_list<T>::linked_list( const self_type& other )
+		: linked_list()
+	{
+		append( other );
+	}
+
+	template <typename T>
 	linked_list<T>::linked_list( self_type&& other ) noexcept
-		: tail_( other.tail_ ), length_( other.length_ )
+		: length_( other.length_ )
 	{
 		head_ = std::move( other.head_ );
-
-		other.tail_ = nullptr;
+		other.head_ = {};
+		
+		tail_ = std::move( other.tail_ );
+		other.tail_ = {};
+		
 		other.length_ = 0;
 	}
-	
+
 	template <typename T>
-	typename linked_list<T>::reference linked_list<T>::operator=( const linked_list<T>& other )
+	linked_list<T>::~linked_list()
+	{
+		for( node current = head_->next; current != tail_.get(); )
+		{
+			node temp = current;
+
+			current = current->next;
+
+			delete temp;
+		}
+	}
+
+	template <typename T>
+	typename linked_list<T>::reference linked_list<T>::operator=( const self_type& other )
 	{
 		if( &other == this )
 			return *this;
@@ -136,9 +168,10 @@ namespace data_structures
 			return *this;
 
 		head_ = std::move( other.head_ );
-		tail_ = other.tail_;
+		tail_ = std::move( other.tail_ );
 		length_ = other.length_;
-		
+
+		other.head_ = nullptr;
 		other.tail_ = nullptr;
 		other.length_ = 0;
 
@@ -154,96 +187,95 @@ namespace data_structures
 	}
 
 	template <typename T>
-	void linked_list<T>::append_list( const linked_list<T>& other )
+	void linked_list<T>::append( const linked_list<T>& other )
 	{
-		node source = other.head_.get(), prev = tail_;
+		node dest = tail_->prev;
 
-		while( source )
+		for( node source = other.head_->next; 
+			source != other.tail_.get();
+			source = source->next )
 		{
-			node_pointer new_node = std::make_unique<node_type>( source->data );
+			node new_node{ new node_type( source->data ) };
 
-			if( prev )
-			{
-				prev->next = std::move( new_node );
-				prev = prev->next.get();
-			}
-			else
-			{
-				head_ = std::move( new_node );
-				prev = head_.get();
-			}
-			
-			source = source->next.get();
+			new_node->prev = dest;
+			dest->next = new_node;
+
+			dest = new_node;
 			length_++;
 		}
 
-		tail_ = prev;
-	}
-	
-	template <typename T>
-	void linked_list<T>::insert( const size_t position, T value )
-	{
-		if( position > 0 && position > length_ + 1 )
-			throw std::runtime_error( "invalid_list_position" );
-
-		node prev = nullptr, current = head_.get();
-
-		for( size_t index = 0; index < position; ++index ) {
-			prev = current;
-			current = current->next.get();
-		}
-
-		node_pointer new_node = std::make_unique<node_type>( value );
-
-		if( prev )
-		{
-			prev->next = std::move( new_node );
-		}
-		else
-		{
-			new_node->next = std::move( head_ );
-			head_ = std::move( new_node );
-		}
-
-		if( tail_ == prev )
-			tail_ = tail_ ? prev->next.get() : head_.get();
-
-		length_++;
+		dest->next = tail_.get();
 	}
 
 	template <typename T>
-	void linked_list<T>::remove( const size_t position )
+	typename linked_list<T>::node_reference linked_list<T>::get( const size_type position )
 	{
 		if( position > 0 && position > length_ )
 			throw std::runtime_error( "invalid_list_position" );
 
-		node prev = nullptr, current = head_.get();
+		node requested = nullptr;
+		
+		for( auto current = head_->next, index = 0;
+			current != tail_->prev;
+			current = current->next, index++ )
+		{
+			if( index == position )
+				requested = *current;
+		}
 
-		for( size_t index = 0; index < position; index++ ) {
+		return requested;
+	}
+
+	template <typename T>
+	void linked_list<T>::insert( const size_type position, T value )
+	{
+		if( position > 0 && position > length_ + 1 )
+			throw std::runtime_error( "invalid_list_position" );
+
+		node prev = head_.get(), current = head_->next;
+
+		for( size_type index = 0; index < position; ++index ) {
 			prev = current;
-			current = current->next.get();
+			current = current->next;
 		}
 
-		if( prev )
+		node new_node{ new node_type( value ) };
+
+		if( new_node == nullptr )
+			throw std::bad_alloc();
+		
+		prev->next = new_node;
+		new_node->next = current;
+		new_node->prev = prev;
+		current->prev = new_node;
+		
+		length_++;
+	}
+
+	template <typename T>
+	bool linked_list<T>::remove( const node_reference node )
+	{
+		auto success = false;
+		
+		for( auto current = head_->next;
+			current != tail_.get();
+			current = current->next )
 		{
-			prev->next = std::move( current->next );
+			if( current == node )
+			{
+				auto temp = current;
+				
+				current->prev->prev = current->next;
+				current->next->prev = current->prev;
 
-			if( tail_ == current )
-				tail_ = prev->next.get();
-		}
-		else
-		{
-			if( head_->next )
-			{
-				head_ = std::move( head_->next );
-			}
-			else
-			{
-				head_ = nullptr;
-				tail_ = nullptr;
+				delete temp;
+
+				length_--;
+
+				success = true;
 			}
 		}
 
-		length_--;
+		return success;
 	}
 }
