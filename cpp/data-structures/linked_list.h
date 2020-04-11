@@ -102,7 +102,7 @@ namespace data_structures
 		void push_front( T item ) { insert( 0, item ); }
 		void append( const_reference other );
 		
-		const_node_reference at( size_type position ) { return *get( position ); }
+		const_node_reference at( size_type position );
 
 		void remove( T value );
 		void remove_at( size_type position );
@@ -253,11 +253,20 @@ namespace data_structures
 	}
 
 	template <typename T>
-	void linked_list<T>::insert( const size_type position, T value )
+	typename linked_list<T>::const_node_reference linked_list<T>::at( size_type position )
 	{
-		if( position > length_ )
+		if( position >= length_ )
 			throw std::runtime_error( "INVALID_LIST_POSITION" );
 
+		return *get( position );
+	}
+
+	template <typename T>
+	void linked_list<T>::insert( const size_type position, T value )
+	{
+		if( position > length_ + 1)
+			throw std::runtime_error( "INVALID_LIST_POSITION" );
+		
 		node next = get( position );
 		
 		node new_node{ new node_type( value ) };
@@ -279,9 +288,6 @@ namespace data_structures
 	template <typename T>
 	typename linked_list<T>::node linked_list<T>::get( const size_type position )
 	{
-		if( position >= length_ )
-			throw std::runtime_error( "INVALID_LIST_POSITION" );
-
 		const auto mid = ceil( length_ / 2 );
 
 		node node;
@@ -329,9 +335,9 @@ namespace data_structures
 	template <typename T>
 	void linked_list<T>::remove_at( const size_type position )
 	{
-		if( position > length_ - 1 )
+		if( position >= length_ )
 			throw std::runtime_error( "REMOVE_PAST_END_ATTEMPT" );
-
+		
 		node node = get( position );
 
 		node->prev_->next_ = node->next_;

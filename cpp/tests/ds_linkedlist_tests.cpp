@@ -152,7 +152,7 @@ namespace data_structure_tests::integer_linked_list_tests
         }
         catch( std::runtime_error& e )
         {
-            EXPECT_EQ( std::string( e.what() ), "REMOVE_PAST_END_ATTEMPT" );
+            EXPECT_EQ( std::string( e.what() ), "INVALID_LIST_POSITION" );
         }
     }
 	
