@@ -55,7 +55,7 @@ namespace data_structure_tests::integer_linked_list_tests
 
         EXPECT_EQ( list.size(), 3 );
 
-        auto actual = list.find( 1 );
+        auto actual = list.at( 0 );
 
         EXPECT_EQ( actual.data, 1 );
     }
@@ -140,6 +140,22 @@ namespace data_structure_tests::integer_linked_list_tests
         EXPECT_EQ( list.at( 0 ).data, 5 );
     }
 
+    TEST_F( linked_list_tests, out_of_bounds )
+    {
+        auto list = int_list{ 1, 2, 3, 4 };
+
+        try
+        {
+            auto no_exist = list.at( 4 );
+        	
+            FAIL() << "This should throw an error.";
+        }
+        catch( std::runtime_error& e )
+        {
+            EXPECT_EQ( std::string( e.what() ), "REMOVE_PAST_END_ATTEMPT" );
+        }
+    }
+	
     TEST_F( linked_list_tests, iterator )
     {
         auto list = int_list{ 0, 1, 2, 3, 4, 5 };
@@ -360,20 +376,6 @@ namespace data_structure_tests::integer_linked_list_tests
         EXPECT_EQ( outer.at( 3 ).data, 4 );
         EXPECT_EQ( outer.at( 4 ).data, 5 );
     }
-
-    TEST_F( linked_list_tests, large_list )
-    {
-        auto list = int_list{};
-
-    	for( auto index = 0; index < 100000; index++ )
-    	{
-            list.push_back( index );
-    	}
-    	
-        auto actual = list.find( 6 );
-
-        const auto expected = *list.end();
-    }
 	
     TEST_F( linked_list_tests, empty_insert_delete )
     {
@@ -451,6 +453,31 @@ namespace data_structure_tests::integer_linked_list_tests
         EXPECT_EQ( list.at( 1 ).data, 3 );
     }
 
+    TEST_F( linked_list_tests, remove_past_end )
+    {
+        auto list = int_list{ 1, 2, 3 };
+
+        EXPECT_EQ( list.size(), 3 );
+        EXPECT_EQ( list.at( 0 ).data, 1 );
+        EXPECT_EQ( list.at( 1 ).data, 2 );
+        EXPECT_EQ( list.at( 2 ).data, 3 );
+
+        try
+        {
+            list.remove_at( 3 );
+            FAIL() << "This should throw an error.";
+        }
+        catch( std::runtime_error& e )
+        {
+            EXPECT_EQ( std::string( e.what() ), "REMOVE_PAST_END_ATTEMPT" );
+        }
+    	
+        EXPECT_EQ( list.size(), 3 );
+        EXPECT_EQ( list.at( 0 ).data, 1 );
+        EXPECT_EQ( list.at( 1 ).data, 2 );
+        EXPECT_EQ( list.at( 2 ).data, 3 );
+    }
+	
     TEST_F( linked_list_tests, remove_tail_triple )
     {
         auto list = int_list{ 1, 2, 3 };
@@ -468,12 +495,108 @@ namespace data_structure_tests::integer_linked_list_tests
         EXPECT_EQ( list.back().data, 2 );
     }
 
-    TEST_F( linked_list_tests, no_find )
+    TEST_F( linked_list_tests, remove_middle )
+    {
+        auto list = int_list{ 1, 2, 3, 4, 5, 6 };
+    	
+        EXPECT_EQ( list.size(), 6 );
+
+        EXPECT_EQ( list.at( 0 ).data, 1 );
+        EXPECT_EQ( list.at( 1 ).data, 2 );
+        EXPECT_EQ( list.at( 2 ).data, 3 );
+        EXPECT_EQ( list.at( 3 ).data, 4 );
+        EXPECT_EQ( list.at( 4 ).data, 5 );
+        EXPECT_EQ( list.at( 5 ).data, 6 );
+
+        EXPECT_EQ( list.front().data, 1 );
+        EXPECT_EQ( list.back().data, 6 );
+    	
+        list.remove_at( 4 );
+
+        EXPECT_EQ( list.size(), 5 );
+    	
+        EXPECT_EQ( list.at( 0 ).data, 1 );
+        EXPECT_EQ( list.at( 1 ).data, 2 );
+        EXPECT_EQ( list.at( 2 ).data, 3 );
+        EXPECT_EQ( list.at( 3 ).data, 4 );
+        EXPECT_EQ( list.at( 4 ).data, 6 );
+
+        EXPECT_EQ( list.front().data, 1 );
+        EXPECT_EQ( list.back().data, 6 );
+    	
+        list.remove_at( 3 );
+
+        EXPECT_EQ( list.size(), 4 );
+    	
+        EXPECT_EQ( list.at( 0 ).data, 1 );
+        EXPECT_EQ( list.at( 1 ).data, 2 );
+        EXPECT_EQ( list.at( 2 ).data, 3 );
+        EXPECT_EQ( list.at( 3 ).data, 6 );
+
+        EXPECT_EQ( list.front().data, 1 );
+        EXPECT_EQ( list.back().data, 6 );
+    	
+        list.remove_at( 0 );
+
+        EXPECT_EQ( list.size(), 3 );
+    	
+        EXPECT_EQ( list.at( 0 ).data, 2 );
+        EXPECT_EQ( list.at( 1 ).data, 3 );
+        EXPECT_EQ( list.at( 2 ).data, 6 );
+
+        EXPECT_EQ( list.front().data, 2 );
+        EXPECT_EQ( list.back().data, 6 );
+    	
+        list.remove_at( 2 );
+
+        EXPECT_EQ( list.size(), 2 );
+    	
+        EXPECT_EQ( list.at( 0 ).data, 2 );
+        EXPECT_EQ( list.at( 1 ).data, 3 );
+
+        EXPECT_EQ( list.front().data, 2 );
+        EXPECT_EQ( list.back().data, 3 );
+    	
+        list.remove_at( 1 );
+
+        EXPECT_EQ( list.size(), 1 );
+    	
+        EXPECT_EQ( list.at( 0 ).data, 2 );
+
+        EXPECT_EQ( list.front().data, 2 );
+        EXPECT_EQ( list.back().data, 2 );
+
+        list.remove_at( 0 );
+
+        EXPECT_EQ( list.size(), 0 );
+
+        EXPECT_EQ( list.front().data, 0 );
+        EXPECT_EQ( list.back().data, 0 );
+    }
+
+    TEST_F( linked_list_tests, large_list )
+    {
+        auto list = int_list{};
+    	
+        const auto elements = 1e5;
+
+        for( auto index = 0; index < elements; index++ )
+        {
+            list.push_back( index );
+        }
+
+        EXPECT_EQ( list.size(), elements );
+    }
+	
+    TEST_F( linked_list_tests, find_element )
     {
         auto list = int_list{ 1, 2, 3, 4, 5 };
 
-        auto actual = list.find( 6 );
+        const auto to_find = 3;
+    	
+        auto actual = std::find_if(list.begin(), list.end(),
+			[&]( const auto& node ) { return node.data == to_find; });
 
-        const auto expected = *list.end();
-    }	
+        EXPECT_EQ( actual->data, to_find );
+    }
 }

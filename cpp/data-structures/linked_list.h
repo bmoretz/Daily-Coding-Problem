@@ -103,7 +103,6 @@ namespace data_structures
 		void append( const_reference other );
 		
 		const_node_reference at( size_type position ) { return *get( position ); }
-		const_node_reference find( T value );
 
 		void remove( T value );
 		void remove_at( size_type position );
@@ -254,33 +253,19 @@ namespace data_structures
 	}
 
 	template <typename T>
-	typename linked_list<T>::const_node_reference linked_list<T>::find( T value )
-	{
-		node search = head_->next_;
-		
-		for( ; search != tail_.get();
-			search = search->next_ )
-		{
-			if( search->data == value )
-				break;
-		}
-
-		return *search;
-	}
-
-	template <typename T>
 	void linked_list<T>::insert( const size_type position, T value )
 	{
-		if( position > length_ + 1 )
+		if( position > length_ )
 			throw std::runtime_error( "INVALID_LIST_POSITION" );
 
 		node next = get( position );
-		node prev = next->prev_;
 		
 		node new_node{ new node_type( value ) };
 
 		if( new_node == nullptr )
 			throw std::bad_alloc();
+
+		node prev = next->prev_;
 		
 		new_node->next_ = next;
 		new_node->prev_ = prev;
@@ -294,13 +279,13 @@ namespace data_structures
 	template <typename T>
 	typename linked_list<T>::node linked_list<T>::get( const size_type position )
 	{
-		if( position > length_ )
+		if( position >= length_ )
 			throw std::runtime_error( "INVALID_LIST_POSITION" );
 
 		const auto mid = ceil( length_ / 2 );
 
 		node node;
-		
+
 		if( position <= mid )
 		{
 			node = head_->next_;
@@ -315,7 +300,7 @@ namespace data_structures
 			for( size_type index = length_; index > position; index-- )
 				node = node->prev_;
 		}
-		
+
 		return node;
 	}
 
@@ -344,13 +329,10 @@ namespace data_structures
 	template <typename T>
 	void linked_list<T>::remove_at( const size_type position )
 	{
-		if( position > length_ )
-			throw std::runtime_error( "INVALID_LIST_POSITION" );
+		if( position > length_ - 1 )
+			throw std::runtime_error( "REMOVE_PAST_END_ATTEMPT" );
 
-		node node = head_->next_;
-
-		for( size_type index = 0; index < position; index++ )
-			node = node->next_;
+		node node = get( position );
 
 		node->prev_->next_ = node->next_;
 		node->next_->prev_ = node->prev_;
