@@ -152,7 +152,6 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="linked_list.h" />
-    <ClInclude Include="list_node.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

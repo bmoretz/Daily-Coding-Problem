@@ -24,9 +24,6 @@
     <ClInclude Include="linked_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="list_node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
