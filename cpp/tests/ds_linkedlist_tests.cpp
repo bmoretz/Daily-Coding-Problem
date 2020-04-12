@@ -574,18 +574,88 @@ namespace data_structure_tests::integer_linked_list_tests
         EXPECT_EQ( list.back().data, 0 );
     }
 
-    TEST_F( linked_list_tests, large_list )
+    TEST_F( linked_list_tests, pop_front_empty )
     {
         auto list = int_list{};
-    	
-        const auto elements = 1e5;
 
-        for( auto index = 0; index < elements; index++ )
+        try
         {
-            list.push_back( index );
+            list.pop_back();
+            FAIL() << "This should throw an error.";
         }
+        catch( std::runtime_error& e )
+        {
+            EXPECT_EQ( std::string( e.what() ), "ATTEMPT_POP_EMPTY_LIST" );
+        }
+    }
 
-        EXPECT_EQ( list.size(), elements );
+    TEST_F( linked_list_tests, pop_back_empty )
+    {
+        auto list = int_list{};
+
+        try
+        {
+            list.pop_back();
+            FAIL() << "This should throw an error.";
+        }
+        catch( std::runtime_error& e )
+        {
+            EXPECT_EQ( std::string( e.what() ), "ATTEMPT_POP_EMPTY_LIST" );
+        }
+    }
+
+    TEST_F( linked_list_tests, pop_front )
+    {
+        auto list = int_list{ 1, 2, 3 };
+
+        EXPECT_EQ( list.size(), 3 );
+        EXPECT_EQ( list.pop_front(), 1 );
+    	
+        EXPECT_EQ( list.size(), 2 );
+        EXPECT_EQ( list.pop_front(), 2 );
+
+        EXPECT_EQ( list.size(), 1 );
+        EXPECT_EQ( list.pop_front(), 3 );
+
+        EXPECT_EQ( list.size(), 0 );
+    }
+
+    TEST_F( linked_list_tests, pop_back )
+    {
+        auto list = int_list{ 1, 2, 3 };
+
+        EXPECT_EQ( list.size(), 3 );
+        EXPECT_EQ( list.pop_back(), 3 );
+
+        EXPECT_EQ( list.size(), 2 );
+        EXPECT_EQ( list.pop_back(), 2 );
+
+        EXPECT_EQ( list.size(), 1 );
+        EXPECT_EQ( list.pop_back(), 1 );
+
+        EXPECT_EQ( list.size(), 0 );
+    }
+
+    TEST_F( linked_list_tests, pop_alt )
+    {
+        auto list = int_list{ 1, 2, 3, 4, 5 };
+
+        EXPECT_EQ( list.size(), 5 );
+        EXPECT_EQ( list.pop_front(), 1 );
+
+        EXPECT_EQ( list.size(), 4 );
+        EXPECT_EQ( list.pop_back(), 5 );
+
+        EXPECT_EQ( list.size(), 3 );
+        EXPECT_EQ( list.pop_front(), 2 );
+
+        EXPECT_EQ( list.size(), 2 );
+        EXPECT_EQ( list.pop_back(), 4 );
+
+        EXPECT_EQ( list.size(), 1 );
+        EXPECT_EQ( list.pop_front(), 3 );
+
+        EXPECT_EQ( list.size(), 0 );
     }
 	
     TEST_F( linked_list_tests, find_element )

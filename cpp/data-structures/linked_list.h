@@ -27,11 +27,6 @@ namespace data_structures
 
 			T data;
 
-			~list_node()
-			{
-				std::cout << "deleted node: " << this << " with value: " << data << std::endl;
-			}
-
 		private:
 			pointer next_ = nullptr, prev_ = nullptr;
 		};
@@ -101,6 +96,9 @@ namespace data_structures
 		void push_back( T item ) { insert( length_, item ); }
 		void push_front( T item ) { insert( 0, item ); }
 		void append( const_reference other );
+
+		T pop_front();
+		T pop_back();
 		
 		const_node_reference at( size_type position );
 
@@ -112,7 +110,7 @@ namespace data_structures
 
 		[[nodiscard]] const_node_reference front() const { return *head_->next_; }
 		[[nodiscard]] const_node_reference back() const { return *tail_->prev_; }
-
+		
 		[[nodiscard]] bool empty() const { return head_->next == tail_.get(); }
 		[[nodiscard]] size_type size() const { return length_; }
 
@@ -250,6 +248,32 @@ namespace data_structures
 
 		dest->next_ = tail_.get();
 		tail_->prev_ = dest;
+	}
+
+	template <typename T>
+	T linked_list<T>::pop_front()
+	{
+		if( length_ <= 0 )
+			throw std::runtime_error( "ATTEMPT_POP_EMPTY_LIST" );
+
+		const auto value = front().data;
+
+		remove_at( 0 );
+
+		return value;
+	}
+
+	template <typename T>
+	T linked_list<T>::pop_back()
+	{
+		if( length_ <= 0 )
+			throw std::runtime_error( "ATTEMPT_POP_EMPTY_LIST" );
+
+		const auto value = back().data;
+
+		remove_at( length_ - 1 );
+
+		return value;
 	}
 
 	template <typename T>
