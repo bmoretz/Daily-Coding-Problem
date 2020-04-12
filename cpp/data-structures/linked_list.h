@@ -108,7 +108,7 @@ namespace data_structures
 		void remove_at( size_type position );
 		
 		iterator begin() { return iterator( head_->next_ ); }
-		iterator end() { return iterator( tail_->prev_ ); }
+		iterator end() { return iterator( tail_.get() ); }
 
 		[[nodiscard]] const_node_reference front() const { return *head_->next_; }
 		[[nodiscard]] const_node_reference back() const { return *tail_->prev_; }
@@ -325,7 +325,7 @@ namespace data_structures
 				node->next_->prev_ = node->prev_;
 
 				delete temp;
-
+				
 				length_--;
 				break;
 			}

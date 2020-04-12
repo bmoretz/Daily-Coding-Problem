@@ -597,6 +597,19 @@ namespace data_structure_tests::integer_linked_list_tests
         auto actual = std::find_if(list.begin(), list.end(),
 			[&]( const auto& node ) { return node.data == to_find; });
 
+        EXPECT_TRUE( actual != std::end( list ) );
         EXPECT_EQ( actual->data, to_find );
+    }
+
+    TEST_F( linked_list_tests, no_find_element )
+    {
+        auto list = int_list{ 1, 2, 3, 4, 5 };
+
+        const auto to_find = 6;
+
+        auto actual = std::find_if( list.begin(), list.end(),
+            [&]( const auto& node ) { return node.data == to_find; } );
+
+        EXPECT_TRUE( actual == std::end( list ) );
     }
 }
