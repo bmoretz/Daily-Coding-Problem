@@ -7,26 +7,27 @@ namespace data_structures
 	template<typename  T>
 	class linked_list
 	{
-		template<typename T>
+		template<typename NodeType>
 		struct list_node
 		{
 			friend linked_list;
 
-			typedef list_node<T> self_type;
-			typedef list_node<T>& reference;
-			typedef const list_node<T>& const_reference;
-			typedef list_node<T>* pointer;
+			typedef list_node<NodeType> self_type;
+			typedef list_node<NodeType>& reference;
+			typedef const list_node<NodeType>& const_reference;
+			typedef list_node<NodeType>* pointer;
 
-			explicit list_node( const T& val )
+			explicit list_node( const NodeType& val )
 				: data{ std::move( val ) }
 			{ }
 
-			explicit list_node( const T&& val )
+			explicit list_node( const NodeType&& val )
 				: data{ std::move( val ) }
 			{ }
 
-			T data;
-
+			
+			NodeType data;
+			
 		private:
 			pointer next_ = nullptr, prev_ = nullptr;
 		};
@@ -343,12 +344,10 @@ namespace data_structures
 		{
 			if( node->data == value )
 			{
-				auto temp = node;
-				
 				node->prev_->next_ = node->next_;
 				node->next_->prev_ = node->prev_;
 
-				delete temp;
+				delete node;
 				
 				length_--;
 				break;

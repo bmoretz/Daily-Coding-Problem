@@ -1,77 +1,32 @@
-'''Karatsuba's algorithm.
+'''Triple Step.
 
-So: what's the product of the following two 64-digit numbers?
+A child is running up a staircase with n steps and can hop either 1 step, 2 steps or 3 steps at a time.
 
-3141592653589793238462643383279502884197169399375105820974944592
-
-2718281828459045235360287471352662497757247093699959574966967627
+Implement a method to count how many possible ways the child can run up the stairs.
 '''
 
-from math import ceil
+def triple_step(n, step_counts=[]):
 
-def karatsuba(x, y):
+    if step_counts == []:
+        step_counts = [0] * (n + 1)
 
-    def zero_pad(value, digits, left = True):
+    if n < 0:
+        return 0
+    elif n == 0:
+        return 1
+    elif step_counts[n] != 0:
+        return step_counts[n]
+    else:
+        total = 0
 
-        for pad in range(digits):
-            if left:
-                value = '0' + value
-            else:
-                value = value + '0'
+        total += triple_step(n - 3, step_counts)
+        total += triple_step(n - 2, step_counts)
+        total += triple_step(n - 1, step_counts)
 
-        return value
+        step_counts[n] = total
 
-    def split(value):
-        n = len(value)
+        return step_counts[n]
 
-        mid =  ceil(n / 2)
+count = triple_step(8)
 
-        return (int(value[:mid]), int(value[mid:]))
-
-    x, y = str(x), str(y)
-
-    nx, ny = len(x), len(y)
-
-    n = max(nx, ny)
-    j = n//2
-
-    if n % 2 != 0:
-        j += 1
-
-    b_pad = n - j
-    a_pad = b_pad * 2
-
-    if nx == 1 and ny == 1:
-        return int(x) * int(y)
-
-    x, y = zero_pad(x, ny - nx), zero_pad(y, nx - ny)
-
-    a, b = split(x)
-    c, d = split(y)
-
-    p = a + b
-    q = c + d
-
-    ac = karatsuba(a, c)
-    bd = karatsuba(b, d)
-    pq = karatsuba(p, q)
-
-    abcd = pq - ac - bd
-
-    A = int(zero_pad( str(ac), a_pad, left=False))
-    B = int(zero_pad( str(abcd), b_pad, left=False))
-    C = bd
-
-    return A + B + C
-
-x = 3141592653589793238462643383279502884197169399375105820974944592
-y = 2718281828459045235360287471352662497757247093699959574966967627
-
-ret = karatsuba(x, y)
-print(ret)
-
-values = [1, 2, 3, 4, 5]
-
-val = values.pop()
-
-print(val)
+print(count)

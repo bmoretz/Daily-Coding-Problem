@@ -45,3 +45,105 @@ class Test_PlayNim(unittest.TestCase):
     def test_case2(self):
 
         assert nim2([3, 4, 5]) == True
+
+from py.problems.recursion import triple_step1
+class Test_TripleStep1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        n = 4
+
+        actual = triple_step1(n)
+        expected = 7
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        n = 10
+
+        actual = triple_step1(n)
+        expected = 274
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        n = 15
+
+        actual = triple_step1(n)
+        expected = 5768
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        n = 3
+
+        actual = triple_step1(n)
+        expected = 4
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        n = 8
+
+        actual = triple_step1(n)
+        expected = 81
+
+        assert actual == expected
+
+from py.problems.recursion import triple_step2
+class Test_TripleStep2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        n = 4
+
+        actual = triple_step2(n)
+        expected = 7
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        n = 10
+
+        actual = triple_step2(n)
+        expected = 274
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        n = 15
+
+        actual = triple_step2(n)
+        expected = 5768
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        n = 3
+
+        actual = triple_step2(n)
+        expected = 4
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        n = 8
+
+        actual = triple_step2(n)
+        expected = 81
+
+        assert actual == expected
