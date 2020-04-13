@@ -151,7 +151,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="list_node_iterator.h" />
     <ClInclude Include="linked_list.h" />
+    <ClInclude Include="list_node.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,92 +1,75 @@
 #pragma once
 
+#include <ostream>
 #include <utility>
 
-namespace data_structures
+#include "list_node.h"
+#include "list_node_iterator.h"
+
+namespace data_structures::lists
 {
-	template<typename  T>
+	using std::ostream;
+	
+	template <typename T>
+	class linked_list;
+
+	template <typename  T>
+	ostream& operator<< ( ostream& os, const linked_list<T>& list );
+	
+	template<class Ty>
 	class linked_list
 	{
-		template<typename NodeType>
-		struct list_node
+		class node_type : public list_node
 		{
-			friend linked_list;
+			friend class linked_list<Ty>;
 
-			typedef list_node<NodeType> self_type;
-			typedef list_node<NodeType>& reference;
-			typedef const list_node<NodeType>& const_reference;
-			typedef list_node<NodeType>* pointer;
+			Ty value_;
 
-			explicit list_node( const NodeType& val )
-				: data{ std::move( val ) }
-			{ }
-
-			explicit list_node( const NodeType&& val )
-				: data{ std::move( val ) }
-			{ }
-
-			
-			NodeType data;
-			
-		private:
-			pointer next_ = nullptr, prev_ = nullptr;
-		};
-		
-		class iterator
-		{
 		public:
-
-			using node = list_node<T>;
-
-			typedef iterator self_type;
-
-			typedef node& reference;
-			typedef node* pointer;
-
-			explicit iterator( pointer node ) :
-				ptr_( node )
-			{ }
-
-			self_type operator++()
+			explicit node_type( Ty value ) :
+				list_node()
 			{
-				if( ptr_ )
-					ptr_ = ptr_->next_;
-
-				return *this;
+				value_ = std::move( value );
 			}
-
-			reference operator*() { return *ptr_; }
-			pointer operator->() { return ptr_; }
-
-			bool operator==( const self_type& other ) { return ptr_ == other.ptr_; }
-			bool operator!=( const self_type& other ) { return ptr_ != other.ptr_; }
-
-		private:
-			pointer ptr_;
 		};
 
-		typedef linked_list<T> self_type;
-		typedef linked_list<T>& reference;
-		typedef const linked_list<T>& const_reference;
-		typedef linked_list<T>* pointer;
+		template<class U>
+		class iterator_type : public list_node_iterator {
 
-		typedef size_t size_type;
+			friend class linked_list<Ty>;
+			[[nodiscard]] node_type* node() const { return static_cast< node_type* >( ptr_ ); }
 
-		typedef list_node<T> node_type;
+		public:
+			U& operator*() const { return static_cast<node_type *>( ptr_ )->value_; }
+			U* operator->() const { return &static_cast< node_type *>( ptr_ )->value_; }
+			explicit operator iterator_type<U const>() const { return ptr_; }
+			explicit iterator_type( node_type* node ) : list_node_iterator{ node } {}
+		};
 
-		using node = typename node_type::pointer;
-		using node_reference = typename node_type::reference;
-		using const_node_reference = typename node_type::const_reference;
 		using node_pointer = std::unique_ptr<node_type>;
 
 		node_pointer head_, tail_;
 		size_t length_{};
-		
+
+		node_type* head() { return static_cast< node_type* >( head_->next_ ); }
+		node_type* tail() { return static_cast< node_type* >( tail_.get() ); }
+
 	public:
+
+		using iterator = iterator_type<Ty>;
+		using const_iterator = iterator_type<Ty const>;
+
+		typedef linked_list<Ty> self_type;
+		typedef linked_list<Ty>& reference;
+		typedef const linked_list<Ty>& const_reference;
+		typedef linked_list<Ty>* pointer;
+
+		using size_type = std::size_t;
+		using value_type = Ty;
 
 		linked_list();
 
-		explicit linked_list( std::initializer_list<T> init_list );
+		explicit linked_list( std::initializer_list<Ty> init_list );
 		linked_list( const self_type& other );
 		linked_list( self_type&& other ) noexcept;
 
@@ -94,44 +77,62 @@ namespace data_structures
 
 		void swap( reference other ) noexcept;
 
-		void push_back( T item ) { insert( length_, item ); }
-		void push_front( T item ) { insert( 0, item ); }
+		void push_back( Ty item ) { insert( length_, item ); }
+		void push_front( Ty item ) { insert( 0, item ); }
 		void append( const_reference other );
 
-		T pop_front();
-		T pop_back();
-		
-		const_node_reference at( size_type position );
+		Ty pop_front();
+		Ty pop_back();
 
-		void remove( T value );
+		Ty at( size_type position );
+
+		void erase( const_iterator iterator );
+		void erase( iterator iterator );
 		void remove_at( size_type position );
-		
-		iterator begin() { return iterator( head_->next_ ); }
-		iterator end() { return iterator( tail_.get() ); }
 
-		[[nodiscard]] const_node_reference front() const { return *head_->next_; }
-		[[nodiscard]] const_node_reference back() const { return *tail_->prev_; }
-		
-		[[nodiscard]] bool empty() const { return head_->next == tail_.get(); }
+		void clear();
+
+		iterator begin() { return iterator( head() ); }
+		iterator end() { return iterator( tail() ); }
+
+		const_iterator cbegin() { return const_iterator( head() ); }
+		const_iterator cend() { return const_iterator( tail() ); }
+
+		iterator rbegin() { return iterator( static_cast<node_type*>( tail_->prev_ ) ); }
+		iterator rend() { return iterator( static_cast< node_type* >( head_.get() ) ); }
+
+		[[nodiscard]] Ty front() const { return static_cast< node_type* >( head_->next_ )->value_; }
+		[[nodiscard]] Ty back() const { return static_cast< node_type* >( tail_->prev_ )->value_; }
+
+		[[nodiscard]] bool empty() const { return head_->next_ == tail_.get(); }
 		[[nodiscard]] size_type size() const { return length_; }
 
-		reference operator=( const self_type& other ); // NOLINT(cppcoreguidelines-c-copy-assignment-signature, misc-unconventional-assign-operator)
-		reference operator=( self_type&& other ) noexcept;  // NOLINT(cppcoreguidelines-c-copy-assignment-signature, misc-unconventional-assign-operator)
+		reference operator=( const self_type& other );
+		reference operator=( self_type&& other ) noexcept;
 		reference operator+( const self_type& other ) { append( other ); return *this; }
 
 		void operator+=( const self_type& other ) { append( other ); }
-		void operator+=( const T& value ) { push_back( value ); }
+		void operator+=( const Ty& value ) { push_back( value ); }
 
+		template<typename U>
+		friend ostream& operator<<( ostream& os, const linked_list& list );
+		
 	protected:
-		void insert( size_type position, T value );
-		node get( size_type position );
+		void insert( size_type position, Ty value );
+		node_type* get( size_type position );
 	};
 
-	template <typename T>
-	linked_list<T>::linked_list()
+	template<typename T>
+	ostream& operator<<( ostream& os, const linked_list<T>& list )
 	{
-		head_ = std::make_unique<node_type>( T() );
-		tail_ = std::make_unique<node_type>( T() );
+		return os;
+	}
+	
+	template <typename Ty>
+	linked_list<Ty>::linked_list()
+	{
+		head_ = std::make_unique<node_type>( Ty() );
+		tail_ = std::make_unique<node_type>( Ty() );
 
 		head_->next_ = tail_.get();
 		head_->prev_ = tail_.get();
@@ -139,48 +140,41 @@ namespace data_structures
 		tail_->next_ = head_.get();
 		tail_->prev_ = head_.get();
 	}
-
-	template <typename T>
-	linked_list<T>::linked_list( const std::initializer_list<T> init_list ) :
+	
+	template <typename Ty>
+	linked_list<Ty>::linked_list( const std::initializer_list<Ty> init_list ) :
 		linked_list()
 	{
-		for( auto& item : init_list )
+		for( const auto& item : init_list )
 		{
 			push_back( item );
 		}
 	}
 
-	template <typename T>
-	linked_list<T>::linked_list( const self_type& other )
+	template <typename Ty>
+	linked_list<Ty>::linked_list( const self_type& other )
 		: linked_list()
 	{
 		append( other );
 	}
 
-	template <typename T>
-	linked_list<T>::linked_list( self_type&& other ) noexcept
+	template <typename Ty>
+	linked_list<Ty>::linked_list( self_type&& other ) noexcept
 		: linked_list()
 	{
 		swap( other );
 	}
 
-	template <typename T>
-	linked_list<T>::~linked_list()
+	template <typename Ty>
+	linked_list<Ty>::~linked_list()
 	{
 		if( !head_ ) return; // destroyed from move
 		
-		for( node current = head_->next_; current != tail_.get(); )
-		{
-			node temp = current;
-
-			current = current->next_;
-
-			delete temp;
-		}
+		clear();
 	}
 
-	template <typename T> // NOLINT(cppcoreguidelines-c-copy-assignment-signature
-	typename linked_list<T>::reference linked_list<T>::operator=( const self_type& other )  // NOLINT(cppcoreguidelines-c-copy-assignment-signature, misc-unconventional-assign-operator)
+	template <typename Ty>
+	linked_list<Ty>& linked_list<Ty>::operator=( const self_type& other )
 	{
 		if( this == &other ) return *this;
 		
@@ -191,24 +185,14 @@ namespace data_structures
 		return *this;
 	}
 
-	template <typename T> // NOLINT(cppcoreguidelines-c-copy-assignment-signature
-	typename linked_list<T>::reference linked_list<T>::operator=( self_type&& other ) noexcept  // NOLINT(cppcoreguidelines-c-copy-assignment-signature, misc-unconventional-assign-operator)
+	template <typename Ty>
+	linked_list<Ty>& linked_list<Ty>::operator=( self_type&& other ) noexcept
 	{
 		if( this == &other )
 			return *this;
-
-		// clean up this
-		for( node current = head_->next_; current != tail_.get(); )
-		{
-			node temp = current;
-
-			current = current->next_;
-
-			delete temp;
-			
-			length_--;
-		}
-
+		
+		clear();
+		
 		// this <- other
 		head_ = std::move( other.head_ );
 		tail_ = std::move( other.tail_ );
@@ -218,8 +202,8 @@ namespace data_structures
 		return *this;
 	}
 
-	template <typename T>
-	void linked_list<T>::swap( reference other ) noexcept
+	template <typename Ty>
+	void linked_list<Ty>::swap( reference other ) noexcept
 	{
 		std::swap( head_, other.head_ );
 		std::swap( tail_, other.tail_ );
@@ -229,13 +213,13 @@ namespace data_structures
 	template <typename T>
 	void linked_list<T>::append( const_reference other )
 	{
-		node dest = tail_->prev_;
+		auto dest = tail_->prev_;
 
-		for( node source = other.head_->next_; 
+		for( auto source = other.head_->next_; 
 			source != other.tail_.get();
 			source = source->next_ )
 		{
-			node new_node{ new node_type( source->data ) };
+			auto new_node{ new node_type( static_cast<node_type*>( source )->value_ ) };
 
 			if( new_node == nullptr )
 				throw std::bad_alloc();
@@ -247,59 +231,75 @@ namespace data_structures
 			length_++;
 		}
 
-		dest->next_ = tail_.get();
+		dest->next_ = tail();
 		tail_->prev_ = dest;
 	}
 
-	template <typename T>
-	T linked_list<T>::pop_front()
+	template <typename Ty>
+	Ty linked_list<Ty>::pop_front()
 	{
 		if( length_ <= 0 )
 			throw std::runtime_error( "ATTEMPT_POP_EMPTY_LIST" );
 
-		const auto value = front().data;
+		const auto value = front();
 
-		remove_at( 0 );
+		erase( begin() );
 
 		return value;
 	}
 
-	template <typename T>
-	T linked_list<T>::pop_back()
+	template <typename Ty>
+	Ty linked_list<Ty>::pop_back()
 	{
 		if( length_ <= 0 )
 			throw std::runtime_error( "ATTEMPT_POP_EMPTY_LIST" );
 
-		const auto value = back().data;
+		const auto value = back();
 
-		remove_at( length_ - 1 );
+		erase( rbegin() );
 
 		return value;
 	}
 
-	template <typename T>
-	typename linked_list<T>::const_node_reference linked_list<T>::at( size_type position )
+	template <typename Ty>
+	Ty linked_list<Ty>::at( const size_type position )
 	{
 		if( position >= length_ )
 			throw std::runtime_error( "INVALID_LIST_POSITION" );
 
-		return *get( position );
+		return get( position )->value_;
 	}
 
-	template <typename T>
-	void linked_list<T>::insert( const size_type position, T value )
+	template <class Ty>
+	void linked_list<Ty>::erase( const_iterator iterator )
+	{
+		delete iterator.node();
+
+		length_--;
+	}
+
+	template <class Ty>
+	void linked_list<Ty>::erase(iterator iterator)
+	{
+		delete iterator.node();
+
+		length_--;
+	}
+
+	template <typename Ty>
+	void linked_list<Ty>::insert( const size_type position, Ty value )
 	{
 		if( position > length_ + 1)
 			throw std::runtime_error( "INVALID_LIST_POSITION" );
 		
-		node next = get( position );
+		node_type* next = get( position );
 		
-		node new_node{ new node_type( value ) };
+		auto new_node{ new node_type( value ) };
 
 		if( new_node == nullptr )
 			throw std::bad_alloc();
 
-		node prev = next->prev_;
+		auto prev = next->prev_;
 		
 		new_node->next_ = next;
 		new_node->prev_ = prev;
@@ -310,64 +310,48 @@ namespace data_structures
 		length_++;
 	}
 
-	template <typename T>
-	typename linked_list<T>::node linked_list<T>::get( const size_type position )
+	template <typename Ty>
+	typename linked_list<Ty>::node_type* linked_list<Ty>::get( const size_type position )
 	{
 		const auto mid = ceil( length_ / 2 );
 
-		node node;
+		node_type* node;
 
 		if( position <= mid )
 		{
-			node = head_->next_;
+			node = head();
 
 			for( size_type index = 0; index < position; index++ )
-				node = node->next_;
+				node = static_cast< node_type* >( node->next_ );
 		}
 		else
 		{
-			node = tail_.get();
+			node = tail();
 
 			for( size_type index = length_; index > position; index-- )
-				node = node->prev_;
+				node = static_cast<node_type*>( node->prev_ );
 		}
 
-		return node;
+		return static_cast<node_type *> ( node );
 	}
 
-	template <typename T>
-	void linked_list<T>::remove( T value )
-	{
-		for( node node = head_->next_;
-			node != tail_.get();
-			node = node->next_ )
-		{
-			if( node->data == value )
-			{
-				node->prev_->next_ = node->next_;
-				node->next_->prev_ = node->prev_;
-
-				delete node;
-				
-				length_--;
-				break;
-			}
-		}
-	}
-
-	template <typename T>
-	void linked_list<T>::remove_at( const size_type position )
+	template <typename Ty>
+	void linked_list<Ty>::remove_at( const size_type position )
 	{
 		if( position >= length_ )
 			throw std::runtime_error( "REMOVE_PAST_END_ATTEMPT" );
 		
-		node node = get( position );
-
-		node->prev_->next_ = node->next_;
-		node->next_->prev_ = node->prev_;
-
+		node_type* node = get( position );
+		
 		delete node;
 
 		length_--;
+	}
+
+	template <class Ty>
+	void linked_list<Ty>::clear()
+	{
+		while( !empty() )
+			erase( begin() );
 	}
 }

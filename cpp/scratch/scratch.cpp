@@ -1,79 +1,83 @@
-// scratch.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
 #include <string>
 #include <vector>
+#include <set>
 
-/* String Rotation.
+#include "../data-structures/linked_list.h"
+
+using namespace data_structures::lists;
+
+using int_list = linked_list<int>;
+
+/* Remove Duplicates.
  *
- * Assume you have a method isSubstring which checks if one word is a
- * substring of another. Given two strings, s1 and s2, write code to check
- * if s2 is a rotation of s1 using only one call to isSubstring.
+ * Write code to remove duplicates from an unsorted linked list.
  *
- * e.g.,
- * "waterbottle" is a rotation of "erbottlewat"
+ * FOLLOW UP
+ *
+ * How would you solve this problem if a temporary buffer is not allowed?
  */
 
-
-using namespace std;
-
-bool is_rotation( const string & s1, const string & s2 )
+template<typename T>
+linked_list<T> remove_duplicates( linked_list<T> list )
 {
-	if( s1.empty() || s2.empty() ) return false;
-	if( s1.length() != s2.length() ) return false;
+	if( list.empty() ) return list;
 
-	auto i = size_t(), j = size_t();
-	
-	string rotated;
-	
-	while( j < s2.length() )
+	std::set<int> seen;
+	auto deduped = linked_list<T>();
+
+	for( const auto& item : list )
 	{
-		if( s1[i] == s2[j] )
+		if( seen.find( item ) == seen.end() )
 		{
-			const auto prev = j;
-			
-			while( i < s1.length() && s1[ i ] == s2[ j ] )
-			{
-				i++; j++;
-
-				if( i == s1.length() )
-					return true;
-
-				if( j == s2.length() )
-					j = 0;
-			}
-			
-			i = 0;
-			j = prev;
+			seen.insert( item );
+			deduped.push_back( item );
 		}
-		
-		j++;
 	}
 
-	return false;
+	return deduped;
+}
+
+void print_list( int_list list )
+{
+	for( const auto& item : list )
+	{
+		std::cout << item;
+	}
+
+	std::cout << std::endl;
 }
 
 void test_harness()
 {
-	string input1, input2;
+	std::cout << "Enter test input to build list, c when complete:" << std::endl;
 
-	cout << "Enter test input:";
-
-	while( getline( cin, input1 ) && getline( cin, input2) )
+	std::string input;
+	auto list = int_list();
+	
+	while( getline( std::cin, input ) )
 	{
 		try
 		{
-			cout << input1 << " : " << input2 <<
-				" is rotation: " << is_rotation(input1, input2) << endl;
+			if( input == "c" ) break;
 			
-			cout << "Enter test input:";
+			const auto value = std::stoi( input );
+			list.push_back( value );
 		}
-		catch( const exception & ex )
+		catch( const std::exception & ex )
 		{
-			cout << ex.what();
+			std::cout << ex.what();
 		}
 	}
+
+	std::cout << "List Contents: " << std::endl;
+	print_list( list );
+
+	auto dedup_list = remove_duplicates( list );
+
+	std::cout << "List Contents deduped: " << std::endl;
+
+	print_list( dedup_list );
 }
 
 auto main() -> int
