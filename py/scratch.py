@@ -1,32 +1,63 @@
-'''Triple Step.
+'''Robot in a Grid.
 
-A child is running up a staircase with n steps and can hop either 1 step, 2 steps or 3 steps at a time.
+Imagine a robot sitting on the upper left corner of grid with r rows and c columns.
 
-Implement a method to count how many possible ways the child can run up the stairs.
+The robot can only move in two directions, right and down, but certain cells are "off limits" such
+that the robot cannot step on them. Design an algorithm to find a path for the robot from the top
+left to the bottom right.
 '''
 
-def triple_step(n, step_counts=[]):
+def build_grid(rows, columns, obsticals):
 
-    if step_counts == []:
-        step_counts = [0] * (n + 1)
+    grid = [[0 for x in range(rows)] for x in range(columns)] 
 
-    if n < 0:
-        return 0
-    elif n == 0:
-        return 1
-    elif step_counts[n] != 0:
-        return step_counts[n]
-    else:
-        total = 0
+    for coord in obsticals:
+        grid[coord[0]][coord[1]] = 1
 
-        total += triple_step(n - 3, step_counts)
-        total += triple_step(n - 2, step_counts)
-        total += triple_step(n - 1, step_counts)
+    return grid
 
-        step_counts[n] = total
 
-        return step_counts[n]
+obsticals = [(0, 4), (1,1), (0,4), (1,4), (2, 0), (2,2), (2, 4), (3, 2), (3, 4), (4,2)]
+grid = build_grid(6, 5, obsticals)
 
-count = triple_step(8)
+def walk(grid, path=None):
 
-print(count)
+    def step(path, x, y):
+        return path + [(x, y)]
+
+    if path == None:
+        path = [(0, 0)]
+
+    x, y = path[-1][0], path[-1][1]
+
+    rows, columns = len(grid), len(grid[0])
+
+    if x == rows - 1 and y == columns - 1:
+        return path
+
+    walk_right = y < columns - 1 and grid[x][y+1] == 0
+
+    if walk_right:
+        path = walk(grid, step(path, x, y + 1))
+
+        if path[-1] == (rows - 1, columns - 1):
+            return path
+
+    walk_down = x < rows - 1 and grid[x+1][y] == 0
+
+    if walk_down:
+        path = walk(grid, step(path, x + 1, y))
+
+        if path[-1] == (rows - 1, columns - 1):
+            return path
+    
+    if not (walk_right or walk_down):
+        path = step(path, -1, -1) # stuck
+
+    return path
+
+path = walk(grid)
+
+print(grid)
+
+print(path)

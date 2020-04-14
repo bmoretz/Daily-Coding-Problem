@@ -147,3 +147,105 @@ class Test_TripleStep2(unittest.TestCase):
         expected = 81
 
         assert actual == expected
+
+from py.problems.recursion import build_grid
+from py.problems.recursion import robot_walk1
+class Test_RobotWalk1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    '''
+    0   0   0   0   0   0
+    0   1   1   0   1   0
+    1   0   0   0   1   0
+    0   0   1   0   1   0
+    0   0   1   0   0   0
+    '''
+    def test_case1(self):
+
+        obsticals = [(1,1), (1,2), (1,4), (2, 0), (2, 4), (3, 2), (3, 4), (4,2)]
+
+        grid = build_grid(6, 5, obsticals)
+
+        actual = robot_walk1(grid)
+
+        expected = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (1, 5), (2, 5), (3, 5), (4, 5)]
+
+        assert actual == expected
+
+    '''
+    0   0   0   0   1   0
+    0   1   1   0   1   0
+    1   0   0   0   1   0
+    0   0   1   0   1   0
+    0   0   1   0   0   0
+    '''
+    def test_case2(self):
+
+        obsticals = [(0, 4), (1,1), (1,2), (1,4), (2, 0), (2, 4), (3, 2), (3, 4), (4,2)]
+        
+        grid = build_grid(6, 5, obsticals)
+
+        actual = robot_walk1(grid)
+
+        expected = [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 3), (4, 3), (4, 4), (4, 5)]
+
+        assert actual == expected
+
+    '''
+    0   1   0   0   1   0
+    0   1   1   0   1   0
+    1   0   0   0   1   0
+    0   0   1   0   1   0
+    0   0   1   0   0   0
+    '''
+    def test_case3(self):
+
+        obsticals = [(0, 1), (0, 4), (1,1), (1,2), (1,4), (2, 0), (2, 4), (3, 2), (3, 4), (4,2)]
+        
+        grid = build_grid(6, 5, obsticals)
+
+        actual = robot_walk1(grid)
+
+        expected = [(0, 0), (1, 0), (-1, -1)] # no path
+
+        assert actual == expected
+
+    '''
+    0   0   0   1   1   0
+    0   1   0   0   1   0
+    1   0   1   0   1   0
+    0   0   1   0   0   1
+    0   0   1   0   0   0
+    '''
+    def test_case4(self):
+
+        obsticals = [(0, 4), (1,1), (0,4), (1,4), (2, 0), (2,2), (2, 4), (3, 2), (3, 4), (4,2)]
+        
+        grid = build_grid(6, 5, obsticals)
+
+        actual = robot_walk1(grid)
+
+        expected = [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 3), (4, 3), (4, 4), (4, 5)]
+
+        assert actual == expected
+
+    '''
+    0   0   0   0   1   0
+    0   1   0   0   1   0
+    1   0   1   0   1   0
+    0   0   1   0   1   0
+    0   0   1   0   0   1
+    '''
+    def test_case5(self):
+
+        obsticals = [(0, 4), (1,1), (0,4), (1,4), (2, 0), (2,2), (2, 4), (3, 2), (3, 4), (4,2), (4,5)]
+        
+        grid = build_grid(6, 5, obsticals)
+
+        actual = robot_walk1(grid)
+
+        expected = [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 3), (4, 3), (4, 4), (-1, -1), (1, 2), (1, 3), (2, 3), (3, 3), (4, 3), (4, 4), (-1, -1), (1, 0), (-1, -1)]
+
+        assert actual == expected
