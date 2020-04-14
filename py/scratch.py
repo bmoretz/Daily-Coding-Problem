@@ -57,7 +57,3 @@ def walk(grid, path=None):
     return path
 
 path = walk(grid)
-
-print(grid)
-
-print(path)

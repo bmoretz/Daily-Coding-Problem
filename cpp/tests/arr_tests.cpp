@@ -3,7 +3,6 @@
 
 #include "../problems/arr.h"
 
-using namespace std;
 using namespace arr_problems;
 
 namespace arr_tests

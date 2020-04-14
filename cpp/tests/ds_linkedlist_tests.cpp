@@ -5,7 +5,7 @@
 
 namespace data_structure_tests::integer_linked_list_tests
 {
-    using namespace data_structures::lists;
+    using namespace data_structures::linked_list;
 	
     using int_list = linked_list<int>;
 

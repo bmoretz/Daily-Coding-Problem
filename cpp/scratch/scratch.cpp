@@ -1,104 +1,74 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <set>
 
-
-/* Remove Duplicates.
+/* Return k-th to Last.
  *
- * Write code to remove duplicates from an unsorted linked list.
- *
- * FOLLOW UP
- *
- * How would you solve this problem if a temporary buffer is not allowed?
+ * Implement an algorithm to find the kth to last element of a singly
+ * linked list.
  */
 
-template<typename T>
-class dedupe
+template<typename Ty>
+class klast1
 {
-	template<typename T>
 	struct node
 	{
-		explicit node( T value )
+		explicit node( Ty value )
 			: data{ std::move( value ) }
 		{	
 		}
 		
-		~node()
-		{
-			std::cout << "deleted node: " << this << "with value: " << data << std::endl;
-		}
-
-		T data;
-		std::unique_ptr<node<T>> next;
+		Ty data;
+		std::unique_ptr<node> next;
 	};
 
-	template<typename T>
-	struct list
-	{
-		void push_back( T value )
-		{
-			auto new_node{ std::make_unique<node<T>>( value ) };
-
-			node<T>* current = head.get();
-
-			while( current->next )
-			{
-				current = current->next.get();
-			}
-
-			current->next = std::move( new_node );
-		}
-
-		list()
-		{
-			auto new_node{ std::make_unique<node<T>>( T() ) };
-
-			head = std::move( new_node );
-		}
-
-		void remove_dupes()
-		{
-			std::set<T> seen;
-
-			node<T>* cur = head->next.get(), *runner = nullptr;
-
-			while( cur->next )
-			{
-				runner = cur->next.get();
-
-				while( runner->next )
-				{
-					node<T>* prev = cur;
-					
-					if( cur->data == runner->data )
-					{
-						prev->next = std::move( runner->next );
-						runner = prev;
-					}
-
-					prev = runner;
-					runner = runner->next.get();
-				}
-				
-				cur = cur->next.get();
-			}
-		}
-
-		std::unique_ptr<node<T>> head;
-	};
-
-	list<T> list_;
-
+	std::unique_ptr<node> head_;
+	
 public:
-	dedupe() : list_{ } { }
 
-	void remove_dupes() { list_.remove_dupes(); }
+	klast1()
+	{
+		auto new_node{ std::make_unique<node>( Ty() ) };
+
+		head_ = std::move( new_node );
+	}
+	
+	void push_back( Ty value )
+	{
+		auto new_node{ std::make_unique<node>( value ) };
+
+		node* current = head_.get();
+
+		while( current->next )
+		{
+			current = current->next.get();
+		}
+
+		current->next = std::move( new_node );
+	}
+
+	Ty from_back( const size_t position )
+	{
+		node *requested = head_.get(), *current = head_->next.get();
+		size_t seen = 0;
+
+		while( current != nullptr )
+		{
+			if( seen < position )
+				seen++;
+			else
+				requested = requested->next.get();
+
+			current = current->next.get();
+		}
+
+		return requested != nullptr ? requested->data : Ty();
+	}
 	
 	void display_values()
 	{
-		for( auto node = list_.head->next.get();
-			node->next != nullptr;
+		for( auto node = head_->next.get();
+			node != nullptr;
 			node = node->next.get() )
 		{
 			std::cout << node->data;
@@ -106,8 +76,6 @@ public:
 
 		std::cout << std::endl;
 	}
-	
-	void add_value( T value ) { list_.push_back( value ); }
 };
 
 void test_harness()
@@ -116,7 +84,7 @@ void test_harness()
 
 	std::string input;
 	
-	auto list = dedupe<int>();
+	auto list = klast1<int>();
 	
 	while( getline( std::cin, input ) )
 	{
@@ -126,7 +94,7 @@ void test_harness()
 			
 			const auto value = std::stoi( input );
 
-			list.add_value( value );
+			list.push_back( value );
 		}
 		catch( const std::exception & ex )
 		{
@@ -136,9 +104,13 @@ void test_harness()
 
 	list.display_values();
 
-	list.remove_dupes();
+	std::cout << "enter position to retrieve: ";
 
-	list.display_values();
+	std::getline( std::cin, input);
+
+	const auto element = list.from_back( std::stoi( input ) );
+
+	std::cout << element;
 }
 
 auto main() -> int

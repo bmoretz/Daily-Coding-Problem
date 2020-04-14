@@ -2,7 +2,7 @@
 
 #include "list_node.h"
 
-namespace data_structures::lists
+namespace data_structures::linked_list
 {
 	class list_node_iterator
 	{
@@ -26,8 +26,8 @@ namespace data_structures::lists
 			return *this;
 		}
 
-		list_node& operator*() { return *ptr_; }
-		list_node* operator->() { return ptr_; }
+		list_node& operator*() const { return *ptr_; }
+		list_node* operator->() const { return ptr_; }
 
 		using iterator_category = std::bidirectional_iterator_tag;
 
@@ -36,8 +36,8 @@ namespace data_structures::lists
 		typedef list_node_iterator& reference;
 		typedef list_node_iterator* pointer;
 
-		bool operator==( const self_type& other ) { return ptr_ == other.ptr_; }
-		bool operator!=( const self_type& other ) { return ptr_ != other.ptr_; }
+		bool operator==( const self_type& other ) const { return ptr_ == other.ptr_; }
+		bool operator!=( const self_type& other ) const { return ptr_ != other.ptr_; }
 
 	protected:
 		list_node* ptr_;
