@@ -5,6 +5,7 @@
     <ClCompile Include="str_tests.cpp" />
     <ClCompile Include="arr_tests.cpp" />
     <ClCompile Include="ds_linkedlist_tests.cpp" />
+    <ClCompile Include="llinkedlist_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

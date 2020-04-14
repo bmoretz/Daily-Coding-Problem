@@ -3,7 +3,6 @@
 
 #include "../problems/str.h"
 
-using namespace std;
 using namespace str_problems;
 
 namespace string_tests
@@ -30,7 +29,7 @@ namespace string_tests
 
     TEST_F( is_unique_tests, unique1_invalid )
     {
-        EXPECT_FALSE( unique1::is_unique( string() ) );
+        EXPECT_FALSE( unique1::is_unique( std::string() ) );
     }
 
     TEST_F( is_unique_tests, unique1_unique_sets )
@@ -57,7 +56,7 @@ namespace string_tests
 
     TEST_F( is_unique_tests, unique2_invalid )
     {
-        EXPECT_FALSE( unique2::is_unique( string() ) );
+        EXPECT_FALSE( unique2::is_unique( std::string() ) );
     }
 
     TEST_F( is_unique_tests, unique2_unique_sets )
@@ -96,7 +95,7 @@ namespace string_tests
 
     TEST_F( is_permutation_tests, permutation1_invalid )
     {
-        EXPECT_FALSE( is_permutation1::is_permutation( string(), string() ) );
+        EXPECT_FALSE( is_permutation1::is_permutation( std::string(), std::string() ) );
     }
 
     TEST_F( is_permutation_tests, permutation1_perms )
@@ -117,7 +116,7 @@ namespace string_tests
 
     TEST_F( is_permutation_tests, permutation2_invalid )
     {
-        EXPECT_FALSE( is_permutation2::is_permutation( string(), string() ) );
+        EXPECT_FALSE( is_permutation2::is_permutation( std::string(), std::string() ) );
     }
 
     TEST_F( is_permutation_tests, permutation2_perms )
@@ -272,7 +271,7 @@ namespace string_tests
 
     TEST_F( palindrome_permutation_tests, palperm1_empty )
     {
-        auto actual = palperm1::is_palindrome_permutation( string() );
+        auto actual = palperm1::is_palindrome_permutation( std::string() );
 
         const auto expected = false;
 
@@ -356,7 +355,7 @@ namespace string_tests
 
     TEST_F( one_away_tests, oneaway1_empty )
     {
-        auto actual = one_away1::one_away( string(), string() );
+        auto actual = one_away1::one_away( std::string(), std::string() );
 
         const auto expected = false;
 
@@ -448,9 +447,9 @@ namespace string_tests
 
     TEST_F( string_compression_tests, compress1_empty )
     {
-        auto actual = compress_str1::compressed( string() );
+        auto actual = compress_str1::compressed( std::string() );
 
-        const auto expected = string();
+        const auto expected = std::string();
 
         EXPECT_EQ( actual, expected );
     }
@@ -522,9 +521,9 @@ namespace string_tests
 
     TEST_F( string_rotation_tests, rotation1_empty )
     {
-        EXPECT_FALSE( string_rotation1::is_rotation( string(), string() ) );
-        EXPECT_FALSE( string_rotation1::is_rotation( "test", string() ) );
-        EXPECT_FALSE( string_rotation1::is_rotation( string(), "test" ) );
+        EXPECT_FALSE( string_rotation1::is_rotation( std::string(), std::string() ) );
+        EXPECT_FALSE( string_rotation1::is_rotation( "test", std::string() ) );
+        EXPECT_FALSE( string_rotation1::is_rotation( std::string(), "test" ) );
     }
 
     TEST_F( string_rotation_tests, rotation1_case1 )
@@ -587,9 +586,9 @@ namespace string_tests
 
     TEST_F( string_rotation_tests, rotation2_empty )
     {
-        EXPECT_FALSE( string_rotation2::is_rotation( string(), string() ) );
-        EXPECT_FALSE( string_rotation2::is_rotation( "test", string() ) );
-        EXPECT_FALSE( string_rotation2::is_rotation( string(), "test" ) );
+        EXPECT_FALSE( string_rotation2::is_rotation( std::string(), std::string() ) );
+        EXPECT_FALSE( string_rotation2::is_rotation( "test", std::string() ) );
+        EXPECT_FALSE( string_rotation2::is_rotation( std::string(), "test" ) );
     }
 
     TEST_F( string_rotation_tests, rotation2_case1 )

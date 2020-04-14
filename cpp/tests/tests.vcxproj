@@ -43,6 +43,7 @@
   <ItemGroup>
     <ClCompile Include="arr_tests.cpp" />
     <ClCompile Include="ds_linkedlist_tests.cpp" />
+    <ClCompile Include="llinkedlist_tests.cpp" />
     <ClCompile Include="str_tests.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
