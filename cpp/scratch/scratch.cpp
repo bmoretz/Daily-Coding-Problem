@@ -3,11 +3,6 @@
 #include <vector>
 #include <set>
 
-#include "../data-structures/linked_list.h"
-
-using namespace data_structures::lists;
-
-using int_list = linked_list<int>;
 
 /* Remove Duplicates.
  *
@@ -19,41 +14,109 @@ using int_list = linked_list<int>;
  */
 
 template<typename T>
-linked_list<T> remove_duplicates( linked_list<T> list )
+class dedupe
 {
-	if( list.empty() ) return list;
-
-	std::set<int> seen;
-	auto deduped = linked_list<T>();
-
-	for( const auto& item : list )
+	template<typename T>
+	struct node
 	{
-		if( seen.find( item ) == seen.end() )
-		{
-			seen.insert( item );
-			deduped.push_back( item );
+		explicit node( T value )
+			: data{ std::move( value ) }
+		{	
 		}
-	}
+		
+		~node()
+		{
+			std::cout << "deleted node: " << this << "with value: " << data << std::endl;
+		}
 
-	return deduped;
-}
+		T data;
+		std::unique_ptr<node<T>> next;
+	};
 
-void print_list( int_list list )
-{
-	for( const auto& item : list )
+	template<typename T>
+	struct list
 	{
-		std::cout << item;
-	}
+		void push_back( T value )
+		{
+			auto new_node{ std::make_unique<node<T>>( value ) };
 
-	std::cout << std::endl;
-}
+			node<T>* current = head.get();
+
+			while( current->next )
+			{
+				current = current->next.get();
+			}
+
+			current->next = std::move( new_node );
+		}
+
+		list()
+		{
+			auto new_node{ std::make_unique<node<T>>( T() ) };
+
+			head = std::move( new_node );
+		}
+
+		void remove_dupes()
+		{
+			std::set<T> seen;
+
+			node<T>* cur = head->next.get(), *runner = nullptr;
+
+			while( cur->next )
+			{
+				runner = cur->next.get();
+
+				while( runner->next )
+				{
+					node<T>* prev = cur;
+					
+					if( cur->data == runner->data )
+					{
+						prev->next = std::move( runner->next );
+						runner = prev;
+					}
+
+					prev = runner;
+					runner = runner->next.get();
+				}
+				
+				cur = cur->next.get();
+			}
+		}
+
+		std::unique_ptr<node<T>> head;
+	};
+
+	list<T> list_;
+
+public:
+	dedupe() : list_{ } { }
+
+	void remove_dupes() { list_.remove_dupes(); }
+	
+	void display_values()
+	{
+		for( auto node = list_.head->next.get();
+			node->next != nullptr;
+			node = node->next.get() )
+		{
+			std::cout << node->data;
+		}
+
+		std::cout << std::endl;
+	}
+	
+	void add_value( T value ) { list_.push_back( value ); }
+};
 
 void test_harness()
 {
 	std::cout << "Enter test input to build list, c when complete:" << std::endl;
 
 	std::string input;
-	auto list = int_list();
+	
+	auto list = dedupe<int>();
 	
 	while( getline( std::cin, input ) )
 	{
@@ -62,7 +125,8 @@ void test_harness()
 			if( input == "c" ) break;
 			
 			const auto value = std::stoi( input );
-			list.push_back( value );
+
+			list.add_value( value );
 		}
 		catch( const std::exception & ex )
 		{
@@ -70,14 +134,11 @@ void test_harness()
 		}
 	}
 
-	std::cout << "List Contents: " << std::endl;
-	print_list( list );
+	list.display_values();
 
-	auto dedup_list = remove_duplicates( list );
+	list.remove_dupes();
 
-	std::cout << "List Contents deduped: " << std::endl;
-
-	print_list( dedup_list );
+	list.display_values();
 }
 
 auto main() -> int
