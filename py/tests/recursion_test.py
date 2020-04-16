@@ -298,3 +298,60 @@ class Test_MagicIndex1(unittest.TestCase):
         expected = 6
 
         assert actual == expected
+
+from py.problems.recursion import magic_index2
+class Test_MagicIndex2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_case1(self):
+        
+        values = [-5, -3, -2, 1, 4, 5, 7, 9, 11] # 4
+
+        actual = magic_index2(values)
+        expected = 4
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = [-5, -3, -2, 1, 3, 4, 6, 8, 11]
+
+        actual = magic_index2(values)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = [-5, -3, -2, 1, 3, 4, 5, 6, 8]
+
+        actual = magic_index2(values)
+        expected = 8
+
+        assert actual == expected
+
+    def test_case4(self):
+        values = [-1, 0, 1, 2, 3, 5, 8, 10, 11]
+
+        actual = magic_index2(values)
+        expected = 5
+
+        assert actual == expected
+
+    def test_case5(self):
+        values = [-1, 0, 1, 2, 3, 4, 6, 10, 11] 
+
+        actual = magic_index2(values)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case5(self):
+        values = [-10, -5, 2, 2, 2, 3, 4, 7, 9, 12, 13] 
+
+        actual = magic_index2(values)
+        expected = 2
+
+        assert actual == expected

@@ -10,22 +10,28 @@ FOLLOW UP:
 What if the values are not distinct?
 '''
 
-def magic_index1(values):
+def magic_index2(values):
     
     def check_index(values, start, stop):
         if stop < start: return None
 
-        mid = (start + stop) // 2
-        val = values[mid]
+        midIndex = (start + stop) // 2
+        val = values[midIndex]
 
-        if val == mid:
-            return mid
+        if val == midIndex:
+            return midIndex
+        
+        leftIndex = min(midIndex - 1, val)
+        left = check_index(values, start, leftIndex)
 
-        if mid < val:
-            return check_index(values, start, mid - 1)
-        else:
-            return check_index(values, mid + 1, stop)
+        if left:
+            return left
 
+        rightIndex = max(midIndex + 1, val)
+        right = check_index(values, rightIndex, stop)
+
+        return right
+        
     if values == None: return None
 
     n = len(values) - 1
@@ -36,8 +42,8 @@ def magic_index1(values):
 # values = [-5, -3, -2, 1, 3, 4, 6, 8, 11] # 6
 # values = [-5, -3, -2, 1, 3, 4, 5, 6, 8] # 8
 
-values = [-1, 0, 1, 2, 3, 4, 6, 10, 11] 
+values = [-10, -5, 2, 2, 2, 3, 4, 7, 9, 12, 13] 
 
-result = magic_index1(values)
+result = magic_index2(values)
 
 print(result)
