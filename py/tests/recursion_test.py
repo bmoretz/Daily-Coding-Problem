@@ -249,3 +249,52 @@ class Test_RobotWalk1(unittest.TestCase):
         expected = [(0, 0), (0, 1), (0, 2), (0, 3), (1, 3), (2, 3), (3, 3), (4, 3), (4, 4), (-1, -1), (1, 2), (1, 3), (2, 3), (3, 3), (4, 3), (4, 4), (-1, -1), (1, 0), (-1, -1)]
 
         assert actual == expected
+
+from py.problems.recursion import  magic_index1
+class Test_MagicIndex1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_case1(self):
+        
+        values = [-5, -3, -2, 1, 4, 5, 7, 9, 11] # 4
+
+        actual = magic_index1(values)
+        expected = 4
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = [-5, -3, -2, 1, 3, 4, 6, 8, 11]
+
+        actual = magic_index1(values)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = [-5, -3, -2, 1, 3, 4, 5, 6, 8]
+
+        actual = magic_index1(values)
+        expected = 8
+
+        assert actual == expected
+
+    def test_case4(self):
+        values = [-1, 0, 1, 2, 3, 5, 8, 10, 11]
+
+        actual = magic_index1(values)
+        expected = 5
+
+        assert actual == expected
+
+    def test_case5(self):
+        values = [-1, 0, 1, 2, 3, 4, 6, 10, 11] 
+
+        actual = magic_index1(values)
+        expected = 6
+
+        assert actual == expected
