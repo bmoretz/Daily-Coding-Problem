@@ -332,6 +332,18 @@ namespace linkedlist_problems
 			node->next = std::make_unique<list_node>( value );
 		}
 
+		/// <summary>
+		/// delete middle 1
+		///
+		/// This is a brute force approach first calculates the length of the list, then
+		/// calculates the index of the node to remove and re-iterates to that
+		/// position and removes the node. Only advantage here is O(1) space
+		/// complexity.
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// </summary>
 		void delete_middle1()
 		{
 			auto len = size_t();
@@ -362,6 +374,178 @@ namespace linkedlist_problems
 			}
 		}
 
+		/// <summary>
+		/// gets a vector copy of the linked list values for
+		/// unit testing.
+		/// </summary>
+		std::vector<Ty> get_values()
+		{
+			std::vector<Ty> values;
+
+			for( auto node = head_->next.get();
+				node != nullptr;
+				node = node->next.get() )
+			{
+				values.push_back( node->data );
+			}
+
+			return values;
+		}
+	};
+
+	/* Partition.
+	 *
+	 * Write code to partition a linked list around a value x, such that all nodes less than
+	 * x come before all nodes greater than or equal to x. If x is contained within the list,
+	 * the values of x only need to be after the elements less than x. The partition element
+	 * can appear anywhere in the "right partition"; it does not need to appear between the left
+	 * and right partitions.
+	 *
+	 * EXAMPLE
+	 *
+	 * Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1, partition = 5
+	 * Output: 3 -> 1 -> -> 2 -> 10 -> 5 -> 5 -> 8
+	 */
+
+	template<typename Ty>
+	class partition
+	{
+		struct list_node
+		{
+			using node_pointer = std::unique_ptr<list_node>;
+
+			explicit list_node( Ty value ) :
+				data( std::move( value ) )
+			{ }
+
+			Ty data;
+
+			node_pointer next;
+		};
+
+		typename list_node::node_pointer head_;
+		list_node* tail_;
+
+	public:
+
+		partition()
+		{
+			head_ = std::make_unique<list_node>( Ty() );
+			tail_ = head_->next.get();
+		}
+
+		partition( const std::initializer_list<Ty> init_list ) :
+			partition()
+		{
+			for( const auto& item : init_list )
+			{
+				push_back( item );
+			}
+		}
+		
+		void push_back( Ty value )
+		{
+			auto node = head_.get();
+
+			while( node->next )
+			{
+				node = node->next.get();
+			}
+
+			node->next = std::make_unique<list_node>( value );
+			tail_ = node->next.get();
+		}
+
+		/// <summary>
+		/// This is a brute force solution that uses a doubly-linked
+		/// list to keep track of the head and the tail. During the partition
+		/// we look at all nodes in a forward iteration, if a node has a value
+		/// greater than the pivot, we push it to the back of the list.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <param name="value">the value to pivot around</param>
+		void partition1( Ty value )
+		{
+			if( !head_->next ) return;
+
+			auto node = head_->next.get(), prev = head_.get();
+
+			auto end = tail_;
+
+			while( true ) // short-circuit after we have seen the original tail
+			{
+				if( node->data >= value )
+				{
+					tail_->next = std::move( prev->next );
+					tail_ = tail_->next.get();
+					
+					prev->next = std::move( node->next );
+					
+					node = prev->next.get();
+				}
+				else
+				{
+					prev = node;
+					node = node->next.get();
+				}
+
+				if( node == end ) break;
+			}
+
+			tail_ = prev;
+		}
+
+		/// <summary>
+		/// partition 2
+		///
+		/// This approach has the same asymptotic complexity as
+		/// the previous approach, however, the code is more readable
+		/// and the algorithm is slightly more robust. We first create
+		/// a new sentinel node for the elements smaller than the pivot,
+		/// and as we iterate the original list, we move nodes with values
+		/// smaller than the pivot to the s_list. Once we traverse, we will have
+		/// two lists, s which contains values smaller than the pivot and the
+		/// original values which are larger than the pivot. We append the
+		/// original list to the tail of the new, s list, and then swap the head
+		/// elements of the two lists to put the final ordered list in place.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <param name="value">the pivot value</param>
+		void partition2( Ty value )
+		{
+			if( !head_->next ) return;
+
+			auto s_head = std::make_unique<list_node>( Ty() );
+
+			auto s_cur = s_head.get(), prev = head_.get();
+
+			for( auto node = head_->next.get();
+				node;
+				node = node->next.get() )
+			{
+				if( node->data < value )
+				{
+					s_cur->next = std::move( prev->next );
+					s_cur = s_cur->next.get();
+					
+					prev->next = std::move( node->next );
+					node = prev;
+				}
+
+				prev = node;
+			}
+
+			s_cur->next = std::move( head_->next );
+
+			std::swap( head_, s_head );
+		}
+		
 		/// <summary>
 		/// gets a vector copy of the linked list values for
 		/// unit testing.

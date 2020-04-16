@@ -301,3 +301,34 @@ def magic_index1(values):
     n = len(values) - 1
 
     return check_index(values, 0, n)
+
+'''
+this approach handles duplicate values
+'''
+def magic_index2(values):
+    
+    def check_index(values, start, stop):
+        if stop < start: return None
+
+        midIndex = (start + stop) // 2
+        val = values[midIndex]
+
+        if val == midIndex:
+            return midIndex
+        
+        leftIndex = min(midIndex - 1, val)
+        left = check_index(values, start, leftIndex)
+
+        if left:
+            return left
+
+        rightIndex = max(midIndex + 1, val)
+        right = check_index(values, rightIndex, stop)
+
+        return right
+        
+    if values == None: return None
+
+    n = len(values) - 1
+
+    return check_index(values, 0, n)
