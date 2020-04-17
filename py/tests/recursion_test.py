@@ -406,3 +406,44 @@ class Test_PowerSets1(unittest.TestCase):
         expected = [['a', 'b', 1], ['b', 1], ['a', 1], [1], ['a', 'b'], ['b'], ['a'], []]
 
         assert actual == expected
+
+from py.problems.recursion import rec_multiply1
+class Test_RecMultiply1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_case1(self):
+        
+        actual = rec_multiply1(0, 9)
+        expected = 0
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        actual = rec_multiply1(9, 9)
+        expected = 81
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        actual = rec_multiply1(12, 15)
+        expected = 180
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        actual = rec_multiply1(90, 10)
+        expected = 900
+
+        assert actual == expected
+
+    def test_case5(self):
+        
+        actual = rec_multiply1(17, 23)
+        expected = 391
+
+        assert actual == expected

@@ -1,24 +1,27 @@
-'''Power Set.
+'''Recursive Multiply.
 
-Write a method to return all subsets of a set.
+Write a recursive function to multiply two positive integers without 
+using the * operator. You can use addition, subtraction, and bit shifting, 
+but you should minimize the number of those operations.
+
 '''
 
-def power_sets1(data):
-    
-    def subsets(seq):
-        if len(seq) <= 1:
-            yield seq
-            yield []
+def rec_multiply1(a, b):
+
+    def mult(a, b):  
+
+        if b == 1:
+            return a
         else:
-            for item in subsets(seq[1:]):
-                yield [seq[0]] + item
-                yield item
+            return a + mult(a, b - 1)
 
-    return list(subsets(data))
+    if not (a or b): return None
+    
+    if a == 0 or b == 0: return 0      
+
+    return mult(a, b)
 
 
-items = ['a', 'b', 1]
+res = rec_multiply1(17, 23)
 
-ps = power_sets1(items)
-
-print(ps)
+print(res)
