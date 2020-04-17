@@ -5,34 +5,20 @@ Write a method to return all subsets of a set.
 
 def power_sets1(data):
     
-    def subsets(data, index):
-        
-        n = len(data) - 1
-        all_subsets = []
-
-        if n == index:
-            all_subsets += [None]
+    def subsets(seq):
+        if len(seq) <= 1:
+            yield seq
+            yield []
         else:
-            all_subsets = subsets(data, index + 1)
+            for item in subsets(seq[1:]):
+                yield [seq[0]] + item
+                yield item
 
-            item = data[index]
-            
-            sub = []
-
-            for ss in all_subsets:
-                new = []
-                new += ss
-                new.append(item)
-                sub.append(new)
-                
-        return all_subsets
-
-    return subsets(data, 0)
+    return list(subsets(data))
 
 
-items = ['a', 'b', 'c']
+items = ['a', 'b', 1]
 
 ps = power_sets1(items)
 
 print(ps)
-

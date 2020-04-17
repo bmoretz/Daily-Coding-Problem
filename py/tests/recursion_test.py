@@ -355,3 +355,54 @@ class Test_MagicIndex2(unittest.TestCase):
         expected = 2
 
         assert actual == expected
+
+from py.problems.recursion import power_sets1
+class Test_PowerSets1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_case1(self):
+        
+        values = []
+
+        actual = power_sets1(values)
+        expected = [[], []]
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        values = ['a', 'b', 'c']
+
+        actual = power_sets1(values)
+        expected = [['a', 'b', 'c'], ['b', 'c'], ['a', 'c'], ['c'], ['a', 'b'], ['b'], ['a'], []]
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        values = ['a', 'b', 'c', 'd']
+
+        actual = power_sets1(values)
+        expected = [['a', 'b', 'c', 'd'], ['b', 'c', 'd'], ['a', 'c', 'd'], ['c', 'd'], ['a', 'b', 'd'], ['b', 'd'], ['a', 'd'], ['d'], ['a', 'b', 'c'], ['b', 'c'], ['a', 'c'], ['c'], ['a', 'b'], ['b'], ['a'], []]
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        values = ['a', 'b']
+
+        actual = power_sets1(values)
+        expected = [['a', 'b'], ['b'], ['a'], []]
+
+        assert actual == expected
+
+    def test_case5(self):
+        
+        values = ['a', 'b', 1]
+
+        actual = power_sets1(values)
+        expected = [['a', 'b', 1], ['b', 1], ['a', 1], [1], ['a', 'b'], ['b'], ['a'], []]
+
+        assert actual == expected
