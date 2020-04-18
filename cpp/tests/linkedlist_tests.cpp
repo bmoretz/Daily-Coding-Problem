@@ -535,4 +535,52 @@ namespace linkedlist_tests
 
         EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
     }
+
+    /// <summary>
+    /// Testing class for sum list.
+    /// </summary>
+    class sum_list_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // forward sum list
+    //
+
+    TEST_F( sum_list_tests, sum_list_forward_invalid )
+    {
+	    const auto list = sum_list();
+
+        const auto sum = list.sum_forward();
+    	
+        const auto actual = sum->get_values();
+        const auto expected = std::vector<int>{ };
+
+        EXPECT_EQ( actual, expected );
+        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
+    }
+
+    TEST_F( sum_list_tests, sum_list_forward_case1 )
+    {
+    	// 617 + 295 = 912
+        const auto list = sum_list{ { 6, 1, 7 }, { 2, 9, 5 } };
+
+        const auto sum = list.sum_forward();
+
+        const auto actual = sum->get_values();
+        const auto expected = std::vector<int>{ 9, 1, 2 };
+
+        EXPECT_EQ( actual, expected );
+        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
+    }
+
 }

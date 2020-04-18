@@ -14,20 +14,65 @@ You have the following constraints:
 Write a program to move the disks from the first tower to the last using stacks.
 '''
 
-def hanoi(disk, src, alt, dest):
+class Tower():
     
-    print(f'{disk} - {len(src)} - {len(alt)} - {len(dest)}')
+    def __init__(self, id, items=[]):
+        self._data = []
+        self._id = id
 
-    if src[0] == disk and ( not dest or dest[0] < disk):
-        dest.append(src[0])
-        src = src[1:]
-    elif not alt or src[0] < alt[0]:
-        hanoi(src[0], src, alt, dest)
+        for item in items:
+            self.push(item)
+
+    def push(self, item):
+        self._data = [item] + self._data
+
+    def peek(self):
+        
+        return self._data[0] if self._data else 0
+
+    def id(self):
+        return self._id
+
+    def empty(self):
+        return not self._data
+
+    def top(self):
+        return self._data.pop()
+
+    def __str__(self):
+
+        result = f'tower {self._id} : '
+        
+        if self._data:
+            n = len(self._data)
+            for index in range(n - 1):
+                result += f'{self._data[index]} | '
+            result += str(self._data[n - 1])
+        else:
+            result += 'empty'
+
+        return result
+
+def hanoi(src, alt, dest):
+    
+    def move(src, dest):
+        disk = src.top()
+        print(f'\nmoving {disk} from tower {src.id()} to tower {dest.id()}')
+        dest.push(disk)
+
+    print(f'\n{src} \n {alt} \n {dest}')
+
+    if src.peek() > dest.peek():
+        move(src, dest)
+    elif src.peek() > alt.peek():
+        move(src, alt)
+
+    if not src.empty():
+        hanoi(src, alt, dest)
     else:
-        hanoi(src[0], src, dest, alt)
+        print('done')
+        print(f'\n{src} \n {alt} \n {dest}')
 
-src, alt, dest = [1,2,3], [], []
+src, alt, dest = Tower(1, [1, 2]), Tower(2), Tower(3)
 
-print(src[0])
-
-hanoi(3, src, alt, dest)
+hanoi(src, alt, dest)

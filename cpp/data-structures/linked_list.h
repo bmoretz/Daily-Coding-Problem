@@ -8,14 +8,6 @@
 
 namespace data_structures::linked_list
 {
-	using std::ostream;
-	
-	template <typename T>
-	class linked_list;
-
-	template <typename  T>
-	ostream& operator<< ( ostream& os, const linked_list<T>& list );
-	
 	template<class Ty>
 	class linked_list
 	{
@@ -114,19 +106,12 @@ namespace data_structures::linked_list
 		void operator+=( const self_type& other ) { append( other ); }
 		void operator+=( const Ty& value ) { push_back( value ); }
 
-		template<typename U>
-		friend ostream& operator<<( ostream& os, const linked_list& list );
+		[[nodiscard]] std::string to_string();
 		
 	protected:
 		void insert( size_type position, Ty value );
 		node_type* get( size_type position );
 	};
-
-	template<typename T>
-	ostream& operator<<( ostream& os, const linked_list<T>& list )
-	{
-		return os;
-	}
 	
 	template <typename Ty>
 	linked_list<Ty>::linked_list()
@@ -279,11 +264,33 @@ namespace data_structures::linked_list
 	}
 
 	template <class Ty>
-	void linked_list<Ty>::erase(iterator iterator)
+	void linked_list<Ty>::erase( iterator iterator )
 	{
 		delete iterator.node();
 
 		length_--;
+	}
+
+	template <class Ty>
+	std::string linked_list<Ty>::to_string()
+	{
+		std::stringstream ss{};
+
+		list_node* node = head();
+		
+		for( auto index = size_t(); index < length_; index ++ )
+		{
+			const auto value = static_cast< node_type* >( node )->value_;
+			
+			ss << value;
+
+			if( index != length_ - 1)
+				ss << " -> ";
+
+			node = node->next_;
+		}
+		
+		return ss.str();
 	}
 
 	template <typename Ty>

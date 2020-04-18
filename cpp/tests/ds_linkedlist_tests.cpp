@@ -703,4 +703,15 @@ namespace data_structure_tests::integer_linked_list_tests
             expected--;
     	}
     }
+
+	TEST_F( linked_list_tests, to_string1 )
+    {
+        auto list = int_list{ 1, 2, 3, 4, 5 };
+
+        auto actual = list.to_string();
+
+        const auto expected = "1 -> 2 -> 3 -> 4 -> 5";
+
+        EXPECT_EQ( actual, expected );
+    }
 }
