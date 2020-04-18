@@ -8,18 +8,23 @@ namespace data_structures::linked_list
 	{
 	public:
 
+		typedef list_node_iterator self_type;
+
+		typedef list_node_iterator& reference;
+		typedef list_node_iterator* pointer;
+		
 		explicit list_node_iterator( list_node* node ) 
 			: ptr_( node )
 		{ }
 
-		list_node_iterator& operator++()
+		reference operator++()
 		{
 			this->ptr_ = this->ptr_->next_;
 
 			return *this;
 		}
 
-		list_node_iterator& operator--()
+		reference operator--()
 		{
 			this->ptr_ = this->ptr_->prev_;
 
@@ -30,11 +35,6 @@ namespace data_structures::linked_list
 		list_node* operator->() const { return ptr_; }
 
 		using iterator_category = std::bidirectional_iterator_tag;
-
-		typedef list_node_iterator self_type;
-
-		typedef list_node_iterator& reference;
-		typedef list_node_iterator* pointer;
 
 		bool operator==( const self_type& other ) const { return ptr_ == other.ptr_; }
 		bool operator!=( const self_type& other ) const { return ptr_ != other.ptr_; }
