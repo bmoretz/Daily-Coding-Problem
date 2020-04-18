@@ -8,8 +8,10 @@ pub
 __pycache__
 .vscode/.ropeproject/
 
+dcp/etc/
 dcp/Scripts/
 dcp/Lib/
+dcp/share/
 .vs/*
 packages/*
 output/*

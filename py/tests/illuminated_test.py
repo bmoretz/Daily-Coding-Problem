@@ -53,3 +53,54 @@ class Test_Karatsuba(unittest.TestCase):
         expected = 8539734222673567065463550869546574495034888535765114961879601127067743044893204848617875072216249073013374895871952806582723184
 
         assert actual == expected
+
+from py.problems.illuminated import count_inversions
+class Test_CountInversions(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        arr = [1, 3, 5, 2, 4, 6]
+
+        actual = count_inversions(arr)
+        expected = 3
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        arr = [1, 3, 5, 2, 4, 6, 4]
+
+        actual = count_inversions(arr)
+        expected = 5
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        arr = [1, 5, 3, 2, 4, 6]
+
+        actual = count_inversions(arr)
+        expected = 4
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        arr = [1, 5, 3, 2, 1]
+
+        actual = count_inversions(arr)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        arr = [1, 3]
+
+        actual = count_inversions(arr)
+        expected = 0
+
+        assert actual == expected

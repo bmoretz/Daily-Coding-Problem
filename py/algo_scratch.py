@@ -1,68 +1,4 @@
-'''Karatsuba's algorithm.
-
-So: what's the product of the following two 64-digit numbers?
-
-3141592653589793238462643383279502884197169399375105820974944592
-
-2718281828459045235360287471352662497757247093699959574966967627
-'''
-
-from math import ceil
-
-def karatsuba(x, y):
-
-    def zero_pad(value, digits, left = True):
-
-        for pad in range(digits):
-            if left:
-                value = '0' + value
-            else:
-                value = value + '0'
-
-        return value
-
-    def split(value):
-        n = len(value)
-
-        mid =  ceil(n / 2)
-
-        return (int(value[:mid]), int(value[mid:]))
-
-    x, y = str(x), str(y)
-
-    nx, ny = len(x), len(y)
-
-    n = max(nx, ny)
-    j = n//2
-
-    if n % 2 != 0:
-        j += 1
-
-    b_pad = n - j
-    a_pad = b_pad * 2
-
-    if nx == 1 and ny == 1:
-        return int(x) * int(y)
-
-    x, y = zero_pad(x, ny - nx), zero_pad(y, nx - ny)
-
-    a, b = split(x)
-    c, d = split(y)
-
-    p = a + b
-    q = c + d
-
-    ac = karatsuba(a, c)
-    bd = karatsuba(b, d)
-    pq = karatsuba(p, q)
-
-    abcd = pq - ac - bd
-
-    A = int(zero_pad( str(ac), a_pad, left=False))
-    B = int(zero_pad( str(abcd), b_pad, left=False))
-    C = bd
-
-    return A + B + C
+import os
 
 '''
 This file contains all of the 100,000 integers between 1 and 100,000 (inclusive) in some order, with no integer repeated.
@@ -79,6 +15,17 @@ The numeric answer for the given input file should be typed in the space below.
 
 So if your answer is 1198233847, then just type 1198233847 in the space provided without any space / commas / any other punctuation marks. You can make up to 5 attempts, and we'll use the best one for grading.
 '''
+
+file_path = os.getcwd() + '\py\\data\\IntegerArray.txt'
+
+def to_array(str):
+    return [int(c) for c in str]
+
+def read_numbers():
+    with open(file_path, 'r') as f:
+        lines = f.read().splitlines()
+        numbers = [int(line) for line in lines]
+    return numbers
 
 def count_inversions(arr):
 
@@ -126,4 +73,14 @@ def count_inversions(arr):
     inversions, results = ci(arr)
 
     return inversions
-    
+
+arr = read_numbers()
+result = count_inversions(arr)
+print(result)
+
+#totalInversions = 0
+
+#for arr in read_numbers():
+#    totalInversions += count_inversions( arr )
+
+#print(totalInversions)
