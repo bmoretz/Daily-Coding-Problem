@@ -17,62 +17,63 @@ Write a program to move the disks from the first tower to the last using stacks.
 class Tower():
     
     def __init__(self, id, items=[]):
-        self._data = []
+        self._disks = []
         self._id = id
 
         for item in items:
             self.push(item)
 
     def push(self, item):
-        self._data = [item] + self._data
+        self._disks = self._disks + [item]
 
     def peek(self):
         
-        return self._data[0] if self._data else 0
+        return self._disks[0] if self._disks else 0
 
     def id(self):
         return self._id
 
+    def disks(self):
+        return len(self._disks)
+
     def empty(self):
-        return not self._data
+        return not self._disks
 
     def top(self):
-        return self._data.pop()
+        return self._disks.pop()
+
+    def moveTop(self, dest):
+        disk = self.top()
+        print(f'\nmoving {disk} from tower {src.id()} to tower {dest.id()}')
+        dest.push(disk) 
+
+    def moveDisks(self, n, dest, alt):
+        if n > 0:
+            print(f'\n{self}\n{alt}\n{dest}')
+            self.moveDisks(n - 1, alt, dest)
+            self.moveTop(dest)
+            alt.moveDisks(n - 1, dest, self)
 
     def __str__(self):
 
         result = f'tower {self._id} : '
         
-        if self._data:
-            n = len(self._data)
+        if self._disks:
+            n = len(self._disks)
             for index in range(n - 1):
-                result += f'{self._data[index]} | '
-            result += str(self._data[n - 1])
+                result += f'{self._disks[index]} | '
+            result += str(self._disks[n - 1])
         else:
             result += 'empty'
 
         return result
 
-def hanoi(src, alt, dest):
+def hanoi(src, dest, alt):
     
-    def move(src, dest):
-        disk = src.top()
-        print(f'\nmoving {disk} from tower {src.id()} to tower {dest.id()}')
-        dest.push(disk)
+    print(f'\n{src}\n{alt}\n{dest}')
+    src.moveDisks(src.disks(), alt, dest)
+    print(f'\n{src}\n{alt}\n{dest}')
 
-    print(f'\n{src} \n {alt} \n {dest}')
-
-    if src.peek() > dest.peek():
-        move(src, dest)
-    elif src.peek() > alt.peek():
-        move(src, alt)
-
-    if not src.empty():
-        hanoi(src, alt, dest)
-    else:
-        print('done')
-        print(f'\n{src} \n {alt} \n {dest}')
-
-src, alt, dest = Tower(1, [1, 2]), Tower(2), Tower(3)
+src, alt, dest = Tower(1, [3, 2, 1]), Tower(2), Tower(3)
 
 hanoi(src, alt, dest)
