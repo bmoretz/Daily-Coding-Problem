@@ -744,7 +744,7 @@ namespace linkedlist_problems
 			{
 				std::vector<int> values;
 
-				auto node = head_.get();
+				auto node = head_->next.get();
 
 				while( node )
 				{
@@ -768,8 +768,10 @@ namespace linkedlist_problems
 	public:
 
 		explicit sum_list()
-			: num_one_{ nullptr }, num_two_{ nullptr }
-		{ }
+		{
+			num_one_ = std::make_unique<num_list>();
+			num_two_ = std::make_unique<num_list>();
+		}
 
 		explicit sum_list( const std::vector<int>& one,
 			const std::vector<int>& two )

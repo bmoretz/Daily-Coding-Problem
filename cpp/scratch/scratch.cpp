@@ -100,7 +100,7 @@ class sum_list
 		{
 			head_ = std::make_unique<list_node>( 0 );
 			head_->prev = head_.get();
-			tail_ = head_->next.get();
+			tail_ = head_.get();
 		}
 
 		explicit num_list( const std::vector<int>& values )

@@ -556,7 +556,7 @@ namespace linkedlist_tests
     // forward sum list
     //
 
-    TEST_F( sum_list_tests, sum_list_forward_invalid )
+    TEST_F( sum_list_tests, sum_list_forward_empty )
     {
 	    const auto list = sum_list();
 
@@ -566,21 +566,74 @@ namespace linkedlist_tests
         const auto expected = std::vector<int>{ };
 
         EXPECT_EQ( actual, expected );
-        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
     }
 
-    TEST_F( sum_list_tests, sum_list_forward_case1 )
+    TEST_F( sum_list_tests, sum_list_forward_identity )
     {
-    	// 617 + 295 = 912
-        const auto list = sum_list{ { 6, 1, 7 }, { 2, 9, 5 } };
+        const auto list = sum_list( { 9, 6 }, { } );
 
         const auto sum = list.sum_forward();
 
         const auto actual = sum->get_values();
-        const auto expected = std::vector<int>{ 9, 1, 2 };
+        const auto expected = std::vector<int>{ 6, 9 };
+
+        EXPECT_EQ( actual, expected );
+        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
+    }
+	
+    TEST_F( sum_list_tests, sum_list_forward_case1 )
+    {
+        // 55 + 39 = 94
+        const auto list = sum_list{ { 5, 5 }, { 3, 9 } };
+
+        const auto sum = list.sum_forward();
+
+        const auto actual = sum->get_values();
+        const auto expected = std::vector<int>{ 4, 9 };
 
         EXPECT_EQ( actual, expected );
         EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
     }
 
+    TEST_F( sum_list_tests, sum_list_forward_case2 )
+    {
+        // 617 + 295 = 912
+        const auto list = sum_list{ { 6, 1, 7 }, { 2, 9, 5 } };
+
+        const auto sum = list.sum_forward();
+
+        const auto actual = sum->get_values();
+        const auto expected = std::vector<int>{ 2, 1, 9 };
+
+        EXPECT_EQ( actual, expected );
+        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
+    }
+
+    TEST_F( sum_list_tests, sum_list_forward_case3 )
+    {
+        // 617 + 295 = 912
+        const auto list = sum_list{ { 5, 6, 1, 2 }, { 8, 7 } };
+
+        const auto sum = list.sum_forward();
+
+        const auto actual = sum->get_values();
+        const auto expected = std::vector<int>{ 9, 9, 6, 5 };
+
+        EXPECT_EQ( actual, expected );
+        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
+    }
+
+    TEST_F( sum_list_tests, sum_list_forward_case4 )
+    {
+        // 617 + 295 = 912
+        const auto list = sum_list{ { 5, 6, 1, 2 }, { 8, 8 } };
+
+        const auto sum = list.sum_forward();
+
+        const auto actual = sum->get_values();
+        const auto expected = std::vector<int>{ 0, 0, 7, 5 };
+
+        EXPECT_EQ( actual, expected );
+        EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
+    }
 }
