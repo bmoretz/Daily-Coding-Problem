@@ -707,4 +707,84 @@ namespace linkedlist_tests
         EXPECT_EQ( actual, expected );
         EXPECT_TRUE( std::equal( actual.begin(), actual.end(), expected.begin() ) );
     }
+
+    /// <summary>
+    /// Testing class for sum list.
+    /// </summary>
+    class is_palindrome_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // is palindrome 1 tests
+    //
+
+    TEST_F( is_palindrome_tests, is_palindrome1_list_empty )
+    {
+        const auto list = is_palindrome<std::string> { };
+
+        const auto actual = list.is_palindrome1();
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_palindrome_tests, is_palindrome1_case1 )
+    {
+        const auto list = is_palindrome<std::string>{ "a" };
+
+        const auto actual = list.is_palindrome1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_palindrome_tests, is_palindrome1_case2 )
+    {
+        const auto list = is_palindrome<std::string>{ "a", "b" };
+
+        const auto actual = list.is_palindrome1();
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_palindrome_tests, is_palindrome1_case3 )
+    {
+        const auto list = is_palindrome<std::string>{ "a", "b", "a" };
+
+        const auto actual = list.is_palindrome1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_palindrome_tests, is_palindrome1_case4 )
+    {
+        const auto list = is_palindrome<std::string>{ "a", "b", "b", "a" };
+
+        const auto actual = list.is_palindrome1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_palindrome_tests, is_palindrome1_case5 )
+    {
+        const auto list = is_palindrome<std::string>{ "a", "b", "d", "a" };
+
+        const auto actual = list.is_palindrome1();
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
