@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <sstream>
@@ -90,7 +91,7 @@ class sum_list
 		
 		[[nodiscard]] iterator begin() const { return iterator( head_->next.get() ); }
 		
-		[[nodiscard]] iterator end() const { return iterator( tail_->next.get() ); }
+		[[nodiscard]] iterator end() const { return iterator( tail_ ); }
 
 		[[nodiscard]] iterator rbegin() const { return iterator( tail_ ); }
 
@@ -100,7 +101,7 @@ class sum_list
 		{
 			head_ = std::make_unique<list_node>( 0 );
 			head_->prev = head_.get();
-			tail_ = head_.get();
+			tail_ = head_->next.get();
 		}
 
 		explicit num_list( const std::vector<int>& values )
@@ -108,6 +109,7 @@ class sum_list
 		{
 			for( const auto& value : values )
 			{
+				
 				push_back( value );
 			}
 		}
@@ -162,6 +164,20 @@ class sum_list
 			tail_ = other.tail_;
 			
 			return *this;
+		}
+
+		void push_front( int value ) const
+		{
+			auto new_node = std::make_unique<list_node>( value );
+
+			if( head_->next )
+			{
+				new_node->next = std::move( head_->next );
+				new_node->next->prev = new_node.get();
+			}
+
+			new_node->prev = head_.get();
+			head_->next = std::move( new_node );
 		}
 		
 		void push_back( int value )
@@ -225,8 +241,8 @@ public:
 		num_one_ = std::make_unique<num_list>( one );
 		num_two_ = std::make_unique<num_list>( two );	
 	}
-	
-	[[nodiscard]] list_pointer sum_forward() const
+
+	[[nodiscard]] list_pointer sum_backward() const
 	{
 		auto result = std::make_unique<num_list>();
 		
@@ -255,7 +271,57 @@ public:
 
 		return result;
 	}
-	
+
+	[[nodiscard]] list_pointer forward_sum() const
+	{
+		auto result = std::make_unique<num_list>();
+
+		const auto left = num_one_.get();
+		const auto right = num_two_.get();
+
+		auto l_digit = num_one_->begin();
+		auto r_digit = num_two_->begin();
+
+		while( l_digit != left->end() || r_digit != right->end() )
+		{
+			if( l_digit != left->end() )
+				++l_digit;
+			else
+				left->push_front( 0 );
+
+			if( r_digit != right->end() )
+				++r_digit;
+			else
+				right->push_front( 0 );
+		}
+		
+
+		l_digit = num_one_->rbegin();
+		r_digit = num_two_->rbegin();
+		
+		auto remainder = 0;
+
+		while( l_digit != left->rend() || r_digit != right->rend() || remainder )
+		{
+			auto le = l_digit == left->rend();
+			auto re = r_digit == right->rend();
+			
+			const auto num1 = l_digit != left->end() ? *l_digit : 0;
+			const auto num2 = r_digit != right->end() ? *r_digit : 0;
+
+			const auto digit = num1 + num2 + remainder;
+
+			result->push_front( digit % 10 );
+
+			remainder = digit > 9 ? 1 : 0;
+
+			--l_digit;
+			--r_digit;
+		}
+
+		return result;
+	}
+
 	void display_values() const
 	{
 		std::cout << num_one_->to_string() << std::endl;
@@ -296,11 +362,11 @@ void test_harness()
 
 void list_base()
 {
-	const auto list = sum_list{ { 6, 1, 7 }, { 2, 9, 5 } };
+	const auto list = sum_list{ { 9, 6 }, { } };
 
 	list.display_values();
 
-	const auto result = list.sum_forward();
+	const auto result = list.forward_sum();
 
 	std::cout << result->to_string();
 }

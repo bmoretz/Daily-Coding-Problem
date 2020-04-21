@@ -447,3 +447,44 @@ class Test_RecMultiply1(unittest.TestCase):
         expected = 391
 
         assert actual == expected
+
+from py.problems.recursion import permutations1
+class Test_Permutations1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_case1(self):
+        
+        actual = permutations1('')
+        expected = []
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        actual = permutations1('a')
+        expected = 'a'
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        actual = permutations1('ab')
+        expected = ['ba', 'ab']
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        actual = permutations1('abc')
+        expected = ['cba', 'bca', 'cab', 'acb', 'bac', 'abc']
+
+        assert actual == expected
+
+    def test_case5(self):
+        
+        actual = permutations1('abcd')
+        expected = ['dcba', 'cdba', 'dbca', 'bdca', 'cbda', 'bcda', 'dcab', 'cdab', 'dacb', 'adcb', 'cadb', 'acdb', 'dbac', 'bdac', 'dabc', 'adbc', 'badc', 'abdc', 'cbad', 'bcad', 'cabd', 'acbd', 'bacd', 'abcd']
+
+        assert actual == expected

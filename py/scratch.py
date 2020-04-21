@@ -3,40 +3,29 @@
 Write a method to compute all permutations of a string of unique characters.
 '''
 
+def permutations1(chars):
 
-def permutations(chars, allow_dups=False):
+    def get_perms(chars):
+        n = len(chars)
+
+        if n == 1: return chars
+        
+        results = []
+
+        for index in range(len(chars)):
+
+            cur, rem = chars[index], ''.join([c for i, c in enumerate(chars) if i != index])
+
+            perms = get_perms(rem)
+
+            for perm in perms:
+                results.append(str(perm + cur))
+
+        return results
     
-    n = len(chars)
+    return get_perms(chars)
 
-    if n == 1: return chars
-    
-    results = []
-
-    for index in range(len(chars)):
-
-        cur, rem = chars[index], ''.join([c for i, c in enumerate(chars) if i != index])
-
-        perms = permutations(rem)
-
-        for perm in perms:
-            
-            lr = str(perm + cur)
-
-            if lr in results and allow_dups:
-                results.append(lr)
-            else:
-                results.append(lr)
-
-            rl = str(cur + perm)
-
-            if rl in results and allow_dups:
-                results.append(rl)
-            else:
-                results.append(rl)
-
-    return results
-
-perms = permutations('abcd', False)
+perms = permutations1('a')
 
 print(len(perms))
 print(perms)

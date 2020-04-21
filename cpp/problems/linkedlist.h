@@ -633,7 +633,7 @@ namespace linkedlist_problems
 
 			int& operator*() const { return node_->value; }
 			int operator->() const { return node_->value; }
-
+			
 			bool operator==( const self_type& other ) const { return node_ == other.node_; }
 			bool operator!=( const self_type& other ) const { return node_ != other.node_; }
 		};
@@ -642,7 +642,8 @@ namespace linkedlist_problems
 		{
 			std::unique_ptr<list_node> head_{};
 			list_node* tail_{};
-
+			std::size_t length_{ };
+			
 		public:
 
 			using iterator = list_iterator;
@@ -657,11 +658,13 @@ namespace linkedlist_problems
 
 			[[nodiscard]] iterator rend() const { return iterator( head_.get() ); }
 
+			[[nodiscard]] std::size_t size() const { return length_; }
+			
 			explicit num_list()
 			{
 				head_ = std::make_unique<list_node>( 0 );
-				head_->prev = head_.get();
 				tail_ = head_.get();
+				head_->prev = tail_;
 			}
 
 			explicit num_list( const std::vector<int>& values )
@@ -727,6 +730,22 @@ namespace linkedlist_problems
 				return *this;
 			}
 
+			void push_front( int value )
+			{
+				auto new_node = std::make_unique<list_node>( value );
+
+				if( head_->next )
+				{
+					new_node->next = std::move( head_->next );
+					new_node->next->prev = new_node.get();
+				}
+				
+				new_node->prev = head_.get();
+				head_->next = std::move( new_node );
+
+				length_++;
+			}
+			
 			void push_back( int value )
 			{
 				auto node = head_.get();
@@ -738,6 +757,8 @@ namespace linkedlist_problems
 				node->next->prev = node;
 
 				tail_ = node->next.get();
+
+				length_++;
 			}
 
 			[[nodiscard]] std::vector<int> get_values() const
@@ -754,7 +775,7 @@ namespace linkedlist_problems
 
 				return values;
 			}
-			
+
 			bool operator==( const num_list& other )
 			{
 				return *this == other;
@@ -780,7 +801,7 @@ namespace linkedlist_problems
 			num_two_ = std::make_unique<num_list>( two );
 		}
 
-		[[nodiscard]] list_pointer sum_forward() const
+		[[nodiscard]] list_pointer backward_sum() const
 		{
 			auto result = std::make_unique<num_list>();
 
@@ -805,6 +826,47 @@ namespace linkedlist_problems
 
 				--l_digit;
 				--r_digit;
+			}
+
+			return result;
+		}
+
+		[[nodiscard]] list_pointer forward_sum() const
+		{
+			auto result = std::make_unique<num_list>();
+
+			const auto left = num_one_.get();
+			const auto right = num_two_.get();
+
+			if( left->size() > right->size() )
+			{
+				for( auto r_pad = left->size() - right->size(); r_pad != 0; r_pad-- )
+					right->push_back( 0 );
+			}
+			else if( right->size() > left->size() )
+			{
+				for( auto l_pad = right->size() - left->size(); l_pad != 0; l_pad-- )
+					left->push_back( 0 );
+			}
+
+			auto l_digit = num_one_->begin();
+			auto r_digit = num_two_->begin();
+
+			auto remainder = 0;
+
+			while( l_digit != left->end() || r_digit != right->end() || remainder )
+			{
+				const auto num1 = l_digit != left->end() ? *l_digit : 0;
+				const auto num2 = r_digit != right->end() ? *r_digit : 0;
+
+				const auto digit = num1 + num2 + remainder;
+
+				result->push_front( digit % 10 );
+
+				remainder = digit > 9 ? 1 : 0;
+
+				++l_digit;
+				++r_digit;
 			}
 
 			return result;
