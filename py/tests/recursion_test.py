@@ -488,3 +488,51 @@ class Test_Permutations1(unittest.TestCase):
         expected = ['dcba', 'cdba', 'dbca', 'bdca', 'cbda', 'bcda', 'dcab', 'cdab', 'dacb', 'adcb', 'cadb', 'acdb', 'dbac', 'bdac', 'dabc', 'adbc', 'badc', 'abdc', 'cbad', 'bcad', 'cabd', 'acbd', 'bacd', 'abcd']
 
         assert actual == expected
+
+from py.problems.recursion import gen_parens1
+class Test_GenParens1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_empty(self):
+        
+        actual = gen_parens1(None)
+        expected = None
+
+        assert actual == expected
+
+    def test_none(self):
+        
+        actual = gen_parens1(0)
+        expected = ''
+
+        assert actual == expected
+
+    def test_case1(self):
+        
+        actual = gen_parens1(1)
+        expected = ['()']
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        actual = gen_parens1(2)
+        expected = ['(())', '()()']
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        actual = gen_parens1(3)
+        expected = ['((()))', '()(())', '(()())', '()()()']
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        actual = gen_parens1(4)
+        expected = ['(((())))', '()((()))', '(()(()))', '()()(())', '((()()))', '()(()())', '(()()())', '()()()()']
+
+        assert actual == expected

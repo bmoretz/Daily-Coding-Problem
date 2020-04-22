@@ -1,31 +1,28 @@
-'''Permutations without Dups.
+'''Parens: Implement an algorithm to print all valid (e.g., properly opened and closed) combinations
+of n pairs of parentheses.
 
-Write a method to compute all permutations of a string of unique characters.
+EXAMPLE:
+
+Input: 3
+Output: ((())), (()()), (())(), ()(()), ()()()
 '''
 
-def permutations1(chars):
+def gen_parens(n):
 
-    def get_perms(chars):
-        n = len(chars)
+    def wrap(p=''):
+        return '(' + p + ')'
 
-        if n == 1: return chars
-        
-        results = []
+    if n == 1: return [wrap()]
 
-        for index in range(len(chars)):
+    results = []
 
-            cur, rem = chars[index], ''.join([c for i, c in enumerate(chars) if i != index])
+    for par in list(gen_parens(n-1)):
+        results.append(wrap(par))
+        results.append(wrap() + par)
 
-            perms = get_perms(rem)
+    return results
 
-            for perm in perms:
-                results.append(str(perm + cur))
 
-        return results
-    
-    return get_perms(chars)
+p = gen_parens(1)
 
-perms = permutations1('a')
-
-print(len(perms))
-print(perms)
+print(p)
