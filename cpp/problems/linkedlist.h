@@ -873,7 +873,7 @@ namespace linkedlist_problems
 		}
 	};
 
-	/* Palindrome:
+	/* Is Palindrome.
 	 *
 	 * Implement a function to check if a linked list is a palindrome.
 	 */

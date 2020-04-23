@@ -1,28 +1,54 @@
-'''Parens: Implement an algorithm to print all valid (e.g., properly opened and closed) combinations
-of n pairs of parentheses.
+'''Paint fill.
 
-EXAMPLE:
+Implement the "paint fill" function that one might see on many image editing
+programs. That is, given a screen (represented by a two-dimensional array of 
+colors), a point, and a new color, fill in the surrounding area until the color
+changes from the original color.
 
-Input: 3
-Output: ((())), (()()), (())(), ()(()), ()()()
 '''
 
-def gen_parens(n):
+from enum import Enum
 
-    def wrap(p=''):
-        return '(' + p + ')'
+class Color(Enum):
+    BLACK = 0
+    WHITE = 1
+    RED = 2
+    GREEN = 3
+    BLUE = 4
 
-    if n == 1: return [wrap()]
+def fill_rect(grid, point, col):
+    
+    def fill(grid, point, old_col, new_col):
 
-    results = []
+        col, row = point
 
-    for par in list(gen_parens(n-1)):
-        results.append(wrap(par))
-        results.append(wrap() + par)
+        n_row, n_col = len(grid) - 1, len(grid[0]) - 1
 
-    return results
+        if row < 0 or row > n_row: return False
+        if col < 0 or col > n_col: return False
+        
+        old_col = grid[row][col]
 
+        if grid[row][col] == old_col:
 
-p = gen_parens(1)
+            grid[row][col] = new_col
 
-print(p)
+            fill(grid, (row-1, col), old_col, new_col)
+            fill(grid, (row+1, col), old_col, new_col)
+            fill(grid, (row, col-1), old_col, new_col)
+            fill(grid, (row, col+1), old_col, new_col)
+
+        return True
+
+    old_col = grid[point[0]][point[1]]
+
+    fill(grid, point, old_col, col)
+
+l, w = 5, 6
+
+grid = [[Color.BLACK for x in range(w)] for y in range(l)]
+point = (3, 3)
+
+fill_rect(grid, point, Color.RED)
+
+print(grid)
