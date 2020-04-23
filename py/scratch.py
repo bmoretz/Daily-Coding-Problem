@@ -49,6 +49,13 @@ l, w = 5, 6
 grid = [[Color.BLACK for x in range(w)] for y in range(l)]
 point = (3, 3)
 
-fill_rect(grid, point, Color.RED)
+# fill_rect(grid, point, Color.RED)
 
 print(grid)
+
+functions = []
+for i in range(10):
+    functions.append(lambda : i)
+
+for f in functions:
+    print(f())

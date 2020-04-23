@@ -10,7 +10,7 @@
  * Given two (singly) linked lists, determine if the two lists intersect. Return the
  * intersecting node.
  *
- * Note that the intersection is defined based on reference, not value. That is,  if the kth node
+ * Note that the intersection is defined based on reference, not value. That is, if the kth node
  * of the first linked list is the exact same node (by reference) as the jth node of the second
  * linked list, then they are intersecting.
  */
@@ -47,10 +47,11 @@ class intersection
 	{
 		using node_pointer = list_node*;
 
-		node_pointer head;
+		node_pointer head {};
 		node_pointer tail;
 		
 		linked_list()
+		
 		{
 			head = new list_node( Ty() );
 			tail = head->next;
@@ -68,7 +69,7 @@ class intersection
 		{
 			if( this == other )
 				return;
-
+			
 			this = other;
 		}
 		
@@ -83,43 +84,10 @@ class intersection
 				push_back( node->value );
 				node = node->next;
 			}
-
+			
 			return *this;
 		}
-		
-		~linked_list()
-		{
-			auto node = head;
 
-			while( node->next )
-			{
-				auto temp = node->next;
-
-				delete node;
-
-				node = temp;
-			}
-
-			delete node;
-		}
-
-		void reverse()
-		{
-			list_node* node = head->next, * prev = nullptr;
-
-			while( node )
-			{
-				auto temp = node->next;
-
-				node->next = prev;
-				prev = node;
-				node = temp;
-			}
-
-			tail = head->next;
-			head->next = prev;
-		}
-		
 		void append( list_node* node )
 		{
 			tail->next = node;
@@ -158,6 +126,20 @@ class intersection
 			node->next = new list_node( value );
 			tail = node->next;
 		}
+
+		[[nodiscard]] std::size_t length() const
+		{
+			node_pointer node = head->next;
+			auto length = std::size_t();
+
+			while( node )
+			{
+				length++;
+				node = node->next;
+			}
+
+			return length;
+		}
 	};
 
 	linked_list list1_, list2_;
@@ -185,23 +167,102 @@ public:
 		}
 	}
 
-	list_node* find_intersect()
+	~intersection()
 	{
-		list1_.reverse(); list2_.reverse();
+		auto l_node = list1_.head, r_node = list2_.head;
 
-		auto l = list1_.head->next, r = list2_.head->next;
+		auto intersect = find_intersect1();
+
+		while( l_node )
+		{
+			if( l_node == intersect )
+				break;
+			
+			auto temp = l_node->next;
+
+			delete l_node;
+
+			l_node = temp;
+		}
+
+		while( r_node )
+		{
+			auto temp = r_node->next;
+
+			delete r_node;
+
+			r_node = temp;
+		}	
+	}
+	
+	list_node* find_intersect1()
+	{
+		list_node* l_node = list1_.head;
 
 		list_node* intersect = nullptr;
 		
-		while( l && r )
+		while( l_node && !intersect )
 		{
-			if( l != r )
-				break;
+			list_node* r_node = list2_.head;
 
-			intersect = l;
-			
-			l = l->next;
-			r = r->next;
+			while( r_node )
+			{
+				if( l_node == r_node )
+				{
+					intersect = l_node;
+					break;
+				}
+
+				r_node = r_node->next;
+			}
+
+			l_node = l_node->next;
+		}
+
+		return intersect;
+	}
+	
+	list_node* find_intersect2()
+	{
+		list_node* left, * right;
+
+		auto n_left = list1_.length(), n_right = list2_.length();
+
+		auto delta = 0;
+		
+		if( n_left >= n_right )
+		{
+			left = list1_.head;
+			right = list2_.head;
+
+			delta = n_left - n_right;
+		}
+		else
+		{
+			left = list2_.head;
+			right = list1_.head;
+
+			delta = n_right - n_left;
+		}
+
+		while( delta > 0 )
+		{
+			left = left->next;
+			delta--;
+		}
+
+		list_node* intersect = nullptr;
+
+		while( left && right )
+		{
+			if( left == right )
+			{
+				intersect = left;
+				break;
+			}
+
+			left = left->next;
+			right = right->next;
 		}
 
 		return intersect;
@@ -215,10 +276,10 @@ void test_harness()
 		{ 5, 6, 7 },
 	3 };
 
-	const auto intersect = list.find_intersect();
+	const auto intersect = list.find_intersect2();
 
-	std::cout << "lists intersect at node: " << intersect
-		<< " with value " << intersect->value;
+	std::cout << "lists intersect at node: " << &intersect
+		<< " with value " << intersect->value << std::endl;
 }
 
 auto main() -> int

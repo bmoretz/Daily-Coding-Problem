@@ -801,6 +801,18 @@ namespace linkedlist_problems
 			num_two_ = std::make_unique<num_list>( two );
 		}
 
+		/// <summary>
+		/// sum list (backward)
+		///
+		/// This approach is straight forward iteration over the nodes,
+		/// calculate the sum, put the 10's digit in the result array and
+		/// carry the remainder (if any) over to the next digit.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <returns></returns>
 		[[nodiscard]] list_pointer backward_sum() const
 		{
 			auto result = std::make_unique<num_list>();
@@ -831,6 +843,21 @@ namespace linkedlist_problems
 			return result;
 		}
 
+		/// <summary>
+		/// sum list (forward)
+		///
+		/// This approach is a bit more involved than the more
+		/// straight-forward approach of summing forward. Here we
+		/// need to pad the shorter number (digit-wise) with zeros
+		/// so that the digits line up equally in both numbers. Once
+		/// we get the alignment correct, it's simply a matter of redoing
+		/// the same calculation from above.
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// </summary>
+		/// <returns></returns>
 		[[nodiscard]] list_pointer forward_sum() const
 		{
 			auto result = std::make_unique<num_list>();
@@ -951,6 +978,17 @@ namespace linkedlist_problems
 			tail_ = new_node;
 		}
 
+		/// <summary>
+		/// is palindrome 1
+		///
+		/// this approach uses a doubly linked list to
+		/// iterate over both sides of the list. We can
+		/// compare head to tail, and if they are the same
+		/// values until we reach the middle ( or, past the middle
+		/// in the case of an even length list), then the list
+		/// is indeed a palindrome.
+		/// </summary>
+		/// <returns>true if palindrome</returns>
 		[[nodiscard]] bool is_palindrome1() const
 		{
 			node_pointer start = head_->next, end = tail_;
@@ -986,6 +1024,315 @@ namespace linkedlist_problems
 			}
 
 			return values;
+		}
+	};
+
+	/* Intersection.
+	 *
+	 * Given two (singly) linked lists, determine if the two lists intersect. Return the
+	 * intersecting node.
+	 *
+	 * Note that the intersection is defined based on reference, not value. That is, if the kth node
+	 * of the first linked list is the exact same node (by reference) as the jth node of the second
+	 * linked list, then they are intersecting.
+	 */
+
+	template<typename Ty>
+	class intersection
+	{
+		struct list_node
+		{
+			using node_pointer = list_node*;
+
+			list_node()
+				: value{ }, next{ }
+			{ }
+
+			explicit list_node( Ty val )
+				: list_node()
+			{
+				value = std::move( val );
+			}
+
+			~list_node()
+			{
+				std::cout << "deleted node: " << this <<
+					" with value " << value << std::endl;
+			}
+
+			Ty value;
+
+			node_pointer next;
+		};
+
+		struct linked_list
+		{
+			using node_pointer = list_node*;
+
+			node_pointer head{};
+			node_pointer tail;
+
+			linked_list()
+
+			{
+				head = new list_node( Ty() );
+				tail = head->next;
+			}
+
+			linked_list( const std::initializer_list<Ty>& values )
+				: linked_list()
+			{
+				for( const auto& value : values )
+					push_back( value );
+			}
+
+			linked_list( linked_list& other )
+				: linked_list()
+			{
+				if( this == other )
+					return;
+
+				this = other;
+			}
+
+			linked_list& operator=( const linked_list& other )
+			{
+				if( this == &other ) return *this;
+
+				auto node = other.head->next;
+
+				while( node )
+				{
+					push_back( node->value );
+					node = node->next;
+				}
+
+				return *this;
+			}
+
+			void append( list_node* node )
+			{
+				if( !tail ) return;
+				
+				tail->next = node;
+
+				while( node->next )
+				{
+					tail = node;
+					node = node->next;
+				}
+			}
+
+			node_pointer get_node( Ty value )
+			{
+				node_pointer node = head->next;
+
+				while( node )
+				{
+					if( node->value == value )
+						break;
+
+					node = node->next;
+				}
+
+				return node;
+			}
+
+			void push_back( Ty value )
+			{
+				auto node = head;
+
+				while( node->next )
+				{
+					node = node->next;
+				}
+
+				node->next = new list_node( value );
+				tail = node->next;
+			}
+
+			[[nodiscard]] std::size_t length() const
+			{
+				node_pointer node = head->next;
+				auto length = std::size_t();
+
+				while( node )
+				{
+					length++;
+					node = node->next;
+				}
+
+				return length;
+			}
+		};
+
+		linked_list list1_, list2_;
+
+
+	public:
+		intersection() = delete;
+
+		/// <summary>
+		/// the constructor is responsible for creating and making the
+		/// contained lists cross-reference each other.
+		/// </summary>
+		/// <param name="l1">list 1</param>
+		/// <param name="l2">list 2</param>
+		/// <param name="intersect">where the intersection should be set</param>
+		intersection( const std::initializer_list<Ty>& l1,
+			const std::initializer_list<Ty> l2, const Ty& intersect )
+		{
+			list1_ = linked_list( l1 );
+			list2_ = linked_list( l2 );
+
+			auto node = list1_.get_node( intersect );
+
+			if( node )
+			{
+				list2_.append( node );
+			}
+			else
+			{
+				node = list2_.get_node( intersect );
+				list1_.append( node );
+			}
+		}
+
+		/// <summary>
+		/// the container destructor must be responsible for cleaning
+		/// up both the contained lists due to the intersection operation
+		/// making the tail of one of the internal lists point to nodes
+		/// it did not originally allocate.
+		/// </summary>
+		~intersection()
+		{
+			auto l_node = list1_.head, r_node = list2_.head;
+
+			auto intersect = find_intersect1();
+
+			while( l_node )
+			{
+				if( l_node == intersect )
+					break;
+
+				auto temp = l_node->next;
+
+				delete l_node;
+
+				l_node = temp;
+			}
+
+			while( r_node )
+			{
+				auto temp = r_node->next;
+
+				delete r_node;
+
+				r_node = temp;
+			}
+		}
+
+		/// <summary>
+		/// intersect 2
+		///
+		/// This approach is a direct brute force iteration
+		/// over both the lists. We simply start at the head
+		/// of the first list and check it against every node
+		/// in the second list looking for a match, if found
+		/// we can terminate early.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(N^2)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <returns>intersecting node (if any)</returns>
+		[[nodiscard]] list_node* find_intersect1() const
+		{
+			list_node* l_node = list1_.head;
+
+			list_node* intersect = nullptr;
+
+			while( l_node && !intersect )
+			{
+				list_node* r_node = list2_.head;
+
+				while( r_node )
+				{
+					if( l_node == r_node )
+					{
+						intersect = l_node;
+						break;
+					}
+
+					r_node = r_node->next;
+				}
+
+				l_node = l_node->next;
+			}
+
+			return intersect;
+		}
+
+		/// <summary>
+		/// intersection 2
+		///
+		/// this approach finds the length of both lists and
+		/// then determines the delta of the lengths in order
+		/// to increment the longer list forward so that both
+		/// lists can run in parallel increments. By incrementing
+		/// in parallel this way, we can compare l_node to r_node
+		/// and if there is an intersection we are guaranteed to
+		/// find it since they will both have the same tails.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(N+M)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <returns>intersecting node (if any)</returns>
+		[[nodiscard]] list_node* find_intersect2() const
+		{
+			list_node* left, * right;
+
+			auto n_left = list1_.length(), n_right = list2_.length();
+
+			auto delta = 0;
+
+			if( n_left >= n_right )
+			{
+				left = list1_.head;
+				right = list2_.head;
+
+				delta = n_left - n_right;
+			}
+			else
+			{
+				left = list2_.head;
+				right = list1_.head;
+
+				delta = n_right - n_left;
+			}
+
+			while( delta > 0 )
+			{
+				left = left->next;
+				delta--;
+			}
+
+			list_node* intersect = nullptr;
+
+			while( left && right )
+			{
+				if( left == right )
+				{
+					intersect = left;
+					break;
+				}
+
+				left = left->next;
+				right = right->next;
+			}
+
+			return intersect;
 		}
 	};
 }

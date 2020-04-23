@@ -709,7 +709,7 @@ namespace linkedlist_tests
     }
 
     /// <summary>
-    /// Testing class for sum list.
+    /// Testing class for is palindrome.
     /// </summary>
     class is_palindrome_tests :
         public ::testing::Test {
@@ -743,7 +743,7 @@ namespace linkedlist_tests
         const auto list = is_palindrome<std::string>{ "a" };
 
         const auto actual = list.is_palindrome1();
-        const auto expected = true;
+        const auto expected = false;
 
         EXPECT_EQ( actual, expected );
     }
@@ -786,5 +786,180 @@ namespace linkedlist_tests
         const auto expected = false;
 
         EXPECT_EQ( actual, expected );
+    }
+
+
+    /// <summary>
+    /// Testing class for intersection.
+    /// </summary>
+    class intersection_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // intersection 1 tests
+    //
+
+    TEST_F( intersection_tests, intersection1_invalid )
+    {
+        const auto list = intersection{ {}, {}, 0 };
+
+        const auto actual = list.find_intersect1();
+        const auto expected = nullptr;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( intersection_tests, intersection1_case1 )
+    {
+        const auto list = intersection<int>{
+            { 1, 2, 3, 4, 5, 6 },
+            { 5, 6, 7 },
+        3 };
+    	
+        const auto actual = list.find_intersect1();
+        const auto expected = 3;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection1_case2 )
+    {
+        const auto list = intersection<int>{
+            { 5, 6, 7 },
+            { 1, 2, 3, 4, 5, 6 },
+        3 };
+
+        const auto actual = list.find_intersect1();
+        const auto expected = 3;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection1_case3 )
+    {
+        const auto list = intersection<int>{
+            { 5, 6, 7 },
+            { 1, 2, 3, 4, 5, 6 },
+        6 };
+
+        const auto actual = list.find_intersect1();
+        const auto expected = 6;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection1_case4 )
+    {
+        const auto list = intersection<int>{
+            { 1 },
+            { 2, },
+        1 };
+
+        const auto actual = list.find_intersect1();
+        const auto expected = 1;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection1_case5 )
+    {
+        const auto list = intersection<int>{
+            { 1, 2, 3, 4 },
+            { 9, 8, 7, 6, 5 },
+        4 };
+
+        const auto actual = list.find_intersect1();
+        const auto expected = 4;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    //
+    // intersection 2 tests
+    //
+
+    TEST_F( intersection_tests, intersection2_invalid )
+    {
+        const auto list = intersection{ {}, {}, 0 };
+
+        const auto actual = list.find_intersect2();
+        const auto expected = nullptr;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( intersection_tests, intersection2_case1 )
+    {
+        const auto list = intersection<int>{
+            { 1, 2, 3, 4, 5, 6 },
+            { 5, 6, 7 },
+        3 };
+
+        const auto actual = list.find_intersect2();
+        const auto expected = 3;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection2_case2 )
+    {
+        const auto list = intersection<int>{
+            { 5, 6, 7 },
+            { 1, 2, 3, 4, 5, 6 },
+        3 };
+
+        const auto actual = list.find_intersect2();
+        const auto expected = 3;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection2_case3 )
+    {
+        const auto list = intersection<int>{
+            { 5, 6, 7 },
+            { 1, 2, 3, 4, 5, 6 },
+        6 };
+
+        const auto actual = list.find_intersect2();
+        const auto expected = 6;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection2_case4 )
+    {
+        const auto list = intersection<int>{
+            { 1 },
+            { 2, },
+        1 };
+
+        const auto actual = list.find_intersect2();
+        const auto expected = 1;
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( intersection_tests, intersection2_case5 )
+    {
+        const auto list = intersection<int>{
+            { 1, 2, 3, 4 },
+            { 9, 8, 7, 6, 5 },
+        4 };
+
+        const auto actual = list.find_intersect2();
+        const auto expected = 4;
+
+        EXPECT_TRUE( actual->value == expected );
     }
 }
