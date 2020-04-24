@@ -216,7 +216,7 @@ namespace linkedlist_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( dedupe_tests, klast1_case2 )
+    TEST_F( klast_tests, klast1_case2 )
     {
         auto list = klast{ 1, 2, 3, 4, 5, 6 };
 
@@ -226,7 +226,7 @@ namespace linkedlist_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( dedupe_tests, klast1_case3 )
+    TEST_F( klast_tests, klast1_case3 )
     {
         auto list = klast{ 1, 2, 3, 4, 5, 6 };
 
@@ -236,7 +236,7 @@ namespace linkedlist_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( dedupe_tests, klast1_case4 )
+    TEST_F( klast_tests, klast1_case4 )
     {
         auto list = klast{ 1, 2, 3, 4, 5, 6 };
 
@@ -246,7 +246,7 @@ namespace linkedlist_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( dedupe_tests, klast1_case5 )
+    TEST_F( klast_tests, klast1_case5 )
     {
         auto list = klast{ 1, 2, 3, 4, 5, 6 };
 
@@ -788,7 +788,6 @@ namespace linkedlist_tests
         EXPECT_EQ( actual, expected );
     }
 
-
     /// <summary>
     /// Testing class for intersection.
     /// </summary>
@@ -961,5 +960,165 @@ namespace linkedlist_tests
         const auto expected = 4;
 
         EXPECT_TRUE( actual->value == expected );
+    }
+
+    /// <summary>
+    /// Testing class for loop detection.
+    /// </summary>
+    class loop_detection_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // loop detection 1 tests
+    //
+
+    TEST_F( loop_detection_tests, loop_detect1_invalid )
+    {
+        auto list = loop_detect<std::string>();
+
+        const auto actual = list.detect_loop1();
+        const auto expected = nullptr;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect1_case1 )
+    {
+        auto list = loop_detect<std::string> { "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "C" );
+    	
+        const auto actual = list.detect_loop1();
+        const auto expected = "C";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect1_case2 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "A" );
+
+        const auto actual = list.detect_loop1();
+        const auto expected = "A";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect1_case3 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "D" );
+
+        const auto actual = list.detect_loop1();
+        const auto expected = "D";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect1_case4 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "E" );
+
+        const auto actual = list.detect_loop1();
+        const auto expected = "E";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect1_case5 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        const auto actual = list.detect_loop1();
+        const auto expected = nullptr;
+
+        EXPECT_TRUE( actual == expected );
+    }
+
+    //
+    // loop detection 1 tests
+    //
+
+    TEST_F( loop_detection_tests, loop_detect2_invalid )
+    {
+        auto list = loop_detect<std::string>();
+
+        const auto actual = list.detect_loop2();
+        const auto expected = nullptr;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect2_case1 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "C" );
+
+        const auto actual = list.detect_loop1();
+        const auto expected = "C";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect2_case2 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "A" );
+
+        const auto actual = list.detect_loop2();
+        const auto expected = "A";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect2_case3 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "D" );
+
+        const auto actual = list.detect_loop2();
+        const auto expected = "D";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect2_case4 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        list.set_loop( "E" );
+
+        const auto actual = list.detect_loop2();
+        const auto expected = "E";
+
+        EXPECT_TRUE( actual->value == expected );
+    }
+
+    TEST_F( loop_detection_tests, loop_detect2_case5 )
+    {
+        auto list = loop_detect<std::string>{ "A", "B", "C", "D", "E", "F" };
+
+        const auto actual = list.detect_loop2();
+        const auto expected = nullptr;
+
+        EXPECT_TRUE( actual == expected );
     }
 }

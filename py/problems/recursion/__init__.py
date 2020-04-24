@@ -546,3 +546,114 @@ def fill_rect(grid, point, col):
     old_col = grid[point[0]][point[1]]
 
     fill(grid, point, old_col, col)
+
+'''Paint fill.
+
+Implement the "paint fill" function that one might see on many image editing
+programs. That is, given a screen (represented by a two-dimensional array of 
+colors), a point, and a new color, fill in the surrounding area until the color
+changes from the original color.
+
+'''
+
+from enum import Enum
+
+class Color(Enum):
+    BLACK = 0
+    WHITE = 1
+    RED = 2
+    GREEN = 3
+    BLUE = 4
+
+def fill_rect(grid, point, col):
+    
+    def fill(grid, point, old_col, new_col):
+
+        row, col = point
+
+        n_row, n_col = len(grid) - 1, len(grid[0]) - 1
+
+        if row < 0 or row > n_row: return False
+        if col < 0 or col > n_col: return False
+        
+        old_col = grid[row][col]
+
+        if grid[row][col] == old_col:
+
+            grid[row][col] = new_col
+
+            fill(grid, (row-1, col), old_col, new_col)
+            fill(grid, (row+1, col), old_col, new_col)
+            fill(grid, (row, col-1), old_col, new_col)
+            fill(grid, (row, col+1), old_col, new_col)
+
+        return True
+
+    row, col = point
+    
+    n_row, n_col = len(grid) - 1, len(grid[0]) - 1
+
+    if row < 0 or row > n_row: return False
+    if col < 0 or col > n_col: return False
+    
+    old_col = grid[row][col]
+
+    fill(grid, point, old_col, col)
+
+'''Coins.
+
+Given an infinite number of quarters (25 cents), 10 dimes (10 cents),
+nickels (5 cents), and pennies (1 cent), write code to calculate the number
+of ways of representing n cents.
+'''
+
+''' brute force, O(N!) '''
+def coin_ways1(n):
+
+    def coin_ways(n):
+        if n <= 0: return 0
+
+        total = 0
+
+        for denom in (25, 10, 5, 1):
+            
+            if denom <= n:            
+                total += 1 + coin_ways(n - denom)
+
+        return total
+
+    if n == None: return None
+
+    return coin_ways(n)
+
+''' dynamic N(n log n)'''
+def coin_ways2(n):
+
+    seen_ways = {}
+
+    def coin_ways(n):
+        if n <= 0: return 0
+
+        if n in seen_ways: return seen_ways[n]
+
+        total = 0
+
+        for denom in (25, 10, 5, 1):
+            
+            if denom <= n:
+
+                cur = n - denom
+                total += 1
+
+                if cur in seen_ways:
+                    total += seen_ways[cur]
+                else:
+                    total += coin_ways(cur)
+
+        seen_ways[n] = total
+
+        return total
+
+    if n == None: return None
+
+    return coin_ways(n)

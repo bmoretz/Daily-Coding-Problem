@@ -3,283 +3,208 @@
 #include <iterator>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
+#include <set>
 
-/* Intersection.
+/* Loop detection.
  *
- * Given two (singly) linked lists, determine if the two lists intersect. Return the
- * intersecting node.
+ * Given a circular linked list, implement an algorithm that returns
+ * the node at the beginning of the loop.
  *
- * Note that the intersection is defined based on reference, not value. That is, if the kth node
- * of the first linked list is the exact same node (by reference) as the jth node of the second
- * linked list, then they are intersecting.
+ * DEFINITION.
+ *
+ * Circular linked list: A (corrupt) linked list in which a node's next pointer
+ * points to an earlier node, so as to make a loop in a linked list.
+ *
+ * EXAMPLE.
+ *
+ * Input: A -> B -> C -> D -> E -> C [the same C as earlier]
+ * Output: C
  */
 
-template<typename Ty>
-class intersection
+template <typename Ty>
+class loop_detect
 {
 	struct list_node
 	{
 		using node_pointer = list_node*;
 
-		list_node()
-			: value{ }, next{ }
-		{ }
+		list_node() = delete;
 
-		explicit list_node( Ty val )
-			: list_node()
-		{
-			value = std::move( val );
-		}
+		explicit list_node( Ty value )
+			: value( std::move( value ) )
+		{  }
 
 		~list_node()
 		{
-			std::cout << "deleted node: " << this << 
+			std::cout << "deleted node: " << this <<
 				" with value " << value << std::endl;
 		}
 
 		Ty value;
-
-		node_pointer next;
+		node_pointer next{};
 	};
 
-	struct linked_list
-	{
-		using node_pointer = list_node*;
+	using node_pointer = list_node*;
 
-		node_pointer head {};
-		node_pointer tail;
-		
-		linked_list()
-		
-		{
-			head = new list_node( Ty() );
-			tail = head->next;
-		}
-
-		linked_list( const std::initializer_list<Ty>& values )
-			: linked_list()
-		{
-			for( const auto& value : values )
-				push_back( value );
-		}
-
-		linked_list( linked_list& other )
-			: linked_list()
-		{
-			if( this == other )
-				return;
-			
-			this = other;
-		}
-		
-		linked_list& operator=( const linked_list& other )
-		{
-			if( this == &other ) return *this;
-
-			auto node = other.head->next;
-
-			while( node )
-			{
-				push_back( node->value );
-				node = node->next;
-			}
-			
-			return *this;
-		}
-
-		void append( list_node* node )
-		{
-			tail->next = node;
-
-			while( node->next )
-			{
-				tail = node;
-				node = node->next;
-			}
-		}
-		
-		node_pointer get_node( Ty value )
-		{
-			node_pointer node = head->next;
-
-			while( node )
-			{
-				if( node->value == value )
-					break;
-
-				node = node->next;
-			}
-
-			return node;
-		}
-
-		void push_back( Ty value )
-		{
-			auto node = head;
-
-			while( node->next )
-			{
-				node = node->next;
-			}
-
-			node->next = new list_node( value );
-			tail = node->next;
-		}
-
-		[[nodiscard]] std::size_t length() const
-		{
-			node_pointer node = head->next;
-			auto length = std::size_t();
-
-			while( node )
-			{
-				length++;
-				node = node->next;
-			}
-
-			return length;
-		}
-	};
-
-	linked_list list1_, list2_;
-
+	node_pointer head_, tail_;
 
 public:
-	intersection() = delete;
-	
-	intersection( const std::initializer_list<Ty>& l1,
-		const std::initializer_list<Ty> l2, const Ty& intersect )
+	explicit loop_detect()
 	{
-		list1_ = linked_list( l1 );
-		list2_ = linked_list( l2 );
-		
-		auto node = list1_.get_node( intersect );
+		head_ = new list_node( Ty() );
+		tail_ = head_->next;
+	}
 
-		if( node ) 
+	~loop_detect()
+	{
+		std::set<list_node*> seen;
+
+		node_pointer node = head_;
+
+		while( node )
 		{
-			list2_.append( node );
-		}
-		else
-		{
-			node = list2_.get_node( intersect );
-			list1_.append( node );
+			seen.insert( node );
+
+			node_pointer next = nullptr;
+
+			if( seen.find( node->next ) == seen.end() )
+				next = node->next;
+
+			delete node;
+
+			node = next;
 		}
 	}
 
-	~intersection()
+	loop_detect( loop_detect& other )
 	{
-		auto l_node = list1_.head, r_node = list2_.head;
+		if( this == other )
+			return;
 
-		auto intersect = find_intersect1();
+		this = other;
+	}
 
-		while( l_node )
+	loop_detect& operator=( const loop_detect& other )
+	{
+		if( this == &other ) return *this;
+
+		auto node = other.head_->next;
+
+		while( node )
 		{
-			if( l_node == intersect )
-				break;
-			
-			auto temp = l_node->next;
-
-			delete l_node;
-
-			l_node = temp;
+			push_back( node->value );
+			node = node->next;
 		}
 
-		while( r_node )
-		{
-			auto temp = r_node->next;
-
-			delete r_node;
-
-			r_node = temp;
-		}	
+		return *this;
 	}
-	
-	list_node* find_intersect1()
+
+	void push_back( Ty value )
 	{
-		list_node* l_node = list1_.head;
+		node_pointer node = head_;
 
-		list_node* intersect = nullptr;
-		
-		while( l_node && !intersect )
+		while( node->next )
 		{
-			list_node* r_node = list2_.head;
+			node = node->next;
+		}
 
-			while( r_node )
+		node->next = new list_node{ value };
+		tail_ = node->next;
+	}
+
+	void set_loop( Ty value )
+	{
+		auto node = head_->next;
+
+		while( node )
+		{
+			if( node->value == value )
 			{
-				if( l_node == r_node )
-				{
-					intersect = l_node;
+				tail_->next = node;
+				break;
+			}
+
+			node = node->next;
+		}
+	}
+	
+	node_pointer detect_loop2()
+	{
+		std::set<list_node*> seen;
+
+		node_pointer node = head_->next;
+
+		list_node* loop_node = nullptr;
+
+		while( node )
+		{
+			if( seen.find( node ) != seen.end() )
+			{
+				loop_node = node;
+				break;
+			}
+
+			seen.insert( node );
+
+			node = node->next;
+		}
+
+		return loop_node;
+ 	}
+
+	node_pointer detect_loop1()
+	{
+		auto node = head_->next;
+
+		list_node* loop_node = nullptr;
+
+		while( node && !loop_node )
+		{
+			auto candidate = head_->next;
+
+			while( node != candidate )
+			{
+				if( candidate->next == node->next ) {
+					loop_node = candidate->next;
 					break;
 				}
 
-				r_node = r_node->next;
+				candidate = candidate->next;
 			}
 
-			l_node = l_node->next;
+			node = node->next;
 		}
 
-		return intersect;
-	}
-	
-	list_node* find_intersect2()
-	{
-		list_node* left, * right;
-
-		auto n_left = list1_.length(), n_right = list2_.length();
-
-		auto delta = 0;
-		
-		if( n_left >= n_right )
-		{
-			left = list1_.head;
-			right = list2_.head;
-
-			delta = n_left - n_right;
-		}
-		else
-		{
-			left = list2_.head;
-			right = list1_.head;
-
-			delta = n_right - n_left;
-		}
-
-		while( delta > 0 )
-		{
-			left = left->next;
-			delta--;
-		}
-
-		list_node* intersect = nullptr;
-
-		while( left && right )
-		{
-			if( left == right )
-			{
-				intersect = left;
-				break;
-			}
-
-			left = left->next;
-			right = right->next;
-		}
-
-		return intersect;
+		return loop_node;
 	}
 };
 
 void test_harness()
 {
-	auto list = intersection<int>{
-		{ 1, 2, 3, 4, 5, 6},
-		{ 5, 6, 7 },
-	3 };
+	std::cout << "Enter values for the test list, type C to quit.: \n";
 
-	const auto intersect = list.find_intersect2();
+	std::string input;
+	auto list = loop_detect<std::string>();
+	
+	while( std::getline( std::cin, input) )
+	{
+		if( input == "C" )
+			break;
+		
+		list.push_back( input );
+	}
 
-	std::cout << "lists intersect at node: " << &intersect
-		<< " with value " << intersect->value << std::endl;
+	std::cout << "Enter the node to loop: \n";
+
+	std::getline( std::cin, input );
+
+	list.set_loop( input );
+
+	const auto loop_node = list.detect_loop1();
+
+	std::cout << "Loop node: " << loop_node << "\n";
 }
 
 auto main() -> int

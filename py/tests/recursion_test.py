@@ -536,3 +536,99 @@ class Test_GenParens1(unittest.TestCase):
         expected = ['(((())))', '()((()))', '(()(()))', '()()(())', '((()()))', '()(()())', '(()()())', '()()()()']
 
         assert actual == expected
+
+from py.problems.recursion import coin_ways1
+class Test_GenParens1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_empty(self):
+        
+        actual = coin_ways1(None)
+        expected = None
+
+        assert actual == expected
+
+    def test_none(self):
+        
+        actual = coin_ways1(0)
+        expected = 0
+
+        assert actual == expected
+
+    def test_case1(self):
+        
+        actual = coin_ways1(5)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        actual = coin_ways1(20)
+        expected = 751
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        actual = coin_ways1(10)
+        expected = 33
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        actual = coin_ways1(15)
+        expected = 161
+
+        assert actual == expected
+
+from py.problems.recursion import coin_ways2
+class Test_GenParens1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_empty(self):
+        
+        actual = coin_ways2(None)
+        expected = None
+
+        assert actual == expected
+
+    def test_none(self):
+        
+        actual = coin_ways2(0)
+        expected = 0
+
+        assert actual == expected
+
+    def test_case1(self):
+        
+        actual = coin_ways2(5)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        actual = coin_ways2(20)
+        expected = 751
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        actual = coin_ways2(10)
+        expected = 33
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        actual = coin_ways2(15)
+        expected = 161
+
+        assert actual == expected

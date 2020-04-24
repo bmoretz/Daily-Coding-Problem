@@ -1054,12 +1054,6 @@ namespace linkedlist_problems
 				value = std::move( val );
 			}
 
-			~list_node()
-			{
-				std::cout << "deleted node: " << this <<
-					" with value " << value << std::endl;
-			}
-
 			Ty value;
 
 			node_pointer next;
@@ -1333,6 +1327,216 @@ namespace linkedlist_problems
 			}
 
 			return intersect;
+		}
+	};
+
+	/* Loop detection.
+	 *
+	 * Given a circular linked list, implement an algorithm that returns
+	 * the node at the beginning of the loop.
+	 *
+	 * DEFINITION.
+	 *
+	 * Circular linked list: A (corrupt) linked list in which a node's next pointer
+	 * points to an earlier node, so as to make a loop in a linked list.
+	 *
+	 * EXAMPLE.
+	 *
+	 * Input: A -> B -> C -> D -> E -> C [the same C as earlier]
+	 * Output: C
+	 */
+
+	template <typename Ty>
+	class loop_detect
+	{
+		struct list_node
+		{
+			using node_pointer = list_node*;
+
+			list_node() = delete;
+
+			explicit list_node( Ty value )
+				: value( std::move( value ) )
+			{  }
+
+			~list_node()
+			{
+				std::cout << "deleted node: " << this <<
+					" with value " << value << std::endl;
+			}
+
+			Ty value;
+			node_pointer next{};
+		};
+
+		using node_pointer = list_node*;
+
+		node_pointer head_, tail_;
+
+	public:
+		explicit loop_detect()
+		{
+			head_ = new list_node( Ty() );
+			tail_ = head_->next;
+		}
+
+		~loop_detect()
+		{
+			std::set<list_node*> seen;
+
+			node_pointer node = head_;
+
+			while( node )
+			{
+				seen.insert( node );
+
+				node_pointer next = nullptr;
+
+				if( seen.find( node->next ) == seen.end() )
+					next = node->next;
+
+				delete node;
+
+				node = next;
+			}
+		}
+
+		loop_detect( loop_detect& other )
+		{
+			if( this == other )
+				return;
+
+			this = other;
+		}
+
+		loop_detect( const std::initializer_list<Ty>& init_list )
+			: loop_detect()
+		{
+			for( const auto& item : init_list )
+			{
+				push_back( item );
+			}
+		}
+		
+		loop_detect& operator=( const loop_detect& other )
+		{
+			if( this == &other ) return *this;
+
+			auto node = other.head_->next;
+
+			while( node )
+			{
+				push_back( node->value );
+				node = node->next;
+			}
+
+			return *this;
+		}
+
+		void push_back( Ty value )
+		{
+			node_pointer node = head_;
+
+			while( node->next )
+			{
+				node = node->next;
+			}
+
+			node->next = new list_node{ value };
+			tail_ = node->next;
+		}
+
+		void set_loop( Ty value )
+		{
+			auto node = head_->next;
+
+			while( node )
+			{
+				if( node->value == value )
+				{
+					tail_->next = node;
+					break;
+				}
+
+				node = node->next;
+			}
+		}
+
+		/// <summary>
+		/// loop detect 1
+		///
+		/// This is the brute force approach to detect a loop node
+		/// in a linked list. We use two pointers, one to iterate over the
+		/// list, and another sub-pointer to iterate it over it again,
+		/// to check if any existing node points to both the next node in
+		/// list, and an existing node in the list.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(N^2)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <returns>the loop node</returns>
+		node_pointer detect_loop1()
+		{
+			auto node = head_->next;
+
+			list_node* loop_node = nullptr;
+
+			while( node && !loop_node )
+			{
+				auto candidate = head_;
+
+				while( node != candidate )
+				{
+					if( candidate->next == node->next ) {
+						loop_node = candidate->next;
+						break;
+					}
+
+					candidate = candidate->next;
+				}
+
+				node = node->next;
+			}
+
+			return loop_node;
+		}
+		
+		/// <summary>
+		/// loop detect 2
+		/// 
+		/// This approach is a substantial improvement over the brute
+		/// force approach. We simply iterate over the list once using
+		/// a single pointer, and save that pointer in a set each iteration.
+		/// If we encounter a node that exists in the set, then we have a loop.
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(N)</space>
+		/// </complexity>
+		/// </summary>
+		/// <returns>the loop node</returns>
+		node_pointer detect_loop2()
+		{
+			std::set<list_node*> seen;
+
+			node_pointer node = head_->next;
+
+			list_node* loop_node = nullptr;
+
+			while( node )
+			{
+				if( seen.find( node ) != seen.end() )
+				{
+					loop_node = node;
+					break;
+				}
+
+				seen.insert( node );
+
+				node = node->next;
+			}
+
+			return loop_node;
 		}
 	};
 }

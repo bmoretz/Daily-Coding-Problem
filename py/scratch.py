@@ -1,61 +1,41 @@
-'''Paint fill.
+'''Coins.
 
-Implement the "paint fill" function that one might see on many image editing
-programs. That is, given a screen (represented by a two-dimensional array of 
-colors), a point, and a new color, fill in the surrounding area until the color
-changes from the original color.
-
+Given an infinite number of quarters (25 cents), 10 dimes (10 cents),
+nickels (5 cents), and pennies (1 cent), write code to calculate the number
+of ways of representing n cents.
 '''
 
-from enum import Enum
+def coin_ways1(n):
 
-class Color(Enum):
-    BLACK = 0
-    WHITE = 1
-    RED = 2
-    GREEN = 3
-    BLUE = 4
+    seen_ways = {}
 
-def fill_rect(grid, point, col):
-    
-    def fill(grid, point, old_col, new_col):
+    def coin_ways(n):
+        if n <= 0: return 0
 
-        col, row = point
+        if n in seen_ways: return seen_ways[n]
 
-        n_row, n_col = len(grid) - 1, len(grid[0]) - 1
+        total = 0
 
-        if row < 0 or row > n_row: return False
-        if col < 0 or col > n_col: return False
-        
-        old_col = grid[row][col]
+        for denom in (25, 10, 5, 1):
+            
+            if denom <= n:
 
-        if grid[row][col] == old_col:
+                cur = n - denom
+                total += 1
 
-            grid[row][col] = new_col
+                if cur in seen_ways:
+                    total += seen_ways[cur]
+                else:
+                    total += coin_ways(cur)
 
-            fill(grid, (row-1, col), old_col, new_col)
-            fill(grid, (row+1, col), old_col, new_col)
-            fill(grid, (row, col-1), old_col, new_col)
-            fill(grid, (row, col+1), old_col, new_col)
+        seen_ways[n] = total
 
-        return True
+        return total
 
-    old_col = grid[point[0]][point[1]]
+    if n == None: return None
 
-    fill(grid, point, old_col, col)
+    return coin_ways(n)
 
-l, w = 5, 6
+ways = coin_ways1(100)
 
-grid = [[Color.BLACK for x in range(w)] for y in range(l)]
-point = (3, 3)
-
-# fill_rect(grid, point, Color.RED)
-
-print(grid)
-
-functions = []
-for i in range(10):
-    functions.append(lambda : i)
-
-for f in functions:
-    print(f())
+print(ways)
