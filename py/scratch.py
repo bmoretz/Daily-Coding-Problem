@@ -1,41 +1,65 @@
-'''Coins.
+'''Eight Queens.
 
-Given an infinite number of quarters (25 cents), 10 dimes (10 cents),
-nickels (5 cents), and pennies (1 cent), write code to calculate the number
-of ways of representing n cents.
+Write an algorithm to print all ways of arranging eight queens on an 8x8 chess
+board so that none of them share the same row, column, or diagonal. In this case,
+"diagonal" means all diagonals, not just the two that bisect the board.
 '''
 
-def coin_ways1(n):
+def get_board(n):
+    return [[0 for col in range(n)] for row in range(n)]
+ 
+def place_queens(board):
 
-    seen_ways = {}
+    def try_place(board, row, col):
 
-    def coin_ways(n):
-        if n <= 0: return 0
+        colsum = 0
+        
+        for r in range(n_row):
+            colsum += board[r][col]
 
-        if n in seen_ways: return seen_ways[n]
+        rowsum = sum(board[row])
 
-        total = 0
+        diagsum = 0
 
-        for denom in (25, 10, 5, 1):
-            
-            if denom <= n:
+        if row < n_row - 1:
+            if col < n_col - 1:
+               diagsum += board[row + 1][col + 1]
+            if col > 0:
+                diagsum += board[row + 1][col - 1]
 
-                cur = n - denom
-                total += 1
+        if colsum == 0 and rowsum == 0 and diagsum == 0:
+            board[row][col] = 1
 
-                if cur in seen_ways:
-                    total += seen_ways[cur]
-                else:
-                    total += coin_ways(cur)
+        return board[row][col]
 
-        seen_ways[n] = total
+    if board == None: return None
 
-        return total
+    n_row, n_col = len(board), len(board[0])
 
-    if n == None: return None
+    placed = 0
 
-    return coin_ways(n)
+    for row in range(n_row)[::-1]:
 
-ways = coin_ways1(100)
+        for col in range(n_col)[::-1]:
 
-print(ways)
+           if try_place(board, row, col):
+               placed += 1
+               break
+
+
+    return board if placed == n_col else None
+
+n = 4
+
+boards = []
+
+for places in range(n):
+    board = get_board(n)
+    
+    places = place_queens(board)
+
+    if(places):
+        boards.append(places)
+
+
+print(boards)
