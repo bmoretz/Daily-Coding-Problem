@@ -21,106 +21,82 @@ For the first part of the programming assignment, you should always use the firs
 
 file_path = os.getcwd() + '\py\\data\\QuickSort.txt'
 
-def to_array(str):
-    return [int(c) for c in str]
-
 def read_numbers():
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
         numbers = [int(line) for line in lines]
     return numbers
 
-''' quick sort with pivot statically set at 0'''
+''' quick sort with pivot statically set at 0 '''
 
-def qsort(arr, left, right, choose_pivot, comp=0):
+def pivot_0(arr, left, right):
+    return left
+
+''' quick sort with pivot statically set at n '''
+
+def pivot_n(arr, left, right): 
+    return right
+
+''' quick sort with pivot calculated to be the median value '''
+def pivot_m(arr, left, right):
     
-    if left >= right: return 0
+    mid = 0 if (right - left) == 1 else ((right - left)) // 2 + left
+    
+    candidate = sorted([arr[left], arr[mid], arr[right]])
+
+    return arr.index(candidate[1])
+
+def quick_sort(arr, left=0, right=None, choose_pivot=None, comp=0):
+    
+    def partition(arr, left, right, pivot):
+
+        assert left <= pivot <= right
+
+        p = arr[pivot]
+
+        arr[left], arr[pivot] = arr[pivot], arr[left]
+
+        j = left + 1
+
+        for index in range(left + 1, right + 1):
+
+            if arr[index] < p:
+                arr[index], arr[j] = arr[j], arr[index]
+                j += 1
+
+        j -= 1
+
+        arr[left], arr[j] = arr[j], arr[left]
+    
+        return j
+    
+    if right == None: right = len(arr) - 1
 
     n = right - left
 
-    comp = n - 1
+    if n < 1: return 0
+
+    comp = n
 
     pivot = choose_pivot(arr, left, right)
 
-    arr[pivot], arr[left] = arr[left], arr[pivot]
+    j = partition(arr, left, right, pivot)
 
-    j = left + 1
-
-    for index in range(left + 1, right):
-
-        if arr[index] < arr[left]:
-            arr[index], arr[j] = arr[j], arr[index]
-            j += 1
-
-    arr[left], arr[j - 1] = arr[j - 1], arr[left]
-
-    comp += qsort(arr, left, j - 1, choose_pivot)
-    comp += qsort(arr, j + 1, right, choose_pivot)
+    comp += quick_sort(arr, left, j - 1, choose_pivot)
+    comp += quick_sort(arr, j + 1, right, choose_pivot)
 
     return comp
 
-def pivot_0(arr):
+def run_compare():
+    for method in (pivot_0, pivot_n, pivot_m):
 
-    def choose_pivot(arr, left, right):
-        return left
+        numbers = read_numbers()
 
-    n = len(arr)
+        comparisions = quick_sort(numbers, choose_pivot=method)
 
-    return qsort(arr, 0, n, choose_pivot)
+        assert numbers == sorted(numbers)
 
-def pivot_n(arr):
+        print(f'method: ', method.__name__, ' sorted: ', len(numbers), ' elements with ', comparisions, ' comparisions.')
 
-    def choose_pivot(arr, left, right):
-        return right - 1
-
-    n = len(arr)
-
-    return qsort(arr, 0, n, choose_pivot)
-
-def pivot_m(arr):
-
-    def choose_pivot(arr, left, right):
-
-        mid = n // 2 - 1 if n % 2 == 0 else n // 2
-
-        l, r, m = arr[left], arr[right - 1], arr[mid]
-
-        values = sorted([l, r, m])
-        
-        index = 0
-
-        if values[1] == arr[left]:
-            index = left
-        elif values[1] == arr[right - 1]:
-            index = right
-        else:
-            index = mid
-
-        return index
-
-    n = len(arr)
-
-    return qsort(arr, 0, n, choose_pivot)
-
-nums = [5, 4, 3, 2, 1]
-comps = pivot_n(nums)
-print(comps)
-
-num1 = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-comps = pivot_n(num1)
-
-pivot_n(num1)
-
-num2 = [8, 2, 4, 5, 7, 1]
-comps = pivot_m(num2)
-
-num2 = [13,10,6,7,14,5,8,12,1,19,4,11,16,9,17,3,2,18,20,15]
-comps = pivot_m(num2)
-
-q1 = pivot_0(read_numbers())
-print(q1)
-
-nums = read_numbers()
-q2 = pivot_n(nums)
-print(q2)
-
+if __name__ == '__main__':
+    run_compare()

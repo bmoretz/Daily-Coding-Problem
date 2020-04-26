@@ -104,3 +104,36 @@ class Test_CountInversions(unittest.TestCase):
         expected = 0
 
         assert actual == expected
+
+from py.problems.illuminated import quick_sort
+from py.problems.illuminated import pivot_0, pivot_n, pivot_m
+from py.problems.illuminated import get_sort_data
+
+class Test_QuickSort(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_pivot_0(self):
+
+        arr = get_sort_data()
+
+        quick_sort(arr, choose_pivot=pivot_0)
+        
+        assert arr == sorted(arr)
+
+    def test_pivot_n(self):
+
+        arr = get_sort_data()
+
+        quick_sort(arr, choose_pivot=pivot_n)
+        
+        assert arr == sorted(arr)
+
+    def test_pivot_m(self):
+
+        arr = get_sort_data()
+
+        quick_sort(arr, choose_pivot=pivot_m)
+        
+        assert arr == sorted(arr)
