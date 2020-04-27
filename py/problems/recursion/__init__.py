@@ -420,7 +420,7 @@ class Tower():
 
     def moveTop(self, dest):
         disk = self.top()
-        print(f'\nmoving {disk} from tower {src.id()} to tower {dest.id()}')
+        print(f'\nmoving {disk} from to tower {dest.id()}')
         dest.push(disk) 
 
     def moveDisks(self, n, dest, alt):
@@ -444,7 +444,7 @@ class Tower():
 
         return result
 
-'''Permutations without Dups.
+'''Permutations without duplicates.
 
 Write a method to compute all permutations of a string of unique characters.
 '''
@@ -657,3 +657,111 @@ def coin_ways2(n):
     if n == None: return None
 
     return coin_ways(n)
+
+'''Eight Queens.
+
+Write an algorithm to print all ways of arranging eight queens on an 8x8 chess
+board so that none of them share the same row, column, or diagonal. In this case,
+"diagonal" means all diagonals, not just the two that bisect the board.
+'''
+
+def get_board(n):
+    return [[0 for col in range(n)] for row in range(n)]
+ 
+def place_queens(board):
+
+    def try_place(board, row, col):
+
+        colsum = 0
+        
+        for r in range(n_row):
+            colsum += board[r][col]
+
+        rowsum = sum(board[row])
+
+        diagsum = 0
+
+        if row < n_row - 1:
+            if col < n_col - 1:
+               diagsum += board[row + 1][col + 1]
+            if col > 0:
+                diagsum += board[row + 1][col - 1]
+
+        if colsum == 0 and rowsum == 0 and diagsum == 0:
+            board[row][col] = 1
+
+        return board[row][col]
+
+    if board == None: return None
+
+    n_row, n_col = len(board), len(board[0])
+
+    placed = 0
+
+    for row in range(n_row)[::-1]:
+
+        for col in range(n_col)[::-1]:
+
+           if try_place(board, row, col):
+               placed += 1
+               break
+
+
+    return board if placed == n_col else None
+
+'''Boxes.
+
+You have a stack of n boxes, with widths w_1, heights h_1, and depths d_1. The 
+boxes cannot be rotated and can only be stacked on top of one another if each box
+in the stack is strictly larger than the box above it in width, height and depth.
+
+Implement a method to compute teh height of the tallest possible stack.
+
+The height of a stack is the sum of the heights of each box.
+'''
+
+class Box():
+
+    def __init__(self, w, h, d):
+        self.width = w
+        self.height = h
+        self.depth = d
+
+    def __eq__(self, other):
+        
+        equal = False
+
+        if isinstance(other, Box):
+            equal = self.width == other.width and \
+                self.height == other.height and \
+                    self.depth == other.depth
+
+        return equal
+
+    def __lt__(self, other):
+
+        lt = False
+
+        if isinstance(other, Box):
+            lt = self.width < other.width and \
+                self.height < other.height and \
+                    self.depth < other.depth
+
+        return lt
+
+    def __gt__(self, other):
+        return not self.__lt__(other)
+
+    def __str__(self):
+        return f'[{self.width}, {self.height}, {self.depth}]'
+
+def stack_boxes1(boxes):
+    
+    n = len(boxes)
+
+    if n == 0: return None
+    if n == 1: return [boxes[0]]
+
+    s = list(sorted(boxes))
+
+    return stack_boxes1(s[:n - 1]) + [s[n - 1]]

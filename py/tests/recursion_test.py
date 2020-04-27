@@ -632,3 +632,65 @@ class Test_GenParens1(unittest.TestCase):
         expected = 161
 
         assert actual == expected
+
+from py.problems.recursion import Box
+from py.problems.recursion import stack_boxes1
+
+class Test_StackBoxes1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_empty(self):
+        
+        boxes = []
+
+        actual = stack_boxes1(boxes)
+        expected = None
+
+        assert actual == expected
+
+    def test_none(self):
+        
+        boxes = []
+
+        actual = stack_boxes1(boxes)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        boxes = []
+
+        for dim in range(2, 0, -1):
+            boxes.append(Box(dim, dim, dim))
+
+        actual = stack_boxes1(boxes)
+        expected = sorted(actual)
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        boxes = []
+
+        for dim in range(3, 0, -1):
+            boxes.append(Box(dim, dim, dim))
+
+        actual = stack_boxes1(boxes)
+        expected = sorted(actual)
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        boxes = []
+
+        for dim in range(5, 0, -1):
+            boxes.append(Box(dim, dim, dim))
+
+        actual = stack_boxes1(boxes)
+        expected = sorted(actual)
+
+        assert actual == expected

@@ -112,10 +112,10 @@ Write a function that returns the maximum number of edges you can remove while s
 
 def max_edges1(graph):
 
-    def traverse(graph : IGraph, curr, result):
+    def traverse(graph : IGraph, cur, result):
         descendants = 0
 
-        for child in graph.neighbors(curr):
+        for child in graph.neighbors(cur):
             num_nodes, result = traverse(graph, child, result)
 
             result[child] += num_nodes - 1
@@ -147,7 +147,8 @@ return null as there is no possible transformation from "dog" to "cat".
 '''
 
 def word_ladder1(start, end, words):
-    from problems.graph.adj_mat_graph import AMGraph
+
+    from py.problems.graph.adj_mat_graph import AMGraph
 
     all_words = set(words) | set([start, end])
 

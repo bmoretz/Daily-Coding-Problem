@@ -1,65 +1,65 @@
-'''Eight Queens.
+'''Boxes.
 
-Write an algorithm to print all ways of arranging eight queens on an 8x8 chess
-board so that none of them share the same row, column, or diagonal. In this case,
-"diagonal" means all diagonals, not just the two that bisect the board.
+You have a stack of n boxes, with widths w_1, heights h_1, and depths d_1. The 
+boxes cannot be rotated and can only be stacked on top of one another if each box
+in the stack is strictly larger than the box above it in width, height and depth.
+
+Implement a method to compute teh height of the tallest possible stack.
+
+The height of a stack is the sum of the heights of each box.
 '''
 
-def get_board(n):
-    return [[0 for col in range(n)] for row in range(n)]
- 
-def place_queens(board):
+class Box():
 
-    def try_place(board, row, col):
+    def __init__(self, w, h, d):
+        self.width = w
+        self.height = h
+        self.depth = d
 
-        colsum = 0
+    def __eq__(self, other):
         
-        for r in range(n_row):
-            colsum += board[r][col]
+        equal = False
 
-        rowsum = sum(board[row])
+        if isinstance(other, Box):
+            equal = self.width == other.width and \
+                self.height == other.height and \
+                    self.depth == other.depth
 
-        diagsum = 0
+        return equal
 
-        if row < n_row - 1:
-            if col < n_col - 1:
-               diagsum += board[row + 1][col + 1]
-            if col > 0:
-                diagsum += board[row + 1][col - 1]
+    def __lt__(self, other):
 
-        if colsum == 0 and rowsum == 0 and diagsum == 0:
-            board[row][col] = 1
+        lt = False
 
-        return board[row][col]
+        if isinstance(other, Box):
+            lt = self.width < other.width and \
+                self.height < other.height and \
+                    self.depth < other.depth
 
-    if board == None: return None
+        return lt
 
-    n_row, n_col = len(board), len(board[0])
+    def __gt__(self, other):
+        return not self.__lt__(other)
 
-    placed = 0
+    def __str__(self):
+        return f'[{self.width}, {self.height}, {self.depth}]'
 
-    for row in range(n_row)[::-1]:
-
-        for col in range(n_col)[::-1]:
-
-           if try_place(board, row, col):
-               placed += 1
-               break
-
-
-    return board if placed == n_col else None
-
-n = 4
-
-boards = []
-
-for places in range(n):
-    board = get_board(n)
+def stack_boxes2(boxes):
     
-    places = place_queens(board)
+    n = len(boxes)
 
-    if(places):
-        boards.append(places)
+    if n == 0: return None
+    if n == 1: return [boxes[0]]
 
+    s = list(sorted(boxes))
 
-print(boards)
+    return stack_boxes2(s[:n - 1]) + [s[n - 1]]
+
+boxes = []
+
+for dim in range(5, 0, -1):
+    boxes.append(Box(dim, dim, dim))
+
+stacked = stack_boxes2(boxes)
+
+print(stacked)
