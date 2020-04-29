@@ -765,3 +765,33 @@ def stack_boxes1(boxes):
     s = list(sorted(boxes))
 
     return stack_boxes1(s[:n - 1]) + [s[n - 1]]
+
+'''Boolean Evaluation.
+
+Given a boolean expression consisting of the symbols 0 (false), and 1 (true),
+& (AND), | (OR) and ^ (XOR), and a desired boolean result value result, implement
+a function to count the number of ways of parenthesizing the expression such that
+it evaluates to result.
+
+EXAMPLE:
+
+countEval("1^0|0|1", false) -> 2
+countEval("0&0&0&1^1|0", true) -> 10
+
+'''
+
+def countEval(expr, result):
+
+    def evalExpr(expr):
+        
+        return True if expr == '1' else False
+
+    ops = { ( '|', lambda l, r: l | r),
+            ( '&', lambda l, r: l & r),
+            ( '^', lambda l, r: l ^ r) }
+
+    for digit in expr:
+        pass
+
+countEval("1^0|0|1", False)
+

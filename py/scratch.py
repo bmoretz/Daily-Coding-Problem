@@ -1,65 +1,36 @@
-'''Boxes.
+'''Sorted Merge.
 
-You have a stack of n boxes, with widths w_1, heights h_1, and depths d_1. The 
-boxes cannot be rotated and can only be stacked on top of one another if each box
-in the stack is strictly larger than the box above it in width, height and depth.
-
-Implement a method to compute teh height of the tallest possible stack.
-
-The height of a stack is the sum of the heights of each box.
+You are given two sorted arrays, A and B, where A has a large enough
+buffer at the end to hold B. Write a method to merge B into A in sorted order.
 '''
 
-class Box():
+A = None
+B = None
 
-    def __init__(self, w, h, d):
-        self.width = w
-        self.height = h
-        self.depth = d
 
-    def __eq__(self, other):
-        
-        equal = False
+def sorted_merge1(A, B):
 
-        if isinstance(other, Box):
-            equal = self.width == other.width and \
-                self.height == other.height and \
-                    self.depth == other.depth
+    if A == None or B == None:
+        return None
 
-        return equal
+    a_pos = sum( [1 for num in A if num != None] ) - 1
+    b_pos = len(B) - 1
 
-    def __lt__(self, other):
+    place = len(A) - 1
 
-        lt = False
+    for index in range(len(A) - 1, -1, -1):
 
-        if isinstance(other, Box):
-            lt = self.width < other.width and \
-                self.height < other.height and \
-                    self.depth < other.depth
+        if a_pos != -1 and (b_pos == -1 or A[a_pos] >= B[b_pos]):
+            A[index], A[a_pos] = A[a_pos], A[index]
+            
+            a_pos -= 1
+        elif b_pos != -1:
+            A[index], B[b_pos] = B[b_pos], None
+            
+            b_pos -= 1
 
-        return lt
+    return A
 
-    def __gt__(self, other):
-        return not self.__lt__(other)
+results = sorted_merge1(A, B)
 
-    def __str__(self):
-        return f'[{self.width}, {self.height}, {self.depth}]'
-
-def stack_boxes2(boxes):
-    
-    n = len(boxes)
-
-    if n == 0: return None
-    if n == 1: return [boxes[0]]
-
-    s = list(sorted(boxes))
-
-    return stack_boxes2(s[:n - 1]) + [s[n - 1]]
-
-boxes = []
-
-for dim in range(5, 0, -1):
-    boxes.append(Box(dim, dim, dim))
-
-stacked = stack_boxes2(boxes)
-
-print(stacked)
+print(results)

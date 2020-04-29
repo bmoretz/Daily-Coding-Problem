@@ -154,6 +154,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="linkedlist.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="stack_queue.h" />
     <ClInclude Include="str.h" />
   </ItemGroup>
   <ItemGroup>
