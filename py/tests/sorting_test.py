@@ -124,5 +124,3 @@ class Test_SortedMerge1(unittest.TestCase):
         expected = [0, 1, 2, 3, 8, 9]
         
         assert actual == expected
-
-    
