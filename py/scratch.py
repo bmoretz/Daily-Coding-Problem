@@ -1,36 +1,41 @@
-'''Sorted Merge.
+'''Group Anagrams.
 
-You are given two sorted arrays, A and B, where A has a large enough
-buffer at the end to hold B. Write a method to merge B into A in sorted order.
+Write a method to sort an array of strings so that all the anagrams are
+next to each other.
 '''
 
-A = None
-B = None
+def group_anagrams2(words):
+    from collections import defaultdict
+    from string import ascii_lowercase
 
+    def get_word_value(word):
 
-def sorted_merge1(A, B):
+        value = 0
 
-    if A == None or B == None:
-        return None
-
-    a_pos = sum( [1 for num in A if num != None] ) - 1
-    b_pos = len(B) - 1
-
-    place = len(A) - 1
-
-    for index in range(len(A) - 1, -1, -1):
-
-        if a_pos != -1 and (b_pos == -1 or A[a_pos] >= B[b_pos]):
-            A[index], A[a_pos] = A[a_pos], A[index]
+        for letter in word.lower():
             
-            a_pos -= 1
-        elif b_pos != -1:
-            A[index], B[b_pos] = B[b_pos], None
-            
-            b_pos -= 1
+            if letter == ' ': continue
 
-    return A
+            value += ord(letter)
 
-results = sorted_merge1(A, B)
+        return value
 
+    if words == None: return None
+
+    lookup = defaultdict(list)
+
+    for word in words:
+        key = get_word_value(word)
+
+        lookup[key].append( word )
+
+    ordered = [ item for sublist in lookup.values() for item in sublist ]
+
+    return ordered
+
+words = ['A gentleman', 'The eyes', 'Conversation', 'quiet', 'real fun', 'Dormitory', 'dog', 'Elegant man', 'glisten', 'They see', 'cat', 'silent', 'funeral', 'Dirty room', 'Voices rant on']
+
+results = group_anagrams2(words)
+        
 print(results)
+

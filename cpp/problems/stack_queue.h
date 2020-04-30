@@ -35,7 +35,7 @@ namespace stack_queue_problems
 
         [[nodiscard]] std::size_t size() const { return data_.size(); }
 
-        bool empty() const { return data_.empty(); }
+        [[nodiscard]] bool empty() const { return data_.empty(); }
     	
         void push_back( Ty item )
         {
