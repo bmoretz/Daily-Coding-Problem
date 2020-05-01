@@ -1,102 +1,115 @@
 import os
 
 '''
-The file contains all of the integers between 1 and 10,000 (inclusive, with no repeats) in unsorted order. 
+The file contains the adjacency list representation of a simple undirected graph. There are 200 vertices labeled 1 to 200. 
 
-The integer in the i^{th}ith row of the file gives you the i^{th}ith entry of an input array.
+The first column in the file represents the vertex label, and the particular row (other entries except the first column) tells all the vertices that the vertex is adjacent to. 
+So for example, the 6^{th} row looks like : "6	155	56	52	120	......". This just means that the vertex with label 6 is adjacent to (i.e., shares an edge with) the vertices with labels 155,56,52,120,......, etc.
 
-Your task is to compute the total number of comparisons used to sort the given input file by QuickSort. As you know, the number of comparisons depends on which elements are chosen as pivots, 
-so we'll ask you to explore three different pivoting rules.
+Your task is to code up and run the randomized contraction algorithm for the min cut problem and use it on the above graph to compute the min cut. 
 
-You should not count comparisons one-by-one. Rather, when there is a recursive call on a subarray of length mm, you should simply add m-1m−1 to your running total of comparisons.
-(This is because the pivot element is compared to each of the other m-1m−1 elements in the subarray in this recursive call.)
+(HINT: Note that you'll have to figure out an implementation of edge contractions. Initially, you might want to do this naively, creating a new graph from the old every time there's an edge contraction. 
+But you should also think about more efficient implementations.) 
 
-WARNING: The Partition subroutine can be implemented in several different ways, and different implementations can give you differing numbers of comparisons. For this problem, you should implement the 
-Partition subroutine exactly as it is described in the video lectures (otherwise you might get the wrong answer).
+(WARNING: As per the video lectures, please make sure to run the algorithm many times with different random seeds, and remember the smallest cut that you ever find.)
 
-DIRECTIONS FOR THIS PROBLEM:
+Write your numeric answer in the space provided. 
 
-For the first part of the programming assignment, you should always use the first element of the array as the pivot element.
+So e.g., if your answer is 5, just type 5 in the space provided.
 '''
 
-file_path = os.getcwd() + '\py\\data\\QuickSort.txt'
+#file_path = os.getcwd() + '\py\\data\\kargerMinCut.txt'
 
-def read_numbers():
+file_path = os.getcwd() + '\py\\data\\minGraph.txt'
+
+from copy import deepcopy
+from collections import defaultdict
+from random import uniform, seed, choice
+
+class Graph():
+    ''' simple adjency list graph '''
+    def __init__(self):
+        self.vertices = defaultdict(list)
+
+    def add_vertex(self, vertex):
+        self.vertices[vertex]
+
+    def add_edge(self, a, b):
+        self.vertices[a].append(b)
+
+    def edges(self):
+
+        edges = []
+
+        for vertex in self.vertices.keys():
+
+            for connection in self.vertices[vertex]:
+                
+                if (connection, vertex) in edges:
+                    continue # no duplicates
+                
+                edges.append((vertex, connection))
+
+        return edges
+
+    def contract(self):
+
+        while True:
+            
+            edges = self.edges()
+
+            if len(edges) < 2:
+                break
+
+            u, v = choice(edges)
+
+            for m in self.vertices[u]:
+                if m != v: 
+                    self.vertices[v].append(m)
+
+            for conn in self.vertices[u]:
+                if u in self.vertices[conn]:
+                    self.vertices[conn].remove(u)
+
+            del self.vertices[u]
+
+def read_graph():
+
+    g = Graph()
+    
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
-        numbers = [int(line) for line in lines]
-    return numbers
 
-''' quick sort with pivot statically set at 0 '''
+        for line in lines:
 
-def pivot_0(arr, left, right):
-    return left
+            items = line.split('\t')
 
-''' quick sort with pivot statically set at n '''
+            vertex = int(items[0])
 
-def pivot_n(arr, left, right): 
-    return right
+            for edge in items[1:]:
 
-''' quick sort with pivot calculated to be the median value '''
-def pivot_m(arr, left, right):
-    
-    mid = 0 if (right - left) == 1 else ((right - left)) // 2 + left
-    
-    candidate = sorted([arr[left], arr[mid], arr[right]])
+                if edge == '': continue
 
-    return arr.index(candidate[1])
+                g.add_edge(vertex, int(edge))
 
-def quick_sort(arr, left=0, right=None, choose_pivot=None, comp=0):
-    
-    def partition(arr, left, right, pivot):
+    return g
 
-        assert left <= pivot <= right
+seed(1)
 
-        p = arr[pivot]
+graph = read_graph()
 
-        arr[left], arr[pivot] = arr[pivot], arr[left]
+iterations = 100
 
-        j = left + 1
+mins = []
 
-        for index in range(left + 1, right + 1):
+for _ in range(iterations):
 
-            if arr[index] < p:
-                arr[index], arr[j] = arr[j], arr[index]
-                j += 1
+    cpy = deepcopy(graph)
 
-        j -= 1
+    cpy.contract()
 
-        arr[left], arr[j] = arr[j], arr[left]
-    
-        return j
-    
-    if right == None: right = len(arr) - 1
+    rem = cpy.edges()
 
-    n = right - left
+    mins.append( len(rem) + 1 )
 
-    if n < 1: return 0
-
-    comp = n
-
-    pivot = choose_pivot(arr, left, right)
-
-    j = partition(arr, left, right, pivot)
-
-    comp += quick_sort(arr, left, j - 1, choose_pivot)
-    comp += quick_sort(arr, j + 1, right, choose_pivot)
-
-    return comp
-
-def run_compare():
-    for method in (pivot_0, pivot_n, pivot_m):
-
-        numbers = read_numbers()
-
-        comparisions = quick_sort(numbers, choose_pivot=method)
-
-        assert numbers == sorted(numbers)
-
-        print(f'method: ', method.__name__, ' sorted: ', len(numbers), ' elements with ', comparisions, ' comparisions.')
-
-if __name__ == '__main__':
-    run_compare()
+print(mins)

@@ -18,6 +18,7 @@
         "dedupe",
         "deque",
         "erbottlewat",
+        "karger",
         "nstack",
         "tristack",
         "urlify"
