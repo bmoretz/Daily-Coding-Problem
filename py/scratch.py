@@ -1,41 +1,60 @@
-'''Group Anagrams.
+'''Search in Rotated Array.
 
-Write a method to sort an array of strings so that all the anagrams are
-next to each other.
+Given a sorted array of n integers that has been rotated an unknown number of times,
+write code to find an element in the array. You may assume that the array was originally
+sorted in increasing order.
+
+EXAMPLE:
+
+Input: Find 5 in [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+Output: 8 (the index of the array)
 '''
 
-def group_anagrams2(words):
-    from collections import defaultdict
-    from string import ascii_lowercase
+def find_rotated1(arr, search):
 
-    def get_word_value(word):
+    def find_pivot(arr, left, right):
 
-        value = 0
+        while left < right:
 
-        for letter in word.lower():
-            
-            if letter == ' ': continue
+            mid = left + (right - left) // 2
 
-            value += ord(letter)
+            if arr[mid] > arr[right]:
+                left = mid + 1
+            else:
+                right = mid
 
-        return value
+        return mid + 1
 
-    if words == None: return None
+    def find_element(arr, search, left, right):
 
-    lookup = defaultdict(list)
+        n = right - left
 
-    for word in words:
-        key = get_word_value(word)
+        if left  > right: return -1
 
-        lookup[key].append( word )
+        mid = left + n // 2
 
-    ordered = [ item for sublist in lookup.values() for item in sublist ]
+        if arr[ mid ] == search:
+            return mid
+        elif search < arr[ mid ]:
+            return find_element( arr, search, left, mid )
+        else:
+            return find_element( arr, search, mid + 1, right )
 
-    return ordered
+    if arr == None or search == None: return None
+    
+    n = len(arr) - 1
 
-words = ['A gentleman', 'The eyes', 'Conversation', 'quiet', 'real fun', 'Dormitory', 'dog', 'Elegant man', 'glisten', 'They see', 'cat', 'silent', 'funeral', 'Dirty room', 'Voices rant on']
+    pivot = find_pivot(arr, 0, n)
 
-results = group_anagrams2(words)
-        
-print(results)
+    if search == arr[ pivot ]:
+        return pivot
+    elif search > arr[pivot] and search <= arr[ n ]:
+        return find_element(arr, search, pivot + 1, n)
+    else:
+        return find_element(arr, search, 0, pivot)
 
+arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+
+res = find_rotated1(arr, 14)
+
+print(res)

@@ -256,3 +256,72 @@ class Test_GroupAnagrams2(unittest.TestCase):
         expected = ['A gentleman', 'Elegant man', 'The eyes', 'They see', 'Conversation', 'Voices rant on', 'quiet', 'real fun', 'funeral', 'Dormitory', 'Dirty room', 'dog', 'glisten', 'cat', 'silent']
         
         assert actual == expected
+
+from py.problems.sorting import find_rotated1
+class Test_FindRotated1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        arr = None
+
+        actual = find_rotated1(arr, 1)
+        expected = None
+
+        assert actual == expected
+
+    def test_empty(self):
+
+        arr = []
+
+        actual = find_rotated1(arr, 5)
+        expected = -1
+        
+        assert actual == expected
+
+    def test_case1(self):
+
+        arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+
+        actual = find_rotated1(arr, 5)
+        expected = 8
+        
+        assert actual == expected
+
+    def test_case2(self):
+
+        arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+
+        actual = find_rotated1(arr, 19)
+        expected = 2
+        
+        assert actual == expected
+
+    def test_case3(self):
+
+        arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+
+        actual = find_rotated1(arr, 15)
+        expected = 0
+        
+        assert actual == expected
+
+    def test_case4(self):
+
+        arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+
+        actual = find_rotated1(arr, 14)
+        expected = 11
+        
+        assert actual == expected
+
+    def test_case5(self):
+
+        arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+
+        actual = find_rotated1(arr, 3)
+        expected = 6
+        
+        assert actual == expected
