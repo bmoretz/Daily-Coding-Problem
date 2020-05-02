@@ -75,13 +75,11 @@ def kargerMinCut(graph):
 
         # merge u and v into a "super node"
         for m in graph[ v ] + graph[ u ]:
-
+            
+            # no loops
             if m == u or m == v: continue
 
             s.append( m )
-
-        # no loops
-        #s.remove( s_id )
 
         del graph[ v ]
         del graph[ u ]
@@ -89,15 +87,7 @@ def kargerMinCut(graph):
         # update any old references of u and v
         for k in graph.vertices.keys():
             
-            tmp = []
-
-            for edge in graph[ k ]:
-                if edge == v or edge == u:
-                    tmp.append( s_id )
-                else:
-                    tmp.append( edge )
-            
-            graph[ k ] = tmp
+            graph[ k ] = [ s_id if edge == v or edge == u else edge for edge in graph[ k ] ]
         
         graph[ s_id ] = s
         
