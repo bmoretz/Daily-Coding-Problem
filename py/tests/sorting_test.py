@@ -325,3 +325,64 @@ class Test_FindRotated1(unittest.TestCase):
         expected = 6
         
         assert actual == expected
+
+from py.problems.sorting import Listy
+from py.problems.sorting import sorted_find1
+class Test_SortedFind1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        actual = sorted_find1(values, 1)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = Listy( [0] * 32 + [1, 1, 1, 1, 2, 3, 10, 12, 15] )
+
+        actual = sorted_find1(values, 12)
+        expected = 39
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = Listy( [1, 1, 1, 1, 2, 3, 10, 12, 15] )
+
+        actual = sorted_find1(values, 1)
+        expected = 3
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = Listy( [1, 1, 1, 1, 2, 3, 10, 12, 15] )
+
+        actual = sorted_find1(values, 10)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = Listy( [1, 1, 1, 1, 2, 3, 10, 12, 15] )
+
+        actual = sorted_find1(values, 10)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values =  Listy( [0] * 128 + [1, 1, 1, 1, 2, 3, 10, 12, 15] )
+
+        actual = sorted_find1(values, 10)
+        expected = 134
+
+        assert actual == expected

@@ -1,60 +1,73 @@
-'''Search in Rotated Array.
+'''Sorted Search, No Size.
 
-Given a sorted array of n integers that has been rotated an unknown number of times,
-write code to find an element in the array. You may assume that the array was originally
-sorted in increasing order.
-
-EXAMPLE:
-
-Input: Find 5 in [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
-Output: 8 (the index of the array)
+You are given an array-like data structure Listy, which lacks a size method. It does,
+however, have an elementAt(i) method that returns the element at index i in O(1) time. If
+i is beyond the bounds of the data structure, it returns -1. (For this reason, the 
+data structure only supports positive integers). Given a Listy which contains sorted,
+positive integers, find the index at which an element x occurs multiple times, you
+may return any index.
 '''
 
-def find_rotated1(arr, search):
+class Listy():
 
-    def find_pivot(arr, left, right):
+    def __init__(self, values):
+        assert [x >= 0 for x in values]
+        self.data_ = list(sorted(values))
 
-        while left < right:
+    def element_at(self, index):
 
-            mid = left + (right - left) // 2
-
-            if arr[mid] > arr[right]:
-                left = mid + 1
-            else:
-                right = mid
-
-        return mid + 1
-
-    def find_element(arr, search, left, right):
-
-        n = right - left
-
-        if left  > right: return -1
-
-        mid = left + n // 2
-
-        if arr[ mid ] == search:
-            return mid
-        elif search < arr[ mid ]:
-            return find_element( arr, search, left, mid )
+        if index < 0 or index >= len(self.data_): 
+            return -1
         else:
-            return find_element( arr, search, mid + 1, right )
+            return self.data_[index]
 
-    if arr == None or search == None: return None
-    
-    n = len(arr) - 1
+def sorted_find(lst, element):
 
-    pivot = find_pivot(arr, 0, n)
+    def get_length(lst):
 
-    if search == arr[ pivot ]:
-        return pivot
-    elif search > arr[pivot] and search <= arr[ n ]:
-        return find_element(arr, search, pivot + 1, n)
-    else:
-        return find_element(arr, search, 0, pivot)
+        power = 0
 
-arr = [15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14]
+        while lst.element_at( 2**power ) != -1:
+            power += 1
 
-res = find_rotated1(arr, 14)
+        if power == 0: return 0
 
-print(res)
+        lower = 2**(power-1)
+
+        for index in range(power, -1, -1):
+            j = 2**index
+
+            if lst.element_at(lower + j) != -1:
+                lower += j 
+
+        return lower + 1
+        
+    def find(lst, element, start, stop):
+        
+        if start > stop: return -1
+
+        mid = start + (stop - start)//2
+
+        cur = lst.element_at( mid )
+
+        if cur == element:
+            return mid
+        elif element < element:
+            return find(lst, element, start, mid - 1)
+        else:
+            return find(lst, element, mid + 1, stop) 
+
+    if lst == None: return None
+
+    n = get_length(lst) - 1
+
+    return find(lst, element, 0, n - 1)
+
+values = [1, 1, 1, 1, 2, 3, 10, 12, 15]
+values = [0] * 128 + [1, 1, 1, 1, 2, 3, 10, 12, 15]
+
+lst = Listy(values)    
+
+result = sorted_find(lst, 10)
+
+print(result)

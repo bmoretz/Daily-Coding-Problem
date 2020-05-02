@@ -19,8 +19,9 @@ So e.g., if your answer is 5, just type 5 in the space provided.
 '''
 
 #file_path = os.getcwd() + '\py\\data\\kargerMinCut.txt'
+#file_path = os.getcwd() + '\py\\data\\minGraph.txt'
 
-file_path = os.getcwd() + '\py\\data\\minGraph.txt'
+file_path = os.getcwd() + '\py\\data\\minGraph_test_case1.txt'
 
 from copy import deepcopy
 from collections import defaultdict
@@ -42,12 +43,7 @@ class Graph():
         edges = []
 
         for vertex in self.vertices.keys():
-
             for connection in self.vertices[vertex]:
-                
-                if (connection, vertex) in edges:
-                    continue # no duplicates
-                
                 edges.append((vertex, connection))
 
         return edges
@@ -58,13 +54,13 @@ class Graph():
             
             edges = self.edges()
 
-            if len(edges) < 2:
+            if len(edges) <= 2:
                 break
 
             u, v = choice(edges)
 
             for m in self.vertices[u]:
-                if m != v: 
+                if m != v and m not in self.vertices[v]: 
                     self.vertices[v].append(m)
 
             for conn in self.vertices[u]:
@@ -82,7 +78,7 @@ def read_graph():
 
         for line in lines:
 
-            items = line.split('\t')
+            items = line.split(' ')
 
             vertex = int(items[0])
 
@@ -94,11 +90,12 @@ def read_graph():
 
     return g
 
-seed(1)
+# seed 9 = 1 
+seed(90)
 
 graph = read_graph()
 
-iterations = 100
+iterations = 1000
 
 mins = []
 
@@ -110,6 +107,10 @@ for _ in range(iterations):
 
     rem = cpy.edges()
 
-    mins.append( len(rem) + 1 )
+    mins.append( rem )
 
-print(mins)
+uniques = set(mins)
+
+print(uniques)
+
+print(f'\n\nExecuted {iterations} of graph contraction, the minimum number of edges found was: {min(mins)}')
