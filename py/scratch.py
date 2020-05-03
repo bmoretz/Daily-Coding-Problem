@@ -1,73 +1,65 @@
-'''Sorted Search, No Size.
+'''Sparse Search.
 
-You are given an array-like data structure Listy, which lacks a size method. It does,
-however, have an elementAt(i) method that returns the element at index i in O(1) time. If
-i is beyond the bounds of the data structure, it returns -1. (For this reason, the 
-data structure only supports positive integers). Given a Listy which contains sorted,
-positive integers, find the index at which an element x occurs multiple times, you
-may return any index.
+Given a sorted array of strings that is interspersed with empty strings, write
+a method to find the location of the given string.
+
+EXAMPLE
+
+Input: ball, {"at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""}
+Output: 4
 '''
 
-class Listy():
+def sparse_search(arr, element):
+    
+    def compare(left, right):
 
-    def __init__(self, values):
-        assert [x >= 0 for x in values]
-        self.data_ = list(sorted(values))
+        n_l, n_r = len(left) - 1, len(right) - 1
+        n = max( n_l, n_r )
 
-    def element_at(self, index):
+        cmp_val = 0
 
-        if index < 0 or index >= len(self.data_): 
-            return -1
-        else:
-            return self.data_[index]
+        for index in range(n):
+            
+            l = ord( left[index] ) if index < n_l else 0
+            r = ord( right[index] ) if index < n_r else 0
 
-def sorted_find(lst, element):
-
-    def get_length(lst):
-
-        power = 0
-
-        while lst.element_at( 2**power ) != -1:
-            power += 1
-
-        if power == 0: return 0
-
-        lower = 2**(power-1)
-
-        for index in range(power, -1, -1):
-            j = 2**index
-
-            if lst.element_at(lower + j) != -1:
-                lower += j 
-
-        return lower + 1
+            cmp_val += l - r
         
-    def find(lst, element, start, stop):
+        return cmp_val
+
+    def find(arr, element, left, right):
         
-        if start > stop: return -1
+        if left > right: return -1
 
-        mid = start + (stop - start)//2
+        mid = left + (right - left)//2
+        
+        l, r = mid, mid
 
-        cur = lst.element_at( mid )
+        while arr[ l ] == '' and arr[ r ] == '':
+            l -= 1
+            r += 1
 
-        if cur == element:
+        mid = l if arr[ l ] != '' else r
+
+        cmp_val = compare( arr[ mid ], element )
+
+        if cmp_val == 0:
             return mid
-        elif element < element:
-            return find(lst, element, start, mid - 1)
+        elif cmp_val < 0:
+            return find( arr, element, left, mid - 1 )
         else:
-            return find(lst, element, mid + 1, stop) 
+            return find( arr, element, mid + 1, right )
 
-    if lst == None: return None
+    if arr == None or element == None: return None
+    
+    if element == '': return -1 # searching for spaces not allowed
+    
+    n = len(arr) - 1
 
-    n = get_length(lst) - 1
+    return find(arr, element, 0, n)
 
-    return find(lst, element, 0, n - 1)
+arr = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""]
 
-values = [1, 1, 1, 1, 2, 3, 10, 12, 15]
-values = [0] * 128 + [1, 1, 1, 1, 2, 3, 10, 12, 15]
-
-lst = Listy(values)    
-
-result = sorted_find(lst, 10)
+result = sparse_search(arr, "ball")
 
 print(result)

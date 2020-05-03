@@ -290,17 +290,18 @@ def kargerMinCut(graph):
         # choose one at random
         u, v = choice(edges)
 
-        s_id = v
-        s = []
-
         # merge u and v into a "super node"
+        s_id, s = v, []
+
         for m in graph[ v ] + graph[ u ]:
             
             # no loops
-            if m == u or m == v: continue
+            if m == u or m == v: 
+                continue
+            
+            s.append( m )
 
-            s.append( m )        
-
+        # remove the old nodes
         del graph[ v ]
         del graph[ u ]
 
@@ -308,8 +309,9 @@ def kargerMinCut(graph):
         for k in graph.vertices.keys():
             
             graph[ k ] = [ s_id if edge == v or edge == u else edge \
-                for edge in graph[ k ] ]
+                 for edge in graph[ k ] ]
         
+        # insert the super node
         graph[ s_id ] = s
         
     return len( graph.edges() ) / 2

@@ -387,3 +387,71 @@ class Test_SortedFind1(unittest.TestCase):
 
         assert actual == expected
     
+from py.problems.sorting import sparse_search
+class Test_SparseSearch1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        actual = sparse_search(values, '')
+        expected = None
+
+        assert actual == expected
+
+    def test_empty(self):
+
+        values = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""]
+
+        actual = sparse_search(values, '')
+        expected = -1
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""]
+
+        actual = sparse_search(values, 'ball')
+        expected = 4
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""]
+
+        actual = sparse_search(values, 'at')
+        expected = 0
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""]
+
+        actual = sparse_search(values, 'car')
+        expected = 7
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""]
+
+        actual = sparse_search(values, 'dad')
+        expected = 10
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = ["at", "", "", "", "ball", "", "", "car", "", "", "dad", "", "", "elf"]
+
+        actual = sparse_search(values, 'elf')
+        expected = 13
+
+        assert actual == expected
