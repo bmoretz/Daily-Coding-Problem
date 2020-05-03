@@ -292,4 +292,123 @@ namespace stack_queue_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for my_queue.
+    /// </summary>
+    class my_queue_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // My Queue 1
+    //
+
+    TEST_F( my_queue_tests, my_queue1_empty )
+    {
+        auto queue = my_queue<int>{ };
+
+        auto actual = std::vector<int>{};
+
+        while( !queue.empty() )
+            actual.push_back( queue.dequeue() );
+
+        const auto expected = std::vector<int>{ };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_queue_tests, my_queue1_case1 )
+    {
+        auto queue = my_queue<int>{ 1, 2, 3, 4, 5 };
+
+        auto actual = std::vector<int>{};
+
+        while( !queue.empty() )
+            actual.push_back( queue.dequeue() );
+
+        const auto expected = std::vector<int>{ 1, 2, 3, 4, 5 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_queue_tests, my_queue1_case2 )
+    {
+        auto queue = my_queue<int>{ 1, 2, 3 };
+
+        EXPECT_EQ( queue.dequeue(), 1 );
+        EXPECT_EQ( queue.dequeue(), 2 );
+        EXPECT_EQ( queue.dequeue(), 3 );
+    }
+
+    TEST_F( my_queue_tests, my_queue1_case3 )
+    {
+        auto queue = my_queue<int>{ 1, 2, 3, 4, 5 };
+
+        EXPECT_EQ( queue.dequeue(), 1 );
+        EXPECT_EQ( queue.dequeue(), 2 );
+
+        queue.enqueue( 6 );
+        queue.enqueue( 7 );
+    	
+        auto actual = std::vector<int>{};
+
+        while( !queue.empty() )
+            actual.push_back( queue.dequeue() );
+
+        const auto expected = std::vector<int>{ 3, 4, 5, 6, 7 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_queue_tests, my_queue1_case4 )
+    {
+        auto queue = my_queue<int>{ 5, 4, 3, 2, 1 };
+
+        EXPECT_EQ( queue.dequeue(), 5 );
+        EXPECT_EQ( queue.dequeue(), 4 );
+
+        queue.enqueue( 6 );
+        queue.enqueue( 7 );
+
+        auto actual = std::vector<int>{};
+
+        while( !queue.empty() )
+            actual.push_back( queue.dequeue() );
+
+        const auto expected = std::vector<int>{ 3, 2, 1, 6, 7 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_queue_tests, my_queue1_case5 )
+    {
+        auto queue = my_queue<int>{ 5, 4, 3, 2, 1 };
+
+        EXPECT_EQ( queue.dequeue(), 5 );
+        EXPECT_EQ( queue.dequeue(), 4 );
+
+        queue.enqueue( 6 );
+        queue.enqueue( 7 );
+
+        EXPECT_EQ( queue.dequeue(), 3 );
+    	
+        auto actual = std::vector<int>{};
+
+        while( !queue.empty() )
+            actual.push_back( queue.dequeue() );
+
+        const auto expected = std::vector<int>{ 2, 1, 6, 7 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
