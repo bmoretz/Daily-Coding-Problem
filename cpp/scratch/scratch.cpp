@@ -8,29 +8,32 @@
 #include <set>
 #include <list>
 
-/* Queue via Stacks.
+/* Sort Stack.
  *
- * Implement a MyQueue class which implements a queue using two stacks.
+ * Write a program to sort a stack such that the smallest items are on the top. You
+ * can use an additional temporary stack, but you may not copy the elements into any
+ * other data structure (such as an array). The stack supports the following operations:
+ *
+ * push, pop, peek, and isEmpty
  */
 
 template<typename Ty>
-class my_queue
+class sort_stack
 {
 	class stack
 	{
-		std::vector<Ty> data_;
-		
-	public:
-		explicit stack()
-			: data_ { }
-		{ }
-		
-		void push( const Ty& value )
-		{
-			data_.push_back( value );
-		}
+        std::vector<Ty> data_;
 
-		[[nodiscard]] bool empty() const { return data_.empty(); }
+	public:
+
+		explicit stack()
+            : data_ { }
+		{}
+
+		void push( const Ty& item )
+		{
+			data_.push_back( item );
+		}
 		
 		Ty pop()
 		{
@@ -40,51 +43,76 @@ class my_queue
 
 			return value;
 		}
+
+		[[nodicard]] Ty peek() const { return data_.back(); }
+		[[nodiscard]] bool empty() const { return data_.empty(); }
 	};
 
-	stack data_ {};
+	stack data_;
+
+	static Ty pop_min( stack& s )
+	{
+		Ty min = s.pop();
+
+		stack tmp;
+
+		while( !s.empty() )
+		{
+			auto cur = s.pop();
+
+			if( cur < min )
+			{
+				tmp.push( min );
+				min = cur;
+			}
+			else
+			{
+				tmp.push( cur );
+			}
+		}
+
+		s = tmp;
+		
+		return min;
+	}
 	
 public:
 
-	my_queue() {  }
+	sort_stack()
+		: data_ { }
+	{  }
 
-	my_queue( const std::initializer_list<Ty>& init_list )
+	sort_stack( const std::initializer_list<Ty> init_values )
 	{
-		for( const auto& value : init_list )
+		for( const auto& val : init_values )
 		{
-			data_.push( value );
+			push( val );
 		}
 	}
-
-	[[nodiscard]] bool empty() const { return data_.empty(); }
 	
-	void enqueue( Ty item )
-	{
-		data_.push( item );
-	}
+	void push( const Ty& item ) { data_.push( item ); }
+	Ty pop() { return data_.pop(); }
+	[[nodiscard]] Ty empty() { return data_.empty(); }
 
-	Ty dequeue()
+	void sort1()
 	{
-		stack tmp;
+		stack tmp {};
 
 		while( !data_.empty() )
-			tmp.push( data_.pop() );
+		{
+			auto min = pop_min( data_ );
+			tmp.push( min );
+		}
 
-		const auto value = tmp.pop();
-
-		data_ = stack();
-		
-		while( !tmp.empty() )
-			data_.push( tmp.pop() );
-
-		return value;
+		data_ = tmp;
 	}
 };
 
 auto main() -> int
 {
-	auto queue = my_queue<int>{ 1, 2, 3, 4, 5 };
+	sort_stack<int> stack = { 3, 2, 4, 7, 6 };
 
-	auto t1 = queue.dequeue();
+	stack.sort1();
+
 	
 }

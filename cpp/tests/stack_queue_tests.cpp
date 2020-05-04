@@ -411,4 +411,120 @@ namespace stack_queue_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for sort stack.
+    /// </summary>
+    class sort_stack_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Sort Stack 1
+    //
+
+    TEST_F( sort_stack_tests, sort_stack1_empty )
+    {
+        auto stack = sort_stack<int>{ };
+
+        auto actual = std::vector<int>{};
+
+        stack.sort1();
+    	
+        while( !stack.empty() )
+            actual.push_back( stack.pop() );
+
+        const auto expected = std::vector<int>{ };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_stack_tests, sort_stack1_case1 )
+    {
+        auto stack = sort_stack<int>{ 3, 2, 4, 7, 6 };
+
+        auto actual = std::vector<int>{};
+
+        stack.sort1();
+
+        while( !stack.empty() )
+            actual.push_back( stack.pop() );
+
+        const auto expected = std::vector<int>{ 7, 6, 4, 3, 2 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_stack_tests, sort_stack1_case2 )
+    {
+        auto stack = sort_stack<int>{ -21, 23, 31, 2, 0, 4, 1 };
+
+        auto actual = std::vector<int>{};
+
+        stack.sort1();
+
+        while( !stack.empty() )
+            actual.push_back( stack.pop() );
+
+        const auto expected = std::vector<int>{ 31, 23, 4, 2, 1, 0, -21 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_stack_tests, sort_stack1_case3 )
+    {
+        auto stack = sort_stack<int>{ -21, 23, 31, 2, 0, 4, 1, -21, 4 };
+
+        auto actual = std::vector<int>{};
+
+        stack.sort1();
+
+        while( !stack.empty() )
+            actual.push_back( stack.pop() );
+
+        const auto expected = std::vector<int>{ 31, 23, 4, 4, 2, 1, 0, -21, -21 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_stack_tests, sort_stack1_case4 )
+    {
+        auto stack = sort_stack<int>{ -21, 23, 31, 2, 0, 4, 1, -21, 4, -33 };
+
+        auto actual = std::vector<int>{};
+
+        stack.sort1();
+
+        while( !stack.empty() )
+            actual.push_back( stack.pop() );
+
+        const auto expected = std::vector<int>{ 31, 23, 4, 4, 2, 1, 0, -21, -21, -33 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_stack_tests, sort_stack1_case5 )
+    {
+        auto stack = sort_stack<int>{ -21, 23, 31, 2, 0, 4, 1, -21, 4, -33, -100, 100 };
+
+        auto actual = std::vector<int>{};
+
+        stack.sort1();
+
+        while( !stack.empty() )
+            actual.push_back( stack.pop() );
+
+        const auto expected = std::vector<int>{ 100, 31, 23, 4, 4, 2, 1, 0, -21, -21, -33, -100 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
