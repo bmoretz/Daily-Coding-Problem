@@ -455,3 +455,64 @@ class Test_SparseSearch1(unittest.TestCase):
         expected = 13
 
         assert actual == expected
+    
+from py.problems.sorting import build_mat
+from py.problems.sorting import mat_search
+class Test_MatrixSearch1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        actual = mat_search(values, 34)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = build_mat(10)
+
+        actual = mat_search(values, 36)
+        expected = (3, 5)
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = build_mat(10)
+
+        actual = mat_search(values, 1)
+        expected = (0, 0)
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = build_mat(10)
+
+        actual = mat_search(values, 100)
+        expected = (9, 9)
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = build_mat(10)
+
+        actual = mat_search(values, 72)
+        expected = (7, 1)
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = build_mat(10)
+
+        actual = mat_search(values, 27)
+        expected = (2, 6)
+
+        assert actual == expected

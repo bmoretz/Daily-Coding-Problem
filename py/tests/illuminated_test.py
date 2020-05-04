@@ -160,7 +160,7 @@ class Test_Karger(unittest.TestCase):
         # default = 2*edges
         minCuts = 2* len(graph.edges())
 
-        for i in range(10):
+        for i in range(15):
             result = kargerMinCut( graph )
 
             minCuts = min(minCuts, result)
