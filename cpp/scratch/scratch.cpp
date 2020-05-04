@@ -113,6 +113,4 @@ auto main() -> int
 	sort_stack<int> stack = { 3, 2, 4, 7, 6 };
 
 	stack.sort1();
-
-	
 }

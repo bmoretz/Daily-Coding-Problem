@@ -22,6 +22,17 @@ namespace stack_queue_problems
 
     public:
 
+        /// <summary>
+		/// min_stack
+		///
+		/// This approach to the min stack problem simply keeps a duplicate
+		/// vector of n items, each which correspond to the minimum value in
+		/// the stack when it has i items.
+		/// <complexity>
+		///		<run-time>O(1) for all operations</run-time>
+		///		<space>O(N)</space>
+		/// </complexity>
+		/// </summary>
         explicit min_stack()
             : data_{ }, min_{ }
         { }
@@ -86,7 +97,19 @@ namespace stack_queue_problems
         std::size_t threshold_{}, elements_{ };
 
     public:
-
+			
+		/// <summary>
+		/// stack of stacks, 1
+		///
+		/// This approach uses an internal vector of stacks each with size T,
+		/// where T is the stack size threshold. The push/pop operations act
+		/// as if the stacks get consolidated to the minimum size (of stacks)
+		/// required to hold the N total elements.
+		/// <complexity>
+		///		<run-time>O(1) push, O(N) pop</run-time>
+		///		<space>O(N)</space>
+		/// </complexity>
+		/// </summary>	
         explicit stack_of_stacks1( const std::size_t max_size )
             : threshold_{ max_size }
         { }
@@ -180,6 +203,19 @@ namespace stack_queue_problems
 
     public:
 
+        /// <summary>
+		/// my_queue
+		///
+		/// This approach uses a stack as the internal storage structure
+		/// and then places the internal stack into a new temp stack on a
+		/// dequeue operation, returning the top of the internal stack (first
+		/// in), then rebalances the internal stack with the remaining n-1
+		/// elements.
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// </summary>
         my_queue() = default;
 
         my_queue( const std::initializer_list<Ty>& init_list )
@@ -257,6 +293,19 @@ namespace stack_queue_problems
 
         stack data_;
 
+        /// <summary>
+        /// pop_min
+        ///
+        /// This is the worker method for the sorting routing. Here we keep
+        /// a running tally of the minimum element as we iterate over the
+        /// internal stack, holding it out of the passed in stack each iteration,
+        /// then we return the minimum element and the passed in stack now has
+        /// n-1 elements.
+        /// <complexity>
+        ///		<run-time>O(N)</run-time>
+        ///		<space>O(N)</space>
+        /// </complexity>
+        /// </summary>    	
         static Ty pop_min( stack& s )
         {
             Ty min = s.pop();
