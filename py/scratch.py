@@ -1,56 +1,90 @@
-'''Sorted Matrix.
+'''Rank from Stream.
 
-Given an M x N matrix in which each row and each column is sorted in ascending order,
-write a method to find an element.
+Imagine you are reading in a stream of integers. Periodically, you wish to be
+able to look up the rank of a number x (the number of values less than or equal
+to x). Implement the data structures and algorithms to support these operations.
+That is, implement the method track (int x), which is called when each number is
+generated, and the method getRankOfNumber (int x), which returns the number of
+values less than or equal to x (not including x itself).
+
+EXAMPLE:
+
+Stream (in order of appearance): 5, 1, 4, 4, 5, 9, 7, 13, 3
+
+getRankOfNumber(1) = 0
+getRankOfNumber(3) = 1
+getRankOfNumber(4) = 3
 '''
 
-def mat_search(mat, element):
+class RankStream():
 
-    def find(arr, element, left, right):
-        
-        if left > right: return - 1
+    def __init__(self):
+        self.root = None
 
-        mid = left + (right - left)//2
+    class Node():
+        def __init__(self, data, left=None, right=None):
+            self.data = data
+            self.left = left
+            self.right = right
 
-        if element == arr[mid]:
-            return mid
-        elif element < arr[mid]:
-            return find( arr, element, left, mid - 1 )
+    def track(self, data):
+
+        if self.root == None:
+            self.root = self.Node(data)
         else:
-            return find( arr, element, mid + 1, right )
-    
-    def find_row(mat, element, bottom, top):
+            
+            node, prev = self.root, None
 
-        if bottom > top: return -1
+            while node != None:
+                
+                prev = node
 
-        mid = top + (bottom - top)//2
+                if data <= node.data and node.right != None:
+                    node = node.left
+                else:
+                    node = node.right
+            
+            node = prev
 
-        n = len(mat[mid]) - 1
+            if node.left == None:
+                node.left = self.Node(data)
 
-        minimum, maximum = mat[mid][0], mat[mid][n]
+                if node.data < data:
+                    node.data, node.left.data = node.left.data, node.data
 
-        if element >= minimum and element <= maximum:
-            return mid
-        elif element <= minimum:
-            return find_row(mat, element, bottom, mid - 1)
-        else:
-            return find_row(mat, element, mid  + 1, top)
+            else:
+                node.right = self.Node(data)
 
-    if mat == None or element == None: return None
+                if node.data > data:
+                    node.data, node.right.data = node.right.data, node.data
+            
+    def get_rank(self, num):
 
-    position = find_row(mat, element, 0, len(mat) - 1)
+        def count_children(parent, value):
 
-    if position == -1: return -1
+            if parent == None:
+                return 0
 
-    row = mat[position]
+            result = 1 if parent.data <= value else 0
 
-    return (position, find( row, element, 0, len(row) -1 ))
+            if value < parent.data:
+                return result + count_children(parent.left, value)
+            else:
+                return result + count_children(parent.left, value) \
+                    + count_children(parent.right, value)
 
-def build_mat(n):
-    return [[( (y * 10) + x ) for x in range(1, n + 1)] for y in range(n)]
+        if num == None: return None
 
-mat = build_mat(10)
+        return count_children(self.root, num)
 
-result = mat_search(mat, 72)
+values = [5, 1, 4, 4, 5, 9, 7, 13, 3]
 
-print(result)
+rs = RankStream()
+
+for value in values:
+
+    rs.track(value)
+
+results = rs.get_rank(13)
+
+print(results)

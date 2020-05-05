@@ -516,3 +516,86 @@ class Test_MatrixSearch1(unittest.TestCase):
         expected = (2, 6)
 
         assert actual == expected
+
+from py.problems.sorting import RankStream
+class Test_RankStream1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(0)
+        expected = None
+
+        assert actual == expected
+
+    def test_empty(self):
+
+        values = []
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(0)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = [5, 1, 4, 4, 5, 9, 7, 13, 3]
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(0)
+        expected = 0
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = [5, 1, 4, 4, 5, 9, 7, 13, 3]
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(1)
+        expected = 1
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = [5, 1, 4, 4, 5, 9, 7, 13, 3]
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(5)
+        expected = 6
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = [5, 1, 4, 4, 5, 9, 7, 13, 3]
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(4)
+        expected = 4
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = [5, 1, 4, 4, 5, 9, 7, 13, 3]
+
+        rs = RankStream.track_values(values)
+
+        actual = rs.get_rank(13)
+        expected = 9
+
+        assert actual == expected
