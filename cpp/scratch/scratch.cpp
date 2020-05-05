@@ -26,11 +26,12 @@ class animal
 {
 	friend animal_shelter;
 
-	std::string name_;
 	std::size_t tag_{ };
-
+	
 protected:
 
+	std::string name_;
+	
 	void set_tag( const std::size_t tag )
 	{
 		tag_ = tag;
@@ -38,23 +39,32 @@ protected:
 
 	void clear_tag() { tag_ = std::size_t(); }
 	
-public:
-	
-	explicit animal( std::string& name )
+	explicit animal( std::string name )
+		: name_ { std::move( name ) }
+	{ }
+
+	bool operator==( const animal& other ) const
 	{
-		name_ = std::move( name );
+		if( &other == this ) return true;
+		
+		return tag_ == other.tag_;
 	}
 };
 
 class dog : public animal
 {
-	explicit dog(std::string& name )
-		: animal(name)
-	{  }
+public:
+	explicit dog( const std::string& name )
+		: animal( name )
+	{ }
 };
 
 class cat : public animal
 {
+public:
+	explicit cat( const std::string& name )
+		: animal( name )
+	{  }
 };
 
 class animal_shelter
@@ -76,9 +86,9 @@ class animal_shelter
 			animals_.push_back( animal );
 		}
 
-		A& dequeue()
+		A dequeue()
 		{
-			auto& item = animals_.front();
+			auto item = animals_.front();
 
 			animals_.pop_front();
 
@@ -120,7 +130,7 @@ public:
 	[[nodiscard]] std::size_t size() const { return dogs_.size() + cats_.size(); }
 	[[nodiscard]] bool empty() const { return dogs_.empty() && cats_.empty(); }
 	
-	animal& dequeue_any()
+	animal dequeue_any()
 	{
 		if( cats_.empty() )
 			return dogs_.dequeue();
@@ -134,12 +144,19 @@ public:
 		return dogs_.dequeue();
 	}
 
-	dog& dequeue_dog() { return dogs_.dequeue(); }
-	cat& dequeue_cat() { return cats_.dequeue(); }
+	dog dequeue_dog() { return dogs_.dequeue(); }
+	cat dequeue_cat() { return cats_.dequeue(); }
 };
 
 auto main() -> int
 {
-	auto shelter = animal_shelter{ };
+	auto shelter = animal_shelter {};
 
+	auto lily = cat( "lily" );
+
+	shelter.enqueue( lily );
+	
+	auto cat = shelter.dequeue_cat();
+	
+	
 }

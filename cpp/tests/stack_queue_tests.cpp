@@ -1,5 +1,6 @@
 #include "pch.h"
 #include <gtest/gtest.h>
+#include <typeinfo>
 
 #include "../problems/stack_queue.h"
 
@@ -526,5 +527,193 @@ namespace stack_queue_tests
         const auto expected = std::vector<int>{ 100, 31, 23, 4, 4, 2, 1, 0, -21, -21, -33, -100 };
 
         EXPECT_EQ( actual, expected );
+    }
+
+    /// <summary>
+    /// Testing class for animal shelter.
+    /// </summary>
+    class animal_shelter_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Animal Shelter
+    //
+
+    TEST_F( animal_shelter_tests, animal_shelter_empty )
+    {
+        auto shelter = animal_shelter{ };
+
+        std::vector<animal> actual;
+
+		while( !shelter.empty() )
+		{
+            actual.push_back( shelter.dequeue_any() );
+		}
+
+        std::vector<animal> expected = { };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( animal_shelter_tests, animal_shelter_case1 )
+    {
+        auto shelter = animal_shelter{
+            {
+	            dog( "fido" ),
+            	dog( "frodo" )
+            },
+            {}
+        };
+		 
+        auto actual1 = shelter.dequeue_any();
+    	
+        EXPECT_EQ( actual1.name(), "fido" );
+
+        auto actual2 = shelter.dequeue_any();
+
+        EXPECT_EQ( actual2.name(), "frodo" );
+    }
+
+    TEST_F( animal_shelter_tests, animal_shelter_case2 )
+    {
+        auto shelter = animal_shelter{
+            { },
+            {
+				cat( "lily" ),
+                cat( "bungles" )
+            }
+        };
+
+        auto actual1 = shelter.dequeue_any();
+
+        EXPECT_EQ( actual1.name(), "lily" );
+
+        auto actual2 = shelter.dequeue_any();
+
+        EXPECT_EQ( actual2.name(), "bungles" );
+    }
+
+    TEST_F( animal_shelter_tests, animal_shelter_case3 )
+    {
+        auto shelter = animal_shelter{ };
+
+        shelter.enqueue( dog( "fido" ) );
+        shelter.enqueue( cat( "lily" ) );
+        shelter.enqueue( dog( "frodo" ) );
+        shelter.enqueue( cat( "bungles" ) );
+        shelter.enqueue( dog( "jack" ) );
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "fido" );
+        }
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "lily" );
+        }
+
+        {
+            auto actual = shelter.dequeue_dog();
+            EXPECT_EQ( actual.name(), "frodo" );
+        }
+
+        {
+            auto actual = shelter.dequeue_cat();
+            EXPECT_EQ( actual.name(), "bungles" );
+        }
+
+        {
+            auto actual = shelter.dequeue_dog();
+            EXPECT_EQ( actual.name(), "jack" );
+        }
+    }
+
+    TEST_F( animal_shelter_tests, animal_shelter_case4 )
+    {
+        auto shelter = animal_shelter{ };
+
+        shelter.enqueue( dog( "fido" ) );
+        shelter.enqueue( cat( "lily" ) );
+        shelter.enqueue( dog( "frodo" ) );
+        shelter.enqueue( cat( "bungles" ) );
+        shelter.enqueue( dog( "jack" ) );
+
+        {
+            auto actual = shelter.dequeue_cat();
+            EXPECT_EQ( actual.name(), "lily" );
+        }
+
+        {
+            auto actual = shelter.dequeue_cat();
+            EXPECT_EQ( actual.name(), "bungles" );
+        }
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "fido" );
+        }
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "frodo" );
+        }
+
+        {
+            auto actual = shelter.dequeue_dog();
+            EXPECT_EQ( actual.name(), "jack" );
+        }
+    }
+
+    TEST_F( animal_shelter_tests, animal_shelter_case5 )
+    {
+        auto shelter = animal_shelter{ };
+
+        shelter.enqueue( dog( "fido" ) );
+        shelter.enqueue( cat( "lily" ) );
+        shelter.enqueue( dog( "frodo" ) );
+        shelter.enqueue( cat( "bungles" ) );
+        shelter.enqueue( dog( "jack" ) );
+        shelter.enqueue( dog( "missy" ) );
+    	
+        {
+            auto actual = shelter.dequeue_cat();
+            EXPECT_EQ( actual.name(), "lily" );
+        }
+    	
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "fido" );
+        }
+
+        {
+            auto actual = shelter.dequeue_cat();
+            EXPECT_EQ( actual.name(), "bungles" );
+        }
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "frodo" );
+        }
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "jack" );
+        }
+
+        {
+            auto actual = shelter.dequeue_any();
+            EXPECT_EQ( actual.name(), "missy" );
+        }
     }
 }
