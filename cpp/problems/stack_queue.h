@@ -287,7 +287,7 @@ namespace stack_queue_problems
                 return value;
             }
 
-            [[nodicard]] Ty peek() const { return data_.back(); }
+            [[nodiscard]] Ty peek() const { return data_.back(); }
             [[nodiscard]] bool empty() const { return data_.empty(); }
         };
 
