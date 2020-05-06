@@ -599,3 +599,141 @@ class Test_RankStream1(unittest.TestCase):
         expected = 9
 
         assert actual == expected
+
+from py.problems.sorting import alt_sort1
+class Test_AltSort1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        actual = alt_sort1(values)
+        expected = None
+
+        assert actual == expected
+
+    def test_empty(self):
+
+        values = []
+
+        actual = alt_sort1(values)
+        expected = []
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = [5, 3, 1, 2, 3]
+
+        actual = alt_sort1(values)
+        expected = [5, 1, 3, 2, 3]
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = [3, 5, 1, 4, 9, 8, 2, 1]
+
+        actual = alt_sort1(values)
+        expected = [9, 1, 8, 1, 5, 2, 4, 3]
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = [4, 2, 1, 4, 6, 7, 9, 3]
+
+        actual = alt_sort1(values)
+        expected = [9, 1, 7, 2, 6, 3, 4, 4]
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = [4, 3, 5, 7, 1, 3, 8, 12, 4, 13, 5]
+
+        actual = alt_sort1(values)
+        expected = [13, 1, 12, 3, 8, 3, 7, 4, 5, 4, 5]
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = [12, 33, 12, 23, 4, 12, 83, 3, 31, 12, 41, 1, 2, 3, 4]
+
+        actual = alt_sort1(values)
+        expected = [83, 1, 41, 2, 33, 3, 31, 3, 23, 4, 12, 4, 12, 12, 12]
+
+        assert actual == expected
+
+from py.problems.sorting import alt_sort2
+class Test_AltSort2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        actual = alt_sort2(values)
+        expected = None
+
+        assert actual == expected
+
+    def test_empty(self):
+
+        values = []
+
+        actual = alt_sort2(values)
+        expected = []
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = [5, 3, 1, 2, 3]
+
+        actual = alt_sort2(values)
+        expected = [5, 1, 3, 2, 3]
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = [3, 5, 1, 4, 9, 8, 2, 1]
+
+        actual = alt_sort2(values)
+        expected = [9, 1, 8, 1, 5, 2, 4, 3]
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = [4, 2, 1, 4, 6, 7, 9, 3]
+
+        actual = alt_sort2(values)
+        expected = [9, 1, 7, 2, 6, 3, 4, 4]
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = [4, 3, 5, 7, 1, 3, 8, 12, 4, 13, 5]
+
+        actual = alt_sort2(values)
+        expected = [13, 1, 12, 3, 8, 3, 7, 4, 5, 4, 5]
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = [12, 33, 12, 23, 4, 12, 83, 3, 31, 12, 41, 1, 2, 3, 4]
+
+        actual = alt_sort2(values)
+        expected = [83, 1, 41, 2, 33, 3, 31, 3, 23, 4, 12, 4, 12, 12, 12]
+
+        assert actual == expected
