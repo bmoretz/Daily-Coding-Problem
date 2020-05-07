@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 #include <list>
-#include <set>
 
 namespace stack_queue_problems
 {
@@ -305,7 +303,7 @@ namespace stack_queue_problems
         ///		<run-time>O(N)</run-time>
         ///		<space>O(N)</space>
         /// </complexity>
-        /// </summary>    	
+        /// </summary>
         static Ty pop_min( stack& s )
         {
             Ty min = s.pop();

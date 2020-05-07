@@ -1357,12 +1357,6 @@ namespace linkedlist_problems
 				: value( std::move( value ) )
 			{  }
 
-			~list_node()
-			{
-				std::cout << "deleted node: " << this <<
-					" with value " << value << std::endl;
-			}
-
 			Ty value;
 			node_pointer next{};
 		};

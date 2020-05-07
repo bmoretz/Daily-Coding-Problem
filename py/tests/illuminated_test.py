@@ -157,10 +157,13 @@ class Test_Karger(unittest.TestCase):
 
         graph = Graph.from_dict(g)
 
+        from random import seed
+        seed(282)
+
         # default = 2*edges
         minCuts = 2* len(graph.edges())
 
-        for i in range(30):
+        for i in range(5):
             result = kargerMinCut( graph )
 
             minCuts = min(minCuts, result)

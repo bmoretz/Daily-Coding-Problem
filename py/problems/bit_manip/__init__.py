@@ -261,3 +261,16 @@ def next_number1(num):
 
     return (bin_to_dec(smaller),
             bin_to_dec(larger))
+
+'''Number Swapper.
+
+Write a function to swap a number in place (that is, without temporary variables).
+'''
+
+def number_swap(a, b):
+
+    a = a ^ b
+    b = b ^ a
+    a = a ^ b
+
+    return a, b
