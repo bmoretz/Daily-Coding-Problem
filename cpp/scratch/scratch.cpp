@@ -5,158 +5,85 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <set>
-#include <list>
+#include <unordered_map>
 
-/* Animal Shelter.
+/* Route Between Nodes:
  *
- * An animal shelter, which holds only dogs and cats, operates on a strictly
- * "first in, first out" basis. People must adopt either the "oldest" (based on
- * arrival time) of all animals at the shelter, or they can select whether they
- * would prefer a dog or cat (and will receive the oldest animal of that type).
- * They cannot select which specific animal they would like. Create the data
- * structures to maintain this system and implement operations such as enqueue,
- * dequeueAny, dequeueDog and dequeueCat. You may use the built-in LinkedList data
- * structure.
+ * Given a directed graph, design an algorithm to find out whether there is
+ * a route between nodes.
  */
 
-class animal_shelter;
-
-class animal
+struct has_route
 {
-	friend animal_shelter;
+	class node;
 
-	std::size_t tag_{ };
+	using node_ptr = std::unique_ptr<node>;
+	using node_list = std::vector<std::reference_wrapper<node_ptr>>;
 	
-protected:
-
-	std::string name_;
-	
-	void set_tag( const std::size_t tag )
+	class node
 	{
-		tag_ = tag;
-	}
-
-	void clear_tag() { tag_ = std::size_t(); }
-	
-	explicit animal( std::string name )
-		: name_ { std::move( name ) }
-	{ }
-
-	bool operator==( const animal& other ) const
-	{
-		if( &other == this ) return true;
+		node_list children_{ };
 		
-		return tag_ == other.tag_;
-	}
-};
+	public:
 
-class dog : public animal
-{
-public:
-	explicit dog( const std::string& name )
-		: animal( name )
-	{ }
-};
-
-class cat : public animal
-{
-public:
-	explicit cat( const std::string& name )
-		: animal( name )
-	{  }
-};
-
-class animal_shelter
-{
-	template<typename A>
-	class queue
-	{
-		std::list<A> animals_ {};
-
-		public:
-
-		[[nodiscard]] std::size_t size() const { return animals_.size(); }
-		[[nodiscard]] bool empty() const { return animals_.empty(); }
-
-		A& peek() { return animals_.front(); }
-		
-		void enqueue( const A& animal )
+		void add_edges( const node_list&& other )
 		{
-			animals_.push_back( animal );
+			for( const auto& edge : other )
+			{
+				children_.push_back( edge );
+			}
 		}
+	};
 
-		A dequeue()
+	class graph
+	{
+		std::unordered_map<std::string, node_ptr> vertices_{ };
+		
+	public:
+
+		graph() = delete;
+		
+		graph( const std::initializer_list<std::string>& vertices,
+			const std::initializer_list<std::pair<std::string, std::string>>& edges )
 		{
-			auto item = animals_.front();
+			for( const auto& vertex : vertices )
+				vertices_[ vertex ] = std::make_unique<node>();
 
-			animals_.pop_front();
-
-			return item;
+			for( const auto& edge : edges )
+				vertices_[ edge.first ]->add_edges( { vertices_[ edge.second ] } );
 		}
 	};
 	
-	queue<dog> dogs_ {};
-	queue<cat> cats_ {};
-
-	std::size_t counter_ {};
-
-public:
-
-	animal_shelter() = default;
-	
-	animal_shelter( const std::initializer_list<dog>& dogs,
-		const std::initializer_list<cat>& cats )
+	static bool has_route1( const graph& graph, 
+		const std::string& first, 
+		const std::string& second )
 	{
-		for( const auto& dog : dogs )
-			enqueue( dog );
 
-		for( const auto& cat : cats )
-			enqueue( cat );
+		return false;
 	}
-	
-	void enqueue( const dog& dog )
-	{
-		static_cast< animal >( dog ).set_tag( ++counter_ );
-		dogs_.enqueue( dog );
-	}
-	
-	void enqueue( const cat& cat )
-	{
-		static_cast< animal >( cat ).set_tag( ++counter_ );
-		cats_.enqueue( cat );
-	}
-
-	[[nodiscard]] std::size_t size() const { return dogs_.size() + cats_.size(); }
-	[[nodiscard]] bool empty() const { return dogs_.empty() && cats_.empty(); }
-	
-	animal dequeue_any()
-	{
-		if( cats_.empty() )
-			return dogs_.dequeue();
-
-		if( dogs_.empty() )
-			return cats_.dequeue();
-
-		if( cats_.peek().tag_ < dogs_.peek().tag_ )
-			return cats_.dequeue();
-
-		return dogs_.dequeue();
-	}
-
-	dog dequeue_dog() { return dogs_.dequeue(); }
-	cat dequeue_cat() { return cats_.dequeue(); }
 };
+
+/*
+ *			A
+ *		/		\
+ *	 B 		|		D
+ *		\
+ *			C
+ *				\
+ *					E
+ */
+
+std::unique_ptr<has_route::graph> build_graph()
+{
+	auto graph = std::make_unique<has_route::graph>( {}, {} );
+	
+	return graph;
+}
 
 auto main() -> int
 {
-	auto shelter = animal_shelter {};
+	const auto g = build_graph();
 
-	auto lily = cat( "lily" );
+	auto result = has_route::has_route1( *g, "A", "B" );
 
-	shelter.enqueue( lily );
-	
-	auto cat = shelter.dequeue_cat();
-	
-	
 }

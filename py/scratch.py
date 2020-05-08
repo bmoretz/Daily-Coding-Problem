@@ -1,21 +1,33 @@
-'''Number Swapper.
+'''Word Frequencies.
 
-Write a function to swap a number in place (that is, without temporary variables).
+Design a method to find the frequency of occurrences of any given word
+in a book. What if we were running this algorithm multiple times?
 '''
 
-def number_swap(a, b):
+from collections import defaultdict
+from string import ascii_letters
 
-    a = a ^ b
-    b = b ^ a
-    a = a ^ b
+def word_frequency(text):
 
-    return a, b
+    if text == None: return None
 
+    cleaned = ''
 
-a, b = 10, 15
+    for char in text:     
+        if char == ' ' or char in ascii_letters:
+            cleaned += char
 
-print(f'{a} - {b}')
+    words = cleaned.lower().split(' ')
 
-a, b = number_swap(a, b)
+    freq = defaultdict(int)    
 
-print(f'{a} - {b}')
+    for word in words:
+        freq[word] += 1
+
+    return freq
+
+words = 'Having vowed to embark upon a much more satisfactory academic year, Bob and Mark, the two brothers from the Chapwick borough, boarded a streetcar in early August, debarked at the Leeds Department Store in Chelsea, and purchased several pounds’ worth of school supplies.'
+
+freq = word_frequency(words)
+
+print(freq)
