@@ -1,11 +1,11 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
-#include <sstream>
-#include <string>
 #include <utility>
 #include <vector>
 #include <unordered_map>
+#include <stack>
+#include <queue>
 
 /* Route Between Nodes:
  *
@@ -17,48 +17,126 @@ struct has_route
 {
 	class node;
 
-	using node_ptr = std::unique_ptr<node>;
-	using node_list = std::vector<std::reference_wrapper<node_ptr>>;
+	using node_list = std::vector<const node*>;
+
+	using node_ptr = node*;
 	
 	class node
 	{
+		char name_;
 		node_list children_{ };
-		
+
 	public:
 
-		void add_edges( const node_list&& other )
+		node() = delete;
+		
+		explicit node( const char name )
+			: name_{ name }
+		{  }
+
+		void add_edge( const node* other )
 		{
-			for( const auto& edge : other )
-			{
-				children_.push_back( edge );
-			}
+			children_.push_back( other );
+		}
+
+		[[nodiscard]] const char& name() const { return name_; }
+		
+		[[nodiscard]] const node_list& children() const
+		{
+			return children_;
 		}
 	};
 
+	struct edge
+	{
+		char from{}, to{};
+
+		edge( const char& first, const char& second )
+		{
+			from = first;
+			to = second;
+		}
+	};
+	
 	class graph
 	{
-		std::unordered_map<std::string, node_ptr> vertices_{ };
-		
+		std::unordered_map<char, std::unique_ptr<node>> vertices_{ };
+
 	public:
 
 		graph() = delete;
 		
-		graph( const std::initializer_list<std::string>& vertices,
-			const std::initializer_list<std::pair<std::string, std::string>>& edges )
+		graph( const std::initializer_list<char>& vertices )
 		{
 			for( const auto& vertex : vertices )
-				vertices_[ vertex ] = std::make_unique<node>();
+				vertices_[ vertex ] = std::make_unique<node>( vertex );
+		}
 
-			for( const auto& edge : edges )
-				vertices_[ edge.first ]->add_edges( { vertices_[ edge.second ] } );
+		void connect( const std::vector<edge>& edge_list )
+		{
+			for( const auto& edge : edge_list )
+				vertices_[ edge.from ]->add_edge( vertices_[ edge.to ].get() );
+		}
+
+		const node& operator[]( const char vertex ) const
+		{
+			return *vertices_.at( vertex );
 		}
 	};
-	
-	static bool has_route1( const graph& graph, 
-		const std::string& first, 
-		const std::string& second )
-	{
 
+	static bool has_route1( const graph& graph,
+		const char& first,
+		const char& second )
+	{
+		if( first == second ) return true;
+		
+		auto seen = std::stack<const node*>{ };
+		
+		seen.push( &graph[ first ] );
+
+		while( !seen.empty() )
+		{
+			const auto current = seen.top();
+
+			seen.pop();
+			
+			for( const auto& node : current->children())
+			{
+				if( node->name() == second )
+					return true;
+
+				seen.push( node );
+			}
+		}
+		
+		return false;
+	}
+
+	static bool has_route2( const graph& graph,
+		const char& first,
+		const char& second)
+	{
+		if( first == second ) return true;
+
+		auto seen = std::queue<const node*>{ };
+
+		seen.emplace( &graph[ first ] );
+
+		while( !seen.empty() )
+		{
+			const auto current = seen.front();
+
+			seen.pop();
+
+			for( const auto& node : current->children() )
+			{
+				if( node->name() == second )
+					return true;
+
+				seen.emplace( node );
+			}
+		}
+		
 		return false;
 	}
 };
@@ -71,12 +149,25 @@ struct has_route
  *			C
  *				\
  *					E
+ *						\
+ *							F
  */
 
 std::unique_ptr<has_route::graph> build_graph()
 {
-	auto graph = std::make_unique<has_route::graph>( {}, {} );
-	
+	auto vertices = std::initializer_list{ 'A', 'B', 'C', 'D', 'E', 'F' };
+
+	auto graph = std::make_unique<has_route::graph>( vertices );
+
+	graph->connect( {
+		{ 'A', 'B' },
+		{ 'A', 'C' },
+		{ 'A', 'D' },
+		{ 'B', 'C' },
+		{ 'C', 'E' },
+		{ 'E', 'F' }
+	} );
+	 
 	return graph;
 }
 
@@ -84,6 +175,10 @@ auto main() -> int
 {
 	const auto g = build_graph();
 
-	auto result = has_route::has_route1( *g, "A", "B" );
+	const auto f = 'A', l = 'F';
 
+	const auto result = has_route::has_route2( *g, f, l );
+
+	std::cout << "has path " << f << " -> " << l << " ? " <<
+		result;
 }
