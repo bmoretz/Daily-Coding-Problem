@@ -13,7 +13,19 @@ class line_intersect1():
 
         def __str__(self):
             return f'({round(self.x, 2)}, {round(self.y, 2)})'
+        
+        def __eq__(self, value):
+            if isinstance(value, line_intersect1.Point):
+                return self.x == value.x and self.y == value.y
+            else:
+                return super().__eq__(value)
 
+        def __ne__(self, value):
+            if isinstance(value, line_intersect1.Point):
+                return not self.__eq__(value)
+            else:
+                return super().__ne__(value)
+            
     class Line():
         def __init__(self, p1, p2):
             self.p1 = p1
@@ -34,7 +46,7 @@ class line_intersect1():
         return line_intersect1.Line(start, end)
 
     @staticmethod
-    def intersect(line1, line2):
+    def intersect(line1, line2, dig=2):
 
         def is_between(start, middle, end):
             if start > end:
@@ -57,7 +69,7 @@ class line_intersect1():
             start2, end2 = line2.p1, line2.p2
         else:
             start2, end2 = line2.p2, line2.p1
-        
+            
         l1 = line_intersect1.Line(start1, end1)
         l2 = line_intersect1.Line(start2, end2)
 
@@ -73,18 +85,9 @@ class line_intersect1():
         x = (yi2 - yi1) / (s1 - s2)
         y = x * s1 + yi1
 
-        int_point = line_intersect1.Point(x, y)
+        int_point = line_intersect1.Point(round(x, dig), round(y, dig))
 
         line_int = point_between(start1, int_point, end1) and \
             point_between(start2, int_point, end2)
 
         return int_point if line_int else None
-
-li = line_intersect1
-
-l1 = li.make_line(-3, -5, 12, 4)
-l2 = li.make_line(3, 4, -12, 15)
-
-result = li.intersect(l1, l2)
-
-print(result)

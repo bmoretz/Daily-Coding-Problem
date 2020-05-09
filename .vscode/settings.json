@@ -22,6 +22,7 @@
         "karger",
         "nstack",
         "tristack",
-        "urlify"
+        "urlify",
+        "yintecept"
     ]
 }

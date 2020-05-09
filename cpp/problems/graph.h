@@ -85,6 +85,22 @@ namespace graph_problems
 			}
 		};
 
+		/// <summary>
+		/// has_route1
+		///
+		/// This is a simple depth-first search of the graph that
+		/// starts at the first node and traverses the graph (deep-wise)
+		/// until it finds the second node, or traversed all nodes without
+		/// finding it.
+		/// </summary>
+		/// <param name="graph">graph to search</param>
+		/// <param name="first">node 1</param>
+		/// <param name="second">node 2</param>
+		/// <complexity>
+		///		<run-time>O(M + N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <returns>true iff there is a path from 1 -> 2</returns>
 		static bool has_route1( const graph& graph,
 			const char& first,
 			const char& second )
@@ -113,6 +129,22 @@ namespace graph_problems
 			return false;
 		}
 
+		/// <summary>
+		/// has_route2
+		///
+		/// This is a simple breadth-first search of the graph that
+		/// starts at the first node and traverses the graph (breath-wise)
+		/// until it finds the second node, or traversed all nodes without
+		/// finding it.
+		/// </summary>
+		/// <param name="graph">graph to search</param>
+		/// <param name="first">node 1</param>
+		/// <param name="second">node 2</param>
+		/// <complexity>
+		///		<run-time>O(M + N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <returns>true iff there is a path from 1 -> 2</returns>
 		static bool has_route2( const graph& graph,
 			const char& first,
 			const char& second )
