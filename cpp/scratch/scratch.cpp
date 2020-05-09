@@ -6,179 +6,74 @@
 #include <unordered_map>
 #include <stack>
 #include <queue>
+#include <cmath>
 
-/* Route Between Nodes:
+/* Minimal Tree.
  *
- * Given a directed graph, design an algorithm to find out whether there is
- * a route between nodes.
+ * Given a sorted (increasing order) array with unique integer elements,
+ * write an algorithm to create a binary search tree with minimal height.
  */
 
-struct has_route
+class min_tree
 {
-	class node;
+	struct node;
 
-	using node_list = std::vector<const node*>;
-
-	using node_ptr = node*;
+	using node_ptr = std::unique_ptr<node>;
 	
-	class node
+	struct node
 	{
-		char name_;
-		node_list children_{ };
-
-	public:
-
-		node() = delete;
+		int value;
+		node_ptr left, right;
 		
-		explicit node( const char name )
-			: name_{ name }
-		{  }
-
-		void add_edge( const node* other )
-		{
-			children_.push_back( other );
-		}
-
-		[[nodiscard]] const char& name() const { return name_; }
-		
-		[[nodiscard]] const node_list& children() const
-		{
-			return children_;
-		}
+		explicit node( const int& val )
+			: value( val ), left{ }, right{ }
+		{}
 	};
 
-	struct edge
+	node_ptr root_;
+
+	[[nodiscard]] node_ptr build_tree( const std::vector<int>& values, const int& begin, const int& end ) const
 	{
-		char from{}, to{};
+		if( begin >= end )
+			return nullptr;
 
-		edge( const char& first, const char& second )
-		{
-			from = first;
-			to = second;
-		}
-	};
-	
-	class graph
-	{
-		std::unordered_map<char, std::unique_ptr<node>> vertices_{ };
+		const auto mid = begin + int( ceil( ( end - begin ) / 2 ) );
 
-	public:
-
-		graph() = delete;
+		auto root = std::make_unique<node>( values[ mid ] );
 		
-		graph( const std::initializer_list<char>& vertices )
-		{
-			for( const auto& vertex : vertices )
-				vertices_[ vertex ] = std::make_unique<node>( vertex );
-		}
+		root->left = build_tree( values, begin, mid );
 
-		void connect( const std::vector<edge>& edge_list )
-		{
-			for( const auto& edge : edge_list )
-				vertices_[ edge.from ]->add_edge( vertices_[ edge.to ].get() );
-		}
+		root->right = build_tree( values, mid + 1, end );
 
-		const node& operator[]( const char vertex ) const
-		{
-			return *vertices_.at( vertex );
-		}
-	};
-
-	static bool has_route1( const graph& graph,
-		const char& first,
-		const char& second )
-	{
-		if( first == second ) return true;
-		
-		auto seen = std::stack<const node*>{ };
-		
-		seen.push( &graph[ first ] );
-
-		while( !seen.empty() )
-		{
-			const auto current = seen.top();
-
-			seen.pop();
-			
-			for( const auto& node : current->children())
-			{
-				if( node->name() == second )
-					return true;
-
-				seen.push( node );
-			}
-		}
-		
-		return false;
+		return root;
 	}
 
-	static bool has_route2( const graph& graph,
-		const char& first,
-		const char& second)
+	std::size_t num_children( const node* node ) const
 	{
-		if( first == second ) return true;
+		if( node == nullptr ) return 0;
 
-		auto seen = std::queue<const node*>{ };
+		return std::max( 1 + num_children( node->left.get() ),
+			1 + num_children( node->right.get() ) );
+	}
+	
+public:
 
-		seen.emplace( &graph[ first ] );
+	min_tree() = delete;
 
-		while( !seen.empty() )
-		{
-			const auto current = seen.front();
+	min_tree( const std::initializer_list<int>& init_values )
+	{
+		root_ = build_tree( init_values, 0, init_values.size() );
+	}
 
-			seen.pop();
-
-			for( const auto& node : current->children() )
-			{
-				if( node->name() == second )
-					return true;
-
-				seen.emplace( node );
-			}
-		}
-		
-		return false;
+	[[nodiscard]] std::size_t depth() const
+	{
+		return num_children( root_.get() );
 	}
 };
 
-/*
- *			A
- *		/		\
- *	 B 		|		D
- *		\
- *			C
- *				\
- *					E
- *						\
- *							F
- */
-
-std::unique_ptr<has_route::graph> build_graph()
-{
-	auto vertices = std::initializer_list{ 'A', 'B', 'C', 'D', 'E', 'F' };
-
-	auto graph = std::make_unique<has_route::graph>( vertices );
-
-	graph->connect( {
-		{ 'A', 'B' },
-		{ 'A', 'C' },
-		{ 'A', 'D' },
-		{ 'B', 'C' },
-		{ 'C', 'E' },
-		{ 'E', 'F' }
-	} );
-	 
-	return graph;
-}
-
 auto main() -> int
 {
-	const auto g = build_graph();
+	auto tree = min_tree{ { 1, 3, 5, 7, 8, 9 } };
 
-	const auto f = 'A', l = 'F';
-
-	const auto result = has_route::has_route2( *g, f, l );
-
-	std::cout << "has path " << f << " -> " << l << " ? " <<
-		result;
+	const auto depth = tree.depth();
 }

@@ -8,6 +8,7 @@
     <ClCompile Include="linkedlist_tests.cpp" />
     <ClCompile Include="stack_queue_tests.cpp" />
     <ClCompile Include="graph_tests.cpp" />
+    <ClCompile Include="tree_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
