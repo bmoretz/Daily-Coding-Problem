@@ -57,3 +57,103 @@ class Test_BloomFilter(unittest.TestCase):
 
         for n in nums:
             assert bf.check(n) == True
+
+from py.problems.misc import make_board
+from py.problems.misc import check_win
+class Test_TicTacToe(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        board = None
+
+        actual = check_win(board)
+        expected = None
+
+        assert actual == expected
+
+    def test_diag1(self):
+
+        board = make_board()
+        board[0] = ['O', 'X', 'X']
+        board[1] = ['X', 'O', 'X']
+        board[2] = ['O', 'X', 'O']
+
+        actual = check_win(board)
+        expected = True
+
+        assert actual == expected
+
+    def test_diag2(self):
+
+        board = make_board()
+        board[0] = ['X', 'X', 'O']
+        board[1] = ['X', 'O', 'X']
+        board[2] = ['O', 'X', 'O']
+
+        actual = check_win(board)
+        expected = True
+
+        assert actual == expected
+
+    def test_row1(self):
+
+        board = make_board()
+        board[0] = ['X', 'X', 'O']
+        board[1] = ['X', 'X', 'X']
+        board[2] = ['O', 'X', 'O']
+
+        actual = check_win(board)
+        expected = True
+
+        assert actual == expected
+
+    def test_row2(self):
+
+        board = make_board()
+        board[0] = ['X', 'X', 'O']
+        board[1] = ['X', 'O', 'X']
+        board[2] = ['O', 'O', 'O']
+
+        actual = check_win(board)
+        expected = True
+
+        assert actual == expected
+
+    def test_col1(self):
+
+        board = make_board()
+        board[0] = ['X', 'X', 'O']
+        board[1] = ['X', 'O', 'X']
+        board[2] = ['X', 'O', 'O']
+
+        actual = check_win(board)
+        expected = True
+
+        assert actual == expected
+
+    def test_col2(self):
+
+        board = make_board()
+        board[0] = ['X', 'X', 'O']
+        board[1] = ['O', 'O', 'O']
+        board[2] = ['X', 'O', 'O']
+
+        actual = check_win(board)
+        expected = True
+
+        assert actual == expected
+
+    def test_none(self):
+
+        board = make_board()
+        board[0] = ['X', 'X', 'O']
+        board[1] = ['O', 'X', 'X']
+        board[2] = ['X', 'O', 'O']
+
+        actual = check_win(board)
+        expected = False
+
+        assert actual == expected
