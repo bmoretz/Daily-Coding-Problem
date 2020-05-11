@@ -171,3 +171,36 @@ class Test_Karger(unittest.TestCase):
         assert minCuts == 2
 
 
+from py.problems.illuminated import run_kosaraju
+
+class Test_Kosaraju(unittest.TestCase):
+
+    def setUp(self):
+        from os import getcwd
+
+        root = getcwd()
+
+        cases = {}
+
+        for case in range(1, 7):
+            cases[case] = f'{root}\\py\\data\\problem8.10test' + str(case) + '.txt'
+        
+        self.test_cases = cases
+
+        self.expected_output = {
+            1 : [3, 3, 3, 0, 0],
+            2 : [3, 3, 2, 0, 0],
+            3 : [3, 3, 1, 1, 0],
+            4 : [7, 1, 0, 0, 0],
+            5 : [6, 3, 2, 1, 0],
+            6 : [3, 1, 1, 0, 0],
+        }
+
+    def test_cases_disk(self):
+
+        for case in self.test_cases.items():
+
+            result = run_kosaraju(case[1])
+
+            assert result == self.expected_output[case[0]]        
+        

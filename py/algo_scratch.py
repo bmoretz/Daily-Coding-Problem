@@ -15,18 +15,22 @@ answer should be "400,300,100,0,0" (without the quotes).
 
 (Note also that your answer should not have any spaces in it.)
 
-WARNING: This is the most challenging programming assignment of the course. 
+WARNING: This is the most challenging programming assignment of the course.
 
 Because of the size of the graph you may have to manage memory carefully. The best way to do this depends on your programming language and environment, and we strongly 
 suggest that you exchange tips for doing this on the discussion forums.
 '''
 
-file_path = os.getcwd() + '\py\\data\\problem8.10test5.txt'
-# file_path = os.getcwd() + '\py\\data\\minGraph.txt'
-# file_path = os.getcwd() + '\py\\data\\minGraph_test_case1.txt'
+submission_file_path = os.getcwd() + '\py\\data\\SCC.txt'
 
-from copy import deepcopy
+import heapq
 from collections import defaultdict
+
+def gen_test_cases(root=os.getcwd()):
+    cases = {}
+    for case in range(1, 7):
+        cases[case] = f'{root}\\py\\data\\problem8.10test' + str(case) + '.txt'
+    return cases
 
 class Graph():
 
@@ -58,151 +62,208 @@ class Graph():
     def __len__(self):
         return len(self.vertices())
 
-def read_graph():
+def read_graph(file_path):
+    ''' read graph
 
-    g = Graph()
-    
+    this function reads a graph definition from disk and
+    generates two copies: one forward (per the definition)
+    and one in reversed order. This approach uses double
+    the initial memory, however, we don't need to reverse
+    the graph later, so this approach effectively cuts the
+    cost of rev(G) to O(1).
+    '''
+    g, rev = Graph(), Graph()
+
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
 
         for line in lines:
             
             if len(line) == 0: continue
+            
+            u, v = [int(x) for x in line.strip().split(' ')]
 
-            u, v = [int(x) for x in line.split(' ')]
             g[ u ].append( v )
+            rev[ v ].append( u )
 
-    return g
+    return (g, rev)
 
-def reverse_graph(graph):
+def dfs_path(graph : Graph, node, seen):
 
-    if graph == None: return None
+    ''' dfs path
 
-    rev = Graph()
+    depth-first search of the passed in graph starting
+    at the specified node. We need to keep track of all
+    nodes seen globally, so we pass in the seen nodes
+    every iteration so we keep track of the state of the
+    traversal.
+    '''
 
-    for v in graph.vertices():
+    path, stack = [], [node]
+
+    while stack:
+
+        v = stack.pop()
+
         for u in graph[v]:
-            rev[u] += [ v ]
-        
-        if not rev[v]:
-            rev[v] = []
-    return rev
+
+            if not seen[u]:
+                stack += [u]
+                seen[u] = True
+
+        path += [v]
+        seen[v] = True
+
+    return path
 
 def topological_path(graph : Graph):
 
-    if graph == None: return None
+    ''' topological path
+    
+    This function generates a topological path
+    from the passed in graph using a depth-first
+    search. The labels are assigned in decrementing
+    order when seen, and then the resulting set is
+    ordered accending upon full traversal.
+    '''
 
-    n = len(graph.vertices())
+    n = len(graph.vertices()) + 1
     label = n
 
     topological = []
-    assigned = []
+    seen = defaultdict(bool)
 
-    for v in list(graph.vertices()):
+    for v in graph.vertices_.copy():
         
-        # if the vertex is already ordered, skip it
-        if v in assigned:
-            continue
-        
-        # current path results
-        path = []
-
-        # dfs the adjacent vertices
-        seen = [v]
-
-        while seen:
-            # push path
-            w = seen.pop()
-
-            if w in path: 
-                continue
+        if not seen[v]:
             
-            for u in graph[w]:
-                if u in assigned:
-                    continue
+            path = dfs_path(graph, v, seen)
 
-                seen += [u]
-
-            path += [w]
-        
-        assigned += path
-
-        while path:
-            topological.append((label, path.pop()))
-            label -= 1
+            while path:
+                node = path.pop()
+                topological.append((label, node))
+                label -= 1
     
+    # final traversal order.
     top_order = sorted(topological, key= lambda t: t[0])
 
-    missing = [x for x in graph.vertices() if x not in assigned]
+    # project out only the nodes.
+    final_path = [v[1] for v in top_order]
 
-    return [v[1] for v in top_order]
+    return final_path
 
-def compute_ssc(graph, path):
+def compute_scc(graph : Graph, path):
+    
+    ''' compute strongly-connected components
+
+    This function takes a graph and a topological path
+    to traverse. Each set of strongly-connected components
+    get assigned to values in a dictionary with the index
+    being the i-th set of components.
+    '''
     
     num_ssc = 0
-    components = {}
 
-    assigned = []
+    components = defaultdict(list)
+    seen = defaultdict(bool)
+    assigned = defaultdict(bool)
 
     for v in path:
+        
+        if not seen[v]:
+            # new component
+            num_ssc += 1
+
+            # traverse the path,
+            # this will generate a connected set
+            # of components.
+            path = dfs_path(graph, v, seen)
             
-        if v in assigned:
-            continue
-        
-        num_ssc += 1
-        seen = [v]
-        component = []
+            for node in path:
+                # nodes can only belong to
+                # one component, so we track
+                # all the nodes that have been
+                # previously assigned and ignore
+                # any duplicate entries.              
+                if not assigned[node]:
+                    components[num_ssc] += [node]
+                    assigned[node] = True
+                        
+    return components
 
-        while seen:
-            u = seen.pop()
+def kosaraju(graphs):
 
-            if u in component:
-                break
+    '''kosaraju
+    
+    this function takes 2 graphs as input, one forward and one
+    reversed. The algorithm returns the strongly connected
+    components in the forward graph.
+    '''
 
-            for w in graph[u]:
-                if w in assigned:
-                    continue
-                seen += [w]
+    forward, reverse = graphs
 
-            component += [u]
-        
-        components[num_ssc] = component
-        assigned += component
+    path = topological_path( reverse )
+
+    components = compute_scc( forward, path )
 
     return components
 
-def top_5_len(components):
+def top_N(components, n=5):
 
-    result = []
-    n = len(components)
+    ''' top n
+    
+    this function find the top n components defined by the number
+    of nodes in the specified component. We use a heap to get the
+    size of the component keys in linear time (O(N)), then there is a
+    constant time (n) operation to generate
+    '''
 
-    for index in range(1, 6):
+    for index in range(len(components) + 1, n + 1):
+        components[index] = []
 
-        if index <= n:
-            result += [len(components[index])]
-        else:
-            result += [0]
+    sorted_components = heapq.nlargest(n, components.items(), key=lambda x: len(x[1]))
+    
+    result = [ len(c[1]) for c in sorted_components ]
 
-    return ','.join([ str(l) for l in sorted(result, key=lambda x:-x)])
+    return result
 
-print('\n\n')
+def run_kosaraju(file_path):
 
-graph = read_graph()
-print(f'Read {len(graph)} vertices from file: {file_path}.')
+    print('\n\n')
 
-rev = reverse_graph(graph)
-print(f'Reversed Input Graph')
+    print('Running file:', file_path)
 
-assert len(graph) == len(rev)
+    g = read_graph(file_path)
 
-print(f'len graph {len(graph)} len rev {len(rev)}')
-print(f'len graph {len(graph.edges())} len rev {len(rev.edges())}')
+    print(f'Read {len(g[0])} vertices from file: {file_path}.')
+    print(f'Running kosaraju on graph...')
 
-path = topological_path(rev)
-print(f'Found topological path: {path}')
+    components = kosaraju(g)
+    print(f'Total Strongly Connected Components Found: {len(components)}')
 
-components = compute_ssc(graph, path)
-print(f'Total Strongly Connected Components Found: {len(components)}')
+    result = top_N(components,n=5)
+    formatted_result = ','.join([ str(l) for l in sorted(result, key=lambda x:-x)])
 
-result = top_5_len(components)
-print(f'Length of top 5 SSCs: {result}\n')
+    print(f'Length of top 5 SCCs: {formatted_result}\n')
+
+    return result
+
+def run_test_cases():
+
+    expected_output = {
+        1 : [3, 3, 3, 0, 0],
+        2 : [3, 3, 2, 0, 0],
+        3 : [3, 3, 1, 1, 0],
+        4 : [7, 1, 0, 0, 0],
+        5 : [6, 3, 2, 1, 0],
+        6 : [3, 1, 1, 0, 0],
+    }
+
+    for case in gen_test_cases().items():
+        result = run_kosaraju(case[1])
+
+        assert result == expected_output[case[0]]
+
+# run_test_cases()
+
+run_kosaraju(submission_file_path) # run submission
