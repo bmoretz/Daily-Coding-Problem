@@ -236,12 +236,9 @@ class Graph():
     def from_dict(g):
         graph = Graph()
 
-        for v in g.keys():
-            graph.add_vertex( v )
-
         for k, v in g.items():
             for e in v:
-                graph.add_edge(k, e)
+                graph[ k ] += e
         
         return graph
 
@@ -249,14 +246,8 @@ class Graph():
     def __init__(self):
         self.vertices = defaultdict(list)
 
-    def add_vertex(self, vertex):
-        self.vertices[ vertex ]
-
     def vertices(self):
         return self.vertices.keys()
-
-    def add_edge(self, a, b):
-        self.vertices[a].append(b)
 
     def edges(self):
 
@@ -285,6 +276,14 @@ from random import uniform, seed, choice
 
 def kargerMinCut(graph):
 
+    '''karger's minimum cut
+
+    this algorithm chooses an edge at random, and merges one vertex into the other, 
+    to form a new "super node" that is the union of all edges in both nodes 
+    (excluding self-references). We then delete both of the chosen nodes and update 
+    all references to them to point to the new "super node". We repeat this process until
+    there are more than 2 vertices in the graph.
+    '''
     while len(graph) > 2:
 
         # list of all edges
@@ -318,7 +317,6 @@ def kargerMinCut(graph):
         graph[ s_id ] = s
         
     return len( graph.edges() ) / 2
-
 
 '''
 The file contains the edges of a directed graph. Vertices are labeled as positive integers from 1 to 875714. Every row indicates an edge, 
