@@ -28,7 +28,7 @@ namespace graph_tests
     // Has Path 1
     //
 
-    TEST_F( has_path_tests, has_path_dfs_case1 )
+    TEST_F( has_path_tests, dfs_case1 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C' };
 
@@ -44,7 +44,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_dfs_case2 )
+    TEST_F( has_path_tests, dfs_case2 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -64,7 +64,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_dfs_case3 )
+    TEST_F( has_path_tests, dfs_case3 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -84,7 +84,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_dfs_case4 )
+    TEST_F( has_path_tests, dfs_case4 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -105,7 +105,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_dfs_case5 )
+    TEST_F( has_path_tests, dfs_case5 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
 
@@ -127,7 +127,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_bfs_case1 )
+    TEST_F( has_path_tests, bfs_case1 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C' };
 
@@ -143,7 +143,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_bfs_case2 )
+    TEST_F( has_path_tests, bfs_case2 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -163,7 +163,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_bfs_case3 )
+    TEST_F( has_path_tests, bfs_case3 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -183,7 +183,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_bfs_case4 )
+    TEST_F( has_path_tests, bfs_case4 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -204,7 +204,7 @@ namespace graph_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( has_path_tests, has_path_bfs_case5 )
+    TEST_F( has_path_tests, bfs_case5 )
     {
         auto graph = has_route::graph{ 'A', 'B', 'C', 'D', 'E', 'F', 'G' };
 
