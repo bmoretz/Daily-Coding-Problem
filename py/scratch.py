@@ -1,75 +1,39 @@
-'''Tic Tac Win.
+'''Factorial Zeros.
 
-Design an algorithm to figure out if someone has won a game of tic-tak-toe.
+Write an algorithm which computes the number of trailing zeros in n factorial.
 '''
 
-def make_board(n=3):
-    return [[None for c in range(n)] for r in range(n)]
+def fact_zeros(n):
 
-def check_win(board):
+    from math import log, ceil, floor
 
-    def get_pos_value(piece):
-        return -1 if piece == 'X' else 1
+    def factorial(n, fact={}):
 
-    def check_cols(board):
+        if n == 1: return 1
+
+        if n not in fact:
+            fact[n] = n * factorial(n - 1)
+
+        return fact[n]
+
+    if n == None: return None
+
+    if n < 0: return -1
+
+    fact = factorial(n)
+
+    print(fact)
+
+    zeros = 0
+
+    for div in range(1, ceil(log(n, 5))):
         
-        n, m = len(board), len(board[0])
+        zeros += floor(n / (5**div))
 
-        for col in range(m):
-            total = 0
-            for row in range(n):
-                total += get_pos_value( board[row][col] )
+    return zeros
 
-            if abs(total) == 3: return True
-        
-        return False
+res = fact_zeros(64)
 
-    def check_rows(board):
+print(res)
 
-        n, m = len(board), len(board[0])
-
-        for row in range(n):
-            total = 0
-            for col in range(m):
-                total += get_pos_value( board[row][col] )
-
-            if abs(total) == 3: return True
-        
-        return False
-
-    def check_diags(board):
-        
-        n, m = len(board), len(board[0])
-
-        total, position = 0, 0
-        for _ in range(n):
-            total += get_pos_value( board[position][position] )
-            position += 1
-        
-        if abs(total) == 3: return True
-
-        total, position = 0, 2
-        for row in range(n):
-            total += get_pos_value( board[position][position] )
-            position -= 1
-        
-        if abs(total) == 3: return True
-
-        return False        
-
-    if board == None: return None
-
-    if check_diags(board): return True
-    if check_rows(board): return True
-    if check_cols(board): return True
-    
-    return False
-
-board = make_board()
-board[0] = ['O', 'X', 'O']
-board[1] = ['X', 'O', 'X']
-board[2] = ['O', 'X', 'O']
-
-win = check_win(board)
-
-print(win)
+print(len('00000000000000000000000000000000000000000000'))

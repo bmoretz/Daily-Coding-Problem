@@ -139,7 +139,7 @@ Partition subroutine exactly as it is described in the video lectures (otherwise
 '''
 
 def get_sort_data():
-    from os import getcwd    
+    from os import getcwd
     
     file_path = getcwd() + '\py\\data\\QuickSort.txt'
 
