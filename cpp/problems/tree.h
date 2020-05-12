@@ -279,4 +279,61 @@ namespace tree_problems
 			return lists;
 		}
 	};
+
+	/* Check Balanced.
+	 *
+	 * Implement a function to check if a binary tree is balanced. For the purposes of
+	 * this question, a balanced binary tree is defined to be a tree such that the heights
+	 * of the two subtrees of any node never differ by more than one.
+	 */
+
+	struct is_balanced
+	{
+		struct tree_node;
+
+		using tree_node_ptr = std::unique_ptr<tree_node>;
+
+		struct tree_node
+		{
+			int value;
+			tree_node_ptr left, right;
+
+			explicit tree_node( const int& val )
+				: value{ val }
+			{  }
+		};
+
+		tree_node_ptr root;
+
+		/// <summary>
+		/// is_balanced1
+		///
+		/// Straight forward approach of comparing the heights of the sub-trees directly.
+		///
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// </summary>
+		/// <returns></returns>
+		[[nodiscard]] bool is_balanced1() const
+		{
+			if( !root ) return true;
+
+			const auto left = height( root->left.get() );
+			const auto right = height( root->right.get() );
+
+			return std::abs( left - right ) <= 1;
+		}
+
+		[[nodiscard]] int height( const tree_node* node ) const
+		{
+			if( !node ) return 0;
+
+			const auto l = 1 + height( node->left.get() );
+			const auto r = 1 + height( node->right.get() );
+
+			return std::max( l, r );
+		}
+	};
 }

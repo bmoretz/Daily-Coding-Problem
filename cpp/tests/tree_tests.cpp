@@ -28,7 +28,7 @@ namespace tree_tests
     // Min Tree
     //
 
-    TEST_F( min_tree_tests, min_tree_empty )
+    TEST_F( min_tree_tests, empty )
     {
     	const auto tree = min_tree{ { } };
     	
@@ -36,7 +36,7 @@ namespace tree_tests
         const auto expected = 0;
     }
 
-    TEST_F( min_tree_tests, min_tree_case1 )
+    TEST_F( min_tree_tests, case1 )
     {
         const auto tree = min_tree{1};
 
@@ -44,7 +44,7 @@ namespace tree_tests
         const auto expected = 1;
     }
 
-    TEST_F( min_tree_tests, min_tree_case2 )
+    TEST_F( min_tree_tests, case2 )
     {
         const auto tree = min_tree{ 1, 2, 3 };
 
@@ -52,7 +52,7 @@ namespace tree_tests
         const auto expected = 2;
     }
 
-    TEST_F( min_tree_tests, min_tree_case3 )
+    TEST_F( min_tree_tests, case3 )
     {
         const auto tree = min_tree{ 1, 2, 3, 4 };
 
@@ -60,7 +60,7 @@ namespace tree_tests
         const auto expected = 3;
     }
 
-    TEST_F( min_tree_tests, min_tree_case4 )
+    TEST_F( min_tree_tests, case4 )
     {
         const auto tree = min_tree{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -68,7 +68,7 @@ namespace tree_tests
         const auto expected = 4;
     }
 
-    TEST_F( min_tree_tests, min_tree_case5 )
+    TEST_F( min_tree_tests, case5 )
     {
         const auto tree = min_tree{ 1, 3, 5, 7, 8, 9 };
 
@@ -96,7 +96,7 @@ namespace tree_tests
     // Depth List (bfs)
     //
 
-    TEST_F( depth_list_tests, depth_list_bfs_empty )
+    TEST_F( depth_list_tests, bfs_empty )
     {
         const auto tree = list_of_depths{ };
 
@@ -105,7 +105,7 @@ namespace tree_tests
         EXPECT_EQ( node_list->size(), 0 );
     }
 
-    TEST_F( depth_list_tests, depth_list_bfs_case1 )
+    TEST_F( depth_list_tests, bfs_case1 )
     {
         const auto tree = list_of_depths{ 1, 2, 3, 4, 5, 6, 7 };
 
@@ -161,7 +161,7 @@ namespace tree_tests
         EXPECT_EQ( actual_level_two, expected_level_two );
     }
 
-    TEST_F( depth_list_tests, depth_list_bfs_case2 )
+    TEST_F( depth_list_tests, bfs_case2 )
     {
         const auto tree = list_of_depths{ 1, 2, 3, 4, 5, 6, 7, 8 };
 
@@ -238,7 +238,7 @@ namespace tree_tests
     // Depth List (dfs)
     //
 
-    TEST_F( depth_list_tests, depth_list_dfs_empty )
+    TEST_F( depth_list_tests, dfs_empty )
     {
         const auto tree = list_of_depths{ };
 
@@ -247,7 +247,7 @@ namespace tree_tests
         EXPECT_EQ( node_list->size(), 0 );
     }
 
-    TEST_F( depth_list_tests, depth_list_dfs_case1 )
+    TEST_F( depth_list_tests, dfs_case1 )
     {
         const auto tree = list_of_depths{ 1, 2, 3, 4, 5, 6, 7 };
 
@@ -303,7 +303,7 @@ namespace tree_tests
         EXPECT_EQ( actual_level_two, expected_level_two );
     }
 
-    TEST_F( depth_list_tests, depth_list_dfs_case2 )
+    TEST_F( depth_list_tests, dfs_case2 )
     {
         const auto tree = list_of_depths{ 1, 2, 3, 4, 5, 6, 7, 8 };
 
@@ -373,5 +373,138 @@ namespace tree_tests
         const auto expected_level_three = std::vector<int>{ 0, 1 };
 
         EXPECT_EQ( actual_level_three, expected_level_three );
+    }
+
+    /// <summary>
+    /// Testing class for depth list.
+    /// </summary>
+    class is_balanced_tests :
+        public ::testing::Test {
+    	
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // is balanced
+    //
+
+    TEST_F( is_balanced_tests, empty )
+    {
+        const auto tree = is_balanced{ };
+
+        const auto actual = tree.is_balanced1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( is_balanced_tests, case1 )
+    {
+        using node = is_balanced::tree_node;
+    	
+        auto tree = is_balanced{ };
+
+        tree.root = std::make_unique<node>( 4 );
+    	
+        const auto actual = tree.is_balanced1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_balanced_tests, case2 )
+    {
+        using node = is_balanced::tree_node;
+
+        auto tree = is_balanced{ };
+
+        tree.root = std::make_unique<node>( 4 );
+        tree.root->left = std::make_unique<node>( 6 );
+    	
+        const auto actual = tree.is_balanced1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_balanced_tests, case3 )
+    {
+        using node = is_balanced::tree_node;
+
+        auto tree = is_balanced{ };
+
+        tree.root = std::make_unique<node>( 4 );
+
+        tree.root->left = std::make_unique<node>( 6 );
+
+        tree.root->left->left = std::make_unique<node>( 2 );
+        tree.root->left->left->left = std::make_unique<node>( 1 );
+
+        tree.root->left->right = std::make_unique<node>( 5 );
+
+        const auto actual = tree.is_balanced1();
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_balanced_tests, case4 )
+    {
+        using node = is_balanced::tree_node;
+
+        auto tree = is_balanced{ };
+
+        tree.root = std::make_unique<node>( 4 );
+
+        tree.root->left = std::make_unique<node>( 6 );
+
+        tree.root->left->left = std::make_unique<node>( 2 );
+        tree.root->left->left->left = std::make_unique<node>( 1 );
+    	
+        tree.root->right = std::make_unique<node>( 9 );
+    	
+        tree.root->right->right = std::make_unique<node>( 5 );
+        tree.root->right->right->left = std::make_unique<node>( 2 );
+        tree.root->right->right->right = std::make_unique<node>( 1 );
+
+        const auto actual = tree.is_balanced1();
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_balanced_tests, case5 )
+    {
+        using node = is_balanced::tree_node;
+
+        auto tree = is_balanced{ };
+
+        tree.root = std::make_unique<node>( 4 );
+
+        tree.root->left = std::make_unique<node>( 6 );
+
+        tree.root->left->left = std::make_unique<node>( 2 );
+        tree.root->left->left->left = std::make_unique<node>( 1 );
+
+    	tree.root->left->left->left->left = std::make_unique<node>( 0 );
+        tree.root->left->left->left->left->left = std::make_unique<node>( -1 );
+    	
+        tree.root->right = std::make_unique<node>( 9 );
+
+        tree.root->right->right = std::make_unique<node>( 5 );
+        tree.root->right->right->left = std::make_unique<node>( 2 );
+        tree.root->right->right->right = std::make_unique<node>( 1 );
+
+        const auto actual = tree.is_balanced1();
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
     }
 }

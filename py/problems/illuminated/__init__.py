@@ -237,8 +237,7 @@ class Graph():
         graph = Graph()
 
         for k, v in g.items():
-            for e in v:
-                graph[ k ] += e
+            graph[ k ] = v
         
         return graph
 

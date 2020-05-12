@@ -9,135 +9,73 @@
 #include <cmath>
 #include <map>
 
-/* List of Depths.
+/* Check Balanced.
  *
- * Given a binary tree, design an algorithm which creates a linked list of all the nodes
- * at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).
+ * Implement a function to check if a binary tree is balanced. For the purposes of
+ * this question, a balanced binary tree is defined to be a tree such that the heights
+ * of the two subtrees of any node never differ by more than one.
  */
 
-class list_of_depths
+struct is_balanced
 {
-	struct list_node;
+    struct tree_node;
 
-	using list_node_ptr = std::unique_ptr<list_node>;
+    using tree_node_ptr = std::unique_ptr<tree_node>;
 
-	struct list_node
+    struct tree_node
+    {
+        int value;
+        tree_node_ptr left, right;
+    	
+        explicit tree_node( const int& val )
+            : value{ val }
+        {  }
+    };
+
+    tree_node_ptr root;
+
+    [[nodiscard]] bool is_balanced1() const
 	{
-		int value;
-		list_node_ptr next;
-
-		explicit list_node( const int& val )
-			: value{ val }
-		{ }
-	};
-	
-	struct tree_node;
-
-	using tree_node_ptr = std::unique_ptr<tree_node>;
-	
-	struct tree_node
-	{
-		int value;
-		tree_node_ptr left, right;
+        if( !root ) return true;
 		
-		explicit tree_node( const int& val )
-			: value( val )
-		{}
-	};
+        const auto left = height( root->left.get() );
+        const auto right = height( root->right.get() );
 
-	tree_node_ptr root_;
+        const int delta = left - right;
 
-	[[nodiscard]] tree_node_ptr build_tree( const std::vector<int>& values, const int& begin, const int& end ) const
-	{
-		if( begin >= end )
-			return nullptr;
-
-		const auto mid = begin + int( ceil( ( end - begin ) / 2 ) );
-
-		auto root = std::make_unique<tree_node>( values[ mid ] );
-		
-		root->left = build_tree( values, begin, mid );
-
-		root->right = build_tree( values, mid + 1, end );
-
-		return root;
+        return std::abs( delta ) <= 1;
 	}
 
-	std::size_t num_children( const tree_node* node ) const
+	[[nodiscard]] std::size_t height( const tree_node* node ) const
 	{
-		if( node == nullptr ) return 0;
+        if( !node ) return 0;
 
-		return std::max( 1 + num_children( node->left.get() ),
-			1 + num_children( node->right.get() ) );
-	}
-	
-public:
+        const auto l = 1 + height( node->left.get() );
+        const auto r = 1 + height( node->right.get() );
 
-	using list_map = std::map<std::size_t, list_node_ptr>;
-	
-	list_of_depths() = delete;
-
-	list_of_depths( const std::initializer_list<int>& init_values )
-	{
-		root_ = build_tree( init_values, 0, init_values.size() );
-	}
-
-	[[nodiscard]] std::size_t depth() const
-	{
-		return num_children( root_.get() );
-	}
-
-	[[nodiscard]] std::unique_ptr<list_map> build_node_list() const
-	{
-		using level_data = std::pair<std::size_t, tree_node*>;
-
-		auto lists = std::make_unique<list_map>();
-		auto level = std::queue<level_data>{};
-
-		level.push( level_data( 0, root_.get() ) );
-
-		while( !level.empty() )
-		{
-			const auto current = level.front();
-
-			if( current.first == lists->size() )
-			{
-				lists->insert( 
-					std::make_pair( current.first, 
-						std::make_unique<list_node>( 0 ) 
-				) );
-			}
-
-			auto node = lists->at( current.first ).get();
-
-			while( node->next )
-			{
-				node = node->next.get();
-			}
-
-			node->next = std::make_unique<list_node>( current.second->value );
-			
-			level.pop();
-
-			if( current.second->left ) 
-				level.push( std::make_pair( 
-					current.first + 1, 
-					current.second->left.get() ) );
-			
-			if( current.second->right )
-				level.push( std::make_pair( 
-					current.first + 1, 
-					current.second->right.get() ) );;
-
-		}
-
-		return lists;
+        return std::max( l, r );
 	}
 };
 
 auto main() -> int
 {
-	const auto tree = list_of_depths{ 1, 2, 3, 4, 5, 6, 7 };
+    using node = is_balanced::tree_node;
+	
+    auto tree = is_balanced{ };
 
-	auto lists = tree.build_node_list();
+    tree.root = std::make_unique<node>( 4 );
+	
+    tree.root->left = std::make_unique<node>( 6 );
+	
+    tree.root->left->left = std::make_unique<node>( 2 );
+    tree.root->left->left->left = std::make_unique<node>( 1 );
+	
+    tree.root->left->right = std::make_unique<node>( 5 );
+	
+    tree.root->left->right->left = std::make_unique<node>( 3 );
+    tree.root->left->right->right = std::make_unique<node>( 2 );
+	
+    tree.root->right = std::make_unique<node>( 7 );
+
+    auto bal = tree.is_balanced1();
 }

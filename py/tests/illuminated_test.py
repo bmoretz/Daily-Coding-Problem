@@ -170,7 +170,6 @@ class Test_Karger(unittest.TestCase):
 
         assert minCuts == 2
 
-
 from py.problems.illuminated import run_kosaraju
 
 class Test_Kosaraju(unittest.TestCase):
