@@ -1,69 +1,78 @@
 import os
 
 '''
-The file contains an adjacency list representation of an undirected weighted graph with 200 vertices labeled 1 to 200. Each row consists of the node tuples that are 
-adjacent to that particular vertex along with the length of that edge. For example, the 6th row has 6 as the first entry indicating that this row corresponds to the vertex
-labeled 6. The next entry of this row "141,8200" indicates that there is an edge between vertex 6 and vertex 141 that has length 8200. The rest of the pairs of this row 
-indicate the other vertices adjacent to vertex 6 and the lengths of the corresponding edges.
+The file contains the edges of a directed graph. Vertices are labeled as positive integers from 1 to 875714. Every row indicates an edge, 
+the vertex label in first column is the tail and the vertex label in second column is the head (recall the graph is directed, and the edges are 
+directed from the first column vertex to the second column vertex). So for example, the 11^th row looks like : "2 47646". 
+This just means that the vertex with label 2 has an outgoing edge to the vertex with label 47646
 
-Your task is to run Dijkstra's shortest-path algorithm on this graph, using 1 (the first vertex) as the source vertex, and to compute the shortest-path distances between 1 
-and every other vertex of the graph. If there is no path between a vertex vv and vertex 1, we'll define the shortest-path distance between 1 and vv to be 1000000.
+Your task is to code up the algorithm from the video lectures for computing strongly connected components (SCCs), and to run this algorithm on the given graph.
 
-You should report the shortest-path distances to the following ten vertices, in order: 7,37,59,82,99,115,133,165,188,197. You should encode the distances as a comma-separated 
-string of integers. So if you find that all ten of these vertices except 115 are at distance 1000 away from vertex 1 and 115 is 2000 distance away, then your answer should be 
-1000,1000,1000,1000,1000,2000,1000,1000,1000,1000. Remember the order of reporting DOES MATTER, and the string should be in the same order in which the above ten vertices are 
-given. The string should not contain any spaces. Please type your answer in the space provided.
+Output Format: You should output the sizes of the 5 largest SCCs in the given graph, in decreasing order of sizes, separated by commas (avoid any spaces). So if your 
+algorithm computes the sizes of the five largest SCCs to be 500, 400, 300, 200 and 100, then your answer should be "500,400,300,200,100" (without the quotes). If your 
+algorithm finds less than 5 SCCs, then write 0 for the remaining terms. Thus, if your algorithm computes only 3 SCCs whose sizes are 400, 300, and 100, then your 
+answer should be "400,300,100,0,0" (without the quotes). 
 
-IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn)O(mn) time implementation of Dijkstra's algorithm should work fine. OPTIONAL: For those of you seeking an 
-additional challenge, try implementing the heap-based version. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind 
-of mapping between vertices and their positions in the heap.
+(Note also that your answer should not have any spaces in it.)
+
+WARNING: This is the most challenging programming assignment of the course.
+
+Because of the size of the graph you may have to manage memory carefully. The best way to do this depends on your programming language and environment, and we strongly 
+suggest that you exchange tips for doing this on the discussion forums.
 '''
 
-submission_file_path = os.getcwd() + '\py\\data\\dijkstraData.txt'
+submission_file_path = os.getcwd() + '\py\\data\\SCC.txt'
 
-test_file_path = os.getcwd() + '\py\\data\\problem9.8test.txt'
-
-from collections import defaultdict
 import heapq
+from collections import defaultdict
 
-class WeightedGraph():
+def gen_test_cases(root=os.getcwd()):
+    cases = {}
+    for case in range(1, 7):
+        cases[case] = f'{root}\\py\\data\\problem8.10test' + str(case) + '.txt'
+    return cases
 
-    ''' adjency list weighted graph '''
+class Graph():
 
-    class Node():
-        
-        def __init__(self, id, weight):
-            self.id = id
-            self.weight = weight
+    ''' simple adjency list graph '''
 
     def __init__(self):
-        self.nodes_ = defaultdict(list)
+        self.vertices_ = defaultdict(list)
 
     def vertices(self):
-        return self.nodes_.copy()
+        return self.vertices_.keys()
+
+    def edges(self):
+        edges = []
+        for v in self.vertices_.keys():
+            for u in self.vertices_[v]:
+                edges += [u, v]
+        return edges
 
     def __getitem__(self, key):
-        return self.nodes_[key]
-
-    def add_node(self, u, v, c):
-        self.nodes_[u].append( self.Node(v, c) )
+        return self.vertices_[key]
 
     def __setitem__(self, key, value):
-        self.nodes_[key] = value
+        self.vertices_[key] = value
 
     def __delitem__(self, key):
-        del self.nodes_[key]
+        if key in self.vertices_.keys():
+            del self.vertices_[ key ]
 
     def __len__(self):
-        return len(self.nodes_.keys())
+        return len(self.vertices())
 
-def read_weighted_graph(file_path):
-    ''' read weighted graph
+def read_graph(file_path):
+    ''' read graph
 
-    this function reads a weighted graph definition from disk 
-    and generates a graph type for ease of use.
+    this function reads a graph definition from disk and
+    generates two copies: one forward (per the definition)
+    and one in reversed order. This approach uses double
+    the initial memory, however, we don't need to reverse
+    the graph later, so this approach effectively cuts the
+    cost of rev(G) to O(1).
     '''
-    g = WeightedGraph()
+    g, rev = Graph(), Graph()
 
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
@@ -72,87 +81,189 @@ def read_weighted_graph(file_path):
             
             if len(line) == 0: continue
             
-            pieces = line.strip().split('\t')
+            u, v = [int(x) for x in line.strip().split(' ')]
 
-            vertex = int(pieces[0])
+            g[ u ].append( v )
+            rev[ v ].append( u )
 
-            for piece in pieces[1:]:
+    return (g, rev)
 
-                edge, weight = [int(x) for x in piece.split(',')]
-                
-                g.add_node(vertex, edge, weight)
+def dfs_path(graph : Graph, node, seen):
 
-    return g
+    ''' dfs path
 
-def shortest_paths_slow(graph : WeightedGraph, s, def_dist=1e6):
-
-    ''' naive dijkstra
-
-    this is a naive implementation of dijkstra's shortest path
-    algorithm. We use a stack to traverse the graph, pushing each
-    adjacent edge from the source vertex on the stack, along with the
-    associated cost of getting to the node (the cumulative cost from
-    the source). After we visit a node, we return to the stack, sort
-    it by total cost, and pick the next node with the shortest path.
-    We keep track of nodes we have already visited with a dictionary
-    of node id's, and only mark a node visited when we have the final
-    cost of reaching that node, that way, if we encounter the node
-    again while traversing the graph we won't overwrite the previous
-    (shorter) distance.
+    depth-first search of the passed in graph starting
+    at the specified node. We need to keep track of all
+    nodes seen globally, so we pass in the seen nodes
+    every iteration so we keep track of the state of the
+    traversal.
     '''
 
-    dist = defaultdict(int)
-    visited, stack = defaultdict(bool), [ (s,0) ]
-
-    for v in graph.vertices():
-        
-        if v != s:
-            dist[v] = def_dist
-            visited[v] = False
-        else:
-            visited[v] = True
+    path, stack = [], [node]
 
     while stack:
 
-        stack = sorted(stack, key=lambda p: -p[1])
+        v = stack.pop()
 
-        node, cost = stack.pop()
+        for u in graph[v]:
 
-        for v in graph[ node ]:
+            if not seen[u]:
+                stack += [u]
+                seen[u] = True
 
-            if not visited[ v.id ]:
-                stack += [( v.id, cost + v.weight )]
+        path += [v]
+        seen[v] = True
 
-        if not visited[node]:
-            dist[node] = cost
-            visited[node] = True
+    return path
 
-    return dist
+def topological_path(graph : Graph):
+
+    ''' topological path
+    
+    This function generates a topological path
+    from the passed in graph using a depth-first
+    search. The labels are assigned in decrementing
+    order when seen, and then the resulting set is
+    ordered accending upon full traversal.
+    '''
+
+    n = len(graph.vertices()) + 1
+    label = n
+
+    topological = []
+    seen = defaultdict(bool)
+
+    for v in graph.vertices_.copy():
+        
+        if not seen[v]:
+            
+            path = dfs_path(graph, v, seen)
+
+            while path:
+                node = path.pop()
+                topological.append((label, node))
+                label -= 1
+    
+    # final traversal order.
+    top_order = sorted(topological, key= lambda t: t[0])
+
+    # project out only the nodes.
+    final_path = [v[1] for v in top_order]
+
+    return final_path
+
+def compute_scc(graph : Graph, path):
+    
+    ''' compute strongly-connected components
+
+    This function takes a graph and a topological path
+    to traverse. Each set of strongly-connected components
+    get assigned to values in a dictionary with the index
+    being the i-th set of components.
+    '''
+    
+    num_ssc = 0
+
+    components = defaultdict(list)
+    seen = defaultdict(bool)
+    assigned = defaultdict(bool)
+
+    for v in path:
+        
+        if not seen[v]:
+            # new component
+            num_ssc += 1
+
+            # traverse the path,
+            # this will generate a connected set
+            # of components.
+            path = dfs_path(graph, v, seen)
+            
+            for node in path:
+                # nodes can only belong to
+                # one component, so we track
+                # all the nodes that have been
+                # previously assigned and ignore
+                # any duplicate entries.              
+                if not assigned[node]:
+                    components[num_ssc] += [node]
+                    assigned[node] = True
+                        
+    return components
+
+def kosaraju(graphs):
+
+    '''kosaraju
+    
+    this function takes 2 graphs as input, one forward and one
+    reversed. The algorithm returns the strongly connected
+    components in the forward graph.
+    '''
+
+    forward, reverse = graphs
+
+    path = topological_path( reverse )
+
+    components = compute_scc( forward, path )
+
+    return components
+
+def top_N(components, n=5):
+
+    ''' top n
+    
+    this function find the top n components defined by the number
+    of nodes in the specified component. We use a heap to get the
+    size of the component keys in linear time (O(N)), then there is a
+    constant time (n) operation to generate
+    '''
+
+    for index in range(len(components) + 1, n + 1):
+        components[index] = []
+
+    sorted_components = heapq.nlargest(n, components.items(), key=lambda x: len(x[1]))
+    
+    result = [ len(c[1]) for c in sorted_components ]
+
+    return result
+
+def run_kosaraju(file_path):
+
+    print('\n\n')
+
+    print('Running file:', file_path)
+
+    g = read_graph(file_path)
+
+    print(f'Read {len(g[0])} vertices from file: {file_path}.')
+    print(f'Running kosaraju on graph...')
+
+    components = kosaraju(g)
+    print(f'Total Strongly Connected Components Found: {len(components)}')
+
+    result = top_N(components,n=5)
+    formatted_result = ','.join([ str(l) for l in sorted(result, key=lambda x:-x)])
+
+    print(f'Length of top 5 SCCs: {formatted_result}\n')
+
+    return result
 
 def run_test_cases():
 
-    g = read_weighted_graph(test_file_path)
+    expected_output = {
+        1 : [3, 3, 3, 0, 0],
+        2 : [3, 3, 2, 0, 0],
+        3 : [3, 3, 1, 1, 0],
+        4 : [7, 1, 0, 0, 0],
+        5 : [6, 3, 2, 1, 0],
+        6 : [3, 1, 1, 0, 0],
+    }
 
-    paths = shortest_paths_slow(g, 1 )
+    for case in gen_test_cases().items():
+        result = run_kosaraju(case[1])
 
-    return paths
-
-def dsp_submission():
-
-    g = read_weighted_graph(submission_file_path)
-
-    dist = shortest_paths_slow(g, 1)
-    req_dist = [ 7, 37, 59, 82, 99, 115, 133, 165, 188, 197 ]
-    
-    result = []
-
-    for d in req_dist:
-        result += [dist[d]]
-
-    print(','.join([ str(r) for r in result ]))
+        assert result == expected_output[case[0]]
 
 # run_test_cases()
 
-#g = read_weighted_graph(test_file_path)
-
-dsp_submission()
+run_kosaraju(submission_file_path) # run submission

@@ -1,39 +1,77 @@
-'''Factorial Zeros.
+'''Smallest Difference.
 
-Write an algorithm which computes the number of trailing zeros in n factorial.
+Given two arrays of integers, compute the pair of values (one value in each array)
+with the smallest (non-negative) difference. Return the difference.
+
+EXAMPLE:
+
+Input: {1, 3, 15, 11, 2}, {23, 127, 235, 19, 8}
+Output: 3. That is, the pair (11, 8)
 '''
 
-def fact_zeros(n):
+''' O(n*m) solution, brute force.'''
+def smallest_difference1(arr1, arr2):
+    
+    if arr1 == None or arr2 == None: return None
 
-    from math import log, ceil, floor
+    deltas = []
 
-    def factorial(n, fact={}):
+    for j in arr1:
+        for k in arr2:
 
-        if n == 1: return 1
+            if k - j >= 0:
+                deltas += [(j, k, k - j)]
 
-        if n not in fact:
-            fact[n] = n * factorial(n - 1)
+            if j - k >= 0:
+                deltas += [(j, k, j - k)]
 
-        return fact[n]
+    result = sorted(deltas, key=lambda x: x[2])
 
-    if n == None: return None
+    return result[0] if len(result) > 0 else None
 
-    if n < 0: return -1
+'''O((n + m)log(n + m)) solution'''
+def smallest_difference2(arr1, arr2):
 
-    fact = factorial(n)
+    if arr1 == None or arr2 == None: return None
 
-    print(fact)
+    combined = []
 
-    zeros = 0
+    # pairs of element value/arr index
+    for j in arr1: combined += [(j, 1)]
+    for k in arr2: combined += [(k, 2)]
 
-    for div in range(1, ceil(log(n, 5))):
-        
-        zeros += floor(n / (5**div))
+    # sort to push elements with similar values together
+    combined = sorted(combined, key=lambda x: (x[0], x[1]))
 
-    return zeros
+    delta = []
+    
+    for index in range(1, len(combined)):
 
-res = fact_zeros(64)
+        j, k = combined[ index ], combined[ index - 1]
 
-print(res)
+        # must be in different lists
+        if j[1] != k[1]:
+            
+            u, v = j[0], k[0]
 
-print(len('00000000000000000000000000000000000000000000'))
+            # add only positive deltas
+
+            if u - v >= 0:
+                delta += [(u, v, u - v)]
+
+            if v - u >= 0:
+                delta += [(v, u, v - u)]
+    
+    # smallest delta
+    delta = sorted(delta, key=lambda x: x[2])
+
+    return delta[0] if len(delta) > 0 else None
+    
+arr1 = [296, 254, 181, 12, 62]
+arr2 = [15, 4, 255, 110, 237]
+
+r1 = smallest_difference1(arr1, arr2)
+print(r1)
+
+r2 = smallest_difference2(arr1, arr2)
+print(r2)
