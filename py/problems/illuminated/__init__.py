@@ -525,3 +525,147 @@ def run_kosaraju(file_path):
     print(f'Length of top 5 SCCs: {formatted_result}\n')
 
     return result
+
+class WeightedGraph():
+
+    ''' adjency list weighted graph '''
+
+    class Node():
+        
+        def __init__(self, id, weight):
+            self.id = id
+            self.weight = weight
+
+    def __init__(self):
+        self.nodes_ = defaultdict(list)
+
+    def vertices(self):
+        return self.nodes_.copy()
+
+    def __getitem__(self, key):
+        return self.nodes_[key]
+
+    def add_node(self, u, v, c):
+        self.nodes_[u].append( self.Node(v, c) )
+
+    def __setitem__(self, key, value):
+        self.nodes_[key] = value
+
+    def __delitem__(self, key):
+        del self.nodes_[key]
+
+    def __len__(self):
+        return len(self.nodes_.keys())
+
+def read_weighted_graph(file_path):
+    ''' read weighted graph
+
+    this function reads a weighted graph definition from disk 
+    and generates a graph type for ease of use.
+    '''
+    g = WeightedGraph()
+
+    with open(file_path, 'r') as f:
+        lines = f.read().splitlines()
+
+        for line in lines:
+            
+            if len(line) == 0: continue
+            
+            pieces = line.strip().split('\t')
+
+            vertex = int(pieces[0])
+
+            for piece in pieces[1:]:
+
+                edge, weight = [int(x) for x in piece.split(',')]
+                
+                g.add_node(vertex, edge, weight)
+
+    return g
+
+def shortest_path_slow(graph : WeightedGraph, s, def_dist=1e6):
+
+    ''' naive dijkstra
+
+    O(n*m)
+
+    this is a naive implementation of dijkstra's shortest path
+    algorithm. We use a stack to traverse the graph, pushing each
+    adjacent edge from the source vertex on the stack, along with the
+    associated cost of getting to the node (the cumulative cost from
+    the source). After we visit a node, we return to the stack, sort
+    it by total cost, and pick the next node with the shortest path.
+    We keep track of nodes we have already visited with a dictionary
+    of node id's, and only mark a node visited when we have the final
+    cost of reaching that node, that way, if we encounter the node
+    again while traversing the graph we won't overwrite the previous
+    (shorter) distance.
+    '''
+
+    dist = defaultdict(int)
+    visited, stack = defaultdict(bool), [ (s,0) ]
+
+    for v in graph.vertices():
+        
+        if v != s:
+            dist[v] = def_dist
+            visited[v] = False
+        else:
+            visited[v] = True
+
+    while stack:
+
+        stack = sorted(stack, key=lambda p: -p[1])
+
+        node, cost = stack.pop()
+
+        for v in graph[ node ]:
+
+            if not visited[ v.id ]:
+                stack += [( v.id, cost + v.weight )]
+
+        if not visited[node]:
+            dist[node] = cost
+            visited[node] = True
+
+    return dist
+
+def shortest_path_fast(graph : WeightedGraph, s, def_dist=1e6):
+
+    ''' efficient dijkstra
+
+    O(n + m)
+
+    This is more performant implementation of dijkstra's shortest
+    path algorithm. In this approach we maintain the same overall
+    logic as the naive version, we push the start node with a
+    0 cost (x->x == 0), push that nodes neighbors on the path
+    heap with the cost to visit it as the heap key with maintains
+    the heap invariant of the min cost as the first (top) element.
+    '''
+    dist = defaultdict(int)
+    visited, path = defaultdict(bool), [ (0, s) ]
+
+    for v in graph.vertices():
+        
+        if v != s:
+            dist[v] = def_dist
+            visited[v] = False
+        else:
+            visited[v] = True
+
+    while path:
+
+        cost, node = heapq.heappop(path)
+        
+        for v in graph[ node ]:
+
+            if not visited[ v.id ]:
+                heapq.heappush( path, (cost + v.weight, v.id ) )
+
+        if not visited[ node] :
+            dist[ node ] = cost
+            visited[ node ] = True
+    
+    return dist

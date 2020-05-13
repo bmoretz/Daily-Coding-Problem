@@ -201,5 +201,35 @@ class Test_Kosaraju(unittest.TestCase):
 
             result = run_kosaraju(case[1])
 
-            assert result == self.expected_output[case[0]]        
-        
+            assert result == self.expected_output[case[0]]
+
+
+from py.problems.illuminated import WeightedGraph
+from py.problems.illuminated import read_weighted_graph
+from py.problems.illuminated import shortest_path_fast, shortest_path_slow
+
+class Test_Dijkstra(unittest.TestCase):
+
+    def setUp(self):
+
+        from os import getcwd
+
+        self.test_file_path = getcwd() + '\py\\data\\problem9.8test.txt'
+
+    def test_fast(self):
+
+        g = read_weighted_graph(self.test_file_path)
+
+        actual = shortest_path_fast(g, 1)
+        expected = {2: 1, 3: 2, 4: 3, 5: 4, 6: 4, 7: 3, 8: 2}
+
+        assert actual == expected
+
+    def test_slow(self):
+
+        g = read_weighted_graph(self.test_file_path)
+
+        actual = shortest_path_slow(g, 1)
+        expected = {2: 1, 3: 2, 4: 3, 5: 4, 6: 4, 7: 3, 8: 2}
+
+        assert actual == expected

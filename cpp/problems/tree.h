@@ -358,8 +358,15 @@ namespace tree_problems
 			{  }
 		};
 
-		tree_node_ptr root;
-
+		/// <summary>
+		/// is binary search tree
+		///
+		/// straight forward iteration of the nodes to check that every left node
+		/// is less than (or equal) to its parent, and the right node is greater than
+		/// the root node.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
 		static auto is_bst( const tree_node* node )
 		{
 			if( !node ) return true;

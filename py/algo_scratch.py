@@ -24,7 +24,7 @@ submission_file_path = os.getcwd() + '\py\\data\\dijkstraData.txt'
 test_file_path = os.getcwd() + '\py\\data\\problem9.8test.txt'
 
 from collections import defaultdict
-import heapq
+import heapq, time
 
 class WeightedGraph():
 
@@ -84,9 +84,11 @@ def read_weighted_graph(file_path):
 
     return g
 
-def shortest_paths_slow(graph : WeightedGraph, s, def_dist=1e6):
+def shortest_path_slow(graph : WeightedGraph, s, def_dist=1e6):
 
     ''' naive dijkstra
+
+    O(n*m)
 
     this is a naive implementation of dijkstra's shortest path
     algorithm. We use a stack to traverse the graph, pushing each
@@ -129,19 +131,60 @@ def shortest_paths_slow(graph : WeightedGraph, s, def_dist=1e6):
 
     return dist
 
+def shortest_path_fast(graph : WeightedGraph, s, def_dist=1e6):
+
+    ''' efficient dijkstra
+
+    O(n + m)
+
+    This is more performant implementation of dijkstra's shortest
+    path algorithm. In this approach we maintain the same overall
+    logic as the naive version, we push the start node with a
+    0 cost (x->x == 0), push that nodes neighbors on the path
+    heap with the cost to visit it as the heap key with maintains
+    the heap invariant of the min cost as the first (top) element.
+    '''
+    dist = defaultdict(int)
+    visited, path = defaultdict(bool), [ (0, s) ]
+
+    for v in graph.vertices():
+        
+        if v != s:
+            dist[v] = def_dist
+            visited[v] = False
+        else:
+            visited[v] = True
+
+    while path:
+
+        cost, node = heapq.heappop(path)
+        
+        for v in graph[ node ]:
+
+            if not visited[ v.id ]:
+                heapq.heappush( path, (cost + v.weight, v.id ) )
+
+        if not visited[ node] :
+            dist[ node ] = cost
+            visited[ node ] = True
+    
+    return dist
+
 def run_test_cases():
 
     g = read_weighted_graph(test_file_path)
 
-    paths = shortest_paths_slow(g, 1 )
+    p1 = shortest_path_fast(g, 1)
+    print(p1)
 
-    return paths
-
+    p2 = shortest_path_slow(g, 1)
+    print(p2)
+    
 def dsp_submission():
 
     g = read_weighted_graph(submission_file_path)
 
-    dist = shortest_paths_slow(g, 1)
+    dist = shortest_path_fast(g, 1)
     req_dist = [ 7, 37, 59, 82, 99, 115, 133, 165, 188, 197 ]
     
     result = []
@@ -151,8 +194,29 @@ def dsp_submission():
 
     print(','.join([ str(r) for r in result ]))
 
-# run_test_cases()
+run_test_cases()
 
 #g = read_weighted_graph(test_file_path)
+# dsp_submission()
 
-dsp_submission()
+def benchmark_dsp(g, dsp):
+
+    results = []
+
+    for _ in range(0, 10):
+
+        start = time.time()
+        dsp(g, 1)
+        end = time.time()
+
+        results += [end - start]
+
+    print(f'Avg Run-time: {sum(results) / len(results)}')
+
+g = read_weighted_graph(submission_file_path)
+
+benchmark_dsp(g, shortest_path_slow)
+benchmark_dsp(g, shortest_path_fast)
+
+# slow: Avg Run-time: 3.1510524988174438
+# fast: Avg Run-time: 0.011552953720092773
