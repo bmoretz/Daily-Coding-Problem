@@ -336,4 +336,43 @@ namespace tree_problems
 			return std::max( l, r );
 		}
 	};
+
+	/* Validate BST.
+	 *
+	 * Implement a function to check if a binary tree is a binary search tree.
+	 */
+
+	struct validate_bst
+	{
+		struct tree_node;
+
+		using tree_node_ptr = std::unique_ptr<tree_node>;
+
+		struct tree_node
+		{
+			int value;
+			tree_node_ptr left, right;
+
+			explicit tree_node( const int& val )
+				: value{ val }
+			{  }
+		};
+
+		tree_node_ptr root;
+
+		static auto is_bst( const tree_node* node )
+		{
+			if( !node ) return true;
+
+			if( is_bst( node->left.get() ) && is_bst( node->right.get() ) )
+			{
+				const auto is_left = node->left ? node->value >= node->left->value : true;
+				const auto is_right = node->right ? node->value < node->right->value : true;
+
+				return is_left && is_right;
+			}
+
+			return false;
+		}
+	};
 }

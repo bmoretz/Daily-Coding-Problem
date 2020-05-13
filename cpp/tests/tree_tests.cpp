@@ -507,4 +507,123 @@ namespace tree_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for depth list.
+    /// </summary>
+    class is_bst_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // validate bst
+    //
+
+    TEST_F( is_bst_tests, empty )
+    {
+        using node = validate_bst::tree_node;
+    	
+        const auto tree = nullptr;
+
+        const auto actual = validate_bst::is_bst( tree );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_bst_tests, case1 )
+    {
+        using node = validate_bst::tree_node;
+
+        const auto tree = std::make_unique<node>( 4 );
+
+        const auto actual = validate_bst::is_bst( tree.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_bst_tests, case2 )
+    {
+        using node = validate_bst::tree_node;
+
+        auto tree = std::make_unique<node>( 4 );
+
+        tree->left = std::make_unique<node>( 7 );
+        tree->right = std::make_unique<node>( 8 );
+    	
+        const auto actual = validate_bst::is_bst( tree.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_bst_tests, case3 )
+    {
+        using node = validate_bst::tree_node;
+
+        auto tree = std::make_unique<node>( 4 );
+
+        tree->left = std::make_unique<node>( 3 );
+        tree->right = std::make_unique<node>( 8 );
+
+        const auto actual = validate_bst::is_bst( tree.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_bst_tests, case4 )
+    {
+        using node = validate_bst::tree_node;
+
+        auto tree = std::make_unique<node>( 4 );
+
+        tree->left = std::make_unique<node>( 2 );
+    	
+        tree->left->left = std::make_unique<node>( 1 );
+        tree->left->right = std::make_unique<node>( 3 );
+    	
+        tree->right = std::make_unique<node>( 7 );
+        tree->right->left = std::make_unique<node>( 6 );
+        tree->right->right = std::make_unique<node>( 8 );
+    	
+        const auto actual = validate_bst::is_bst( tree.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_bst_tests, case5 )
+    {
+        using node = validate_bst::tree_node;
+
+        auto tree = std::make_unique<node>( 4 );
+
+        tree->left = std::make_unique<node>( 2 );
+
+        tree->left->left = std::make_unique<node>( 1 );
+
+    	tree->left->left->left = std::make_unique<node>( 5 );
+    	
+    	tree->left->right = std::make_unique<node>( 3 );
+
+        tree->right = std::make_unique<node>( 7 );
+        tree->right->left = std::make_unique<node>( 6 );
+        tree->right->right = std::make_unique<node>( 8 );
+
+        const auto actual = validate_bst::is_bst( tree.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
