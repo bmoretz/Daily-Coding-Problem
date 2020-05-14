@@ -716,4 +716,135 @@ namespace stack_queue_tests
             EXPECT_EQ( actual.name(), "missy" );
         }
     }
+
+    /// <summary>
+    /// Testing class for my stack.
+    /// </summary>
+    class my_stack_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // my stack
+    //
+
+    TEST_F( my_stack_tests, empty )
+    {
+        auto my_stack = stack<int>();
+
+        auto actual = std::vector<int>();
+
+    	while( !my_stack.empty() )
+    	{
+            actual.push_back( my_stack.pop() );
+    	}
+    	
+        const std::vector<int> expected = { };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_stack_tests, case1 )
+    {
+        auto my_stack = stack<int>{ 1, 2, 3, 4, 5 };
+
+        auto actual = std::vector<int>();
+
+        EXPECT_EQ( my_stack.size(), 5 );
+    	
+        while( !my_stack.empty() )
+        {
+            actual.push_back( my_stack.pop() );
+        }
+
+        const std::vector<int> expected = { 5, 4, 3, 2, 1 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_stack_tests, case2 )
+    {
+        auto my_stack = stack<int>();
+
+        for( auto val : { 1, 2, 3, 4, 5 } )
+            my_stack.push( val );
+
+        EXPECT_EQ( my_stack.size(), 5 );
+    	
+		auto actual = std::vector<int>();
+
+        while( !my_stack.empty() )
+        {
+            actual.push_back( my_stack.pop() );
+        }
+
+        const std::vector<int> expected = { 5, 4, 3, 2, 1 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_stack_tests, case3 )
+    {
+        auto my_stack = stack<int>();
+
+        for( auto val : { 1, 2, 3, 4, 5 } )
+            my_stack.push( val );
+
+        EXPECT_EQ( my_stack.top(), 5 );
+
+        EXPECT_EQ( my_stack.pop(), 5 );
+
+        EXPECT_EQ( my_stack.top(), 4 );
+    	
+        auto actual = std::vector<int>();
+
+        while( !my_stack.empty() )
+        {
+            actual.push_back( my_stack.pop() );
+        }
+
+        EXPECT_EQ( my_stack.size(), 0 );
+    	
+        const std::vector<int> expected = { 4, 3, 2, 1 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( my_stack_tests, case4 )
+    {
+        auto my_stack = stack<int>();
+
+        for( auto val : { 1, 2, 3, 4, 5 } )
+            my_stack.push( val );
+
+        EXPECT_EQ( my_stack.top(), 5 );
+
+        EXPECT_EQ( my_stack.pop(), 5 );
+
+        EXPECT_EQ( my_stack.top(), 4 );
+
+        my_stack.clear();
+    	
+        auto actual = std::vector<int>();
+
+        while( !my_stack.empty() )
+        {
+            actual.push_back( my_stack.pop() );
+        }
+
+        EXPECT_EQ( my_stack.size(), 0 );
+
+        const std::vector<int> expected = { };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

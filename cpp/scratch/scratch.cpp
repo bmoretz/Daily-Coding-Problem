@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <iterator>
 #include <utility>
@@ -9,126 +10,98 @@
 #include <cmath>
 #include <map>
 #include <string>
+#include <tuple>
 
-/* Successor.
+/* Generic Stack.
  *
- * Write an algorithm to find the "next" node (i.e., in-order successor) of a given
- * node in a binary search tree. You may assume that each node has a link to its
- * parent.
+ * Write a stack implementation for a generic value type. The maximal size
+ * of the stack is defined in the class (hard-wired). Provide the following
+ * functions:
+ *
+ * + Constructor;
+ * + Destructor (if necessary);
+ * + top: show last element;
+ * + pop: remove last element (without returning it);
+ * + push: insert new element;
+ * + clear: delete all entries;
+ * + size: number of elements
  */
 
-struct successor
+template<typename Ty>
+class stack
 {
-    struct tree_node;
+    friend std::ostream& operator<<( std::ostream& out, const stack& stack );
+	
+    std::unique_ptr<Ty[]> data_;
+    std::size_t size_{}, capacity_{};
 
-    using tree_node_ptr = std::unique_ptr<tree_node>;
+public:
 
-    struct tree_node
+    explicit stack( const std::size_t capacity = 1)
+        : capacity_{ capacity }
     {
-        tree_node* parent{};
-        int value;
-        tree_node_ptr left{ }, right{ };
-
-        explicit tree_node( tree_node* parent, const int& val )
-            : parent{ parent }, value{ val }
-        {  }
-
-        bool operator>=( const tree_node& other ) const { return value >= other.value; }
-        bool operator<=( const tree_node& other ) const { return value <= other.value; }
-        bool operator<( const tree_node& other ) const { return value < other.value; }
-        bool operator>( const tree_node& other ) const { return value > other.value; }
-        bool operator==( tree_node& other ) const { return value == other.value; }
-    };
-
-    static tree_node_ptr build_tree( const std::vector<int>& values,
-        const int& begin, const int& end, tree_node* parent = nullptr )
-    {
-        using std::ceil;
-
-        if( begin >= end ) return nullptr;
-
-        const auto mid = begin + static_cast< int >( ceil( ( end - begin ) / 2 ) );
-
-        auto node = std::make_unique<tree_node>( parent, values[ mid ] );
-
-        node->left = build_tree( values, begin, mid, node.get() );
-        node->right = build_tree( values, mid + 1, end, node.get() );
-
-        return node;
+        data_ = std::make_unique<Ty[]>( capacity_ );
     }
 
-	static tree_node* get_successor( const tree_node& node )
+	explicit stack( const std::initializer_list<Ty>& init_list )
     {
-        tree_node* next = nullptr;
+        resize( init_list.size() );
 
-        if( node.parent && node >= *node.parent )
-        {
-            next = node.parent;
-
-            while( node > *next )
-                next = next->parent;
-
-            return next;
-        }
-
-        if( node.right )
-        {
-            next = node.right.get();
-
-            while( next->left )
-            {
-                next = next->left.get();
-            }
-        }
-
-        return next;
+        for( const auto& value : init_list )
+            push( value );
     }
+	
+	void resize( const std::size_t new_size )
+    {
+        auto new_data = std::make_unique<Ty[]>( new_size );
+
+        std::copy( data_.get(), data_.get() + size_, new_data.get() );
+        std::swap( data_, new_data );
+
+        capacity_ = new_size;
+    }
+	
+	void push( const Ty& value )
+    {
+        if( size_ >= capacity_ )
+            resize( capacity_ * 2 );
+
+        data_.get()[ size_++ ] = value;
+    }
+
+	[[nodiscard]] Ty pop()
+    {
+        if( size_ == 0 )
+            throw std::runtime_error( "CANNOT POP EMPTY STACK" );
+    	
+	    return data_.get()[ --size_ ];
+    }
+	
+    [[nodiscard]] Ty top() { return data_.get()[ size_ ]; }
+
+	void clear() { resize( 0 ); }
+    [[nodiscard]] auto size() const { return size_; }
+    [[nodiscard]] auto empty() const { return size_ == 0; }
 };
 
-auto main() -> int
+std::ostream& operator<<( std::ostream& out, const stack<int>& stack )
 {
-    const auto values = { 2, 3, 5 , 7, 9, 12, 15, 18, 20 };
-	
-    const auto tree = 
-        successor::build_tree( values, 0, values.size() );
+    for( auto index = static_cast< int >( stack.size_ - 1 ); index >= 0; index-- )
+    {
+        std::cout << stack.data_[ index ];
+    }
 
-    const auto candidate =
-        tree->left->right.get();
-	
-    auto next = successor::get_successor( *candidate );
-
-}
-
-/*
-std::string to_tuple_string( const int value )
-{
-    return std::to_string( value );
-}
-
-std::string to_tuple_string( const float value )
-{
-    return std::to_string( value );
-}
-
-std::string to_tuple_string( const char value )
-{
-    return std::to_string( value );
-}
-
-template<typename ...P>
-std::string to_tuple_string( const P& ... p )
-{
-    return ( p + ... );
+    return std::cout;
 }
 
 auto main() -> int
 {
-    using my_type = std::tuple<int, float>;
+    auto s = stack<int> { 5, 4, 3, 2, 1 };
 
-    const auto my_tuple = my_type( 1, 3.45f );
-
-    const auto str = to_tuple_string( my_tuple );
+	for( auto value : { 1, 2, 3, 4, 5 } )
+	{
+        s.push( value );
+	}
 	
-    std::cout << to_tuple_string( my_tuple );
+    std::cout << s;
 }
-*/

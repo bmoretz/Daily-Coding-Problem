@@ -153,7 +153,9 @@
     <ClInclude Include="arr.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="graph.h" />
+    <ClInclude Include="lang.h" />
     <ClInclude Include="linkedlist.h" />
+    <ClInclude Include="math.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="stack_queue.h" />
     <ClInclude Include="str.h" />

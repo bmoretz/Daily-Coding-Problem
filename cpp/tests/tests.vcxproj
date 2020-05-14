@@ -44,7 +44,9 @@
     <ClCompile Include="arr_tests.cpp" />
     <ClCompile Include="ds_linkedlist_tests.cpp" />
     <ClCompile Include="graph_tests.cpp" />
+    <ClCompile Include="lang_tests.cpp" />
     <ClCompile Include="linkedlist_tests.cpp" />
+    <ClCompile Include="math_tests.cpp" />
     <ClCompile Include="stack_queue_tests.cpp" />
     <ClCompile Include="str_tests.cpp" />
     <ClCompile Include="pch.cpp">

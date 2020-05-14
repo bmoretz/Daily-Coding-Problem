@@ -155,6 +155,7 @@
     <ClInclude Include="linked_list.h" />
     <ClInclude Include="list_node.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="stack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
