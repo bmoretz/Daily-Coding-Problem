@@ -207,6 +207,7 @@ def benchmark_dsp(g, dsp):
 
         start = time.time()
         dsp(g, 1)
+        
         end = time.time()
 
         results += [end - start]

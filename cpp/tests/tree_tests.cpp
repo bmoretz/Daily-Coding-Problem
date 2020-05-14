@@ -509,7 +509,7 @@ namespace tree_tests
     }
 
     /// <summary>
-    /// Testing class for depth list.
+    /// Testing class for is bst.
     /// </summary>
     class is_bst_tests :
         public ::testing::Test {
@@ -625,5 +625,144 @@ namespace tree_tests
         const auto expected = false;
 
         EXPECT_EQ( actual, expected );
+    }
+
+    /// <summary>
+    /// Testing class for successor.
+    /// </summary>
+    class successor_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // successor
+    //
+
+    TEST_F( successor_tests, empty )
+    {
+        using node = successor::tree_node;
+    	
+        const auto tree = node { nullptr, 0 };
+
+        const auto actual = successor::get_successor( tree );
+        const auto expected = nullptr;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+	/*                      Test Tree
+	 *
+	 *                            9
+	 *                       /        \
+	 *                     5           18
+	 *                   /   \        /    \
+	 *                 3       7  15        20
+	 *               /           /
+	 *             2          12     
+	 */
+
+    TEST_F( successor_tests, case1 )
+    {
+        const auto values = { 2, 3, 5 , 7, 9, 12, 15, 18, 20 };
+    	
+        const auto tree =
+            successor::build_tree( values, 0, values.size() );
+
+		// node(9)->next == 12
+        const auto candidate = tree.get();
+
+        const auto actual = successor::get_successor( *candidate );
+        const auto expected = 12;
+
+        EXPECT_NE( actual, nullptr );
+        EXPECT_EQ( actual->value, expected );
+    }
+
+    TEST_F( successor_tests, case2 )
+    {
+        const auto values = { 2, 3, 5 , 7, 9, 12, 15, 18, 20 };
+
+        const auto tree =
+            successor::build_tree( values, 0, values.size() );
+
+        // node(7)->next == 9
+        const auto candidate = 
+            tree->left->right.get();
+
+        EXPECT_EQ( candidate->value, 7 );
+    	
+        const auto actual = successor::get_successor( *candidate );
+        const auto expected = 9;
+
+        EXPECT_NE( actual, nullptr );
+        EXPECT_EQ( actual->value, expected );
+    }
+
+    TEST_F( successor_tests, case3 )
+    {
+        const auto values = { 2, 3, 5 , 7, 9, 12, 15, 18, 20 };
+
+        const auto tree =
+            successor::build_tree( values, 0, values.size() );
+
+        // node(2)->next == 3
+        const auto candidate =
+            tree->left->left->left.get();
+
+        EXPECT_EQ( candidate->value, 2 );
+
+        const auto actual = successor::get_successor( *candidate );
+        const auto expected = 3;
+
+        EXPECT_NE( actual, nullptr );
+        EXPECT_EQ( actual->value, expected );
+    }
+
+    TEST_F( successor_tests, case4 )
+    {
+        const auto values = { 2, 3, 5 , 7, 9, 12, 15, 18, 20 };
+
+        const auto tree =
+            successor::build_tree( values, 0, values.size() );
+
+        // node(18)->next == 20
+        const auto candidate =
+            tree->right.get();
+
+        EXPECT_EQ( candidate->value, 18 );
+
+        const auto actual = successor::get_successor( *candidate );
+        const auto expected = 20;
+
+        EXPECT_NE( actual, nullptr );
+        EXPECT_EQ( actual->value, expected );
+    }
+
+    TEST_F( successor_tests, case5 )
+    {
+        const auto values = { 2, 3, 5 , 7, 9, 12, 15, 18, 20 };
+
+        const auto tree =
+            successor::build_tree( values, 0, values.size() );
+
+        // node(20)->next == none
+        const auto candidate =
+            tree->right->right.get();
+
+        EXPECT_EQ( candidate->value, 20 );
+
+        const auto actual = successor::get_successor( *candidate );
+        const auto expected = nullptr;
+
+        EXPECT_EQ( actual, nullptr );
     }
 }

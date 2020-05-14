@@ -127,10 +127,12 @@ namespace tree_problems
 
 		[[nodiscard]] tree_node_ptr build_tree( const std::vector<int>& values, const int& begin, const int& end ) const
 		{
+			using std::ceil;
+			
 			if( begin >= end )
 				return nullptr;
 
-			const auto mid = begin + int( ceil( ( end - begin ) / 2 ) );
+			const auto mid = begin + static_cast< int >( ceil( ( end - begin ) / 2 ) );
 
 			auto root = std::make_unique<tree_node>( values[ mid ] );
 
@@ -365,8 +367,12 @@ namespace tree_problems
 		/// is less than (or equal) to its parent, and the right node is greater than
 		/// the root node.
 		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
+		/// <complexity>
+		///		<run-time>O(N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <param name="node">node to validate</param>
+		/// <returns>true if meets binary tree criteria</returns>
 		static auto is_bst( const tree_node* node )
 		{
 			if( !node ) return true;
@@ -380,6 +386,87 @@ namespace tree_problems
 			}
 
 			return false;
+		}
+	};
+
+	/* Successor.
+	 *
+	 * Write an algorithm to find the "next" node (i.e., in-order successor) of a given
+	 * node in a binary search tree. You may assume that each node has a link to its
+	 * parent.
+	 */
+
+	struct successor
+	{
+		struct tree_node;
+
+		using tree_node_ptr = std::unique_ptr<tree_node>;
+
+		struct tree_node
+		{
+			tree_node* parent{};
+			int value;
+			tree_node_ptr left{ }, right{ };
+
+			explicit tree_node( tree_node* parent, const int& val )
+				: parent{ parent }, value{ val }
+			{  }
+
+			bool operator>=( const tree_node& other ) const { return value >= other.value; }
+			bool operator<=( const tree_node& other ) const { return value <= other.value; }
+			bool operator<( const tree_node& other ) const { return value < other.value; }
+			bool operator>( const tree_node& other ) const { return value > other.value; }
+			bool operator==( tree_node& other ) const { return value == other.value; }
+		};
+
+		static tree_node_ptr build_tree( const std::vector<int>& values,
+			const int& begin, const int& end, tree_node* parent = nullptr )
+		{
+			using std::ceil;
+
+			if( begin >= end ) return nullptr;
+
+			const auto mid = begin + static_cast< int >( ceil( ( end - begin ) / 2 ) );
+
+			auto node = std::make_unique<tree_node>( parent, values[ mid ] );
+
+			node->left = build_tree( values, begin, mid, node.get() );
+			node->right = build_tree( values, mid + 1, end, node.get() );
+
+			return node;
+		}
+
+		/// <summary>
+		/// successor
+		///
+		/// takes a binary tree node and gets the (in-order) successor node (if any). 
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(log2 N)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <param name="node">binary tree node</param>
+		/// <returns>successor (if any)</returns>
+		static tree_node* get_successor( const tree_node& node )
+		{
+			tree_node* next = nullptr;
+
+			if( !node.right )
+			{
+				next = node.parent;
+				
+				while( next && node >= *next )
+					next = next->parent;
+			}
+			else if( node.right )
+			{
+				next = node.right.get();
+
+				while( next->left )
+					next = next->left.get();
+			}
+
+			return next;
 		}
 	};
 }
