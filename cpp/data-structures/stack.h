@@ -63,14 +63,4 @@ namespace data_structures::stack
         [[nodiscard]] auto size() const { return size_; }
         [[nodiscard]] auto empty() const { return size_ == 0; }
     };
-
-    std::ostream& operator<<( std::ostream& out, const stack<int>& stack )
-    {
-        for( auto index = static_cast< int >( stack.size_ - 1 ); index >= 0; index-- )
-        {
-            std::cout << stack.data_[ index ];
-        }
-
-        return std::cout;
-    }
 }
