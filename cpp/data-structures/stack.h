@@ -1,8 +1,9 @@
 #pragma once
 
+#include <algorithm>
 #include <memory>
-#include <iostream>
 #include <ostream>
+#include <vector>
 
 namespace data_structures::stack
 {

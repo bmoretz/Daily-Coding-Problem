@@ -225,4 +225,140 @@ namespace graph_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for build order.
+    /// </summary>
+    class build_order_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Build Order
+    //
+
+    TEST_F( build_order_tests, empty )
+    {
+        const auto builder = build_order();
+
+        const auto actual = builder.get_build_order();
+        const auto expected = "";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( build_order_tests, case1 )
+    {
+        const auto builder = build_order(
+            // projects
+            { 'A', 'B', 'C', 'D', 'E', 'F' },
+            // dependencies
+        {
+            {'A', 'D'},
+            {'F', 'B'},
+            { 'B', 'D' },
+            { 'F', 'A' },
+            { 'D', 'C' }
+        } );
+
+        const auto actual = builder.get_build_order();
+        const auto expected = "F, E, B, A, D, C";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( build_order_tests, case2 )
+    {
+        const auto builder = build_order(
+            // projects
+            { 'A', 'B', 'C', 'D', 'E', 'F' },
+            // dependencies
+        {
+            {'A', 'D'},
+            {'F', 'B'},
+            { 'B', 'D' },
+            { 'F', 'A' },
+            { 'D', 'C' },
+            { 'C', 'F' } // add a cycle
+        } );
+
+        const auto actual = builder.get_build_order();
+        const auto expected = "CYCLICAL PROJECT REFERENCE DETECTED. CANNOT CONTINUE BUILD.";
+
+		EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( build_order_tests, case3 )
+    {
+        const auto builder = build_order(
+            // projects
+            { 'A', 'B', 'C', 'D', 'E', 'F' },
+            // dependencies
+        {
+            {'A', 'D'},
+            {'F', 'B'},
+            { 'B', 'D' },
+            { 'F', 'A' },
+            { 'D', 'C' },
+            { 'C', 'E' }
+        } );
+
+        const auto actual = builder.get_build_order();
+        const auto expected = "F, B, A, D, C, E";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( build_order_tests, case4 )
+    {
+        const auto builder = build_order(
+            // projects
+            { 'A', 'B', 'C', 'D', 'E', 'F' },
+            // dependencies
+        {
+            {'A', 'D'},
+            {'F', 'B'},
+            { 'B', 'D' },
+            { 'F', 'A' },
+            { 'D', 'C' },
+            { 'C', 'E' },
+            { 'E', 'F' } // cycle
+        } );
+
+        const auto actual = builder.get_build_order();
+        const auto expected = "CYCLICAL PROJECT REFERENCE DETECTED. CANNOT CONTINUE BUILD.";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( build_order_tests, case5 )
+    {
+        const auto builder = build_order(
+            // projects
+            { 'A', 'B', 'C', 'D', 'E', 'F' },
+            // dependencies
+        {
+            {'A', 'D'},
+            {'F', 'B'},
+            { 'B', 'D' },
+            { 'F', 'A' },
+            { 'D', 'C' },
+            { 'C', 'E' },
+            { 'B', 'A' } 
+        } );
+
+        const auto actual = builder.get_build_order();
+        const auto expected = "F, B, A, D, C, E";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

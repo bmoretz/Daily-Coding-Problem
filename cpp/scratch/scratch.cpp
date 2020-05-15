@@ -11,97 +11,163 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <set>
+#include <iterator>
+#include <numeric>
+#include <ostream>
 
-/* Generic Stack.
+/* Build Order.
  *
- * Write a stack implementation for a generic value type. The maximal size
- * of the stack is defined in the class (hard-wired). Provide the following
- * functions:
+ * You are given a list of projects and a list of dependencies (which is a
+ * list of pairs of projects, where the second project is dependent on the first
+ * 
+ * project). All of a project's dependencies must be built before the project is.
+ * Find a build order that will allow the projects to be built. If there is no
+ * valid build order, return an error.
  *
- * + Constructor;
- * + Destructor (if necessary);
- * + top: show last element;
- * + pop: remove last element (without returning it);
- * + push: insert new element;
- * + clear: delete all entries;
- * + size: number of elements
+ * EXAMPLE:
+ *
+ * Input:
+ * projects: a, b, c, d, e, f
+ * dependencies: (a, d), (f, b), (b, d), (f, a), (d, c)
+ * Output: f, e, a, b, d, c
  */
 
-template<typename Ty>
-class stack
+class build_order
 {
-    friend std::ostream& operator<<( std::ostream& out, const stack& stack );
-	
-    std::unique_ptr<Ty[]> data_;
-    std::size_t size_{}, capacity_{};
+    using node_list = std::vector<char>;
+    using build_list = std::unordered_map<char, std::unique_ptr<node_list>>;
+
+    inline static const std::string cycle_err = 
+        "CYCLICAL PROJECT REFERENCE DETECTED. CANNOT CONTINUE BUILD.";
+
+	std::unique_ptr<build_list> projects_;
+
+    static std::vector<char> dfs( const build_list& projects,
+        const char node, std::set<char>& seen )
+    {
+        auto path = std::vector<char>();
+        auto stack = std::stack<char>( { node } );
+
+        auto loop_detect = std::set<char>();
+
+        while( !stack.empty() )
+        {
+            const auto v = stack.top();
+            stack.pop();
+
+            loop_detect.insert( v );
+
+            for( const auto u : *projects.at( v ) )
+            {
+                if( loop_detect.find( u ) != loop_detect.end() )
+                    throw std::runtime_error( cycle_err );
+
+                if( seen.find( u ) == seen.end() )
+                    stack.push( u );
+            }
+
+            path.insert( path.begin(), v );
+            seen.insert( v );
+        }
+
+        return path;
+    }
 
 public:
 
-    explicit stack( const std::size_t capacity = 1)
-        : capacity_{ capacity }
+    build_order()
     {
-        data_ = std::make_unique<Ty[]>( capacity_ );
+        projects_ = std::make_unique<build_list>();
     }
 
-	explicit stack( const std::initializer_list<Ty>& init_list )
+    build_order( const std::initializer_list<char>& projects,
+        const std::initializer_list<std::pair<char, char>>& dependencies )
+        : build_order()
     {
-        resize( init_list.size() );
+        for( const auto& project : projects )
+            add_project( project );
 
-        for( const auto& value : init_list )
-            push( value );
-    }
-	
-	void resize( const std::size_t new_size )
-    {
-        auto new_data = std::make_unique<Ty[]>( new_size );
-
-        std::copy( data_.get(), data_.get() + size_, new_data.get() );
-        std::swap( data_, new_data );
-
-        capacity_ = new_size;
-    }
-	
-	void push( const Ty& value )
-    {
-        if( size_ >= capacity_ )
-            resize( capacity_ * 2 );
-
-        data_.get()[ size_++ ] = value;
+        for( const auto& dependency : dependencies )
+            add_dependency( dependency.first, dependency.second );
     }
 
-	[[nodiscard]] Ty pop()
+    void add_project( const char project ) const
     {
-        if( size_ == 0 )
-            throw std::runtime_error( "CANNOT POP EMPTY STACK" );
-    	
-	    return data_.get()[ --size_ ];
+        projects_->insert( std::make_pair( project, std::make_unique<node_list>() ) );
     }
-	
-    [[nodiscard]] Ty top() { return data_.get()[ size_ ]; }
 
-	void clear() { resize( 0 ); }
-    [[nodiscard]] auto size() const { return size_; }
-    [[nodiscard]] auto empty() const { return size_ == 0; }
+    void add_dependency( const char project, const char dependency ) const
+    {
+        projects_->at( project )->push_back( dependency );
+    }
+
+    bool topological_sort( std::vector<std::pair<int, char>>& order, std::string& value ) const
+    {
+        std::set<char> seen;
+        auto label = projects_->size();
+
+        for( [[maybe_unused]] const auto& [key, v_not_used] : *projects_ )
+        {
+            if( seen.find( key ) != seen.end() )
+                continue;
+
+            try
+            {
+                auto path = dfs( *projects_, key, seen );
+
+                for( const auto& node : path )
+                    order.emplace_back( --label, node );
+            }
+            catch( std::runtime_error& e )
+            {
+                value = e.what();
+                return true;
+            }
+        }
+
+        std::sort( order.begin(), order.end(),
+            []( auto& left, auto& right ) {
+                return left.first < right.first;
+            } );
+
+        return false;
+    }
+
+    [[nodiscard]] std::string get_build_order() const
+    {
+        std::vector<std::pair<int, char>> order;
+        std::string value;
+
+        if( topological_sort( order, value ) ) return value;
+
+        auto result = std::accumulate( order.begin(), order.end() - 1, std::string{},
+            []( std::string r, auto& project )
+        {
+	        return std::move( r ) + std::string( 1, project.second ) + " ,";
+        } );
+
+        if( order.begin() != order.end() )
+            result += order.back().second;
+
+        return result;
+    }
 };
-
-std::ostream& operator<<( std::ostream& out, const stack<int>& stack )
-{
-    for( auto index = static_cast< int >( stack.size_ - 1 ); index >= 0; index-- )
-    {
-        std::cout << stack.data_[ index ];
-    }
-
-    return std::cout;
-}
 
 auto main() -> int
 {
-    auto s = stack<int> { 5, 4, 3, 2, 1 };
+    auto builder = build_order( 
+        { 'A', 'B', 'C', 'D', 'E', 'F' }, // projects
+		{
+			{'A', 'D'},
+        	{'F', 'B'},
+			{ 'B', 'D' },
+            { 'F', 'A' },
+            { 'D', 'C' },
+			{ 'B', 'A' }
+		} );
 
-	for( auto value : { 1, 2, 3, 4, 5 } )
-	{
-        s.push( value );
-	}
-	
-    std::cout << s;
+    const auto order = builder.get_build_order();
+
+    std::cout << order;
 }
