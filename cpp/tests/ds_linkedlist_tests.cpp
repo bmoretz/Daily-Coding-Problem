@@ -3,14 +3,14 @@
 
 #include "../data-structures/linked_list.h"
 
-namespace data_structure_tests::integer_linked_list_tests
+namespace data_structure_tests::linked_list_tests
 {
     using namespace data_structures::linked_list;
 	
     using int_list = linked_list<int>;
 
     /// <summary>
-    /// Testing class for singly linked list.
+    /// Testing class for doubly linked circular linked list.
     /// </summary>
     class linked_list_tests :
         public ::testing::Test {

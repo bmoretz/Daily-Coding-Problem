@@ -253,7 +253,7 @@ namespace graph_problems
 				catch( std::runtime_error& e )
 				{
 					value = e.what();
-					return true;
+					return false;
 				}
 			}
 
@@ -262,7 +262,7 @@ namespace graph_problems
 					return left.first < right.first;
 				} );
 
-			return false;
+			return true;
 		}
 		
 	public:
@@ -313,16 +313,15 @@ namespace graph_problems
 			std::vector<std::pair<int, char>> order;
 			std::string value;
 
-			if( topological_sort( order, value ) ) return value;
+			if( !topological_sort( order, value ) ) return value;
 
 			if( order.begin() == order.end() )
 				return std::string();
 
-
 			auto result = std::accumulate( order.begin(), order.end() - 1, std::string{},
-				[]( std::string r, auto& project )
+				[]( std::string& r, auto& project )
 				{
-					return std::move( r ) + std::string( 1, project.second ) + ", ";
+					return std::move( r ) + project.second + ", ";
 				} );
 
 

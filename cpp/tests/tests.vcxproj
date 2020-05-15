@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="arr_tests.cpp" />
+    <ClCompile Include="ds_arr_stack.cpp" />
     <ClCompile Include="ds_linkedlist_tests.cpp" />
     <ClCompile Include="graph_tests.cpp" />
     <ClCompile Include="lang_tests.cpp" />
