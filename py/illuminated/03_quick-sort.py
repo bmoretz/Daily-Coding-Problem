@@ -1,5 +1,3 @@
-import os
-
 '''
 The file contains all of the integers between 1 and 10,000 (inclusive, with no repeats) in unsorted order. 
 
@@ -19,7 +17,10 @@ DIRECTIONS FOR THIS PROBLEM:
 For the first part of the programming assignment, you should always use the first element of the array as the pivot element.
 '''
 
-file_path = os.getcwd() + '\py\\data\\QuickSort.txt'
+from os import getcwd
+
+data_dir = getcwd() + '\\data\\illuminated\\quick-sort\\'
+file_path = data_dir + 'QuickSort.txt'
 
 def read_numbers():
     with open(file_path, 'r') as f:

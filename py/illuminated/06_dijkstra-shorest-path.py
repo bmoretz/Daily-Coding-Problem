@@ -19,7 +19,7 @@ additional challenge, try implementing the heap-based version. Note this require
 of mapping between vertices and their positions in the heap.
 '''
 
-data_dir = os.getcwd() + '\\data\\illuminated\\'
+data_dir = os.getcwd() + '\\data\\illuminated\\dijkstra\\'
 
 submission_file_path = data_dir + 'dijkstraData.txt'
 test_file_path = data_dir + 'problem9.8test.txt'

@@ -177,12 +177,12 @@ class Test_Kosaraju(unittest.TestCase):
     def setUp(self):
         from os import getcwd
 
-        root = getcwd()
+        data_dir = data_dir = getcwd() + '\\data\\illuminated\\kosaraju\\'
 
         cases = {}
 
         for case in range(1, 7):
-            cases[case] = f'{root}\\py\\data\\problem8.10test' + str(case) + '.txt'
+            cases[case] = f'{data_dir}problem8.10test' + str(case) + '.txt'
         
         self.test_cases = cases
 
@@ -213,8 +213,10 @@ class Test_Dijkstra(unittest.TestCase):
     def setUp(self):
 
         from os import getcwd
+        
+        data_dir = getcwd() + '\\data\\illuminated\\dijkstra\\'
 
-        self.test_file_path = getcwd() + '\py\\data\\problem9.8test.txt'
+        self.test_file_path = data_dir + 'problem9.8test.txt'
 
     def test_fast(self):
 

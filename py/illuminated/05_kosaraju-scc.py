@@ -21,7 +21,9 @@ Because of the size of the graph you may have to manage memory carefully. The be
 suggest that you exchange tips for doing this on the discussion forums.
 '''
 
-submission_file_path = os.getcwd() + '\py\\data\\SCC.txt'
+data_dir = os.getcwd() + '\\data\\illuminated\\kosaraju\\'
+
+submission_file_path = data_dir + 'SCC.txt'
 
 import heapq
 from collections import defaultdict
@@ -29,7 +31,7 @@ from collections import defaultdict
 def gen_test_cases(root=os.getcwd()):
     cases = {}
     for case in range(1, 7):
-        cases[case] = f'{root}\\py\\data\\problem8.10test' + str(case) + '.txt'
+        cases[case] = f'{data_dir}problem8.10test' + str(case) + '.txt'
     return cases
 
 class Graph():

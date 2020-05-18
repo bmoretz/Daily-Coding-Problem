@@ -141,7 +141,8 @@ Partition subroutine exactly as it is described in the video lectures (otherwise
 def get_sort_data():
     from os import getcwd
     
-    file_path = getcwd() + '\py\\data\\QuickSort.txt'
+    data_dir = getcwd() + '\\data\\illuminated\\quick-sort\\'
+    file_path = data_dir + 'QuickSort.txt'
 
     def read_numbers():
         with open(file_path, 'r') as f:

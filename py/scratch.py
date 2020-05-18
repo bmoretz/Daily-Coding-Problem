@@ -4,7 +4,6 @@ Write methods to implement the multiply, subtract and divide operations for inte
 results of all these are integers. Use only the add operator.
 '''
 
-
 class Ops():
 
     @staticmethod
@@ -26,7 +25,7 @@ class Ops():
 
         result = 0
 
-        while a > b:
+        while a >= b:
 
             a = a + -b
             result += 1
