@@ -765,4 +765,160 @@ namespace tree_tests
 
         EXPECT_EQ( actual, nullptr );
     }
+
+    /// <summary>
+    /// Testing class for common ancestor.
+    /// </summary>
+    class ancestor_tests :
+        public ::testing::Test {
+
+        using node_ptr = std::unique_ptr<ancestor::tree_node>;
+    	
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+
+        /*
+	     *                      test tree
+	     *                           7
+	     *                    /            \
+	     *                   5               9
+	     *                /     \          /     \
+	     *              6       3        4         8
+	     *            /       /          \
+	     *           2       2              3
+	     *        /     \
+	     *       1       5
+	     *      /
+	     *     0
+	     */
+        [[nodiscard]] node_ptr test_tree() const
+        {
+            using node = ancestor::tree_node;
+
+            auto tree = std::make_unique<node>( 7, nullptr );
+
+            tree->insert_left( 5 );
+
+            tree->left->insert_left( 6 );
+
+            tree->left->left->insert_left( 2 );
+            tree->left->left->left->insert_left( 1 );
+            tree->left->left->left->left->insert_left( 0 );
+
+            tree->left->left->left->insert_right( 5 );
+            tree->left->insert_right( 3 );
+            tree->left->right->insert_left( 2 );
+
+            tree->insert_right( 9 );
+
+            tree->right->insert_left( 4 );
+            tree->right->left->insert_right( 3 );
+            tree->right->insert_right( 8 );
+
+            return tree;
+        }
+    };
+
+    //
+    // common ancestor tests
+    //
+
+    TEST_F( ancestor_tests, empty )
+    {
+        const auto tree = test_tree();
+
+        const auto actual = ancestor::common_ancestor1( *tree, *tree, *tree );
+        const auto expected = tree.get();
+
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( ancestor_tests, case1 )
+    {
+        const auto tree = test_tree();
+
+    	// 7 -> 5 -> 6 -> 2 -> 1 -> 0
+        const auto first = tree->left->left->left->left->left.get();
+    	// 7 -> 9 -> 8
+        const auto second = tree->right->right.get();
+    	
+        const auto actual = ancestor::common_ancestor1( *tree, *first, *second );
+        const auto expected = tree.get();
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( ancestor_tests, case2 )
+    {
+        const auto tree = test_tree();
+
+        // 7 -> 5 -> 6 -> 2 -> 1-> 0
+        const auto first = tree->left->left->left->left->left.get();
+        // 7 -> 5-> 3
+        const auto second = tree->left->right.get();
+
+        const auto actual = ancestor::common_ancestor1( *tree, *first, *second );
+
+    	// 7-> 5
+        const auto expected = tree->left.get();
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( ancestor_tests, case3 )
+    {
+        const auto tree = test_tree();
+
+        // 7 -> 5 -> 6 -> 2 -> 1-> 0
+        const auto first = tree->left->left->left->left->left.get();
+        // 7 -> 5-> 3 -> 2
+        const auto second = tree->left->right->left.get();
+
+        const auto actual = ancestor::common_ancestor1( *tree, *first, *second );
+
+        // 7-> 5
+        const auto expected = tree->left.get();
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( ancestor_tests, case4 )
+    {
+        const auto tree = test_tree();
+
+        // 7 -> 5 -> 6 -> 2 -> 1-> 0
+        const auto first = tree->left->left->left->left->left.get();
+        // 7 -> 9
+        const auto second = tree->right.get();
+
+        const auto actual = ancestor::common_ancestor1( *tree, *first, *second );
+
+        // 7
+        const auto expected = tree.get();
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( ancestor_tests, case5 )
+    {
+        const auto tree = test_tree();
+
+        // 7 -> 5 -> 6 -> 2 -> 5
+        const auto first = tree->left->left->left->right.get();
+        // 7 -> 9 -> 4 -> 3
+        const auto second = tree->right->left->right.get();
+
+        const auto actual = ancestor::common_ancestor1( *tree, *first, *second );
+
+        // 7
+        const auto expected = tree.get();
+
+        EXPECT_EQ( actual, expected );
+    }
 }

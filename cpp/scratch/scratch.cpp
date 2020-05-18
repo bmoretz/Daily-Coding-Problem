@@ -16,158 +16,128 @@
 #include <numeric>
 #include <ostream>
 
-/* Build Order.
+/* First Common Ancestor.
  *
- * You are given a list of projects and a list of dependencies (which is a
- * list of pairs of projects, where the second project is dependent on the first
- * 
- * project). All of a project's dependencies must be built before the project is.
- * Find a build order that will allow the projects to be built. If there is no
- * valid build order, return an error.
+ * Design an algorithm and write code to find the first common ancestor
+ * of two nodes in a binary tree. Avoid storing additional nodes in a data
+ * structure.
  *
- * EXAMPLE:
- *
- * Input:
- * projects: a, b, c, d, e, f
- * dependencies: (a, d), (f, b), (b, d), (f, a), (d, c)
- * Output: f, e, a, b, d, c
+ * NOTE: This is not necessarily a binary search tree.
  */
 
-class build_order
+struct ancestor
 {
-    using node_list = std::vector<char>;
-    using build_list = std::unordered_map<char, std::unique_ptr<node_list>>;
+    struct tree_node;
 
-    inline static const std::string cycle_err = 
-        "CYCLICAL PROJECT REFERENCE DETECTED. CANNOT CONTINUE BUILD.";
+    using tree_node_ptr = std::unique_ptr<tree_node>;
 
-	std::unique_ptr<build_list> projects_;
+	struct tree_node
+	{
+        int value;
+        tree_node_ptr left{}, right{};
+        const tree_node* parent{};
 
-    static std::vector<char> dfs( const build_list& projects,
-        const char node, std::set<char>& seen )
-    {
-        auto path = std::vector<char>();
-        auto stack = std::stack<char>( { node } );
+        tree_node( const int val, const tree_node * parent )
+            : value{ val },
+				parent { parent }
+        { }
 
-        auto loop_detect = std::set<char>();
+		void insert_left( int val ) { left = std::make_unique<tree_node>( val, this ); }
+        void insert_right( int val ) { right = std::make_unique<tree_node>( val, this ); }
+	};
 
-        while( !stack.empty() )
+	static const tree_node* common_ancestor1( const tree_node& tree, 
+        const tree_node& first, const tree_node& second )
+	{
+        if( !( first.parent && second.parent ) ) return &tree;
+		
+        auto
+            l_depth = get_depth( first ),
+            r_depth = get_depth( second );
+
+        auto l_node = &first, r_node = &second;
+
+		// put both node pointers on the same level
+		// so that we can walk up the tree in unison
+        while( l_depth != r_depth )
         {
-            const auto v = stack.top();
-            stack.pop();
-
-            loop_detect.insert( v );
-
-            for( const auto u : *projects.at( v ) )
+            if( l_depth > r_depth )
             {
-                if( loop_detect.find( u ) != loop_detect.end() )
-                    throw std::runtime_error( cycle_err );
-
-                if( seen.find( u ) == seen.end() )
-                    stack.push( u );
+                l_node = l_node->parent;
+                l_depth--;
             }
-
-            path.insert( path.begin(), v );
-            seen.insert( v );
-        }
-
-        return path;
-    }
-
-public:
-
-    build_order()
-    {
-        projects_ = std::make_unique<build_list>();
-    }
-
-    build_order( const std::initializer_list<char>& projects,
-        const std::initializer_list<std::pair<char, char>>& dependencies )
-        : build_order()
-    {
-        for( const auto& project : projects )
-            add_project( project );
-
-        for( const auto& dependency : dependencies )
-            add_dependency( dependency.first, dependency.second );
-    }
-
-    void add_project( const char project ) const
-    {
-        projects_->insert( std::make_pair( project, std::make_unique<node_list>() ) );
-    }
-
-    void add_dependency( const char project, const char dependency ) const
-    {
-        projects_->at( project )->push_back( dependency );
-    }
-
-    bool topological_sort( std::vector<std::pair<int, char>>& order, std::string& value ) const
-    {
-        std::set<char> seen;
-        auto label = projects_->size();
-
-        for( [[maybe_unused]] const auto& [key, v_not_used] : *projects_ )
-        {
-            if( seen.find( key ) != seen.end() )
-                continue;
-
-            try
+            else
             {
-                auto path = dfs( *projects_, key, seen );
-
-                for( const auto& node : path )
-                    order.emplace_back( --label, node );
-            }
-            catch( std::runtime_error& e )
-            {
-                value = e.what();
-                return true;
+                r_node = r_node->parent;
+                r_depth--;
             }
         }
 
-        std::sort( order.begin(), order.end(),
-            []( auto& left, auto& right ) {
-                return left.first < right.first;
-            } );
+		while( l_node->parent != r_node->parent )
+		{
+            r_node = r_node->parent;
+            l_node = l_node->parent;
+		}
 
-        return false;
-    }
+        return l_node->parent;
+	}
 
-    [[nodiscard]] std::string get_build_order() const
-    {
-        std::vector<std::pair<int, char>> order;
-        std::string value;
+	static int get_depth( const tree_node& tree_node )
+	{
+        auto depth = 0;
+        auto node = &tree_node;
+		
+		while( node->parent )
+		{
+            node = node->parent;
+            depth++;
+		}
 
-        if( topological_sort( order, value ) ) return value;
-
-        auto result = std::accumulate( order.begin(), order.end() - 1, std::string{},
-            []( std::string r, auto& project )
-        {
-	        return std::move( r ) + std::string( 1, project.second ) + " ,";
-        } );
-
-        if( order.begin() != order.end() )
-            result += order.back().second;
-
-        return result;
-    }
+        return depth;
+	}
 };
 
+/*
+ *                      test tree
+ *                           7
+ *                    /            \
+ *                   5               9
+ *                /     \          /     \
+ *              6       3        4         8
+ *            /       /          \
+ *           2       2              3
+ *        /     \
+ *       1       5
+ *      /
+ *     0 
+ */
 auto main() -> int
 {
-    auto builder = build_order( 
-        { 'A', 'B', 'C', 'D', 'E', 'F' }, // projects
-		{
-			{'A', 'D'},
-        	{'F', 'B'},
-			{ 'B', 'D' },
-            { 'F', 'A' },
-            { 'D', 'C' },
-			{ 'B', 'A' }
-		} );
+    using node = ancestor::tree_node;
+	
+    auto tree = std::make_unique<node>( 7, nullptr );
 
-    const auto order = builder.get_build_order();
+    tree->insert_left( 5 );
 
-    std::cout << order;
+    tree->left->insert_left( 6 );
+
+    tree->left->left->insert_left( 2 );
+    tree->left->left->left->insert_left( 1 );
+    tree->left->left->left->left->insert_left( 0 );
+	
+    tree->left->left->left->insert_right( 5 );
+    tree->left->insert_right( 3 );
+    tree->left->right->insert_left( 2 );
+
+    tree->insert_right( 9 );
+
+    tree->right->insert_left( 4 );
+    tree->right->left->insert_left( 3 );
+    tree->right->insert_right( 8 );
+
+    const auto first = tree->left->left->left->left->left.get(); // 0
+    const auto second = tree->right->right.get(); // 8
+
+    // auto ancestor = ancestor::common_ancestor1( *tree, *first, *second );
+    auto ancestor = ancestor::common_ancestor1( *tree, *first, *tree);
 }

@@ -68,10 +68,10 @@ namespace tree_problems
 		{
 			if( node == nullptr ) return 0;
 
-			return std::max( 1 + num_children( node->left.get() ), 
+			return std::max( 1 + num_children( node->left.get() ),
 				1 + num_children( node->right.get() ) );
 		}
-		
+
 	public:
 
 		min_tree() = delete;
@@ -128,7 +128,7 @@ namespace tree_problems
 		[[nodiscard]] tree_node_ptr build_tree( const std::vector<int>& values, const int& begin, const int& end ) const
 		{
 			using std::ceil;
-			
+
 			if( begin >= end )
 				return nullptr;
 
@@ -195,7 +195,7 @@ namespace tree_problems
 				const auto current = level.front();
 
 				if( current.first == lists->size() )
-					lists->insert( std::make_pair( 
+					lists->insert( std::make_pair(
 						current.first,
 						std::make_unique<list_node>( 0 )
 					) );
@@ -244,7 +244,7 @@ namespace tree_problems
 
 			if( !root_ )
 				return lists;
-			
+
 			auto level = std::stack<level_data>{};
 			level.push( level_data( 0, root_.get() ) );
 
@@ -454,7 +454,7 @@ namespace tree_problems
 			if( !node.right )
 			{
 				next = node.parent;
-				
+
 				while( next && node >= *next )
 					next = next->parent;
 			}
@@ -467,6 +467,88 @@ namespace tree_problems
 			}
 
 			return next;
+		}
+	};
+
+
+	/* First Common Ancestor.
+	 *
+	 * Design an algorithm and write code to find the first common ancestor
+	 * of two nodes in a binary tree. Avoid storing additional nodes in a data
+	 * structure.
+	 *
+	 * NOTE: This is not necessarily a binary search tree.
+	 */
+
+	struct ancestor
+	{
+		struct tree_node;
+
+		using tree_node_ptr = std::unique_ptr<tree_node>;
+
+		struct tree_node
+		{
+			int value;
+			tree_node_ptr left{}, right{};
+			const tree_node* parent{};
+
+			tree_node( const int val, const tree_node* parent )
+				: value{ val },
+				parent{ parent }
+			{ }
+
+			void insert_left( int val ) { left = std::make_unique<tree_node>( val, this ); }
+			void insert_right( int val ) { right = std::make_unique<tree_node>( val, this ); }
+		};
+
+		static const tree_node* common_ancestor1( const tree_node& tree,
+			const tree_node& first, const tree_node& second )
+		{
+			if( !( first.parent && second.parent ) ) return &tree;
+
+			auto
+				l_depth = get_depth( first ),
+				r_depth = get_depth( second );
+
+			auto l_node = &first, r_node = &second;
+
+			// put both node pointers on the same level
+			// so that we can walk up the tree in unison
+			while( l_depth != r_depth )
+			{
+				if( l_depth > r_depth )
+				{
+					l_node = l_node->parent;
+					l_depth--;
+				}
+				else
+				{
+					r_node = r_node->parent;
+					r_depth--;
+				}
+			}
+
+			while( l_node->parent != r_node->parent )
+			{
+				r_node = r_node->parent;
+				l_node = l_node->parent;
+			}
+
+			return l_node->parent;
+		}
+
+		static int get_depth( const tree_node& tree_node )
+		{
+			auto depth = 0;
+			auto node = &tree_node;
+
+			while( node->parent )
+			{
+				node = node->parent;
+				depth++;
+			}
+
+			return depth;
 		}
 	};
 }
