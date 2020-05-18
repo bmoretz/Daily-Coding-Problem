@@ -501,6 +501,26 @@ namespace tree_problems
 			void insert_right( int val ) { right = std::make_unique<tree_node>( val, this ); }
 		};
 
+		/// <summary>
+		/// common ancestor 1
+		///
+		/// This is a straight forward implementation that first
+		/// gets the depth of both nodes, and then increments the node
+		/// pointers until they are at the same depth level in the tree.
+		/// Once the pointers are at the same level, we can walk the tree
+		/// up uniformly until we find a common ancestor (there has to be
+		/// one because eventually everything will walk up to the root. We
+		/// can short circuit if one of the two nodes passed in has a null
+		/// parent (its the root).
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(tree height)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <param name="tree">root of the tree</param>
+		/// <param name="first">node a</param>
+		/// <param name="second">node b</param>
+		/// <returns>first common ancestor</returns>
 		static const tree_node* common_ancestor1( const tree_node& tree,
 			const tree_node& first, const tree_node& second )
 		{
@@ -537,6 +557,13 @@ namespace tree_problems
 			return l_node->parent;
 		}
 
+		/// <summary>
+		/// get depth
+		///
+		/// Returns the depth at which this tree node resides.
+		/// </summary>
+		/// <param name="tree_node">the node</param>
+		/// <returns>the depth</returns>
 		static int get_depth( const tree_node& tree_node )
 		{
 			auto depth = 0;
