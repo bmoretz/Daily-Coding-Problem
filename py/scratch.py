@@ -1,122 +1,41 @@
-'''English Int.
+'''Operations.
 
-Given an integer, print an English phrase that describes the integer (e.g., 
-"One Thousand, Two Hundred Thirty-Four").
+Write methods to implement the multiply, subtract and divide operations for integers. The
+results of all these are integers. Use only the add operator.
 '''
 
-digits = {
-    0 : "",
-    1 : "One",
-    2 : "Two",
-    3 : "Three",
-    4 : "Four",
-    5 : "Five",
-    6 : "Six",
-    7 : "Seven",
-    8 : "Eight",
-    9 : "Nine",
-}
 
-special = {
-    11 : "Eleven",
-    12 : "Twelve",
-    13 : "Thirteen",
-}
+class Ops():
 
-suffix = {
-    10 : "teen",
-    20 : "twenty",
-    30 : "thirty"
-}
-
-places = {
-    0 : '',
-    1e0 : '',
-    1e1 : 'Teen',
-    1e2 : 'Hundred',
-    1e3 : 'Thousand',
-    1e4 : 'Ten Thousand',
-    1e6 : 'Million'
-}
-
-tens = {
-    0 : "",
-    1 : "Ten",
-    2 : "Twenty",
-    3 : "Thirty",
-    4 : "Forty",
-    5 : "Fifty",
-    6 : "Sixty",
-    7 : "Seventy",
-    8 : "Eighty",
-    9 : "Ninety"
-}
-
-def english_int(num):
-
-    from collections import defaultdict
-
-    def separate_digits(number):
-        from math import log, ceil, floor
-
-        num_digits = ceil(log(num, 10))
-
-        values = []
-
-        for index in range(num_digits):
-
-            position = pow(10, index)
-            place = num % pow(10, index + 1)
-            digit = floor(place / position)
-
-            values += [(position, digit)]
+    @staticmethod
+    def mult(a, b):
         
-        return values
-        
-    if num == None: return None
-    if num == 0: return 'Zero'
+        result = 0
 
-    values = separate_digits(num)
+        for i in range(b):
+            result += a
 
-    result = defaultdict(str)
+        return result
 
-    prior = (0, 0)
+    @staticmethod
+    def sub(a, b):
+        return a + -b
 
-    for index in range(len(values)):
-        current = values[index]
+    @staticmethod
+    def div(a, b):
 
-        position, digit = current
+        result = 0
 
-        compound = position + prior[1]
+        while a > b:
 
-        if compound in special:
+            a = a + -b
+            result += 1
 
-            result[position] = special[compound]
-            result[prior[0]] = ''
-
-        elif position == 10:
-
-            p = tens[ digit ]
-
-            result[ position ] = p
-        else:
-            
-            p = places[ position ]
-            d = digits[ digit ]
-            
-            result[ position ] = d + ' ' + p
-
-        prior = current
-
-    eng = ''
-
-    for value in sorted(result.keys(), key=lambda x:-x):
-        eng += result[value] + ' '
-
-    return eng.strip()
+        return result
 
 
-# 456
-result = english_int(2300)
+a, b = 9, 2
 
-print(result)
+print(f'{a}/{b} = ', Ops.div(a, b))
+print(f'{a}-{b} = ', Ops.sub(a, b))
+print(f'{a}*{b} = ', Ops.mult(a, b))
