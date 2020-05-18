@@ -131,6 +131,7 @@ Given an integer, print an English phrase that describes the integer (e.g.,
 '''
 
 digits = {
+    0 : "",
     1 : "One",
     2 : "Two",
     3 : "Three",
@@ -155,25 +156,27 @@ suffix = {
 }
 
 places = {
+    0 : '',
     1e0 : '',
     1e1 : 'Teen',
     1e2 : 'Hundred',
     1e3 : 'Thousand',
+    1e4 : 'Ten Thousand',
     1e6 : 'Million'
 }
 
 tens = {
-    10 : "Ten",
-    20 : "Twenty",
-    30 : "Thirty",
-    40 : "Forty",
-    50 : "Fifty",
-    60 : "Sixty",
-    70 : "Seventy",
-    80 : "Eighty",
-    90 : "Ninety"
+    0 : "",
+    1 : "Ten",
+    2 : "Twenty",
+    3 : "Thirty",
+    4 : "Forty",
+    5 : "Fifty",
+    6 : "Sixty",
+    7 : "Seventy",
+    8 : "Eighty",
+    9 : "Ninety"
 }
-
 
 def english_int(num):
 
@@ -196,6 +199,9 @@ def english_int(num):
         
         return values
 
+    if num == None: return None
+    if num == 0: return 'Zero'
+
     values = separate_digits(num)
 
     result = defaultdict(str)
@@ -213,11 +219,24 @@ def english_int(num):
 
             result[position] = special[compound]
             result[prior[0]] = ''
-            
+
+        elif position == 10:
+
+            p = tens[ digit ]
+
+            result[ position ] = p
         else:
-        
-            result[ position ] = places[ position ] + digits[ digit ]
+            
+            p = places[ position ]
+            d = digits[ digit ]
+            
+            result[ position ] = d + ' ' + p
 
         prior = current
 
-    return ' '.join(result.values())
+    eng = ''
+
+    for value in sorted(result.keys(), key=lambda x:-x):
+        eng += result[value] + ' '
+
+    return eng.strip()
