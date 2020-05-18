@@ -176,7 +176,7 @@ class Test_Kosaraju(unittest.TestCase):
 
     def setUp(self):
         from os import getcwd
-
+        
         data_dir = data_dir = getcwd() + '\\data\\illuminated\\kosaraju\\'
 
         cases = {}

@@ -19,206 +19,146 @@ additional challenge, try implementing the heap-based version. Note this require
 of mapping between vertices and their positions in the heap.
 '''
 
-data_dir = os.getcwd() + '\\data\\illuminated\\'
+data_dir = os.getcwd() + '\\data\\illuminated\\median-maintenance\\'
 
-submission_file_path = data_dir + 'dijkstraData.txt'
-test_file_path = data_dir + 'problem9.8test.txt'
+submission_file_path = data_dir + 'Median.txt'
+test_file_path = data_dir + 'problem11.3test.txt'
 
 from collections import defaultdict
 import heapq, time
 
-class WeightedGraph():
-
-    ''' adjency list weighted graph '''
-
-    class Node():
-        
-        def __init__(self, id, weight):
-            self.id = id
-            self.weight = weight
+class HeapMin():
 
     def __init__(self):
-        self.nodes_ = defaultdict(list)
+        self.lower = [] # max heap
+        self.upper = [] # min heap
 
-    def vertices(self):
-        return self.nodes_.copy()
+    def push(self, num):
+    
+        # populate the low (max) heap first.
+        if len(self.lower) <= len(self.upper):
+            heapq.heappush(self.lower, -num)
+        else:
+            heapq.heappush(self.upper, num)
 
-    def __getitem__(self, key):
-        return self.nodes_[key]
+        if self.lower and self.upper:
 
-    def add_node(self, u, v, c):
-        self.nodes_[u].append( self.Node(v, c) )
+            # if the lower heap top is greater than
+            # the pushed number, we need to swap the
+            # heap values.
 
-    def __setitem__(self, key, value):
-        self.nodes_[key] = value
+            if -self.lower[0] > self.upper[0]:
+                # pop & invert the lower (max) heap
+                x, y = -heapq.heappop(self.lower), heapq.heappop(self.upper)
 
-    def __delitem__(self, key):
-        del self.nodes_[key]
+                heapq.heappush(self.lower, -y)
+                heapq.heappush(self.upper, x)
+            
+            # invariant that every element in the lower heap
+            # is less than or equal to the min element in the
+            # upper (min) heap.
 
-    def __len__(self):
-        return len(self.nodes_.keys())
+            assert -self.lower[0] <= self.upper[0]
 
-def read_weighted_graph(file_path):
-    ''' read weighted graph
+    def median(self):
+        return -self.lower[0]
 
-    this function reads a weighted graph definition from disk 
-    and generates a graph type for ease of use.
+def median_arr(arr):
+    ''' median arr
+    
+    brute force approach for benchmarking purposes.
     '''
-    g = WeightedGraph()
+
+    tally, medians = [], []
+
+    for num in arr:
+        tally.append(num)
+        tally = sorted(tally)
+
+        n = len(tally)
+
+        position = n//2 if n % 2 == 0 else (n+1)//2
+
+        medians.append(tally[position - 1])
+
+    total = sum(medians)
+
+    return total % 10000
+
+def median_heap(arr):
+    ''' median heap
+    
+    heapify'd approach for median maintenance problem.
+    '''
+
+    tally, medians = HeapMin(), []
+
+    for num in arr:
+        tally.push(num)
+        
+        medians.append(tally.median())
+
+    total = sum(medians)
+
+    return total % 10000
+
+def read_median_data(file_path):
+    ''' read numbers
+
+    this function simply reads the passed in test data file and
+    converts the lines to integers.
+    '''
+
+    result = []
 
     with open(file_path, 'r') as f:
+
         lines = f.read().splitlines()
 
         for line in lines:
+            result.append(int(line))
+
+    return result
+
+def run_test_file(approach):
+
+    numbers = read_median_data(test_file_path)
+
+    return approach(numbers)
+
+def run_submission(approach):
+
+    numbers = read_median_data(submission_file_path)
+
+    return approach(numbers)
+
+def run_benchmark(iters=30):
+
+    data = read_median_data(submission_file_path)
+
+    for approach in [median_arr, median_heap]:
+    
+        times = []
+
+        for _ in range(iters):
+
+            start = time.time()
             
-            if len(line) == 0: continue
-            
-            pieces = line.strip().split('\t')
+            approach(data)
 
-            vertex = int(pieces[0])
+            end = time.time()
 
-            for piece in pieces[1:]:
+            times += [end - start]
 
-                edge, weight = [int(x) for x in piece.split(',')]
-                
-                g.add_node(vertex, edge, weight)
+        avg_time = sum(times)/len(times)
 
-    return g
-
-def shortest_path_slow(graph : WeightedGraph, s, def_dist=1e6):
-
-    ''' naive dijkstra
-
-    O(n*m)
-
-    this is a naive implementation of dijkstra's shortest path
-    algorithm. We use a stack to traverse the graph, pushing each
-    adjacent edge from the source vertex on the stack, along with the
-    associated cost of getting to the node (the cumulative cost from
-    the source). After we visit a node, we return to the stack, sort
-    it by total cost, and pick the next node with the shortest path.
-    We keep track of nodes we have already visited with a dictionary
-    of node id's, and only mark a node visited when we have the final
-    cost of reaching that node, that way, if we encounter the node
-    again while traversing the graph we won't overwrite the previous
-    (shorter) distance.
-    '''
-
-    dist = defaultdict(int)
-    visited, stack = defaultdict(bool), [ (s,0) ]
-
-    for v in graph.vertices():
+        print(f'{approach.__name__} - Results: Ran {iters} iterations with average execution time: {avg_time}.')
         
-        if v != s:
-            dist[v] = def_dist
-            visited[v] = False
-        else:
-            visited[v] = True
+# result = run_test_file(median_arr)
 
-    while stack:
+a1, a2 = run_submission(median_arr), run_submission(median_heap)
+print(f'arr - {a1} : heap - {a2}')
 
-        stack = sorted(stack, key=lambda p: -p[1])
+result = run_test_file(median_heap)
 
-        node, cost = stack.pop()
-
-        for v in graph[ node ]:
-
-            if not visited[ v.id ]:
-                stack += [( v.id, cost + v.weight )]
-
-        if not visited[node]:
-            dist[node] = cost
-            visited[node] = True
-
-    return dist
-
-def shortest_path_fast(graph : WeightedGraph, s, def_dist=1e6):
-
-    ''' efficient dijkstra
-
-    O(n + m)
-
-    This is more performant implementation of dijkstra's shortest
-    path algorithm. In this approach we maintain the same overall
-    logic as the naive version, we push the start node with a
-    0 cost (x->x == 0), push that nodes neighbors on the path
-    heap with the cost to visit it as the heap key with maintains
-    the heap invariant of the min cost as the first (top) element.
-    '''
-    dist = defaultdict(int)
-    visited, path = defaultdict(bool), [ (0, s) ]
-
-    for v in graph.vertices():
-        
-        if v != s:
-            dist[v] = def_dist
-            visited[v] = False
-        else:
-            visited[v] = True
-
-    while path:
-
-        cost, node = heapq.heappop(path)
-        
-        for v in graph[ node ]:
-
-            if not visited[ v.id ]:
-                heapq.heappush( path, (cost + v.weight, v.id ) )
-
-        if not visited[ node] :
-            dist[ node ] = cost
-            visited[ node ] = True
-    
-    return dist
-
-def run_test_cases():
-
-    g = read_weighted_graph(test_file_path)
-
-    p1 = shortest_path_fast(g, 1)
-    print(p1)
-
-    p2 = shortest_path_slow(g, 1)
-    print(p2)
-    
-def dsp_submission():
-
-    g = read_weighted_graph(submission_file_path)
-
-    dist = shortest_path_fast(g, 1)
-    req_dist = [ 7, 37, 59, 82, 99, 115, 133, 165, 188, 197 ]
-    
-    result = []
-
-    for d in req_dist:
-        result += [dist[d]]
-
-    print(','.join([ str(r) for r in result ]))
-
-run_test_cases()
-
-#g = read_weighted_graph(test_file_path)
-# dsp_submission()
-
-def benchmark_dsp(g, dsp):
-
-    results = []
-
-    for _ in range(0, 10):
-
-        start = time.time()
-        dsp(g, 1)
-        
-        end = time.time()
-
-        results += [end - start]
-
-    print(f'Avg Run-time: {sum(results) / len(results)}')
-
-g = read_weighted_graph(submission_file_path)
-
-benchmark_dsp(g, shortest_path_slow)
-benchmark_dsp(g, shortest_path_fast)
-
-# slow: Avg Run-time: 3.1510524988174438
-# fast: Avg Run-time: 0.011552953720092773
+run_benchmark()
