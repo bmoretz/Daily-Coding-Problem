@@ -694,3 +694,63 @@ class Test_StackBoxes1(unittest.TestCase):
         expected = sorted(actual)
 
         assert actual == expected
+
+from py.problems.recursion import diving_boards1
+class Test_DivingBoards1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        k = None
+
+        actual = diving_boards1(k)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        k = 1
+
+        actual = diving_boards1(k)
+        expected = [1, 2]
+
+        assert actual == expected        
+
+    def test_case2(self):
+
+        k = 2
+
+        actual = diving_boards1(k)
+        expected = [2, 3, 3, 4]
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        k = 3
+
+        actual = diving_boards1(k)
+        expected = [3, 4, 4, 5, 4, 5, 5, 6]
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        k = 4
+
+        actual = diving_boards1(k)
+        expected = [4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8]
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        k = 5
+
+        actual = diving_boards1(k)
+        expected = [5, 6, 6, 7, 6, 7, 7, 8, 6, 7, 7, 8, 7, 8, 8, 9, 6, 7, 7, 8, 7, 8, 8, 9, 7, 8, 8, 9, 8, 9, 9, 10]
+
+        assert actual == expected

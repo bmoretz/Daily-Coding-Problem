@@ -1,40 +1,41 @@
-'''Operations.
+'''Diving Board.
 
-Write methods to implement the multiply, subtract and divide operations for integers. The
-results of all these are integers. Use only the add operator.
+You are building a diving board by placing a bunch of planks of wood end-to-end.
+There are two types of planks, one of length shorter and one of length longer. You
+must use exactly K plans of wood. Write a method to generate all possible lengths
+for the diving board.
 '''
 
-class Ops():
+from enum import Enum
 
-    @staticmethod
-    def mult(a, b):
+class piece(Enum):
+    Short = 1
+    Long = 2
+
+def diving_boards1(k):
         
-        result = 0
+    def get_boards(k, lengths={}):
 
-        for i in range(b):
-            result += a
+        if k == 0: return [0]
 
-        return result
+        lengths[k] = []
 
-    @staticmethod
-    def sub(a, b):
-        return a + -b
+        for plank in [piece.Short, piece.Long]:
+            
+            if k-1 not in lengths:
+                lengths[k-1] = get_boards(k-1, lengths)
+            
+            cur = [plank.value + p for p in lengths[k-1]]
 
-    @staticmethod
-    def div(a, b):
+            if cur not in lengths[k]:
+                lengths[k] += cur 
+        
+        return lengths[k]
 
-        result = 0
+    if k == None: return None
 
-        while a >= b:
+    return get_boards(k)
 
-            a = a + -b
-            result += 1
+result = diving_boards1(5)
 
-        return result
-
-
-a, b = 9, 2
-
-print(f'{a}/{b} = ', Ops.div(a, b))
-print(f'{a}-{b} = ', Ops.sub(a, b))
-print(f'{a}*{b} = ', Ops.mult(a, b))
+print(result)

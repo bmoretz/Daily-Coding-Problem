@@ -157,7 +157,8 @@ def run_benchmark(iters=30):
 # result = run_test_file(median_arr)
 
 a1, a2 = run_submission(median_arr), run_submission(median_heap)
-print(f'arr - {a1} : heap - {a2}')
+
+assert a1 == a2
 
 result = run_test_file(median_heap)
 
