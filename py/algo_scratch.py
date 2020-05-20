@@ -1,5 +1,3 @@
-import os
-
 '''
 The file contains an adjacency list representation of an undirected weighted graph with 200 vertices labeled 1 to 200. Each row consists of the node tuples that are 
 adjacent to that particular vertex along with the length of that edge. For example, the 6th row has 6 as the first entry indicating that this row corresponds to the vertex
@@ -18,6 +16,8 @@ IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn)O
 additional challenge, try implementing the heap-based version. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind 
 of mapping between vertices and their positions in the heap.
 '''
+
+import os
 
 data_dir = os.getcwd() + '\\data\\illuminated\\median-maintenance\\'
 
@@ -62,6 +62,25 @@ class HeapMin():
 
     def median(self):
         return -self.lower[0]
+
+class TreeMin():
+
+    class Node():
+
+        def __init__(self, parent, value):
+            self.value = value
+            self.parent = parent
+            self.left = None
+            self.right = None
+
+    def __init__(self):        
+        self.root = None
+
+    def find(self, value):
+        pass
+    
+    def select(self, statistic):
+        pass
 
 def median_arr(arr):
     ''' median arr

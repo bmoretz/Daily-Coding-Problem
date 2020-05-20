@@ -7,6 +7,7 @@
 #include <queue>
 #include <stack>
 #include <map>
+#include <list>
 
 namespace tree_problems
 {
@@ -512,6 +513,7 @@ namespace tree_problems
 		/// one because eventually everything will walk up to the root. We
 		/// can short circuit if one of the two nodes passed in has a null
 		/// parent (its the root).
+		/// 
 		/// </summary>
 		/// <complexity>
 		///		<run-time>O(tree height)</run-time>
@@ -578,4 +580,137 @@ namespace tree_problems
 			return depth;
 		}
 	};
+
+	/* BST Sequence.
+	 *
+	 * A binary search tree was created by traversing through an array from left
+	 * to right and inserting each element. Given a binary search tree with distinct
+	 * elements, print all possible arrays that could have led to this tree.
+	 *
+	 * EXAMPLE:
+	 *
+	 * Input:
+	 *            2
+	 *         /     \
+	 *       1         3
+	 *
+	 * Output:
+	 *
+	 *  {2, 1, 3}, {2, 3, 1}
+	 */
+
+	template<typename Ty>
+	class bst_sequence
+	{
+		using list_ptr = std::unique_ptr<std::list<Ty>>;
+		using result_set = std::unique_ptr<std::vector<list_ptr>>;
+
+		struct tree_node;
+
+		using tree_node_ptr = std::unique_ptr<tree_node>;
+
+	public:
+		struct tree_node
+		{
+			Ty value;
+			tree_node_ptr left{}, right{};
+
+			explicit tree_node( const Ty& val ) :
+				value{ val }
+			{  }
+
+			explicit tree_node( Ty&& val ) :
+				value{ std::move( val ) }
+			{ }
+		};
+		
+	private:
+
+		static void weave_lists( std::list<Ty>& first, std::list<Ty>& second,
+			std::vector<list_ptr>& results, std::list<Ty>& prefix )
+		{
+			if( first.empty() || second.empty() )
+			{
+				auto result = std::make_unique<std::list<Ty>>( prefix );
+
+				for( const auto& f : first )
+					result->push_back( f );
+
+				for( const auto& s : second )
+					result->push_back( s );
+
+				results.push_back( std::move( result ) );
+
+				return;
+			}
+
+			auto head_first = first.front();
+			first.pop_front();
+
+			prefix.push_back( head_first );
+			weave_lists( first, second, results, prefix );
+			prefix.pop_back();
+			first.push_front( head_first );
+
+			auto head_second = second.front();
+			second.pop_front();
+
+			prefix.push_back( head_second );
+			weave_lists( first, second, results, prefix );
+			prefix.pop_back();
+			second.push_back( head_second );
+		}
+
+	public:
+		static tree_node_ptr build_tree( const std::vector<Ty>& values,
+			const int& begin, const int& end )
+		{
+			if( begin >= end ) return nullptr;
+
+			const auto mid = begin + std::ceil( ( end - begin ) / 2 );
+
+			auto node = std::make_unique<tree_node>( values[ mid ] );
+
+			node->left = build_tree( values, begin, mid );
+			node->right = build_tree( values, mid + 1, end );
+
+			return node;
+		}
+
+		static result_set get_sequences( const tree_node* node,
+			result_set results = std::make_unique<std::vector<list_ptr>>() )
+		{
+			if( !node )
+			{
+				results->push_back( std::make_unique<std::list<Ty>>() );
+				return results;
+			}
+
+			auto prefix = std::make_unique<std::list<Ty>>();
+
+			prefix->push_back( node->value );
+
+			auto left_seq = get_sequences( node->left.get() );
+			auto right_seq = get_sequences( node->right.get() );
+
+			for( auto& left : *left_seq )
+			{
+				for( auto& right : *right_seq )
+				{
+					auto weaved = std::make_unique<std::vector<list_ptr>>();
+
+					weave_lists( *left, *right,
+						*weaved, *prefix );
+
+					for( auto& weave : *weaved )
+					{
+						results->push_back( std::move( weave ) );
+					}
+				}
+			}
+
+			return results;
+		}
+	};
+
 }

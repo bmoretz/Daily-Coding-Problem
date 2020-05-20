@@ -13,7 +13,8 @@ namespace data_structures::linked_list
 	protected:
 		void unlink()
 		{
-			pointer next = next_, prev = prev_;
+			const auto next = next_;
+			auto prev = prev_;
 
 			next->prev_ = prev;
 			prev->next_ = next;

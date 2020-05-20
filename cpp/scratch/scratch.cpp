@@ -15,129 +15,162 @@
 #include <iterator>
 #include <numeric>
 #include <ostream>
+#include <sstream>
 
-/* First Common Ancestor.
+/* BST Sequence.
  *
- * Design an algorithm and write code to find the first common ancestor
- * of two nodes in a binary tree. Avoid storing additional nodes in a data
- * structure.
+ * A binary search tree was created by traversing through an array from left
+ * to right and inserting each element. Given a binary search tree with distinct
+ * elements, print all possible arrays that could have led to this tree.
  *
- * NOTE: This is not necessarily a binary search tree.
+ * EXAMPLE:
+ *
+ * Input:
+ *            2
+ *         /     \
+ *       1         3
+ *
+ * Output:
+ *
+ *  {2, 1, 3}, {2, 3, 1}
  */
 
-struct ancestor
+template<typename Ty>
+struct bst_sequence
 {
+    using list_ptr = std::unique_ptr<std::list<Ty>>;
+    using result_set = std::unique_ptr<std::vector<list_ptr>>;
+	
     struct tree_node;
 
     using tree_node_ptr = std::unique_ptr<tree_node>;
-
+	
 	struct tree_node
 	{
-        int value;
+        Ty value;
         tree_node_ptr left{}, right{};
-        const tree_node* parent{};
 
-        tree_node( const int val, const tree_node * parent )
-            : value{ val },
-				parent { parent }
+        explicit tree_node( const Ty& val ) :
+			value{ val }
+		{  }
+
+		explicit tree_node( Ty&& val ) :
+			value{ std::move( val ) }
         { }
-
-		void insert_left( int val ) { left = std::make_unique<tree_node>( val, this ); }
-        void insert_right( int val ) { right = std::make_unique<tree_node>( val, this ); }
 	};
 
-	static const tree_node* common_ancestor1( const tree_node& tree, 
-        const tree_node& first, const tree_node& second )
-	{
-        if( !( first.parent && second.parent ) ) return &tree;
-		
-        auto
-            l_depth = get_depth( first ),
-            r_depth = get_depth( second );
-
-        auto l_node = &first, r_node = &second;
-
-		// put both node pointers on the same level
-		// so that we can walk up the tree in unison
-        while( l_depth != r_depth )
+	static result_set get_sequences( const tree_node* node,
+        result_set results = std::make_unique<std::vector<list_ptr>>() )
+	{	
+        if( !node )
         {
-            if( l_depth > r_depth )
-            {
-                l_node = l_node->parent;
-                l_depth--;
-            }
-            else
-            {
-                r_node = r_node->parent;
-                r_depth--;
-            }
+            results->push_back( std::make_unique<std::list<Ty>>() );
+            return results;
         }
 
-		while( l_node->parent != r_node->parent )
-		{
-            r_node = r_node->parent;
-            l_node = l_node->parent;
-		}
+        auto prefix = std::make_unique<std::list<Ty>>();
 
-        return l_node->parent;
+        prefix->push_back( node->value );
+
+        auto left_seq = get_sequences( node->left.get() );
+        auto right_seq = get_sequences( node->right.get() );
+
+        for( auto& left : *left_seq )
+        {
+            for( auto& right : *right_seq )
+            {
+                auto weaved = std::make_unique<std::vector<list_ptr>>();
+
+                weave_lists( *left, *right,
+                    *weaved, *prefix );
+                 
+                for( auto& weave : *weaved )
+                {
+                    results->push_back( std::move( weave ) );
+                }
+            }
+        }
+		
+		return results;
 	}
 
-	static int get_depth( const tree_node& tree_node )
+	static void weave_lists( std::list<Ty>& first, std::list<Ty>& second,
+        std::vector<list_ptr>& results, std::list<Ty>& prefix )
 	{
-        auto depth = 0;
-        auto node = &tree_node;
-		
-		while( node->parent )
+		if( first.empty() || second.empty() )
 		{
-            node = node->parent;
-            depth++;
+            auto result = std::make_unique<std::list<Ty>>( prefix );
+
+            for( const auto& f : first )
+                result->push_back( f );
+
+            for( const auto& s : second )
+                result->push_back( s );
+
+            results.push_back( std::move( result ) );
+			
+			return;
 		}
 
-        return depth;
+        auto head_first = first.front();
+        first.pop_front();
+		
+        prefix.push_back( head_first );
+        weave_lists( first, second, results, prefix );
+        prefix.pop_back();
+        first.push_front( head_first );
+
+        auto head_second = second.front();
+        second.pop_front();
+		
+        prefix.push_back( head_second );
+        weave_lists( first, second, results, prefix );
+        prefix.pop_back();
+        second.push_back( head_second );
+	}
+	
+	static tree_node_ptr build_tree( const std::vector<Ty>& values, 
+        const int& begin, const int& end )
+	{
+        if( begin >= end ) return nullptr;
+
+        const auto mid = begin + std::ceil( ( end - begin ) / 2 );
+		
+        auto node = std::make_unique<tree_node>( values[ mid ] );
+
+        node->left = build_tree( values, begin, mid );
+        node->right = build_tree( values, mid + 1, end );
+
+        return node;
 	}
 };
 
-/*
- *                      test tree
- *                           7
- *                    /            \
- *                   5               9
- *                /     \          /     \
- *              6       3        4         8
- *            /       /          \
- *           2       2              3
- *        /     \
- *       1       5
- *      /
- *     0 
- */
 auto main() -> int
 {
-    using node = ancestor::tree_node;
+    using int_seq = bst_sequence<int>;
+
+    // const auto values = { 1, 2, 3, 4, 5, 6, 7 };
+    const auto values = { 1, 2, 3, 4, 5, 6 };
 	
-    auto tree = std::make_unique<node>( 7, nullptr );
+    const auto root = 
+        int_seq::build_tree( values, 0, values.size() );
 
-    tree->insert_left( 5 );
+    const auto results = int_seq::get_sequences( root.get() );
 
-    tree->left->insert_left( 6 );
+    for( auto& result : *results )
+    {
+        std::ostringstream res;
 
-    tree->left->left->insert_left( 2 );
-    tree->left->left->left->insert_left( 1 );
-    tree->left->left->left->left->insert_left( 0 );
-	
-    tree->left->left->left->insert_right( 5 );
-    tree->left->insert_right( 3 );
-    tree->left->right->insert_left( 2 );
+        res << "{";
+    	
+        for( auto it = result->begin(); 
+            it != result->end(); ++it  )
+        {
+            res << *it << ", ";
+        }
 
-    tree->insert_right( 9 );
-
-    tree->right->insert_left( 4 );
-    tree->right->left->insert_left( 3 );
-    tree->right->insert_right( 8 );
-
-    const auto first = tree->left->left->left->left->left.get(); // 0
-    const auto second = tree->right->right.get(); // 8
-
-    // auto ancestor = ancestor::common_ancestor1( *tree, *first, *second );
-    auto ancestor = ancestor::common_ancestor1( *tree, *first, *tree);
+        res << result->back() << "},";
+    	
+        std::cout << res.str() << std::endl;
+    }
 }

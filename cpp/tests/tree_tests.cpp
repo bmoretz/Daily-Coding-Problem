@@ -921,4 +921,285 @@ namespace tree_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for bst sequence.
+    /// </summary>
+    class bst_sequence_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // bst sequence
+    //
+
+    TEST_F( bst_sequence_tests, empty )
+    {
+        using int_seq = bst_sequence<int>;
+
+        const auto tree =
+            int_seq::build_tree( {}, 0, 0 );
+
+        const auto actual = 
+            int_seq::get_sequences( tree.get() );
+
+        const std::vector<std::list<int>> expected = { { } };
+
+    	for( auto index = std::size_t(); 
+            index < expected.size(); ++index )
+    	{
+            const auto a_list = *actual->at( index );
+            const auto& e_list = expected.at( index );
+
+            EXPECT_EQ( a_list, e_list );
+    	}
+    }
+
+    TEST_F( bst_sequence_tests, case1 )
+    {
+        using int_seq = bst_sequence<int>;
+
+        const auto values = { 1, 2, 3 };
+    	
+        const auto tree =
+            int_seq::build_tree( values, 0, values.size() );
+
+        const auto actual =
+            int_seq::get_sequences( tree.get() );
+
+        const std::vector<std::list<int>> expected = {
+        	{ 2, 1, 3 },
+            { 2, 3, 1 }
+        };
+
+        for( auto index = std::size_t();
+            index < expected.size(); ++index )
+        {
+            const auto a_list = *actual->at( index );
+            const auto& e_list = expected.at( index );
+
+            EXPECT_EQ( a_list, e_list );
+        }
+    }
+
+    TEST_F( bst_sequence_tests, case2 )
+    {
+        using int_seq = bst_sequence<int>;
+
+        const auto values = { 1, 2, 3, 4, 5 };
+
+        const auto tree =
+            int_seq::build_tree( values, 0, values.size() );
+
+        const auto actual =
+            int_seq::get_sequences( tree.get() );
+
+        const std::vector<std::list<int>> expected = {
+            { 3, 2, 1, 5, 4 },
+            { 3, 2, 5, 1, 4 },
+            { 3, 2, 5, 4, 1 },
+            { 3, 4, 2, 1, 5 },
+            { 3, 4, 2, 5, 1 },
+            { 3, 4, 5, 2, 1 }
+        };
+
+        for( auto index = std::size_t();
+            index < expected.size(); ++index )
+        {
+            const auto a_list = *actual->at( index );
+            const auto& e_list = expected.at( index );
+
+            EXPECT_EQ( a_list, e_list );
+        }
+    }
+
+    TEST_F( bst_sequence_tests, case3 )
+    {
+        using int_seq = bst_sequence<int>;
+
+        const auto values = { 1, 2, 3, 4, 5 };
+
+        const auto tree =
+            int_seq::build_tree( values, 0, values.size() );
+
+        const auto actual =
+            int_seq::get_sequences( tree.get() );
+
+        const std::vector<std::list<int>> expected = {
+            { 3, 2, 1, 5, 4 },
+            { 3, 2, 5, 1, 4 },
+            { 3, 2, 5, 4, 1 },
+            { 3, 4, 2, 1, 5 },
+            { 3, 4, 2, 5, 1 },
+            { 3, 4, 5, 2, 1 }
+        };
+
+        for( auto index = std::size_t();
+            index < expected.size(); ++index )
+        {
+            const auto a_list = *actual->at( index );
+            const auto& e_list = expected.at( index );
+
+            EXPECT_EQ( a_list, e_list );
+        }
+    }
+
+    TEST_F( bst_sequence_tests, case4 )
+    {
+        using int_seq = bst_sequence<int>;
+
+        const auto values = { 1, 2, 3, 4, 5, 6 };
+
+        const auto tree =
+            int_seq::build_tree( values, 0, values.size() );
+
+        const auto actual =
+            int_seq::get_sequences( tree.get() );
+
+        const std::vector<std::list<int>> expected = {
+			{ 4, 2, 1, 3, 6, 5 },
+			{ 4, 2, 1, 6, 3, 5 },
+			{ 4, 2, 1, 6, 5, 3 },
+			{ 4, 2, 5, 1, 3, 6 },
+			{ 4, 2, 5, 1, 6, 3 },
+			{ 4, 2, 5, 6, 1, 3 },
+			{ 4, 6, 2, 1, 3, 5 },
+			{ 4, 6, 2, 1, 5, 3 },
+			{ 4, 6, 2, 5, 1, 3 },
+			{ 4, 6, 5, 2, 1, 3 },
+			{ 4, 2, 3, 1, 5, 6 },
+			{ 4, 2, 3, 5, 1, 6 },
+			{ 4, 2, 3, 5, 6, 1 },
+			{ 4, 2, 6, 3, 1, 5 },
+			{ 4, 2, 6, 3, 5, 1 },
+			{ 4, 2, 6, 5, 3, 1 },
+			{ 4, 5, 2, 3, 1, 6 },
+			{ 4, 5, 2, 3, 6, 1 },
+			{ 4, 5, 2, 6, 3, 1 },
+			{ 4, 5, 6, 2, 3, 1 },
+        };
+
+        for( auto index = std::size_t();
+            index < expected.size(); ++index )
+        {
+            const auto a_list = *actual->at( index );
+            const auto& e_list = expected.at( index );
+
+            EXPECT_EQ( a_list, e_list );
+        }
+    }
+	
+    TEST_F( bst_sequence_tests, case5 )
+    {
+        using int_seq = bst_sequence<int>;
+
+        const auto values = { 1, 2, 3, 4, 5, 6, 7 };
+
+        const auto tree =
+            int_seq::build_tree( values, 0, values.size() );
+
+        const auto actual =
+            int_seq::get_sequences( tree.get() );
+
+        const std::vector<std::list<int>> expected = {
+            { 4, 2, 1, 3, 6, 5, 7 },
+            { 4, 2, 1, 6, 3, 5, 7 },
+            { 4, 2, 1, 6, 5, 3, 7 },
+            { 4, 2, 1, 6, 5, 7, 3 },
+            { 4, 2, 7, 1, 3, 5, 6 },
+            { 4, 2, 7, 1, 5, 3, 6 },
+            { 4, 2, 7, 1, 5, 6, 3 },
+            { 4, 2, 7, 6, 1, 3, 5 },
+            { 4, 2, 7, 6, 1, 5, 3 },
+            { 4, 2, 7, 6, 5, 1, 3 },
+            { 4, 5, 2, 1, 3, 6, 7 },
+            { 4, 5, 2, 1, 6, 3, 7 },
+            { 4, 5, 2, 1, 6, 7, 3 },
+            { 4, 5, 2, 7, 1, 3, 6 },
+            { 4, 5, 2, 7, 1, 6, 3 },
+            { 4, 5, 2, 7, 6, 1, 3 },
+            { 4, 5, 6, 2, 1, 3, 7 },
+            { 4, 5, 6, 2, 1, 7, 3 },
+            { 4, 5, 6, 2, 7, 1, 3 },
+            { 4, 5, 6, 7, 2, 1, 3 },
+            { 4, 2, 1, 3, 6, 7, 5 },
+            { 4, 2, 1, 6, 3, 7, 5 },
+            { 4, 2, 1, 6, 7, 3, 5 },
+            { 4, 2, 1, 6, 7, 5, 3 },
+            { 4, 2, 5, 1, 3, 7, 6 },
+            { 4, 2, 5, 1, 7, 3, 6 },
+            { 4, 2, 5, 1, 7, 6, 3 },
+            { 4, 2, 5, 6, 1, 3, 7 },
+            { 4, 2, 5, 6, 1, 7, 3 },
+            { 4, 2, 5, 6, 7, 1, 3 },
+            { 4, 7, 2, 1, 3, 6, 5 },
+            { 4, 7, 2, 1, 6, 3, 5 },
+            { 4, 7, 2, 1, 6, 5, 3 },
+            { 4, 7, 2, 5, 1, 3, 6 },
+            { 4, 7, 2, 5, 1, 6, 3 },
+            { 4, 7, 2, 5, 6, 1, 3 },
+            { 4, 7, 6, 2, 1, 3, 5 },
+            { 4, 7, 6, 2, 1, 5, 3 },
+            { 4, 7, 6, 2, 5, 1, 3 },
+            { 4, 7, 6, 5, 2, 1, 3 },
+            { 4, 2, 3, 1, 7, 6, 5 },
+            { 4, 2, 3, 7, 1, 6, 5 },
+            { 4, 2, 3, 7, 6, 1, 5 },
+            { 4, 2, 3, 7, 6, 5, 1 },
+            { 4, 2, 5, 3, 1, 6, 7 },
+            { 4, 2, 5, 3, 6, 1, 7 },
+            { 4, 2, 5, 3, 6, 7, 1 },
+            { 4, 2, 5, 7, 3, 1, 6 },
+            { 4, 2, 5, 7, 3, 6, 1 },
+            { 4, 2, 5, 7, 6, 3, 1 },
+            { 4, 6, 2, 3, 1, 7, 5 },
+            { 4, 6, 2, 3, 7, 1, 5 },
+            { 4, 6, 2, 3, 7, 5, 1 },
+            { 4, 6, 2, 5, 3, 1, 7 },
+            { 4, 6, 2, 5, 3, 7, 1 },
+            { 4, 6, 2, 5, 7, 3, 1 },
+            { 4, 6, 7, 2, 3, 1, 5 },
+            { 4, 6, 7, 2, 3, 5, 1 },
+            { 4, 6, 7, 2, 5, 3, 1 },
+            { 4, 6, 7, 5, 2, 3, 1 },
+            { 4, 2, 3, 1, 5, 6, 7 },
+            { 4, 2, 3, 5, 1, 6, 7 },
+            { 4, 2, 3, 5, 6, 1, 7 },
+            { 4, 2, 3, 5, 6, 7, 1 },
+            { 4, 2, 7, 3, 1, 6, 5 },
+            { 4, 2, 7, 3, 6, 1, 5 },
+            { 4, 2, 7, 3, 6, 5, 1 },
+            { 4, 2, 7, 5, 3, 1, 6 },
+            { 4, 2, 7, 5, 3, 6, 1 },
+            { 4, 2, 7, 5, 6, 3, 1 },
+            { 4, 6, 2, 3, 1, 5, 7 },
+            { 4, 6, 2, 3, 5, 1, 7 },
+            { 4, 6, 2, 3, 5, 7, 1 },
+            { 4, 6, 2, 7, 3, 1, 5 },
+            { 4, 6, 2, 7, 3, 5, 1 },
+            { 4, 6, 2, 7, 5, 3, 1 },
+            { 4, 6, 5, 2, 3, 1, 7 },
+            { 4, 6, 5, 2, 3, 7, 1 },
+            { 4, 6, 5, 2, 7, 3, 1 },
+            { 4, 6, 5, 7, 2, 3, 1 }
+        };
+
+        for( auto index = std::size_t();
+            index < expected.size(); ++index )
+        {
+            const auto a_list = *actual->at( index );
+            const auto& e_list = expected.at( index );
+
+            EXPECT_EQ( a_list, e_list );
+        }
+    }
 }
