@@ -135,6 +135,7 @@ class OSTree():
 
             parent = node.parent
             value = node.value
+            
 
             if (parent is None  # what the fuck? (should not happen)
             or parent.parent is None  # parent is the root

@@ -28,6 +28,8 @@
         "nstack",
         "tristack",
         "urlify",
+        "xdir",
+        "ydir",
         "yintecept"
     ]
 }
