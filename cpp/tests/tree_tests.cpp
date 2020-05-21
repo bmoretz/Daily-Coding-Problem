@@ -1202,4 +1202,206 @@ namespace tree_tests
             EXPECT_EQ( a_list, e_list );
         }
     }
+
+    /// <summary>
+    /// Testing class for check subtree.
+    /// </summary>
+    class check_subtree_tests :
+        public ::testing::Test {
+
+    protected:
+        /*          test tree
+        *
+        *                 6
+        *            /           \
+        *          4                 8
+        *        /    \            /     \
+        *       2       5           7       9
+        *     /    \        /   \       \
+        *    1        3     4      8     10
+        *  /     \        /     /
+        * 2         1     2     8
+        *          /              \
+        *         6                  2
+         *
+         *
+         *
+         */
+
+        [[nodiscard]] auto build_test_tree() const -> std::unique_ptr<check_subtree::tree_node>
+        {
+            using node = check_subtree::tree_node;
+
+            auto root = std::make_unique<node>( 6 );
+
+            auto l = root->insert_left( 4 );
+
+            auto ll = l->insert_left( 2 );
+
+            ll->insert_left( 1 );
+
+            auto llr = ll->insert_right( 3 );
+
+            llr->insert_left( 2 );
+
+            auto llrr = llr->insert_right( 1 );
+            llrr->insert_left( 6 );
+
+            l->insert_right( 5 );
+
+            auto r = root->insert_right( 8 );
+
+            auto rl = r->insert_left( 7 );
+
+            rl->insert_left( 4 );
+
+            auto rlr = rl->insert_right( 8 );
+            rlr->insert_left( 2 );
+
+            auto rr = r->insert_right( 9 );
+
+            auto rrr = rr->insert_right( 10 );
+
+            auto rrrl = rrr->insert_left( 8 );
+            rrrl->insert_right( 2 );
+
+            return root;
+        }
+    	
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // check subtree subtree
+    //
+
+    TEST_F( check_subtree_tests, empty )
+    {
+        const auto actual = check_subtree::is_subtree( nullptr, nullptr );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+	/*      t2
+	 *      3
+	 *        \
+	 *          1
+	 *        /
+	 *      6
+	 */
+    TEST_F( check_subtree_tests, case1 )
+    {
+        using node = check_subtree::tree_node;
+    	
+		const auto t1 = build_test_tree();
+
+        auto t2 = std::make_unique<node>( 3 );
+        auto r = t2->insert_right( 1 );
+        r->insert_left( 6 );
+    	
+        const auto actual = check_subtree::is_subtree( t1.get(), t2.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    /*      t2
+     *      7
+     *   /    \
+     *  4       8
+     *        /
+     *      2
+     */
+    TEST_F( check_subtree_tests, case2 )
+    {
+        using node = check_subtree::tree_node;
+
+        const auto t1 = build_test_tree();
+
+        auto t2 = std::make_unique<node>( 7 );
+        t2->insert_left( 4 );
+        auto r = t2->insert_right( 8 );
+        r->insert_left( 2 );
+
+        const auto actual = check_subtree::is_subtree( t1.get(), t2.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    /*      t2
+     *      10
+     *    /    
+     *   8      
+     *    \    
+     *      2
+     */
+    TEST_F( check_subtree_tests, case3 )
+    {
+        using node = check_subtree::tree_node;
+
+        const auto t1 = build_test_tree();
+
+        auto t2 = std::make_unique<node>( 10 );
+        auto l = t2->insert_left( 8 );
+        l->insert_right( 2 );
+
+        const auto actual = check_subtree::is_subtree( t1.get(), t2.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    /*      t2
+     *      10
+     *        \
+     *          8
+     *        /
+     *      2
+     */
+    TEST_F( check_subtree_tests, case4 )
+    {
+        using node = check_subtree::tree_node;
+
+        const auto t1 = build_test_tree();
+
+        auto t2 = std::make_unique<node>( 10 );
+        auto r = t2->insert_right( 8 );
+        r->insert_left( 2 );
+
+        const auto actual = check_subtree::is_subtree( t1.get(), t2.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    /*      t2
+     *      4
+     *        \
+     *          5
+     *             \
+     *                1
+     */
+    TEST_F( check_subtree_tests, case5 )
+    {
+        using node = check_subtree::tree_node;
+
+        const auto t1 = build_test_tree();
+
+        auto t2 = std::make_unique<node>( 4 );
+        auto r = t2->insert_right( 5 );
+        r->insert_right( 1 );
+
+        const auto actual = check_subtree::is_subtree( t1.get(), t2.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

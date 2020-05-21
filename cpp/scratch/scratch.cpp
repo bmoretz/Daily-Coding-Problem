@@ -17,160 +17,181 @@
 #include <ostream>
 #include <sstream>
 
-/* BST Sequence.
+/* Check Subtree.
  *
- * A binary search tree was created by traversing through an array from left
- * to right and inserting each element. Given a binary search tree with distinct
- * elements, print all possible arrays that could have led to this tree.
+ * T1 and T2 are two very large binary trees, with T1 much bigger
+ * than T2. Create an algorithm to determine if T2 is a subtree of T1.
  *
- * EXAMPLE:
- *
- * Input:
- *            2
- *         /     \
- *       1         3
- *
- * Output:
- *
- *  {2, 1, 3}, {2, 3, 1}
+ * A tree T2 is a subtree of T1 if there exists a node n in T1 such that
+ * the subtree of n is identical to T2. That is, if you cut off the tree
+ * at node n, the two trees would be identical.
  */
 
-template<typename Ty>
-struct bst_sequence
-{
-    using list_ptr = std::unique_ptr<std::list<Ty>>;
-    using result_set = std::unique_ptr<std::vector<list_ptr>>;
-	
+struct check_subtree
+{	
     struct tree_node;
 
     using tree_node_ptr = std::unique_ptr<tree_node>;
-	
-	struct tree_node
-	{
-        Ty value;
+
+    struct tree_node
+    {
+        int value;
         tree_node_ptr left{}, right{};
+        const tree_node* parent{};
 
-        explicit tree_node( const Ty& val ) :
-			value{ val }
-		{  }
+        explicit tree_node( const int& value, 
+            const tree_node* parent = nullptr )
+            : value{ value },
+				parent{ parent }
+        {}
 
-		explicit tree_node( Ty&& val ) :
-			value{ std::move( val ) }
-        { }
-	};
+    	tree_node( const tree_node& other )
+            : value{ other.value }, left{ other.left.get() },
+    			right{ other.right.get() }, parent{ other.parent }
+        {
+        }
 
-	static result_set get_sequences( const tree_node* node,
-        result_set results = std::make_unique<std::vector<list_ptr>>() )
-	{	
+    	tree_node( tree_node&& other ) noexcept
+            : value{ other.value }, parent{ other.parent }
+        {
+            left = std::move( other.left );
+            right = std::move( other.right );
+        }
+    	
+    	tree_node* insert_left( const int& value )
+        {
+            left = std::make_unique<tree_node>( value, this );
+
+            return left.get();
+        }
+
+    	tree_node* insert_right( const int & value )
+        {
+            right = std::make_unique<tree_node>( value, this );
+
+            return right.get();
+        }
+    };
+
+	static auto post_order( const tree_node* node ) -> std::unique_ptr<std::vector<std::string>>
+	{
+        auto result = std::make_unique<std::vector<std::string>>();
+
+        post_order( node, *result );
+
+        return result;
+	}
+
+	static auto post_order( const tree_node* node, std::vector<std::string>& values ) -> void
+	{
         if( !node )
         {
-            results->push_back( std::make_unique<std::list<Ty>>() );
-            return results;
-        }
-
-        auto prefix = std::make_unique<std::list<Ty>>();
-
-        prefix->push_back( node->value );
-
-        auto left_seq = get_sequences( node->left.get() );
-        auto right_seq = get_sequences( node->right.get() );
-
-        for( auto& left : *left_seq )
-        {
-            for( auto& right : *right_seq )
-            {
-                auto weaved = std::make_unique<std::vector<list_ptr>>();
-
-                weave_lists( *left, *right,
-                    *weaved, *prefix );
-                 
-                for( auto& weave : *weaved )
-                {
-                    results->push_back( std::move( weave ) );
-                }
-            }
+            values.emplace_back( "----" );
+            return;
         }
 		
-		return results;
-	}
-
-	static void weave_lists( std::list<Ty>& first, std::list<Ty>& second,
-        std::vector<list_ptr>& results, std::list<Ty>& prefix )
-	{
-		if( first.empty() || second.empty() )
-		{
-            auto result = std::make_unique<std::list<Ty>>( prefix );
-
-            for( const auto& f : first )
-                result->push_back( f );
-
-            for( const auto& s : second )
-                result->push_back( s );
-
-            results.push_back( std::move( result ) );
-			
-			return;
-		}
-
-        auto head_first = first.front();
-        first.pop_front();
+        values.push_back( std::to_string( node->value ) );
 		
-        prefix.push_back( head_first );
-        weave_lists( first, second, results, prefix );
-        prefix.pop_back();
-        first.push_front( head_first );
+        post_order( node->left.get(), values );
 
-        auto head_second = second.front();
-        second.pop_front();
-		
-        prefix.push_back( head_second );
-        weave_lists( first, second, results, prefix );
-        prefix.pop_back();
-        second.push_back( head_second );
+        post_order( node->right.get(), values );
 	}
 	
-	static tree_node_ptr build_tree( const std::vector<Ty>& values, 
-        const int& begin, const int& end )
-	{
-        if( begin >= end ) return nullptr;
+    static auto is_subtree( const tree_node* t1, const tree_node* t2 ) -> bool
+    {
+        const auto t1_order = post_order( t1 );
+        const auto t2_order = post_order( t2 );
 
-        const auto mid = begin + std::ceil( ( end - begin ) / 2 );
-		
-        auto node = std::make_unique<tree_node>( values[ mid ] );
+		for( auto index = std::size_t(); index < t1_order->size(); ++index )
+		{
+			if( t1_order->at( index ) == t2_order->front() )
+			{
+                auto exists = true;
+				
+				for( auto sub_index = std::size_t(1); 
+                    sub_index < t2_order->size() && index + sub_index < t1_order->size(); 
+                    ++sub_index )
+				{
+                    exists &= t1_order->at( index + sub_index ) == t2_order->at( sub_index );
+				}
 
-        node->left = build_tree( values, begin, mid );
-        node->right = build_tree( values, mid + 1, end );
+                if( exists ) return true;
+			}
+		}
 
-        return node;
-	}
+        return false;
+    }
 };
+
+/*          test tree
+*
+*                 6
+*            /           \
+*          4                 8
+*        /    \            /     \
+*       2       5           7       9
+*     /    \        /   \       \
+*    1        3     4      8     10
+*  /     \        /     /
+* 2         1     2     8
+*          /              \
+*         6                  2
+ *                                                        
+ *
+ * 
+ */
+
+std::unique_ptr<check_subtree::tree_node> build_test_tree()
+{
+    using node = check_subtree::tree_node;
+	
+    auto root = std::make_unique<node>( 6 );
+
+    auto l = root->insert_left( 4 );
+
+    auto ll = l->insert_left( 2 );
+
+    ll->insert_left( 1 );
+
+    auto llr = ll->insert_right( 3 );
+
+    llr->insert_left( 2 );
+
+    auto llrr = llr->insert_right( 1 );
+    llrr->insert_left( 6 );
+
+    l->insert_right( 5 );
+
+    auto r = root->insert_right( 8 );
+
+    auto rl = r->insert_left( 7 );
+
+    rl->insert_left( 4 );
+
+    auto rlr = rl->insert_right( 8 );
+    rlr->insert_left( 2 );
+
+    auto rr = r->insert_right( 9 );
+
+    auto rrr = rr->insert_right( 10 );
+
+    auto rrrl = rrr->insert_left( 8 );
+    rrrl->insert_right( 2 );
+
+    return root;
+}
 
 auto main() -> int
 {
-    using int_seq = bst_sequence<int>;
+    using node = check_subtree::tree_node;
 
-    // const auto values = { 1, 2, 3, 4, 5, 6, 7 };
-    const auto values = { 1, 2, 3, 4, 5, 6 };
-	
-    const auto root = 
-        int_seq::build_tree( values, 0, values.size() );
+    const auto t1 = build_test_tree();
 
-    const auto results = int_seq::get_sequences( root.get() );
+    const auto t2 = std::make_unique<node>( 10 );
+    auto r = t2->insert_right( 8 );
+    r->insert_left( 2 );
 
-    for( auto& result : *results )
-    {
-        std::ostringstream res;
+    auto result = check_subtree::is_subtree( t1.get(), t2.get() );
 
-        res << "{";
-    	
-        for( auto it = result->begin(); 
-            it != result->end(); ++it  )
-        {
-            res << *it << ", ";
-        }
-
-        res << result->back() << "},";
-    	
-        std::cout << res.str() << std::endl;
-    }
+    std::cout << result;
 }

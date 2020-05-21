@@ -713,4 +713,111 @@ namespace tree_problems
 		}
 	};
 
+	/* Check Subtree.
+	 *
+	 * T1 and T2 are two very large binary trees, with T1 much bigger
+	 * than T2. Create an algorithm to determine if T2 is a subtree of T1.
+	 *
+	 * A tree T2 is a subtree of T1 if there exists a node n in T1 such that
+	 * the subtree of n is identical to T2. That is, if you cut off the tree
+	 * at node n, the two trees would be identical.
+	 */
+
+	struct check_subtree
+	{
+		struct tree_node;
+
+		using tree_node_ptr = std::unique_ptr<tree_node>;
+
+		struct tree_node
+		{
+			int value;
+			tree_node_ptr left{}, right{};
+			const tree_node* parent{};
+
+			explicit tree_node( const int& value,
+				const tree_node* parent = nullptr )
+				: value{ value },
+				parent{ parent }
+			{}
+
+			tree_node( const tree_node& other )
+				: value{ other.value }, left{ other.left.get() },
+				right{ other.right.get() }, parent{ other.parent }
+			{
+			}
+
+			tree_node( tree_node&& other ) noexcept
+				: value{ other.value }, parent{ other.parent }
+			{
+				left = std::move( other.left );
+				right = std::move( other.right );
+			}
+
+			tree_node* insert_left( const int& value )
+			{
+				left = std::make_unique<tree_node>( value, this );
+
+				return left.get();
+			}
+
+			tree_node* insert_right( const int& value )
+			{
+				right = std::make_unique<tree_node>( value, this );
+
+				return right.get();
+			}
+		};
+
+		static auto post_order( const tree_node* node ) -> std::unique_ptr<std::vector<std::string>>
+		{
+			auto result = std::make_unique<std::vector<std::string>>();
+
+			post_order( node, *result );
+
+			return result;
+		}
+
+		static auto post_order( const tree_node* node, std::vector<std::string>& values ) -> void
+		{
+			if( !node )
+			{
+				values.emplace_back( "----" );
+				return;
+			}
+
+			values.push_back( std::to_string( node->value ) );
+
+			post_order( node->left.get(), values );
+
+			post_order( node->right.get(), values );
+		}
+
+		static auto is_subtree( const tree_node* t1, const tree_node* t2 ) -> bool
+		{
+			if( !( t1 && t2 ) ) return false;
+			
+			const auto t1_order = post_order( t1 );
+			const auto t2_order = post_order( t2 );
+
+			for( auto index = std::size_t(); index < t1_order->size(); ++index )
+			{
+				if( t1_order->at( index ) == t2_order->front() )
+				{
+					auto exists = true;
+
+					for( auto sub_index = std::size_t( 1 );
+						sub_index < t2_order->size() && index + sub_index < t1_order->size();
+						++sub_index )
+					{
+						exists &= t1_order->at( index + sub_index ) == t2_order->at( sub_index );
+					}
+
+					if( exists ) return true;
+				}
+			}
+
+			return false;
+		}
+	};
 }
