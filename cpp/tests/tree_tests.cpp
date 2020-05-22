@@ -1453,7 +1453,7 @@ namespace tree_tests
     {
     	// actually test the probability function.
     	
-        // fix the tree to be balanced with 7 nodes
+        // fix the tree to be balanced tree with 7 nodes
         const auto values = std::initializer_list<int>
 			{ 4, 2, 6, 1, 3, 5, 7 };
 
@@ -1470,9 +1470,7 @@ namespace tree_tests
     	// draw 10k nodes at random from the root.
 		for( auto index = std::size_t(); index < iters; ++index )
 		{
-            const auto rnd = rand.pick_random();
-			
-            results[ rnd.value ]++;
+            results[ rand.pick_random().value ]++;
 		}
 
     	// get the freq dist
@@ -1485,6 +1483,46 @@ namespace tree_tests
             max = std::max( max, freq );
             min = std::min( max, freq );
     	}
+
+        const auto epsilon = 0.001; // error tolerance
+
+        EXPECT_LT( max - min, epsilon );
+    }
+
+    TEST_F( random_node_tests, case4 )
+    {
+        // actually test the probability function.
+
+        // fix the tree to be an unbalanced tree with 11 nodes
+        const auto values = std::initializer_list<int>
+			{ 4, 3, 6, 2, 1, 0, 5, 7, 9, 10, 11 };
+
+        // seed the generator
+        const auto rand =
+            random_node<int>( values, 6358 );
+
+        // storage with empty results
+        auto results = std::map<int, int>();
+
+        // 10,000 iterations
+        const std::size_t iters = 1e6;
+
+        // draw 10k nodes at random from the root.
+        for( auto index = std::size_t(); index < iters; ++index )
+        {
+            results[ rand.pick_random().value ]++;
+        }
+
+        // get the freq dist
+        double max = 0.0f, min = 0.0f;
+
+        for( const auto& [key, value] : results )
+        {
+            auto freq = static_cast< double >( value ) / iters;
+
+            max = std::max( max, freq );
+            min = std::min( max, freq );
+        }
 
         const auto epsilon = 0.001; // error tolerance
 
