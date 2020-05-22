@@ -1404,4 +1404,90 @@ namespace tree_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for random node.
+    /// </summary>
+    class random_node_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // random node
+    //
+
+    TEST_F( random_node_tests, case1 )
+    {
+        // basic functionality.
+        const auto rand = 
+            random_node<int>( { 1, 2, 3 }, 1234 );
+    	
+        const auto actual = rand.pick_random();
+        const auto expected = 2;
+
+        EXPECT_EQ( actual.value, expected );
+    }
+
+    TEST_F( random_node_tests, case2 )
+    {
+    	// basic functionality.
+        const auto rand =
+            random_node<int>( { 1, 2, 3 }, 585 );
+
+        const auto actual = rand.pick_random();
+        const auto expected = 3;
+
+        EXPECT_EQ( actual.value, expected );
+    }
+
+    TEST_F( random_node_tests, case3 )
+    {
+    	// actually test the probability function.
+    	
+        // fix the tree to be balanced with 7 nodes
+        const auto values = std::initializer_list<int>
+			{ 4, 2, 6, 1, 3, 5, 7 };
+
+    	// seed the generator
+        const auto rand =
+            random_node<int>( values, 2358 );
+
+    	// storage with empty results
+        auto results = std::map<int, int>();
+
+        // 10,000 iterations
+        const std::size_t iters = 1e6;
+    	
+    	// draw 10k nodes at random from the root.
+		for( auto index = std::size_t(); index < iters; ++index )
+		{
+            const auto rnd = rand.pick_random();
+			
+            results[ rnd.value ]++;
+		}
+
+    	// get the freq dist
+        double max = 0.0f, min = 0.0f;
+    	
+    	for( const auto& [key, value] : results )
+    	{
+            auto freq = static_cast< double >( value ) / iters;
+    		
+            max = std::max( max, freq );
+            min = std::min( max, freq );
+    	}
+
+        const auto epsilon = 0.001; // error tolerance
+
+        EXPECT_LT( max - min, epsilon );
+    }
 }

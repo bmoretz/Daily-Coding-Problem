@@ -247,3 +247,20 @@ class Test_Operations(unittest.TestCase):
         expected = 1
 
         assert actual == expected
+
+from py.problems.math import BisectSquares
+class Test_BisectSquares(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        Square = BisectSquares.Square
+
+        s1, s2 = Square(2, 5, 2, 5), Square(5, 2, 5, 2)
+
+        actual = s1.cut(s2)
+        expected = [(3.5, -1.0), (3.5, 8.0)]
+
+        assert actual == expected

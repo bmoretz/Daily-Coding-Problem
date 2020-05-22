@@ -16,182 +16,153 @@
 #include <numeric>
 #include <ostream>
 #include <sstream>
+#include <random>
+#include <ctime>
 
-/* Check Subtree.
+/* Random Node.
  *
- * T1 and T2 are two very large binary trees, with T1 much bigger
- * than T2. Create an algorithm to determine if T2 is a subtree of T1.
- *
- * A tree T2 is a subtree of T1 if there exists a node n in T1 such that
- * the subtree of n is identical to T2. That is, if you cut off the tree
- * at node n, the two trees would be identical.
+ * You are implementing a binary tree class from scratch which, in addition
+ * to insert, find, and delete has a method getRandomNode() which returns a
+ * random node from the tree. All nodes should be equally likely to be chosen.
+ * Design and implement an algorithm for getRandomNode, and explain how you
+ * would implement the rest of the methods.
  */
 
-struct check_subtree
-{	
-    struct tree_node;
+template<typename Ty>
+class random_node
+{
+	struct tree_node;
 
-    using tree_node_ptr = std::unique_ptr<tree_node>;
+	using tree_node_ptr = std::unique_ptr<tree_node>;
 
-    struct tree_node
-    {
-        int value;
-        tree_node_ptr left{}, right{};
-        const tree_node* parent{};
-
-        explicit tree_node( const int& value, 
-            const tree_node* parent = nullptr )
-            : value{ value },
-				parent{ parent }
-        {}
-
-    	tree_node( const tree_node& other )
-            : value{ other.value }, left{ other.left.get() },
-    			right{ other.right.get() }, parent{ other.parent }
-        {
-        }
-
-    	tree_node( tree_node&& other ) noexcept
-            : value{ other.value }, parent{ other.parent }
-        {
-            left = std::move( other.left );
-            right = std::move( other.right );
-        }
-    	
-    	tree_node* insert_left( const int& value )
-        {
-            left = std::make_unique<tree_node>( value, this );
-
-            return left.get();
-        }
-
-    	tree_node* insert_right( const int & value )
-        {
-            right = std::make_unique<tree_node>( value, this );
-
-            return right.get();
-        }
-    };
-
-	static auto post_order( const tree_node* node ) -> std::unique_ptr<std::vector<std::string>>
+	struct tree_node
 	{
-        auto result = std::make_unique<std::vector<std::string>>();
-
-        post_order( node, *result );
-
-        return result;
-	}
-
-	static auto post_order( const tree_node* node, std::vector<std::string>& values ) -> void
-	{
-        if( !node )
-        {
-            values.emplace_back( "----" );
-            return;
-        }
+		Ty value;
+		tree_node_ptr left{}, right{};
+		const tree_node* parent{};
+		std::size_t size{};
 		
-        values.push_back( std::to_string( node->value ) );
-		
-        post_order( node->left.get(), values );
+		explicit tree_node( Ty value, 
+			const tree_node* parent = nullptr )
+			: value{ value }, parent{ parent },
+				size{ 1 }
+		{  }
 
-        post_order( node->right.get(), values );
-	}
-	
-    static auto is_subtree( const tree_node* t1, const tree_node* t2 ) -> bool
-    {
-        const auto t1_order = post_order( t1 );
-        const auto t2_order = post_order( t2 );
-
-		for( auto index = std::size_t(); index < t1_order->size(); ++index )
+		tree_node( const tree_node& other )
+			: value{ other.value }, parent{ other.parent },
+			size{ other.size }
 		{
-			if( t1_order->at( index ) == t2_order->front() )
-			{
-                auto exists = true;
-				
-				for( auto sub_index = std::size_t(1); 
-                    sub_index < t2_order->size() && index + sub_index < t1_order->size(); 
-                    ++sub_index )
-				{
-                    exists &= t1_order->at( index + sub_index ) == t2_order->at( sub_index );
-				}
+			if( other.left )
+				left = std::make_unique<tree_node>( other.left->value );
 
-                if( exists ) return true;
+			if( other.right )
+				right = std::make_unique<tree_node>( other.right->value );
+		}
+		
+		tree_node( tree_node&& other ) noexcept
+			: value{ other.value }, parent{ other.parent },
+			  size{ other.size }
+		{
+			left = std::move( other.left );
+			right = std::move( other.right );
+		}
+		
+		void insert_child( Ty value )
+		{
+			if( value <= this->value )
+			{
+				left = std::make_unique<tree_node>( value, this );
+			}
+			else
+			{
+				right = std::make_unique<tree_node>( value, this );
 			}
 		}
+	};
 
-        return false;
-    }
-};
+	mutable std::mt19937 gen_ ;
+	tree_node_ptr root_;
 
-/*          test tree
-*
-*                 6
-*            /           \
-*          4                 8
-*        /    \            /     \
-*       2       5           7       9
-*     /    \        /   \       \
-*    1        3     4      8     10
-*  /     \        /     /
-* 2         1     2     8
-*          /              \
-*         6                  2
- *                                                        
- *
- * 
- */
-
-std::unique_ptr<check_subtree::tree_node> build_test_tree()
-{
-    using node = check_subtree::tree_node;
+public:
 	
-    auto root = std::make_unique<node>( 6 );
+	explicit random_node( const unsigned int seed = std::random_device{}( ) )
+		: gen_{ seed }
+	{ }
 
-    auto l = root->insert_left( 4 );
+	random_node( const std::initializer_list<Ty>& values,
+		const unsigned int seed = std::random_device{}() )
+		: random_node( seed )
+	{
+		for( const auto& val : values )
+			insert( val );
+	}
+	
+	void insert( Ty value )
+	{
+		if( !root_ )
+		{
+			root_ = std::make_unique<tree_node>( value );
+			return;
+		}
 
-    auto ll = l->insert_left( 2 );
+		tree_node *node = root_.get(),
+			*parent{};
 
-    ll->insert_left( 1 );
+		while( node )
+		{
+			++node->size;
+			parent = node;
 
-    auto llr = ll->insert_right( 3 );
+			node = value <= node->value ?
+				node->left.get() : node->right.get();
+		}
 
-    llr->insert_left( 2 );
+		parent->insert_child( value );
+	}
 
-    auto llrr = llr->insert_right( 1 );
-    llrr->insert_left( 6 );
+	[[nodiscard]] auto next( const std::size_t min, const std::size_t max ) const -> std::size_t
+	{
+		using uniform = std::uniform_int_distribution<std::mt19937::result_type>;
 
-    l->insert_right( 5 );
+		const uniform distribution( min, max );
 
-    auto r = root->insert_right( 8 );
+		return distribution( gen_ );
+	}
+	
+	[[nodiscard]] auto pick_random() const -> tree_node& { return pick_random( *root_ ); }
 
-    auto rl = r->insert_left( 7 );
+	[[nodiscard]] auto pick_random( tree_node& node ) -> tree_node&
+	{
+		const auto rnd = next( 1, node.size );
+		
+		if( rnd == node.size )
+			return node;
 
-    rl->insert_left( 4 );
-
-    auto rlr = rl->insert_right( 8 );
-    rlr->insert_left( 2 );
-
-    auto rr = r->insert_right( 9 );
-
-    auto rrr = rr->insert_right( 10 );
-
-    auto rrrl = rrr->insert_left( 8 );
-    rrrl->insert_right( 2 );
-
-    return root;
-}
+		if( node.left && rnd <= node.left->size )
+		{
+			return pick_random( *node.left );
+		}
+		
+		return pick_random( *node.right );
+	}
+};
 
 auto main() -> int
 {
-    using node = check_subtree::tree_node;
+	auto tree = random_node<int>();
+	
+	const auto values = 
+		std::vector<int>{ 4, 2, 6, 1, 3, 5, 7, 10 };
 
-    const auto t1 = build_test_tree();
+	for( auto val : values )
+	{
+		tree.insert( val );
+	}
 
-    const auto t2 = std::make_unique<node>( 10 );
-    auto r = t2->insert_right( 8 );
-    r->insert_left( 2 );
+	for( auto index = std::size_t(); index < 20; ++index )
+	{
+		const auto rnd = tree.pick_random();
 
-    auto result = check_subtree::is_subtree( t1.get(), t2.get() );
-
-    std::cout << result;
+		std::cout << rnd.value << std::endl;
+	}
 }
