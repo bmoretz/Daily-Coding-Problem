@@ -18,7 +18,7 @@ namespace data_structures::arr_stack
 
     public:
 
-        explicit stack( const std::size_t capacity = 0 )
+        explicit stack( const std::size_t capacity = 1 )
             : capacity_{ capacity }
         {
             data_ = std::make_unique<Ty[]>( capacity_ );
@@ -100,7 +100,7 @@ namespace data_structures::arr_stack
     void stack<Ty>::push( const Ty& value )
     {
         if( size_ >= capacity_ )
-            resize( size_ == 0 ? 1 : capacity_ * 2 );
+            resize( capacity_ << 1 );
 
         data_.get()[ size_++ ] = value;
     }
@@ -108,8 +108,7 @@ namespace data_structures::arr_stack
     template <typename Ty>
     void stack<Ty>::pop()
     {
-        if( size_ == 0 )
-            throw std::runtime_error( "CANNOT POP EMPTY STACK" );
+        if( size_ ) throw std::runtime_error( "CANNOT POP EMPTY STACK" );
 
         --size_;
     }
