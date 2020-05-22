@@ -871,11 +871,6 @@ namespace tree_problems
 				value{ value }, parent{ parent }, size{ 1 }
 			{  }
 
-			explicit tree_node( Ty&& value,
-				const tree_node* parent = nullptr) :
-				value{ std::move( value ) }, parent{ parent }, size{ 1 }
-			{ }
-			
 			tree_node( const tree_node& other )
 				: value{ other.value }, parent{ other.parent },
 				size{ other.size }
@@ -934,7 +929,7 @@ namespace tree_problems
 		/// the tree balanced or enforce any other invariants other than the node size and
 		/// basic left <= current < right.
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value">value to insert</param>
 		void insert( Ty value )
 		{
 			if( !root_ )
@@ -958,7 +953,7 @@ namespace tree_problems
 			parent->insert_child( value );
 		}
 
-		[[nodiscard]] auto next( const std::size_t min, const std::size_t max ) const -> std::size_t
+		[[nodiscard]] auto next( const std::size_t& min, const std::size_t& max ) const -> std::size_t
 		{
 			using uniform = std::uniform_int_distribution<std::mt19937::result_type>;
 
@@ -968,7 +963,7 @@ namespace tree_problems
 		}
 
 		// forward the root to the recursive version.
-		[[nodiscard]] auto pick_random() const -> tree_node& { return pick_random( *root_ ); }
+		[[nodiscard]] auto pick_random() const -> Ty& { return pick_random( *root_ ); }
 		
 		/// <summary>
 		/// pick random
@@ -988,12 +983,12 @@ namespace tree_problems
 		/// </complexity>
 		/// <param name="node">the starting node</param>
 		/// <returns>a node between [node, children] with equal probability</returns>
-		[[nodiscard]] auto pick_random( tree_node& node ) const -> tree_node&
+		[[nodiscard]] auto pick_random( tree_node& node ) const -> Ty&
 		{
 			const auto rnd = next( 1, node.size );
 
 			if( rnd == node.size )
-				return node;
+				return node.value;
 
 			if( node.left && rnd <= node.left->size )
 			{

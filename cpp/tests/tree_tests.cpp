@@ -1434,7 +1434,7 @@ namespace tree_tests
         const auto actual = rand.pick_random();
         const auto expected = 2;
 
-        EXPECT_EQ( actual.value, expected );
+        EXPECT_EQ( actual, expected );
     }
 
     TEST_F( random_node_tests, case2 )
@@ -1446,7 +1446,7 @@ namespace tree_tests
         const auto actual = rand.pick_random();
         const auto expected = 3;
 
-        EXPECT_EQ( actual.value, expected );
+        EXPECT_EQ( actual, expected );
     }
 
     TEST_F( random_node_tests, case3 )
@@ -1457,23 +1457,19 @@ namespace tree_tests
         const auto values = std::initializer_list<int>
 			{ 4, 2, 6, 1, 3, 5, 7 };
 
-    	// seed the generator
         const auto rand =
             random_node<int>( values, 2358 );
 
-    	// storage with empty results
+    	// storage for 10k draws
         auto results = std::map<int, int>();
 
-        // 10,000 iterations
         const std::size_t iters = 1e6;
     	
-    	// draw 10k nodes at random from the root.
 		for( auto index = std::size_t(); index < iters; ++index )
 		{
-            results[ rand.pick_random().value ]++;
+            results[ rand.pick_random() ]++;
 		}
 
-    	// get the freq dist
         double max = 0.0f, min = 0.0f;
     	
     	for( const auto& [key, value] : results )
@@ -1501,19 +1497,16 @@ namespace tree_tests
         const auto rand =
             random_node<int>( values, 6358 );
 
-        // storage with empty results
+        // storage for 10k draws
         auto results = std::map<int, int>();
 
-        // 10,000 iterations
         const std::size_t iters = 1e6;
 
-        // draw 10k nodes at random from the root.
         for( auto index = std::size_t(); index < iters; ++index )
         {
-            results[ rand.pick_random().value ]++;
+            results[ rand.pick_random() ]++;
         }
 
-        // get the freq dist
         double max = 0.0f, min = 0.0f;
 
         for( const auto& [key, value] : results )
