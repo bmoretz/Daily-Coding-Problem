@@ -1449,7 +1449,7 @@ namespace tree_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( random_node_tests, case3 )
+    TEST_F( random_node_tests, balanced_tree )
     {
     	// actually test the probability function.
     	
@@ -1485,7 +1485,7 @@ namespace tree_tests
         EXPECT_LT( max - min, epsilon );
     }
 
-    TEST_F( random_node_tests, case4 )
+    TEST_F( random_node_tests, unbalanced_tree )
     {
         // actually test the probability function.
 

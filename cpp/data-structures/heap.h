@@ -1,11 +1,9 @@
 #pragma once
 
-#pragma once
-
 #include <algorithm>
 #include <memory>
 #include <ostream>
-#include <vector>
+#include <cassert>
 
 namespace data_structures::heap
 {
@@ -13,9 +11,60 @@ namespace data_structures::heap
 	class heap
 	{
 		std::unique_ptr<Ty[]> data_{};
-
 		std::size_t size_{}, capacity_{};
 
+		/// <summary>
+		/// ensure capacity
+		///
+		/// This function ensures that the underlying array has enough
+		/// storage for the incoming element.
+		/// </summary>
+		void ensure_capacity()
+		{
+			if( capacity_ <= size_ )
+				resize( size_ << 1 );
+		}
+
+		/// <summary>
+		/// shift down
+		///
+		/// ensures the heap invariant is maintained by the element at index by
+		/// swapping it with its parent until we reach the cut-off point (specified by
+		/// bound, or 0, the start of the underlying array).
+		/// </summary>
+		/// <complexity>
+		/// O(log n) in the size of the array.
+		/// </complexity>
+		/// <param name="index">index of the element to bind.</param>
+		/// <param name="bound">boundary to stop the ordering procedure.</param>
+		void shift_down( std::size_t index, 
+			const std::size_t bound = 0 )
+		{
+			std::size_t parent = std::floor( size_ >> 1 );
+
+			while( bound <= index && 
+				data_.get()[ index ] < data_.get()[ parent ] )
+			{
+				std::swap( data_[ index ], data_[ parent ] );
+
+				index >>= 1; parent >>= 1;
+			}
+		}
+
+		void shift_up( std::size_t index,
+			const std::size_t bound )
+		{
+			std::size_t child = std::floor( index << 1 );
+
+			while( index <= bound && 
+				data_.get()[ child ] > data_.get()[ index ] )
+			{
+				std::swap( data_[ index ], data_[ child ] );
+				
+				index <<= 1; child <<= 1;
+			}
+		}
+		
 	public:
 		
 		explicit heap( const std::size_t capacity = 1 )
@@ -24,48 +73,85 @@ namespace data_structures::heap
 			data_ = std::make_unique<Ty[]>( capacity_ );
 		}
 
+		/// <summary>
+		/// push
+		///
+		/// This function inserts a new element in the underlying array and
+		/// maintains the heap invariant that all "child nodes" of a given
+		/// element are smaller than its parent.
+		/// </summary>
 		void push( const Ty& value )
 		{
-			if( capacity_ <= size_ )
-				resize( size_ << 1 );
-
-			data_.get()[ size_ ] = value;
+			ensure_capacity();
 			
-			std::size_t parent = std::floor( size_ >> 1 ),
-				position = size_;
-						
-			while( position && data_.get()[ position ] < data_.get()[ parent ] )
-			{
-				auto tmp = data_.get()[ parent ];
-				
-				data_.get()[ parent ] = data_.get()[ position ];
-				data_.get()[ position ] = tmp;
+			data_.get()[ size_ ] = value;
 
-				
-				position >>= 1; parent >>= 1;
-			}
+			shift_down( size_ );
 
 			++size_;
 		}
 
-		void resize( const std::size_t& new_size )
+		/// <summary>
+		/// resize
+		///
+		/// creates a new underlying array of the desired size, then
+		/// copies the old values (excluding and accumulated "junk"
+		/// values that may be present in the old array by offsetting with
+		/// the "size" backing field instead of "capacity"), and then
+		/// swaps the new array in for data, leaving the old one to be
+		/// cleaned-up.
+		/// </summary>
+		/// <param name="new_size"></param>
+		void resize( const std::size_t new_size )
 		{
 			auto new_data = std::make_unique<Ty[]>( new_size );
 
-			std::copy( data_.get(), data_.get() + new_size, new_data.get() );
+			std::copy( data_.get(), data_.get() + size_, new_data.get() );
 
 			capacity_ = new_size;
 
 			data_ = std::move( new_data );
 		}
 
-		void pop()
+		Ty pop()
 		{
-			if( !size_ ) throw std::runtime_error( "CANNOT POP EMPTY HEAP" );
+			if( !size_ )
+				throw std::runtime_error( "cannot pop from a empty heap." );
+
+			const Ty value = data_.get()[ 0 ];
+
+			data_.get()[ 0 ] = data_.get()[ size_ ];
+
+			if( size_ == 1 )
+			{
+				std::swap( data_[ 0 ], data_[ size_ ] );
+			}
+			else
+			{
+				const auto base = data_.get();
+				
+				auto left = base + 1, right = base + 2;
+
+				if( left < right )
+				{
+					//shift_down(0, )
+				}
+			}
+
+			--size_;
+			
+			return value;
 		}
 
-		[[nodiscard]] Ty top() const { return data_.get()[ 0 ]; }
+		[[nodiscard]] const Ty& peek() const
+		{
+			if( empty() )
+				throw std::runtime_error( "unable to peek an empty heap." );
+			
+			return data_.get()[ 0 ];
+		}
+		
 		[[nodiscard]] std::size_t size() const { return size_; }
-		[[nodiscard]] bool empty() const { return size_; }
+		[[nodiscard]] bool empty() const { return !size_; }
 	};
 }

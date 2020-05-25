@@ -50,12 +50,72 @@ namespace data_structure_tests::heap_tests
 
             min = std::min( min, val );
         	
-            EXPECT_EQ( my_heap.top(), min );
+            EXPECT_EQ( my_heap.peek(), min );
         	
             ++size;
         }
     }
 
+	TEST_F( heap_tests, pop_single )
+    {
+        auto my_heap = heap<int>();
+
+        EXPECT_TRUE( my_heap.empty() );
+        EXPECT_EQ( my_heap.size(), 0 );
+    	
+        my_heap.push( 4 );
+
+        EXPECT_EQ( my_heap.size(), 1 );
+    	
+        const auto actual = my_heap.pop();
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( heap_tests, pop_double )
+    {
+        auto my_heap = heap<int>();
+
+        EXPECT_TRUE( my_heap.empty() );
+        EXPECT_EQ( my_heap.size(), 0 );
+
+        my_heap.push( 4 );
+        my_heap.push( 5 );
+    	
+        EXPECT_EQ( my_heap.size(), 2 );
+
+        const auto actual = my_heap.pop();
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( heap_tests, pop_triple )
+    {
+        auto my_heap = heap<int>();
+
+        EXPECT_TRUE( my_heap.empty() );
+        EXPECT_EQ( my_heap.size(), 0 );
+
+        my_heap.push( 4 );
+        my_heap.push( 5 );
+        my_heap.push( 6 );
+    	
+        EXPECT_EQ( my_heap.size(), 3 );
+
+        auto actual = std::vector<int>();
+
+    	while( !my_heap.empty() )
+    	{
+            actual.push_back( my_heap.pop() );
+    	}
+    	
+        const auto expected = std::vector<int>{ 4, 5, 6 };
+    	
+        EXPECT_EQ( actual, expected );
+    }
+	
     TEST_F( heap_tests, init_list )
     {
     	/*

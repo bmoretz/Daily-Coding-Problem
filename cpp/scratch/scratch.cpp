@@ -84,9 +84,9 @@ namespace tree_problems
 		///
 		/// this approach for insertion increments the nodes it passes on the way
 		/// down the tree to keep track of the total size of each node (total size =
-		/// the node + all its children) in constant time. This approach does *not* keep
-		/// the tree balanced or enforce any other invariants other than the node size and
-		/// basic left <= current < right.
+		/// the node + all its children) in constant (additional) time to the normal log insert time.
+		/// This approach does *not* keep the tree balanced or enforce any other invariants other than
+		/// correct node size and basic left <= current < right.
 		/// </summary>
 		/// <param name="value">value to insert</param>
 		void insert( const Ty& value )

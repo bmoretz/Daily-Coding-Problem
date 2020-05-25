@@ -925,9 +925,9 @@ namespace tree_problems
 		///
 		/// this approach for insertion increments the nodes it passes on the way
 		/// down the tree to keep track of the total size of each node (total size =
-		/// the node + all its children) in constant time. This approach does *not* keep
-		/// the tree balanced or enforce any other invariants other than the node size and
-		/// basic left <= current < right.
+		/// the node + all its children) in constant (additional) time to the normal log insert time.
+		/// This approach does *not* keep the tree balanced or enforce any other invariants other than
+		/// correct node size and basic left <= current < right.
 		/// </summary>
 		/// <param name="value">value to insert</param>
 		void insert( Ty value )
@@ -938,8 +938,8 @@ namespace tree_problems
 				return;
 			}
 
-			tree_node* node = root_.get(),
-				*parent{};
+			auto node = root_.get();
+			tree_node* parent{};
 
 			while( node )
 			{
@@ -953,7 +953,7 @@ namespace tree_problems
 			parent->insert_child( value );
 		}
 
-		[[nodiscard]] auto next( const std::size_t& min, const std::size_t& max ) const -> std::size_t
+		[[nodiscard]] auto next( const std::size_t& min, const std::size_t max ) const -> std::size_t
 		{
 			using uniform = std::uniform_int_distribution<std::mt19937::result_type>;
 
@@ -963,7 +963,7 @@ namespace tree_problems
 		}
 
 		// forward the root to the recursive version.
-		[[nodiscard]] auto pick_random() const -> Ty& { return pick_random( *root_ ); }
+		[[nodiscard]] auto pick_random() const -> const Ty& { return pick_random( *root_ ); }
 		
 		/// <summary>
 		/// pick random
@@ -983,7 +983,7 @@ namespace tree_problems
 		/// </complexity>
 		/// <param name="node">the starting node</param>
 		/// <returns>a node between [node, children] with equal probability</returns>
-		[[nodiscard]] auto pick_random( tree_node& node ) const -> Ty&
+		[[nodiscard]] auto pick_random( tree_node& node ) const -> const Ty&
 		{
 			const auto rnd = next( 1, node.size );
 

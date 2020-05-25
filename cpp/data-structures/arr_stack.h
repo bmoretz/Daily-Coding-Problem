@@ -24,18 +24,26 @@ namespace data_structures::arr_stack
             data_ = std::make_unique<Ty[]>( capacity_ );
         }
 
-        stack( const stack<Ty>& other ) :
-            stack( other.capacity_ )
+        stack( const stack<Ty>& other )
+            : stack<Ty>( other.capacity_ )
         {
             size_ = other.size_;
 
             std::copy( other.data_.get(), other.data_.get() + size_, data_.get() );
         }
 
+    	stack( stack<Ty>&& other ) noexcept
+        {
+            swap( *this, other );
+        	
+            return *this;
+        }
+    	
         stack& operator=( const stack<Ty>& other );
 
-        explicit stack( const std::initializer_list<Ty>& init_list );
+        stack& operator=(stack<Ty>&& other) noexcept;
 
+        explicit stack( const std::initializer_list<Ty>& init_list );
 
         void push( const Ty& value );
         void pop();
@@ -59,6 +67,19 @@ namespace data_structures::arr_stack
         auto tmp( other );
 
         tmp.swap( *this );
+
+        return *this;
+    }
+
+    template <typename Ty>
+    stack<Ty>& stack<Ty>::operator=( stack<Ty>&& other ) noexcept
+    {
+        using std::swap;
+
+        size_ = other.size_;
+        capacity_ = other.capacity_;
+
+        swap( other.data_, data_ );
 
         return *this;
     }
@@ -108,7 +129,7 @@ namespace data_structures::arr_stack
     template <typename Ty>
     void stack<Ty>::pop()
     {
-        if( size_ ) throw std::runtime_error( "CANNOT POP EMPTY STACK" );
+        if( !size_ ) throw std::runtime_error( "CANNOT POP EMPTY STACK" );
 
         --size_;
     }
