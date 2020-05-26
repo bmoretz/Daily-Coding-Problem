@@ -150,4 +150,5 @@ namespace data_structures::heap
 		[[nodiscard]] std::size_t size() const { return size_; }
 		[[nodiscard]] bool empty() const { return !size_; }
 	};
+
 }

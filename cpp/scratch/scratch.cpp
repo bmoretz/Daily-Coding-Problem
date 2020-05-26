@@ -1,164 +1,130 @@
+#include <memory>
+#include <vector>
+#include <iostream>
 #include <utility>
 #include <random>
-#include <memory>
+#include <unordered_map>
 
-namespace tree_problems
+/* Paths with Sum.
+ *
+ * You are given a binary tree in which each node contains an integer value
+ * (which might be positive or negative). Design an algorithm to count the number
+ * of paths that sum to a given value. The path does not need to start or end at
+ * the root or a leaf, but it must go downwards (traveling only from parent nodes
+ * to child nodes).
+ */
+
+struct path_sum
 {
-	/* Random Node.
-	 *
-	 * Implement a binary tree class which, in addition to the usual operations,
-	 * has a method pick_random() which returns a random node from the tree. All
-	 * nodes should be equally likely to be chosen.
-	 */
-	
-	template<typename Ty>
-	class random_node
+	struct tree_node;
+
+	using tree_node_ptr = std::unique_ptr<tree_node>;
+
+	struct tree_node
 	{
-		struct tree_node;
+		int value;
+		tree_node_ptr left{}, right{};
 
-		using tree_node_ptr = std::unique_ptr<tree_node>;
-
-		struct tree_node
-		{
-			Ty value;
-			tree_node_ptr left{}, right{};
-			const tree_node* parent{};
-			std::size_t size{};
-
-			explicit tree_node( const Ty& value,
-				const tree_node* parent = nullptr ) :
-				value{ value }, parent{ parent }, size{ 1 }
-			{  }
-
-			tree_node( const tree_node& other )
-				: value{ other.value }, parent{ other.parent },
-				size{ other.size }
-			{
-				if( other.left )
-					left = std::make_unique<tree_node>( other.left->value );
-
-				if( other.right )
-					right = std::make_unique<tree_node>( other.right->value );
-			}
-
-			tree_node( tree_node&& other ) noexcept
-				: value{ other.value }, parent{ other.parent },
-				size{ other.size }
-			{
-				left = std::move( other.left );
-				right = std::move( other.right );
-			}
-
-			void insert_child( Ty value )
-			{
-				if( value <= this->value )
-				{
-					left = std::make_unique<tree_node>( value, this );
-				}
-				else
-				{
-					right = std::make_unique<tree_node>( value, this );
-				}
-			}
-		};
-
-		mutable std::mt19937 gen_;
-		tree_node_ptr root_;
-
-	public:
-
-		explicit random_node( const unsigned int seed = std::random_device{}( ) )
-			: gen_{ seed }
+		explicit tree_node( const int value ) :
+			value{ value }
 		{ }
-
-		random_node( const std::initializer_list<Ty>& values,
-			const unsigned int seed = std::random_device{}( ) )
-			: random_node( seed )
-		{
-			for( const auto& val : values )
-				insert( val );
-		}
-
-		/// <summary>
-		/// insert node
-		///
-		/// this approach for insertion increments the nodes it passes on the way
-		/// down the tree to keep track of the total size of each node (total size =
-		/// the node + all its children) in constant (additional) time to the normal log insert time.
-		/// This approach does *not* keep the tree balanced or enforce any other invariants other than
-		/// correct node size and basic left <= current < right.
-		/// </summary>
-		/// <param name="value">value to insert</param>
-		void insert( const Ty& value )
-		{
-			if( !root_ )
-			{
-				root_ = std::make_unique<tree_node>( value );
-				return;
-			}
-
-			tree_node* node = root_.get(),
-				* parent{};
-
-			while( node )
-			{
-				++node->size;
-				parent = node;
-
-				node = value <= node->value ?
-					node->left.get() : node->right.get();
-			}
-
-			parent->insert_child( value );
-		}
-
-		[[nodiscard]] auto next( const std::size_t& min, const std::size_t& max ) const -> std::size_t
-		{
-			using uniform = std::uniform_int_distribution<std::mt19937::result_type>;
-
-			const uniform distribution( min, max );
-
-			return distribution( gen_ );
-		}
-
-		// forward the root to the recursive version.
-		[[nodiscard]] auto pick_random() const -> Ty& { return pick_random( *root_ ); }
-
-		/// <summary>
-		/// pick random
-		///
-		/// This routine looks at the "total" size of the node, which is maintained by
-		/// the insert to be the the current node + the total number of nodes below it,
-		/// so the root have the size of the total tree. Each call to pick random, we
-		/// generate a uniform number between 1 and the the node size, this gives us
-		/// a 1/n chance of picking the current node (and 1/1 for a leaf so we always
-		/// exit). If the number is [1, left-size] we traverse left, otherwise we traverse
-		/// right, and then re-roll with that node's size.
-		/// 
-		/// </summary>
-		/// <complexity>
-		///		<run-time>O(E[N/2])</run-time>
-		///		<space>O(E[N/2])</space>
-		/// </complexity>
-		/// <param name="node">the starting node</param>
-		/// <returns>a node between [node, children] with equal probability</returns>
-		[[nodiscard]] auto pick_random( tree_node& node ) const -> Ty&
-		{
-			const auto rnd = next( 1, node.size );
-
-			if( rnd == node.size )
-				return node.value;
-
-			if( node.left && rnd <= node.left->size )
-			{
-				return pick_random( *node.left );
-			}
-
-			return pick_random( *node.right );
-		}
 	};
+
+	static auto find_sum( const tree_node* node,
+		const int target )
+	{
+		auto path_map = std::unordered_map<int, int>();
+
+		return find_sum( node, target, 0, path_map );
+	}
+
+	static auto find_sum( const tree_node* node,
+		const int target,
+		int running_total,
+		std::unordered_map<int, int>& path_map ) -> int
+	{
+		if( !node ) return 0;
+
+		running_total += node->value;
+
+		const auto sum = running_total - target;
+
+		auto total_paths = 0;
+
+		if( path_map.find( sum ) != path_map.end() )
+			total_paths = path_map.at( sum );
+
+		if( running_total == target )
+			total_paths++;
+
+		update_path_map( path_map, running_total, 1 );
+		
+		total_paths += find_sum( node->left.get(), target, running_total, path_map );
+		total_paths += find_sum( node->right.get(), target, running_total, path_map );
+
+		update_path_map( path_map, running_total, -1 );
+
+		return total_paths;
+	}
+
+	static auto update_path_map( std::unordered_map<int, int>& path_map, 
+		const int key, const int delta ) -> void
+	{
+		auto count = 0;
+
+		if( path_map.find( key ) != path_map.end() )
+			count = path_map.at( key );
+		
+		const auto new_count = count + delta;
+
+		if( new_count == 0 )
+		{
+			path_map.erase( key );
+		}
+		else
+		{
+			path_map.insert_or_assign( key, new_count );
+		}
+	}
+};
+
+path_sum::tree_node_ptr build_test_tree()
+{
+	using node = path_sum::tree_node;
+
+	auto root = std::make_unique<node>( 7 );
+
+	root->left = std::make_unique<node>( 5 );
+
+	root->left->left = std::make_unique<node>( 3 );
+	root->left->left->left = std::make_unique<node>( -3 );
+	root->left->left->left->left = std::make_unique<node>( 1 );
+	root->left->left->left->right = std::make_unique<node>( -2 );
+	
+	root->left->left->right = std::make_unique<node>( 4 );
+	
+	root->left->right = std::make_unique<node>( -3 );
+	root->left->right->left = std::make_unique<node>( 2 );
+	root->left->right->right = std::make_unique<node>( 1 );
+	
+	root->right = std::make_unique<node>( 8 );
+
+	root->right->left = std::make_unique<node>( -3 );
+	root->right->left->right = std::make_unique<node>( 2 );
+	
+	root->right->right = std::make_unique<node>( 5 );
+	root->right->right->right = std::make_unique<node>( -2 );
+
+	return root;
 }
 
 auto main() -> int
 {
+	const auto tree = build_test_tree();
+
+	const auto tgt_sum = 1;
+
+	const auto sums = path_sum::find_sum( tree.get(), tgt_sum );
+	
+	std::cout << "Paths with sum " << tgt_sum << sums;
 }

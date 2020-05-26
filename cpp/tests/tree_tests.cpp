@@ -1521,4 +1521,159 @@ namespace tree_tests
 
         EXPECT_LT( max - min, epsilon );
     }
+
+    /// <summary>
+    /// Testing class for path sums.
+    /// </summary>
+    class path_sum_tests :
+        public ::testing::Test {
+
+    	/*              Test Tree
+    	 *                           7
+    	 *                   /                 \
+    	 *                  5                   8
+    	 *              /       \           /       \
+    	 *           3           -3        -3        5
+    	 *         /    \      /     \          \       \   
+    	 *       -3        4  2        1        -2      -2
+    	 *     /   \
+    	 *   1      -2
+    	 */
+    public:
+        static path_sum::tree_node_ptr build_test_tree()
+        {
+            using node = path_sum::tree_node;
+
+            auto root = std::make_unique<node>( 7 );
+
+            root->left = std::make_unique<node>( 5 );
+
+            root->left->left = std::make_unique<node>( 3 );
+            root->left->left->left = std::make_unique<node>( -3 );
+            root->left->left->left->left = std::make_unique<node>( 1 );
+            root->left->left->left->right = std::make_unique<node>( -2 );
+
+            root->left->left->right = std::make_unique<node>( 4 );
+
+            root->left->right = std::make_unique<node>( -3 );
+            root->left->right->left = std::make_unique<node>( 2 );
+            root->left->right->right = std::make_unique<node>( 1 );
+
+            root->right = std::make_unique<node>( 8 );
+
+            root->right->left = std::make_unique<node>( -3 );
+            root->right->left->right = std::make_unique<node>( 2 );
+
+            root->right->right = std::make_unique<node>( 5 );
+            root->right->right->right = std::make_unique<node>( -2 );
+
+            return root;
+        }
+    	
+    protected:
+    	
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // path sums
+    //
+
+    TEST_F( path_sum_tests, none )
+    {
+        using node = path_sum::tree_node;
+    	
+        const auto root = 
+            std::make_unique<node>( 4 );
+
+        const auto target_sum = 1;
+
+        const auto actual = 
+            path_sum::find_sum( root.get(), target_sum );
+
+    	const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( path_sum_tests, case1 )
+    {
+        const auto root = 
+            build_test_tree();
+
+        const auto target_sum = 12;
+    	
+        const auto actual = 
+            path_sum::find_sum( root.get(), target_sum );
+
+    	const auto expected = 4;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( path_sum_tests, case2 )
+    {
+        const auto root =
+            build_test_tree();
+
+        const auto target_sum = 20;
+
+        const auto actual =
+            path_sum::find_sum( root.get(), target_sum );
+
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( path_sum_tests, case3 )
+    {
+        const auto root =
+            build_test_tree();
+
+        const auto target_sum = 7;
+
+        const auto actual =
+            path_sum::find_sum( root.get(), target_sum );
+
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( path_sum_tests, case4 )
+    {
+        const auto root =
+            build_test_tree();
+
+        const auto target_sum = 16;
+
+        const auto actual =
+            path_sum::find_sum( root.get(), target_sum );
+
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( path_sum_tests, case5 )
+    {
+        const auto root =
+            build_test_tree();
+
+        const auto target_sum = 3;
+
+        const auto actual =
+            path_sum::find_sum( root.get(), target_sum );
+
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
