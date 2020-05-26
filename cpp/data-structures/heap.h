@@ -54,14 +54,21 @@ namespace data_structures::heap
 		void shift_up( std::size_t index,
 			const std::size_t bound )
 		{
-			std::size_t child = std::floor( index << 1 );
+			using std::min;
+			
+			auto left = min( index + 1, size_ ),
+				right = min( index + 2, size_ );
 
-			while( index <= bound && 
-				data_.get()[ child ] > data_.get()[ index ] )
+			auto next = left == right ? left :
+				data_.get()[ left ] < data_.get()[ right ] ? left : right;
+			
+			while( index < bound &&
+				data_.get()[ index ] > data_.get()[ next ] )
 			{
-				std::swap( data_[ index ], data_[ child ] );
+				std::swap( data_[ index ], data_[ next ] );
 				
-				index <<= 1; child <<= 1;
+				index = next;
+				next <<= 1;
 			}
 		}
 		
@@ -120,24 +127,13 @@ namespace data_structures::heap
 
 			const Ty value = data_.get()[ 0 ];
 
-			data_.get()[ 0 ] = data_.get()[ size_ ];
-
-			if( size_ == 1 )
+			if( size_ > 1 )
 			{
-				std::swap( data_[ 0 ], data_[ size_ ] );
-			}
-			else
-			{
-				const auto base = data_.get();
-				
-				auto left = base + 1, right = base + 2;
+				std::swap( data_[ 0 ], data_[ size_ - 1 ] );
 
-				if( left < right )
-				{
-					//shift_down(0, )
-				}
+				shift_up( 0, size_ );
 			}
-
+			
 			--size_;
 			
 			return value;

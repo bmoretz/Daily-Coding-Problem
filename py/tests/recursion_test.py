@@ -717,7 +717,7 @@ class Test_DivingBoards1(unittest.TestCase):
         actual = diving_boards1(k)
         expected = [1, 2]
 
-        assert actual == expected        
+        assert actual == expected
 
     def test_case2(self):
 

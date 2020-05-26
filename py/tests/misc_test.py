@@ -2,7 +2,6 @@ import unittest
 
 from random import uniform
 
-
 from py.problems.misc import Subscribers1
 '''Classic Dictionary'''
 class Test_Subscribers1(unittest.TestCase):
@@ -157,3 +156,64 @@ class Test_TicTacToe(unittest.TestCase):
         expected = False
 
         assert actual == expected
+
+from py.problems.misc import MasterMind
+class Test_MasterMind(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        mm = MasterMind(1234)
+
+        guess = mm.to_guess([1, 2, 2, 4])
+
+        actual = mm.guess(guess)
+        expected = (0, 2)
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        mm = MasterMind(123)
+
+        guess = mm.to_guess([1, 2, 2, 4])
+
+        actual = mm.guess(guess)
+        expected = (2, 0)
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        mm = MasterMind(511)
+
+        guess = mm.to_guess([1, 2, 2, 4])
+
+        actual = mm.guess(guess)
+        expected = (1, 2)
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        mm = MasterMind(541)
+
+        guess = mm.to_guess([1, 2, 2, 4])
+
+        actual = mm.guess(guess)
+        expected = (1, 1)
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        mm = MasterMind(123)
+
+        guess = mm.to_guess([1, 2, 2, 4])
+
+        actual = mm.guess(guess)
+        expected = (2, 0)
+
+        assert actual == expected        

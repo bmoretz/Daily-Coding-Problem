@@ -825,12 +825,10 @@ def diving_boards1(k):
             cur = [plank.value + p for p in lengths[k-1]]
 
             if cur not in lengths[k]:
-                lengths[k] += cur 
+                lengths[k] += cur
         
         return lengths[k]
 
     if k == None: return None
 
-    all_boards = get_boards(k)
-
-    return all_boards[k]
+    return get_boards(k)

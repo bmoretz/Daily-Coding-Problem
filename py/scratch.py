@@ -1,29 +1,85 @@
-'''Best Line.
+'''Master Mind.
 
-Given a two-dimensional graph with points on it, find a line
-which passes the most number of points.
+The Game of Master Mind is played as follows:
+
+The computer has four slots, and each slot will contain a ball that is red (R),
+yellow (Y), green (G) or blue (B). For example, the computer might have RGGB (
+slot #1 is red, Slots #2 and #3 are green, Slot #4 is blue).
+
+You, the user, are trying to guess the solution. You might, for example,
+guess YRGB.
+
+When you guess the correct color for the correct slot, you get a "hit." If you
+guess a color that exists but is in the wrong slot, you get a "pseudo-hit." Note
+that a slot is a hit can never count as a pseudo-hit.
+
+For example, if the actual solution is RGBY and you guess GGRR, you have
+one hit and one pseudo-hit. Write a method that, given a guess and a
+solution, returns the number of hits and pseudo-hits.
 '''
 
-class BestLine():
+from random import uniform, randint
+from enum import Enum
+
+class MasterMind():
+
+    class Colors(Enum):
+        Red = 1
+        Blue = 2
+        Green = 3
+        Yellow = 4
     
-    class Line():
+    def __init__(self, seed=1234):
+        from random import seed
+        seed(seed)
+        self.solution = self._gen_solution()
+
+    def peek(self):
+        return self.solution
+
+    def _gen_solution(self):
+
+        sln = []
         
-        def __init__(self, p1, p2):
-            self.p1 = p1
-            self.p2 = p2
+        for _ in range(4):
+            sln.append( self.Colors(randint(1, 4)) )
+        
+        return sln
 
-        def __repr__(self):
-            return (self.p1, self.p1)
+    def guess(self, solution):
+        
+        hits = 0
+        partial_candidates, remaining = [], []
 
-        def __str__(self):
-            return f'[{self.p1}, {self.p2}]'
+        for index in range(4):
+            
+            current = solution[index]
 
-    class Point():
+            if self.solution[index] == current:
+                hits += 1
+            else:
+                if current not in partial_candidates:
+                    partial_candidates += [current]
+                if self.solution[index] not in remaining:
+                    remaining += [self.solution[index]]
+                
+        pseudos = 0
 
-        def __init__(self, x, y):
-            self.x = x
-            self.y = y
+        for candidate in partial_candidates:
 
-        def __str__(self):
-            return f'({self.x}, {self.y})'
+            if candidate in remaining:
+                pseudos += 1
 
+        return (hits, pseudos)
+
+mm = MasterMind()
+
+print(f'\n\nSolution is: {mm.peek()}\n')
+
+for _ in range(5):
+    guess = mm._gen_solution()
+
+    print(f'Guess: {guess}')
+    result = mm.guess(guess)
+
+    print(f'hits : {result[0]}, pseudos: {result[1]}')
