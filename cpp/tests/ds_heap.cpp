@@ -85,10 +85,8 @@ namespace data_structure_tests::heap_tests
     	
         EXPECT_EQ( my_heap.size(), 2 );
 
-        const auto actual = my_heap.pop();
-        const auto expected = 4;
-
-        EXPECT_EQ( actual, expected );
+        EXPECT_EQ( my_heap.pop(), 4 );
+        EXPECT_EQ( my_heap.pop(), 5 );
     }
 
     TEST_F( heap_tests, pop_triple )
@@ -113,6 +111,34 @@ namespace data_structure_tests::heap_tests
     	
         const auto expected = std::vector<int>{ 4, 5, 6 };
     	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( heap_tests, pop_n_1 )
+    {
+        auto my_heap = heap<int>();
+
+        EXPECT_TRUE( my_heap.empty() );
+        EXPECT_EQ( my_heap.size(), 0 );
+
+        const auto values = std::initializer_list<int>{
+			2, 3, 6, 1, 4, 8, 0, 9, 7, 2
+        };
+
+        for( auto item : values )
+            my_heap.push( item );
+    	
+        EXPECT_EQ( my_heap.size(), 10 );
+        
+        auto actual = std::vector<int>();
+
+        while( !my_heap.empty() )
+        {
+            actual.push_back( my_heap.pop() );
+        }
+
+        const auto expected = std::vector<int>{ 4, 5, 6 };
+
         EXPECT_EQ( actual, expected );
     }
 	
