@@ -114,19 +114,27 @@ namespace data_structure_tests::heap_tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( heap_tests, pop_n_1 )
+    TEST_F( heap_tests, pop_n )
     {
         auto my_heap = heap<int>();
 
         EXPECT_TRUE( my_heap.empty() );
         EXPECT_EQ( my_heap.size(), 0 );
 
-        const auto values = std::initializer_list<int>{
-			2, 3, 6, 1, 4, 8, 0, 9, 7, 2
+        auto values = std::vector<int>{
+			2, 3, 6, 1, 4, 8, 0, 2, 9, 7
         };
 
+        auto min = INT_MAX;
+    	
         for( auto item : values )
+        {
             my_heap.push( item );
+        	
+            min = std::min( item, min );
+
+            EXPECT_EQ( my_heap.peek(), min );
+        }
     	
         EXPECT_EQ( my_heap.size(), 10 );
         
@@ -137,9 +145,9 @@ namespace data_structure_tests::heap_tests
             actual.push_back( my_heap.pop() );
         }
 
-        const auto expected = std::vector<int>{ 4, 5, 6 };
+        std::sort( values.begin(), values.end() );
 
-        EXPECT_EQ( actual, expected );
+        EXPECT_EQ( actual, values );
     }
 	
     TEST_F( heap_tests, init_list )

@@ -42,8 +42,8 @@ namespace data_structures::heap
 		{
 			std::size_t parent = std::floor( size_ >> 1 );
 
-			while( bound <= index &&
-				data_.get()[ index ] < data_.get()[ parent ] )
+			while( index && bound <= index &&
+				data_.get()[ index ] <= data_.get()[ parent ] )
 			{
 				std::swap( data_[ index ], data_[ parent ] );
 
@@ -71,7 +71,7 @@ namespace data_structures::heap
 				index == 0 ? 1 : index << 1;
 
 			while( index < bound && next < size_ &&
-				data_.get()[ index ] > data_.get()[ next ] )
+				data_.get()[ index ] >= data_.get()[ next ] )
 			{
 				std::swap( data_[ index ], data_[ next ] );
 
@@ -135,29 +135,29 @@ namespace data_structures::heap
 	/// </summary>
 	/// <param name="new_size">new backing array size.</param>	
 	template <typename Ty>
-	void heap<Ty>::resize(const std::size_t new_size)
+	void heap<Ty>::resize( const std::size_t new_size )
 	{
-		auto new_data = std::make_unique<Ty[]>(new_size);
+		auto new_data = std::make_unique<Ty[]>( new_size );
 
-		std::copy(data_.get(), data_.get() + size_, new_data.get());
+		std::copy( data_.get(), data_.get() + size_, new_data.get() );
 
 		capacity_ = new_size;
 
-		data_ = std::move(new_data);
+		data_ = std::move( new_data );
 	}
 
 	template <typename Ty>
 	Ty heap<Ty>::pop()
 	{
-		if (!size_)
-			throw std::runtime_error("cannot pop from a empty heap.");
+		if( !size_ )
+			throw std::runtime_error( "cannot pop from a empty heap." );
 
-		const Ty value = data_.get()[0];
+		const Ty value = data_.get()[ 0 ];
 
 		size_--;
 
-		std::swap(data_[0], data_[size_]);
-		shift_up(0, size_);
+		std::swap( data_[ 0 ], data_[ size_ ] );
+		shift_up( 0, size_ );
 
 		return value;
 	}
