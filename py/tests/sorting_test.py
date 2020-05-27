@@ -737,3 +737,63 @@ class Test_AltSort2(unittest.TestCase):
         expected = [83, 1, 41, 2, 33, 3, 31, 3, 23, 4, 12, 4, 12, 12, 12]
 
         assert actual == expected
+
+from py.problems.sorting import sub_sort1
+class Test_SubSort1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        actual = sub_sort1(values)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        values = [1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19]
+
+        actual = sub_sort1(values)
+        expected = (3, 9)
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        values = [1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19, 4]
+
+        actual = sub_sort1(values)
+        expected = (3, 14)
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        values = [20, 1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19, 4]
+
+        actual = sub_sort1(values)
+        expected = (0, 15)
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        values = [1, 2, 4, 7, 10, 11, 7, 12, 6, 7, -1, 16, 18, 19]
+
+        actual = sub_sort1(values)
+        expected = (0, 11)
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        values = [1, 2, 3, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19]
+
+        actual = sub_sort1(values)
+        expected = (4, 10)
+
+        assert actual == expected

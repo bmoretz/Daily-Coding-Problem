@@ -1,85 +1,47 @@
-'''Master Mind.
+'''Sub Sort.
 
-The Game of Master Mind is played as follows:
+Given an array of integers, write a method to find indices m and n such that
+if you sorted elements m through n, the entire array would be sorted. Minimized
+n - m (that is, find the smallest such sequence).
 
-The computer has four slots, and each slot will contain a ball that is red (R),
-yellow (Y), green (G) or blue (B). For example, the computer might have RGGB (
-slot #1 is red, Slots #2 and #3 are green, Slot #4 is blue).
+EXAMPLE:
 
-You, the user, are trying to guess the solution. You might, for example,
-guess YRGB.
-
-When you guess the correct color for the correct slot, you get a "hit." If you
-guess a color that exists but is in the wrong slot, you get a "pseudo-hit." Note
-that a slot is a hit can never count as a pseudo-hit.
-
-For example, if the actual solution is RGBY and you guess GGRR, you have
-one hit and one pseudo-hit. Write a method that, given a guess and a
-solution, returns the number of hits and pseudo-hits.
+Input: 1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19
+Output: (3, 9)
 '''
 
-from random import uniform, randint
-from enum import Enum
-
-class MasterMind():
-
-    class Colors(Enum):
-        Red = 1
-        Blue = 2
-        Green = 3
-        Yellow = 4
+def sub_sort(arr):
     
-    def __init__(self, seed=1234):
-        from random import seed
-        seed(seed)
-        self.solution = self._gen_solution()
+    if not arr: return None
 
-    def peek(self):
-        return self.solution
+    n, m = None, None
+    prev, inner_min = None, None
 
-    def _gen_solution(self):
+    for index, element in enumerate(arr):
 
-        sln = []
-        
-        for _ in range(4):
-            sln.append( self.Colors(randint(1, 4)) )
-        
-        return sln
+        if prev:
 
-    def guess(self, solution):
-        
-        hits = 0
-        partial_candidates, remaining = [], []
-
-        for index in range(4):
+            if not m and element < prev: 
+                n = index
             
-            current = solution[index]
+            if n and prev > element: 
+                m = index + 1
 
-            if self.solution[index] == current:
-                hits += 1
-            else:
-                if current not in partial_candidates:
-                    partial_candidates += [current]
-                if self.solution[index] not in remaining:
-                    remaining += [self.solution[index]]
-                
-        pseudos = 0
+        if n: inner_min = element \
+            if not inner_min else min(inner_min, element)
 
-        for candidate in partial_candidates:
+        prev = element
 
-            if candidate in remaining:
-                pseudos += 1
+    if inner_min < arr[0]:
+        n = 0
+    else:
+        while arr[ n - 1 ] > inner_min:
+            n -= 1
 
-        return (hits, pseudos)
+    return (n, m)
 
-mm = MasterMind()
+arr = [1, 2, 3, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19]
 
-print(f'\n\nSolution is: {mm.peek()}\n')
+result = sub_sort(arr)
 
-for _ in range(5):
-    guess = mm._gen_solution()
-
-    print(f'Guess: {guess}')
-    result = mm.guess(guess)
-
-    print(f'hits : {result[0]}, pseudos: {result[1]}')
+print(result)
