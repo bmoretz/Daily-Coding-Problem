@@ -1,47 +1,41 @@
-'''Sub Sort.
+'''Contiguous Sequence.
 
-Given an array of integers, write a method to find indices m and n such that
-if you sorted elements m through n, the entire array would be sorted. Minimized
-n - m (that is, find the smallest such sequence).
+You are given an array of integers (both positive and negative). Find the
+contiguous sequence with the largest sum. Return the sum.
 
 EXAMPLE:
 
-Input: 1, 2, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19
-Output: (3, 9)
+Input: 2, -8, 3, -2, 4, -10
+Output: 5 (i.e., {3, -2, 4})
 '''
 
-def sub_sort(arr):
-    
+
+def contiguous_seq1(arr):
+
     if not arr: return None
 
-    n, m = None, None
-    prev, inner_min = None, None
+    total, elements = 0, []
 
-    for index, element in enumerate(arr):
+    best = []
 
-        if prev:
+    for index, num in enumerate(arr):
 
-            if not m and element < prev: 
-                n = index
-            
-            if n and prev > element: 
-                m = index + 1
+        total += num
 
-        if n: inner_min = element \
-            if not inner_min else min(inner_min, element)
+        if total < 0:
+            if len(elements) > 1:
+                best = elements
+            total, elements = 0, []
+        else:
+            elements += [num]
 
-        prev = element
+    if sum(best) < total:
+        best = elements
 
-    if inner_min < arr[0]:
-        n = 0
-    else:
-        while arr[ n - 1 ] > inner_min:
-            n -= 1
+    return sum(best) if best else None
+    
+arr = [2, -2, 3, -7, 4, -10, 7, -2, 4, -1]
 
-    return (n, m)
+results = contiguous_seq1(arr)
 
-arr = [1, 2, 3, 4, 7, 10, 11, 7, 12, 6, 7, 16, 18, 19]
-
-result = sub_sort(arr)
-
-print(result)
+print(results)
