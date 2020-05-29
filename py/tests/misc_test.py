@@ -216,4 +216,64 @@ class Test_MasterMind(unittest.TestCase):
         actual = mm.guess(guess)
         expected = (2, 0)
 
-        assert actual == expected        
+        assert actual == expected
+
+from py.problems.misc import pattern_match1
+class Test_PatternMatch1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        value, pattern = None, 'ababa'
+
+        actual = pattern_match1(pattern, value) 
+        expected = None
+
+        return actual == expected
+
+    def test_case1(self):
+
+        value, pattern = 'catcatgocatgo', 'aabab'
+
+        actual = pattern_match1(pattern, value) 
+        expected = True
+
+        return actual == expected
+
+    def test_case2(self):
+
+        value, pattern = 'catcatgocatgo', 'aababb'
+
+        actual = pattern_match1(pattern, value) 
+        expected = False
+
+        return actual == expected
+
+    def test_case3(self):
+
+        value, pattern = 'catcatgocatgocat', 'aababcat'
+
+        actual = pattern_match1(pattern, value) 
+        expected = True
+
+        return actual == expected
+
+    def test_case4(self):
+
+        value, pattern = 'testjes', 'ab'
+
+        actual = pattern_match1(pattern, value) 
+        expected = True
+
+        return actual == expected
+
+    def test_case5(self):
+
+        value, pattern = 'catcatgocatcatgocatcat', 'aabaabaa'
+
+        actual = pattern_match1(pattern, value) 
+        expected = True
+
+        return actual == expected
