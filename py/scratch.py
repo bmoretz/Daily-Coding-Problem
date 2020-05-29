@@ -19,6 +19,15 @@ def distribution_fitting(distribution_code, investments):
         
         return 2*K - 2*(logLik)
     
+    def BIC(theoretical, pdf, K):
+
+        logLik, N = 0, len(theoretical)
+
+        for v in theoretical:
+            logLik += N * np.log( pdf(v) / N ) + K * np.log(N)
+
+        return logLik
+
     def get_parameters(distribution, data):
         # completely generic dist fitting
         params = distribution.fit(data)
@@ -46,10 +55,13 @@ def distribution_fitting(distribution_code, investments):
         # basically just alias the pdf for the passed in distribution
         pdf = distribution(mu, sigma).pdf
 
+        K = len(params)
         # AIC will be the calculated with k=2 for all the distributions
-        aic = AIC(y_hat, pdf, K=len(params))
+        aic = AIC(y_hat, pdf, K)
 
-        return aic
+        bic = BIC(y_hat, pdf, K)
+
+        return (aic, bic)
 
     distribution = None
     
@@ -66,3 +78,14 @@ def distribution_fitting(distribution_code, investments):
         fit_criterion = get_central_moment_dist_fit(distribution, investments)
 
     return fit_criterion
+
+
+investments = [
+    11624, 9388, 9471, 8927,
+    10865, 7698, 11744, 9238,
+    10319, 9750, 11462, 7939
+]
+
+for d in ['norm', 'cauchy', 'expon']:
+    IC = distribution_fitting(d, investments)
+    print(f'fitted investment data with {d}, AIC={IC[0]}, BIC={IC[1]}')

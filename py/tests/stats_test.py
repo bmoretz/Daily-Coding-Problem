@@ -19,7 +19,7 @@ class Test_DistributionFitting1(unittest.TestCase):
 
         expected = (200, 230)
 
-        assert expected[0] < actual < expected[1]
+        assert expected[0] < actual[0] < expected[1]
 
     def test_cauchy(self):
 
@@ -33,7 +33,7 @@ class Test_DistributionFitting1(unittest.TestCase):
 
         expected = (200, 230)
 
-        assert expected[0] < actual < expected[1]
+        assert expected[0] < actual[0] < expected[1]
 
     def test_expon(self):
 
@@ -47,4 +47,4 @@ class Test_DistributionFitting1(unittest.TestCase):
 
         expected = (200, 230)
 
-        assert expected[0] < actual < expected[1]
+        assert expected[0] < actual[0] < expected[1]
