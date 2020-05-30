@@ -670,3 +670,105 @@ def shortest_path_fast(graph : WeightedGraph, s, def_dist=1e6):
             visited[ node ] = True
     
     return dist
+
+def read_median_data(file_path):
+    ''' read numbers
+
+    this function simply reads the passed in test data file and
+    converts the lines to integers.
+    '''
+
+    result = []
+
+    with open(file_path, 'r') as f:
+
+        lines = f.read().splitlines()
+
+        for line in lines:
+            result.append(int(line))
+
+    return result
+
+class HeapMin():
+
+    '''
+    heap based solution
+
+    this approach uses two heaps (one min, one max) to
+    split the data set in half, and to keep track of the
+    highest value in the lower heap and the lowest number
+    in the max heap, so that we can get constant access
+    to the median.
+    '''
+    def __init__(self):
+        self.lower = [] # max heap
+        self.upper = [] # min heap
+
+    def push(self, num):
+    
+        # populate the low (max) heap first.
+        if len(self.lower) <= len(self.upper):
+            heapq.heappush(self.lower, -num)
+        else:
+            heapq.heappush(self.upper, num)
+
+        if self.lower and self.upper:
+
+            # if the lower heap top is greater than
+            # the pushed number, we need to swap the
+            # heap values.
+
+            if -self.lower[0] > self.upper[0]:
+                # pop & invert the lower (max) heap
+                x, y = -heapq.heappop(self.lower), heapq.heappop(self.upper)
+
+                heapq.heappush(self.lower, -y)
+                heapq.heappush(self.upper, x)
+            
+            # invariant that every element in the lower heap
+            # is less than or equal to the min element in the
+            # upper (min) heap.
+
+            assert -self.lower[0] <= self.upper[0]
+
+    def median(self):
+        return -self.lower[0]
+
+def median_arr(arr):
+    ''' median arr
+    
+    brute force approach for benchmarking purposes.
+    '''
+
+    tally, medians = [], []
+
+    for num in arr:
+        tally.append(num)
+        tally = sorted(tally)
+
+        n = len(tally)
+
+        position = n//2 if n % 2 == 0 else (n+1)//2
+
+        medians.append(tally[position - 1])
+
+    total = sum(medians)
+
+    return total % 10000
+
+def median_heap(arr):
+    ''' median heap
+    
+    heapify'd approach for median maintenance problem.
+    '''
+
+    tally, medians = HeapMin(), []
+
+    for num in arr:
+        tally.push(num)
+        
+        medians.append(tally.median())
+
+    total = sum(medians)
+
+    return total % 10000

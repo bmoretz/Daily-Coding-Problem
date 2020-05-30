@@ -17,21 +17,21 @@ def distribution_fitting(distribution_code, investments):
     :returns: (float) Akaike information criterion of the distribution for the dataset.
     """
 
-    def AIC(theoretical, pdf, K):
+    def AIC(theoretical, empirical, K):
         # this could probably be vectorized for performance,
         # but this is more readable than a 1 liner
         logLik = 0
         for v in theoretical:
-            logLik += np.log( pdf(v) )
+            logLik += np.log( empirical(v) )
         
         return 2*K - 2*(logLik)
     
-    def BIC(theoretical, pdf, K):
+    def BIC(theoretical, empirical, K):
 
         logLik, N = 0, len(theoretical)
 
         for v in theoretical:
-            logLik += N * np.log( pdf(v) / N ) + K * np.log(N)
+            logLik += N * np.log( empirical(v) / N ) + K * np.log(N)
 
         return logLik
 

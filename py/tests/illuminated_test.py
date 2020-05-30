@@ -235,3 +235,34 @@ class Test_Dijkstra(unittest.TestCase):
         expected = {2: 1, 3: 2, 4: 3, 5: 4, 6: 4, 7: 3, 8: 2}
 
         assert actual == expected
+
+from py.problems.illuminated import read_median_data
+from py.problems.illuminated import median_arr, median_heap
+
+class Test_MedianMaintenance(unittest.TestCase):
+
+    def setUp(self):
+
+        from os import getcwd
+        
+        data_dir = getcwd() + '\\data\\illuminated\\median-maintenance\\\\'
+
+        self.test_file_path = data_dir + 'problem11.3test.txt'
+
+    def test_arr(self):
+
+        arr = read_median_data(self.test_file_path)
+
+        actual = median_arr(arr)
+        expected = 9335
+
+        assert actual == expected
+
+    def test_heap(self):
+
+        arr = read_median_data(self.test_file_path)
+
+        actual = median_heap(arr)
+        expected = 9335
+
+        assert actual == expected
