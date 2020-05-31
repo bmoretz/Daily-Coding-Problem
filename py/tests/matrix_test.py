@@ -154,3 +154,82 @@ class Test_Zero1(unittest.TestCase):
         mat[1][2] = 0
 
         assert zero1(mat) == expected
+
+from py.problems.matrix import pond_sizes
+class Test_PondSizes(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        land = None
+
+        actual = pond_sizes(land)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+        
+        land = [[0, 2, 1, 0],
+                [0, 1, 0, 1],
+                [1, 1, 0, 1],
+                [0, 1, 0, 1]]
+
+        actual = pond_sizes(land)
+        expected = [2, 4, 1]
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        land = [[0, 2, 1, 0],
+                [0, 1, 0, 1],
+                [1, 1, 0, 1],
+                [0, 1, 0, 1],
+                [0, 1, 0, 1]]
+
+        actual = pond_sizes(land)
+        expected = [2, 5, 2]
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        land = [[0, 2, 1, 0, 0],
+                [0, 1, 0, 1, 1],
+                [1, 1, 0, 1, 1],
+                [0, 1, 0, 1, 1],
+                [0, 1, 0, 1, 1]]
+
+        actual = pond_sizes(land)
+        expected = [2, 6, 2]
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        land = [[0, 2, 1, 0, 0, 0],
+                [0, 1, 0, 1, 1, 1],
+                [1, 1, 0, 1, 1, 1],
+                [0, 1, 0, 1, 1, 1],
+                [0, 1, 0, 1, 1, 0]]
+
+        actual = pond_sizes(land)
+        expected = [2, 7, 2, 1]
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        land = [[0, 2, 1, 0, 0, 0],
+                [0, 1, 0, 1, 0, 1],
+                [1, 1, 0, 1, 0, 1],
+                [0, 1, 0, 1, 1, 1],
+                [0, 1, 0, 1, 1, 1]]
+
+        actual = pond_sizes(land)
+        expected = [2, 9, 2]
+
+        assert actual == expected
