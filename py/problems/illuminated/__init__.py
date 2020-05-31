@@ -772,3 +772,164 @@ def median_heap(arr):
     total = sum(medians)
 
     return total % 10000
+
+def read_two_sum_data(file_path):
+    ''' read numbers
+
+    this function simply reads the passed in test data file and
+    converts the lines to integers.
+    '''
+
+    result = []
+
+    with open(file_path, 'r') as f:
+
+        lines = f.read().splitlines()
+
+        for line in lines:
+            result.append(int(line))
+
+    return result
+
+def two_sum_brute(arr, lower, upper):
+    '''
+    brute force approach to the 2-sum problem
+
+    (...will probably never finish in my life-time for
+    challenge dataset.)
+
+    this is just an overall blue-print for the strategy
+    for solving the challenge set.
+    '''
+
+    targets = set(range(lower, upper + 1))
+    solutions = set()
+
+    for index in range(len(arr)):
+
+        x = arr[index]
+
+        for sub in range(index + 1, len(arr)):
+
+            y = arr[sub]
+
+            t = x + y
+
+            if t in targets:
+                solutions.add( t )
+
+    return len(solutions)
+
+def two_sum_hash(arr, lower, upper):
+    '''
+    two-sum hash
+
+    this is an upgraded version of the brute force approach that
+    leverages a hash set to keep track of the solution sets. Still
+    slow as molasses.
+    '''
+    ys = set(arr)
+    solutions = defaultdict(set)
+    targets = set(range(lower, upper + 1))
+
+    for x in arr:
+        for t in targets:
+            if x - t in ys:
+                if x == t - x:
+                    continue
+            solutions[t] = set([tuple(sorted([x, t - x]))])
+
+    return len(solutions)
+
+def two_sum_bin(arr, lower, upper):
+
+    def find(arr, target, start, end):
+        '''
+        find - a binary search based search routine.
+
+        this is a utility method to help us in the binary
+        version of the two-sum algorithm. It takes a target
+        number and returns the index of it if it's found,
+        if it's not found, it returns the last index searched.
+
+        The important thing in this method is that the following
+        invariant will always hold after a search is performed:
+
+        Given an array A and a value v, find(A, v) <= the the index
+        of v if it existed in the array.
+
+        This basically means that we can search for a value, and even
+        if it doesn't exists in the array, the returned result will
+        be the absolute minimum possible location of the value.
+        '''
+        if start >= end: return start
+
+        mid = start + (end - start)//2
+
+        if arr[mid] == target:
+            return mid
+        if target < arr[mid]:
+            return find(arr, target, start, mid)
+        else:
+            return find(arr, target, mid + 1, end)
+                
+    '''
+    binary two-sum
+
+    this approach leverages a binary search method
+    to drastically cut-down on the number of values
+    to search the solution set for.
+
+    the overall idea is to:
+
+        sort the array smallest to biggest
+        build a lookup of all possible solutions -> (lower, upper)
+        a look-up of arr values to their location in the sorted version of the array
+        
+        start with a given element
+
+        in order for y to be a solution to t = x + y, where t in (lower, upper)
+        the lowest possible value for y is upper - x and the highest possible
+        value for y is upper - x.
+
+        So we limit the search range of y in the sub loop to the indices that
+        correspond to those values in the array. If any of them match (t in 
+        solution set) we add t to the solution set.
+
+        finally, return the length of the unique solution set.
+    '''
+
+    s_arr = sorted(arr)
+    targets = set(range(lower, upper + 1))
+    solutions = set()
+    index_lookup = defaultdict(int)
+
+    n = len(arr)
+
+    for index in range(len(arr)):
+
+        x = arr[index]
+
+        l, u = lower - x, upper - x
+
+        if l not in index_lookup:
+            index_lookup[l] = find(s_arr, l, 0, n)
+
+        if u not in index_lookup:
+            index_lookup[u] = find(s_arr, u, 0, n)
+
+        start_loc, end_loc = index_lookup[l], index_lookup[u]
+
+        for sub in range(start_loc, end_loc + 1):
+            
+            if sub == n:
+                continue
+            
+            y = s_arr[sub]
+
+            t = x + y
+
+            if t in targets:
+                solutions.add( t )
+
+    return len(solutions)

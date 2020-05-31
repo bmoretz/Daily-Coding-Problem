@@ -245,7 +245,7 @@ class Test_MedianMaintenance(unittest.TestCase):
 
         from os import getcwd
         
-        data_dir = getcwd() + '\\data\\illuminated\\median-maintenance\\\\'
+        data_dir = getcwd() + '\\data\\illuminated\\median-maintenance\\'
 
         self.test_file_path = data_dir + 'problem11.3test.txt'
 
@@ -264,5 +264,51 @@ class Test_MedianMaintenance(unittest.TestCase):
 
         actual = median_heap(arr)
         expected = 9335
+
+        assert actual == expected
+
+from py.problems.illuminated import read_two_sum_data
+from py.problems.illuminated import two_sum_brute, two_sum_hash, two_sum_bin
+
+class Test_TwoSum(unittest.TestCase):
+
+    def setUp(self):
+
+        from os import getcwd
+        
+        data_dir = getcwd() + '\\data\\illuminated\\two-sum\\'
+
+        self.test_file_path = data_dir + 'problem12.4test.txt'
+
+    def test_brute(self):
+
+        arr = read_two_sum_data(self.test_file_path)
+
+        lower, upper = 3, 10
+
+        actual = two_sum_brute(arr, lower, upper)
+        expected = 8
+
+        assert actual == expected
+
+    def test_hash(self):
+
+        arr = read_two_sum_data(self.test_file_path)
+
+        lower, upper = 3, 10
+
+        actual = two_sum_hash(arr, lower, upper)
+        expected = 8
+
+        assert actual == expected
+
+    def test_bin(self):
+
+        arr = read_two_sum_data(self.test_file_path)
+
+        lower, upper = 3, 10
+
+        actual = two_sum_bin(arr, lower, upper)
+        expected = 8
 
         assert actual == expected

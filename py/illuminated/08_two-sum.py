@@ -68,37 +68,59 @@ def two_sum_brute(arr, lower, upper):
 
     return len(solutions)
 
-def find(arr, target, start, end):
+def two_sum_hash(arr, lower, upper):
     '''
-    find - a binary search based search routine.
+    two-sum hash
 
-    this is a utility method to help us in the binary
-    version of the two-sum algorithm. It takes a target
-    number and returns the index of it if it's found,
-    if it's not found, it returns the last index searched.
-
-    The important thing in this method is that the following
-    invariant will always hold after a search is performed:
-
-    Given an array A and a value v, find(A, v) <= the the index
-    of v if it existed in the array.
-
-    This basically means that we can search for a value, and even
-    if it doesn't exists in the array, the returned result will
-    be the absolute minimum possible location of the value.
+    this is an upgraded version of the brute force approach that
+    leverages a hash set to keep track of the solution sets. Still
+    slow as molasses.
     '''
-    if start >= end: return start
+    ys = set(arr)
+    solutions = defaultdict(set)
+    targets = set(range(lower, upper + 1))
 
-    mid = start + (end - start)//2
+    for x in arr:
+        for t in targets:
+            if x - t in ys:
+                if x == t - x:
+                    continue
+            solutions[t] = set([tuple(sorted([x, t - x]))])
 
-    if arr[mid] == target:
-        return mid
-    if target < arr[mid]:
-        return find(arr, target, start, mid)
-    else:
-        return find(arr, target, mid + 1, end)
+    return len(solutions)
 
 def two_sum_bin(arr, lower, upper):
+
+    def find(arr, target, start, end):
+        '''
+        find - a binary search based search routine.
+
+        this is a utility method to help us in the binary
+        version of the two-sum algorithm. It takes a target
+        number and returns the index of it if it's found,
+        if it's not found, it returns the last index searched.
+
+        The important thing in this method is that the following
+        invariant will always hold after a search is performed:
+
+        Given an array A and a value v, find(A, v) <= the the index
+        of v if it existed in the array.
+
+        This basically means that we can search for a value, and even
+        if it doesn't exists in the array, the returned result will
+        be the absolute minimum possible location of the value.
+        '''
+        if start >= end: return start
+
+        mid = start + (end - start)//2
+
+        if arr[mid] == target:
+            return mid
+        if target < arr[mid]:
+            return find(arr, target, start, mid)
+        else:
+            return find(arr, target, mid + 1, end)
+                
     '''
     binary two-sum
 
@@ -146,7 +168,10 @@ def two_sum_bin(arr, lower, upper):
 
         start_loc, end_loc = index_lookup[l], index_lookup[u]
 
-        for sub in range(start_loc, end_loc):
+        for sub in range(start_loc, end_loc + 1):
+            
+            if sub == n:
+                continue
 
             y = s_arr[sub]
 
@@ -154,27 +179,6 @@ def two_sum_bin(arr, lower, upper):
 
             if t in targets:
                 solutions.add( t )
-
-    return len(solutions)
-
-def two_sum_hash(arr, lower, upper):
-    '''
-    two-sum hash
-
-    this is an upgraded version of the brute force approach that
-    leverages a hash set to keep track of the solution sets. Still
-    slow as molasses.
-    '''
-    ys = set(arr)
-    solutions = defaultdict(set)
-    targets = set(range(lower, upper + 1))
-
-    for x in arr:
-        for t in targets:
-            if x - t in ys:
-                if x == t - x:
-                    continue
-            solutions[t] = set([tuple(sorted([x, t - x]))])
 
     return len(solutions)
 
@@ -194,9 +198,10 @@ def run_submission(approach):
 
     return approach(numbers, lower, upper)
 
-def run_benchmark(iters=1):
+def run_benchmark(lower, upper, iters=1):
+    import time
 
-    data = read_two_sum_data(test_file_path)
+    data = read_two_sum_data(submission_file_path)
 
     for approach in [two_sum_hash, two_sum_bin]:
     
@@ -206,7 +211,7 @@ def run_benchmark(iters=1):
 
             start = time.time()
             
-            approach(data)
+            approach(data, lower, upper)
 
             end = time.time()
 
@@ -216,4 +221,8 @@ def run_benchmark(iters=1):
 
         print(f'{approach.__name__} - Results: Ran {iters} iterations with average execution time: {avg_time}.')
 
-run_benchmark()
+run_benchmark(-10000, 10000)
+
+# test data:
+# two_sum_hash - Results: Ran 30 iterations with average execution time: 0.12970083554585773.
+# two_sum_bin - Results: Ran 30 iterations with average execution time: 0.001450792948404948.
