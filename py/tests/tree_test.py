@@ -1899,4 +1899,5 @@ class Test_SumTree1(unittest.TestCase):
         actual = tree.root.right.path_sums(17)
         expected = 2
 
-        assert actual == expected 
+        assert actual == expected
+

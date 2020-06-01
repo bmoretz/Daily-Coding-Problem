@@ -1,62 +1,111 @@
-'''Pond Sizes.
+'''T9.
 
-You have an integer matrix representing a plot of land, where the
-value at that location represents the height above sea level. A 
-value of zero indicates water. A pond is a region of water connected
-vertically, horizontally, or diagonally. The size of the pond is the 
-total number of connected water cells. Write a method to compute the
-sizes of all ponds in the matrix.
+On old cell phones, users typed on a numeric pad and the phone
+would provide a list of words that matched these numbers. Each
+digit mapped to a set of 0-4 letters. Implement an algorithm
+to return a list of matching words, given a sequence of digits.
+You are provide a list of valid words (provided in whatever data
+structure you'd like). The mapping is shown in the diagram below.
 
-EXAMPLE:
-Input:
-    0   2   1   0
-    0   1   0   1
-    1   1   0   1
-    0   1   0   1
+    1       2       3
+           abc     def
+    4       5       6
+   ghi     jkl     mno
+   7        8       9
+  pqrs     tvu    wxyz
+            0
 
-Output: 2, 4, 1 (in any order)
+EXAMPLE
+
+Input: 8733
+Output: tree, used
 '''
 
-def pond_size(mat):
-    
-    def get_size(mat, row, col):
+from collections import defaultdict
+
+class T9():
+
+    class Dictionary():
         
-        n, m = len(mat) - 1, len(mat[0]) - 1
+        class Node():
+            def __init__(self, value, parent=None):
+                self.value = value
+                self.parent = parent
+                self.children = defaultdict(list)
 
-        if row < 0 or col < 0 \
-            or row > n or col > m or \
-            mat[row][col] != 0: return 0
+        def __init__(self):
+            self.root = self.Node(None)
 
-        size = 1
+        def insert_word(self, word):
+            
+            node = self.root
 
-        mat[row][col] = -1
+            for letter in [ w for w in word] + ['*']:
+                if not letter in node.children:
+                    node.children[letter] = self.Node(letter, node)
 
-        for dr in range(-1, 2):
-            for dc in range(-1, 2):
-                size += get_size(mat, row + dr, col + dc)
+                node = node.children[letter]
+        
+        def get_matches(self, letters, nodes=None):
 
-        return size
+            nodes = [self.root] if not nodes else nodes
+            results = []
 
-    if not mat: return None
+            for letter in letters:
+                for node in nodes:
+                    for child in node.children:
+                        if child == letter:
+                            results += [node.children[letter]]
 
-    ponds = []
+            return results
 
-    for row in range(len(mat)):
-        for col in range(len(mat[0])):
+    def __init__(self, word_list):
+        pad = defaultdict(list)
 
-            if mat[row][col] == 0:
-                ponds += [get_size(mat, row, col)]
+        pad[2] = ['a', 'b', 'c']
+        pad[3] = ['d', 'e', 'f']
+        pad[4] = ['g', 'h', 'i']
+        pad[5] = ['j', 'k', 'l']
+        pad[6] = ['m', 'n', 'o']
+        pad[7] = ['p', 'q', 'r', 's']
+        pad[8] = ['t', 'v', 'u']
+        pad[9] = ['w', 'x', 'y', 'z']
+    
+        self.pad = pad
 
-    return ponds
+        dictionary = self.Dictionary()
 
-mat =[[0, 2, 1, 0, 0, 0],
-                [0, 1, 0, 1, 0, 1],
-                [1, 1, 0, 1, 0, 1],
-                [0, 1, 0, 1, 1, 1],
-                [0, 1, 0, 1, 1, 1]]
+        for word in word_list:
+            dictionary.insert_word(word)
 
+        self.dictionary = dictionary
 
+    def get_matches(self, num):
+        
+        if not num: return None
 
-result = pond_size(mat)
+        word_matches = []
+        nodes = []
 
-print(result)
+        for digit in str(num):
+            letters = self.pad[ int(digit) ]
+            nodes = self.dictionary.get_matches(letters, nodes)
+
+        for node in nodes:
+            word = ''
+
+            while node.parent:
+                word = node.value + word
+                node = node.parent
+            
+            word_matches.append(word)
+
+        return word_matches
+
+words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle', 'apple', 'milk']
+
+calc = T9(word_list=words)
+
+results = calc.get_matches(26479)
+
+print(results)

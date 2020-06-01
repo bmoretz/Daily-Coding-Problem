@@ -146,8 +146,11 @@ def two_sum_bin(arr, lower, upper):
 
         start_loc, end_loc = index_lookup[l], index_lookup[u]
 
-        for sub in range(start_loc, end_loc):
-
+        for sub in range(start_loc, end_loc + 1):
+            
+            if sub == n:
+                continue
+            
             y = s_arr[sub]
 
             t = x + y

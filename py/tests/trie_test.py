@@ -42,7 +42,7 @@ class Test_MapSum1(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_case1(self):       
+    def test_case1(self):
         
         mapsum = PrefixMapSum1()
 
@@ -80,3 +80,75 @@ class Test_MaxXOR(unittest.TestCase):
         mx = MaxXOR1(values)
 
         assert mx.find_max_xor(2) == 6
+
+from py.problems.trie import T9
+class Test_T9(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle']
+
+        calc = T9(word_list=words)
+
+        actual = calc.get_matches(None)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+        
+        words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle']
+
+        calc = T9(word_list=words)
+
+        actual = calc.get_matches(8733)
+        expected = ['used', 'tree']
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle', 'apple', 'milk']
+
+        calc = T9(word_list=words)
+
+        actual = calc.get_matches(6455)
+        expected = ['milk']
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle', 'apple', 'milk']
+
+        calc = T9(word_list=words)
+
+        actual = calc.get_matches(25742)
+        expected = ['alpha']
+
+        assert actual == expected
+
+    def test_case4(self):
+        
+        words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle', 'apple', 'milk']
+
+        calc = T9(word_list=words)
+
+        actual = calc.get_matches(96753)
+        expected = ['world']
+
+        assert actual == expected
+
+    def test_case5(self):
+        
+        words = ['used', 'tree', 'angry', 'world', 'alpha', 'trip', 'usage', 'triangle', 'apple', 'milk']
+
+        calc = T9(word_list=words)
+
+        actual = calc.get_matches(26479)
+        expected = ['angry']
+
+        assert actual == expected

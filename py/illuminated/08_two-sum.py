@@ -226,3 +226,7 @@ run_benchmark(-10000, 10000)
 # test data:
 # two_sum_hash - Results: Ran 30 iterations with average execution time: 0.12970083554585773.
 # two_sum_bin - Results: Ran 30 iterations with average execution time: 0.001450792948404948.
+
+# challenge set:
+# two_sum_hash - Results: Ran 1 iterations with average execution time: 14158.828871011734.
+# two_sum_bin - Results: Ran 1 iterations with average execution time: 69.76197385787964.
