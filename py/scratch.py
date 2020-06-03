@@ -1,36 +1,71 @@
-'''Sum Swap.
+'''Langton's Ant
 
-Given two arrays of integers, find a pair of values (one value from
-each array) that you can swap to give the two arrays the same
-sum.
+An ant is sitting on an infinite grid of white and black squares. It 
+initially faces right. At each step, it does the following:
 
-EXAMPLE
-Input: {4, 1, 2, 1, 1, 2} and {3, 6, 3, 3}
-Output: {1, 3}
+1.) At a white square, flip the color of the square, turn 90 degrees
+right (clockwise), and move forward one unit.
+
+2.) At a black square, flip the color of the square, turn 90 degrees
+left (counter-clockwise), and move forward one unit.
+
+Write a program to simulate the first K moves that the ant makes and
+print the final board as a grid. Note that you are not provided with
+the data structure to represent the grid. This is something you must
+design yourself. The only input to your method is K. You should print
+the final grid and return nothing. The method signature might be
+something like 'void printKMoves(int K).
 '''
 
-def sum_swap(arr1, arr2):
-
+def printKMoves(K):
     
-    sumA, sumB = sum(arr1), sum(arr2)
+    def build_board(K):
+        board = []
 
-    delta = (sumB - sumA)/2
+        for row in range(K):
+            prev = 'W' if row % 2 == 0 else 'B'
+            cur = []
+            for col in range(K):
+                cur += [prev]
+                prev = 'B' if prev == 'W' else 'W'
 
-    ys = set(arr2)
+            board += [cur]
 
-    results = set()
+        return board
 
-    for x in arr1:
+    board = build_board(2*K)
 
-        t = x + delta
+    r, c = K//2, K//2
+    direction = 90
 
-        if t in ys:
-            results.add(( int(x), int(t)))
+    for m in range(K):
 
-    return results
+        if board[r][c] == 'W':
+            board[r][c] = 'B'
+            direction += 90
+        else:
+            board[r][c] = 'B'
+            direction -= 90
 
-arr1, arr2 = [4, 1, 2, 1, 1, 2, 4, 2, 1, 2], [1, 6, 2, 3, 5, 1]
+        if direction == 0:
+            r -= 1
+        elif direction == 90:
+            c += 1
+        elif direction == 180:
+            r += 1
+        elif direction == 270:
+            c -= 1
 
-results = sum_swap(arr1, arr2)
+    return board
 
-print(results)
+
+b = printKMoves(5)
+
+for row in b:
+    line = ''
+    for c in row:
+        line += f'{c} '
+    print(line)
+
+            
+
