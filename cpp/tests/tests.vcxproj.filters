@@ -13,6 +13,7 @@
     <ClCompile Include="lang_tests.cpp" />
     <ClCompile Include="ds_arr_stack.cpp" />
     <ClCompile Include="ds_heap.cpp" />
+    <ClCompile Include="bitmanip_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

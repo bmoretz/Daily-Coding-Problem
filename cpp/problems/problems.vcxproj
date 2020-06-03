@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="arr.h" />
+    <ClInclude Include="bitmanip.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="lang.h" />
