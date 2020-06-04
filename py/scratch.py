@@ -1,71 +1,79 @@
-'''Langton's Ant
+'''Rand7 from Rand5.
 
-An ant is sitting on an infinite grid of white and black squares. It 
-initially faces right. At each step, it does the following:
-
-1.) At a white square, flip the color of the square, turn 90 degrees
-right (clockwise), and move forward one unit.
-
-2.) At a black square, flip the color of the square, turn 90 degrees
-left (counter-clockwise), and move forward one unit.
-
-Write a program to simulate the first K moves that the ant makes and
-print the final board as a grid. Note that you are not provided with
-the data structure to represent the grid. This is something you must
-design yourself. The only input to your method is K. You should print
-the final grid and return nothing. The method signature might be
-something like 'void printKMoves(int K).
+Implement a method rand7() given rand5(). That is, given a
+method that generates a random number between 0 and 4 (inclusive),
+write a method that generates a random number between 0 and 6
+(inclusive).
 '''
 
-def printKMoves(K):
+from random import randrange
+from collections import defaultdict
+
+def rand5():
+    return randrange(0, 5)
+
+'''
+rand7 1
+
+simple / deterministic, does not generate a uniform
+distribution though.
+'''
+def rand7_1():
+    a, b = rand5(), rand5()
+    n = (a + b) % 7
+    return n
+
+'''
+rand7 2
+
+somewhat more complicated, and also non-deterministic (unknown loops
+before we get a result, but it will complete). we generate a number
+between 0-8 using rand5, then scale it by 5. we discard anything >
+20 (21 values inc zero), and then mod the result to put it in the 
+range. Produces uniform range.
+'''
+def rand7_2():
     
-    def build_board(K):
-        board = []
+    while True:
+        a, b = rand5(), rand5()
+        n = 5 * a + b
 
-        for row in range(K):
-            prev = 'W' if row % 2 == 0 else 'B'
-            cur = []
-            for col in range(K):
-                cur += [prev]
-                prev = 'B' if prev == 'W' else 'W'
+        if n < 21:
+            return n % 7
 
-            board += [cur]
+'''
+rand7 3
 
-        return board
+most complicated and also non-deterministic. Generate the even
+numbers between 0 and 9 (2*rand5), and then an additional rand
+that must be between 0 and 3 (to maintain the distribution),
+then mod b to get a 1 or a zero. finally, n will be in range 0-9,
+so we discard > 7.
+'''
+def rand7_3():
 
-    board = build_board(2*K)
+    while True:
+        a, b = 2 * rand5(), rand5()
 
-    r, c = K//2, K//2
-    direction = 90
+        if b != 4:
+            r = b % 2
+            n = a + r
+            if n < 7:
+                return n
 
-    for m in range(K):
+def get_freq_table(fn, iters : int):
+    
+    freq = defaultdict(int)
 
-        if board[r][c] == 'W':
-            board[r][c] = 'B'
-            direction += 90
-        else:
-            board[r][c] = 'B'
-            direction -= 90
+    for _ in range(int(iters)):
+        freq[fn()] += 1
 
-        if direction == 0:
-            r -= 1
-        elif direction == 90:
-            c += 1
-        elif direction == 180:
-            r += 1
-        elif direction == 270:
-            c -= 1
+    for index in range(len(freq)):
+        freq[index] /= iters
 
-    return board
+    return freq
 
-
-b = printKMoves(5)
-
-for row in b:
-    line = ''
-    for c in row:
-        line += f'{c} '
-    print(line)
-
-            
-
+print(get_freq_table(rand5, 1e4))
+print(get_freq_table(rand7_1, 1e4))
+print(get_freq_table(rand7_2, 1e4))
+print(get_freq_table(rand7_3, 1e4))

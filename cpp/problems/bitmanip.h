@@ -36,14 +36,20 @@ namespace bitmanip_problems
 	/// <returns>n + m inserted at positions i-j</returns>
 	inline auto insertion1( const int n, const int m, const int i, const int j )
 	{
+		// total number of bits.
 		const auto length = static_cast< int >( log2( n ) );
+		// length of the middle
 		const auto mid = i + j - 1;
+		// split out the top: n|0's
 		const auto top = ( n >> mid ) << mid;
 
+		// n|m|0's
 		const auto nm = top | m << i;
 
+		// 0's|n
 		const auto bottom = n & static_cast< int >( pow( 2, i ) );
 
+		// n|m|n
 		const auto combined = nm | bottom;
 
 		return combined;
