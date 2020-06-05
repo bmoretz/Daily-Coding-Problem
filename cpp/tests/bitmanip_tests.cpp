@@ -92,4 +92,70 @@ namespace bitmanip_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+	/// Testing class for decimal to binary (string).
+	/// </summary>
+    class dec_to_bin_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( dec_to_bin_tests, dec_to_bin_case1 )
+    {
+        const auto n = .72;
+
+        const auto actual = dec_to_bin( n );
+        const auto expected = ".0100100";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( dec_to_bin_tests, dec_to_bin_case2 )
+    {
+        const auto n = .69;
+
+        const auto actual = dec_to_bin( n );
+        const auto expected = ".0100010";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( dec_to_bin_tests, dec_to_bin_case3 )
+    {
+        const auto n = 0.121841878;
+
+        const auto actual = dec_to_bin( n );
+        const auto expected = ".010111001111010100111100";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( dec_to_bin_tests, dec_to_bin_case4 )
+    {
+        const auto n = 0.1e-32;
+
+        const auto actual = dec_to_bin( n );
+        const auto expected = "ERROR";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( dec_to_bin_tests, dec_to_bin_case5 )
+    {
+        const auto n = 0.1e-12;
+
+        const auto actual = dec_to_bin( n );
+        const auto expected = ".010011000100101100111111";
+
+        EXPECT_EQ( actual, expected );
+    }
 }
