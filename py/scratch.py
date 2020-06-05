@@ -26,7 +26,7 @@ def pair_sum(arr, t):
         if y == x and lookup[x] == 1:
             continue
 
-        if arr[index] and y in lookup and (y, x) not in results:
+        if y in lookup and (y, x) not in results:
             results.add((x, y))
 
     return results
