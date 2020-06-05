@@ -1,79 +1,38 @@
-'''Rand7 from Rand5.
+'''Paris with Sum.
 
-Implement a method rand7() given rand5(). That is, given a
-method that generates a random number between 0 and 4 (inclusive),
-write a method that generates a random number between 0 and 6
-(inclusive).
+Design an algorithm to find all pairs of integers within an array which sum
+to a specified value.
 '''
 
-from random import randrange
 from collections import defaultdict
 
-def rand5():
-    return randrange(0, 5)
-
-'''
-rand7 1
-
-simple / deterministic, does not generate a uniform
-distribution though.
-'''
-def rand7_1():
-    a, b = rand5(), rand5()
-    n = (a + b) % 7
-    return n
-
-'''
-rand7 2
-
-somewhat more complicated, and also non-deterministic (unknown loops
-before we get a result, but it will complete). we generate a number
-between 0-8 using rand5, then scale it by 5. we discard anything >
-20 (21 values inc zero), and then mod the result to put it in the 
-range. Produces uniform range.
-'''
-def rand7_2():
+def pair_sum(arr, t):
     
-    while True:
-        a, b = rand5(), rand5()
-        n = 5 * a + b
+    if not arr: return None
 
-        if n < 21:
-            return n % 7
+    lookup = defaultdict(int)
 
-'''
-rand7 3
+    for n in arr:
+        lookup[n] += 1
 
-most complicated and also non-deterministic. Generate the even
-numbers between 0 and 9 (2*rand5), and then an additional rand
-that must be between 0 and 3 (to maintain the distribution),
-then mod b to get a 1 or a zero. finally, n will be in range 0-9,
-so we discard > 7.
-'''
-def rand7_3():
+    results = set()
 
-    while True:
-        a, b = 2 * rand5(), rand5()
+    for index, x in enumerate(arr):
+        y = t - x
 
-        if b != 4:
-            r = b % 2
-            n = a + r
-            if n < 7:
-                return n
+        # can't sum it with itself to find a pair,
+        # there needs to be at least 2 of the same
+        # number if this is the case.
+        if y == x and lookup[x] == 1:
+            continue
 
-def get_freq_table(fn, iters : int):
-    
-    freq = defaultdict(int)
+        if arr[index] and y in lookup and (y, x) not in results:
+            results.add((x, y))
 
-    for _ in range(int(iters)):
-        freq[fn()] += 1
+    return results
 
-    for index in range(len(freq)):
-        freq[index] /= iters
+arr = [4, 1, 2, 7, 12, 9, 5, 16, 0, 9, 4]
 
-    return freq
+results = pair_sum(arr, 9)
 
-print(get_freq_table(rand5, 1e4))
-print(get_freq_table(rand7_1, 1e4))
-print(get_freq_table(rand7_2, 1e4))
-print(get_freq_table(rand7_3, 1e4))
+print(results)

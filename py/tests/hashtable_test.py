@@ -162,3 +162,53 @@ class Test_WordFrequency(unittest.TestCase):
         'department': 1, 'store': 1, 'chelsea': 1, 'purchased': 1, 'several': 1, 'pounds': 1, 'worth': 1, 'of': 1, 'school': 1, 'supplies': 1}
 
         assert actual == expected
+
+from py.problems.hashtable import pair_sum
+class Test_PairSum(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        arr = None
+
+        actual = pair_sum(arr, 4)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        arr = [4, 1, 2, 7, 12, 9, 5]
+
+        actual = pair_sum(arr, 6)
+        expected = {(4, 2), (5, 1)}
+
+    def test_case2(self):
+
+        arr = [4, 1, 2, 7, 12, 9, 5, 16, 0, 9]
+
+        actual = pair_sum(arr, 4)
+        expected = {(4, 0), (2, 2)}
+
+    def test_case3(self):
+
+        arr = [4, 1, 2, 7, 12, 9, 5, 16, 0, 9]
+
+        actual = pair_sum(arr, 8)
+        expected = {(1, 7)}
+
+    def test_case4(self):
+
+        arr = [4, 1, 2, 7, 12, 9, 5, 16, 0, 9, 4]
+
+        actual = pair_sum(arr, 8)
+        expected = {(4, 4), (1, 7)}
+
+    def test_case5(self):
+
+        arr = [4, 1, 2, 7, 12, 9, 5, 16, 0, 9, 4]
+
+        actual = pair_sum(arr, 9)
+        expected = {(9, 0), (4, 5), (2, 7)}
