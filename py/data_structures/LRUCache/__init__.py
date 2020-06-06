@@ -7,15 +7,6 @@ particular key) and be initialized with a max size. When it is full,
 it should evict the least recently used item.
 '''
 
-'''LRU Cache.
-
-Design and build a "least recently used" cache, which evicts the
-least recently used item. The cache should map from keys to values
-(allowing you to insert and retrieve a value associated with a 
-particular key) and be initialized with a max size. When it is full,
-it should evict the least recently used item.
-'''
-
 class LRUCache():
 
     '''
@@ -146,16 +137,3 @@ class LRUCache():
 
     def __str__(self):
         return ', '.join([str(item) for item in self._data])
-        
-cache = LRUCache(5)
-
-items = [(1, 'A'), (2, 'B'), (5, 'E'), (4, 'D'), (3, 'C')] # fill the cache
-
-for item in items:
-    cache.insert(item[0], item[1])
-
-print(cache)
-
-cache.insert(6, 'F')
-
-print(cache)

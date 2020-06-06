@@ -45,6 +45,6 @@ class Test_DistributionFitting1(unittest.TestCase):
         
         actual = distribution_fitting('expon', investments)
 
-        expected = (200, 230)
+        expected = (200, 240)
 
         assert expected[0] < actual[0] < expected[1]

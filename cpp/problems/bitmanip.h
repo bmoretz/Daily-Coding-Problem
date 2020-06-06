@@ -76,7 +76,7 @@ namespace bitmanip_problems
 	/// </summary>
 	/// <param name="dec">floating point number</param>
 	/// <returns>binary string representation.</returns>
-	auto dec_to_bin( const std::float_t dec )
+	inline auto dec_to_bin( const std::float_t dec )
 	{
 		// must be in range (0,1)
 		if( dec >= 1 || dec <= 0 )
@@ -94,7 +94,7 @@ namespace bitmanip_problems
 
 		auto n_digits = std::ceil( log2( n ) );
 
-		// must be 
+		// must be 0 <= length <= 32 digits.
 		if( n_digits < 0 || n_digits > 32 )
 			return std::string( "ERROR" );
 

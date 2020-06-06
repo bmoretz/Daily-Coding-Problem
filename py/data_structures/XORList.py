@@ -2,9 +2,10 @@ import ctypes
 
 ''' XOR List.
 
-An XOR linked list is a more memory efficent doubly linked list.
+An XOR linked list is a more memory efficient doubly linked list.
 
-Instead of each node holding next and prev fields, it holds a field named both, which is an XOR of the next node and the previous node. 
+Instead of each node holding next and prev fields, it holds a field named both, 
+which is an XOR of the next node and the previous node. 
 
 Implement an XOR linked list; it has:
 
@@ -13,18 +14,21 @@ get(index) which returns the node at index.
 
 '''
 
-class Node(object):
-    def __init__(self, val):
-        self.val = val
-        self.both = 0
-
 class XorLinkedList(object):
-    
+
+    class Node(object):
+        def __init__(self, val):
+            self.val = val
+            self.both = 0
+            
     def __init__(self):
         self.head = self.tail = None
         self.__nodes = [] # prevent garbage collection
 
-    def add(self, node):
+    def add(self, value):
+        
+        node = self.Node(value)
+
         if self.head is None:
             self.head = self.tail = node
         else:
@@ -37,6 +41,7 @@ class XorLinkedList(object):
         self.__nodes.append(node)
 
     def get(self, index):
+        
         prev_id = 0
         node = self.head
         
@@ -49,7 +54,7 @@ class XorLinkedList(object):
             else:
                 raise IndexError('Linked list index out of range')
         
-        return node
+        return node.val
 
 def _get_obj(id):
     return ctypes.cast(id, ctypes.py_object).value
