@@ -933,3 +933,65 @@ def two_sum_bin(arr, lower, upper):
                 solutions.add( t )
 
     return len(solutions)
+
+class Job():
+
+    def __init__(self, weight : int, length : int):
+        self.weight = weight
+        self.length = length
+        self.complete = 0
+
+    # diff scheduling
+    def diff(self):
+        return self.weight - self.length
+    
+    # ratio scheduling
+    def ratio(self):
+        return self.weight / self.length
+
+def read_jobs_data(file_path):
+    ''' read jobs
+
+    this function simply reads a jobs definition
+    file and returns a list of job objects per
+    the specification.
+    '''
+
+    with open(file_path, 'r') as f:
+
+        lines = f.read().splitlines()
+        num_jobs = int(lines[0])
+        
+        # allocate storage
+        jobs = [None] * num_jobs
+        index = 0
+        for line in lines[1:]:
+            w, l = line.split(' ')
+            jobs[index] = Job(int(w), int(l))
+            index += 1
+
+    return jobs
+
+'''
+schedule jobs by lowest diff first (weight as tie-breaker)
+'''
+def diff_order(j):
+    return (-j.diff(), -j.weight)
+
+'''
+schedule jobs by lowest job w/l ratio first (no tie-breaker).
+'''
+def ratio_order(j):
+    return -j.ratio()
+
+def schedule_jobs(jobs, schedule):
+    
+    ordered_jobs = sorted(jobs, key=schedule)
+
+    complete, weighted_complete = 0, 0
+
+    for job in ordered_jobs:
+        complete += job.length
+        weighted_complete += complete * job.weight
+
+    return weighted_complete

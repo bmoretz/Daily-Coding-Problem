@@ -55,6 +55,7 @@ class XorLinkedList(object):
                 raise IndexError('Linked list index out of range')
         
         return node.val
-
-def _get_obj(id):
-    return ctypes.cast(id, ctypes.py_object).value
+    
+    @staticmethod
+    def _get_obj(id):
+        return ctypes.cast(id, ctypes.py_object).value

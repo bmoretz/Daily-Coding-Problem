@@ -312,3 +312,34 @@ class Test_TwoSum(unittest.TestCase):
         expected = 8
 
         assert actual == expected
+
+from py.problems.illuminated import read_jobs_data
+from py.problems.illuminated import ratio_order, diff_order, schedule_jobs
+
+class Test_Scheduling(unittest.TestCase):
+
+    def setUp(self):
+
+        from os import getcwd
+        
+        data_dir = getcwd() + '\\data\\illuminated\\scheduling\\'
+
+        self.test_file_path = data_dir + 'problem13.4test.txt'
+
+    def test_diff(self):
+
+        jobs = read_jobs_data(self.test_file_path)
+
+        actual = schedule_jobs(jobs, diff_order)
+        expected = 68615
+
+        assert actual == expected
+
+    def test_ratio(self):
+
+        jobs = read_jobs_data(self.test_file_path)
+
+        actual = schedule_jobs(jobs, ratio_order)
+        expected = 67247
+
+        assert actual == expected

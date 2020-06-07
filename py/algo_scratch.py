@@ -1,100 +1,82 @@
 '''
-In this programming problem and the next you'll code up the greedy algorithms from lecture for minimizing the weighted sum of completion times...
+In this programming problem you'll code up Prim's minimum spanning tree algorithm.
 
-This file describes a set of jobs with positive and integral weights and lengths. It has the format
+This file describes an undirected graph with integer edge costs. It has the format
 
-[number_of_jobs]
+[number_of_nodes] [number_of_edges]
 
-[job_1_weight] [job_1_length]
+[one_node_of_edge_1] [other_node_of_edge_1] [edge_1_cost]
 
-[job_2_weight] [job_2_length]
+[one_node_of_edge_2] [other_node_of_edge_2] [edge_2_cost]
 
 ...
 
-For example, the third line of the file is "74 59", indicating that the second job has weight 74 and length 59.
+For example, the third line of the file is "2 3 -8874", indicating that there is an edge connecting vertex #2 and vertex #3 that has cost -8874.
 
-You should NOT assume that edge weights or lengths are distinct.
+You should NOT assume that edge costs are positive, nor should you assume that they are distinct.
 
-Your task in this problem is to run the greedy algorithm that schedules jobs in decreasing order of the difference (weight - length). Recall from
-lecture that this algorithm is not always optimal. 
+Your task is to run Prim's minimum spanning tree algorithm on this graph. You should report the overall cost of a minimum spanning tree --- an integer, which may or may not be negative --- in the box below.
 
-IMPORTANT: if two jobs have equal difference (weight - length), you should schedule the job with higher weight first. Beware: if you break ties 
-in a different way, you are likely to get the wrong answer. You should report the sum of weighted completion times of the 
-resulting schedule --- a positive integer --- in the box below.
+IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn) time implementation of Prim's algorithm should work fine. OPTIONAL: For those of you seeking an additional challenge, try implementing a heap-based version. The simpler approach, which should already give you a healthy speed-up, is to maintain relevant edges in a heap (with keys = edge costs). The superior approach stores the unprocessed vertices in the heap, as described in lecture. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
 
-ADVICE: If you get the wrong answer, try out some small test cases to debug your algorithm (and post your test cases to the discussion forum).
 
 '''
 
 import os
 
-data_dir = os.getcwd() + '\\data\\illuminated\\scheduling\\'
+data_dir = os.getcwd() + '\\data\\illuminated\\prim-mst\\'
 
-submission_file_path = data_dir + 'jobs.txt'
-test_file_path = data_dir + 'problem13.4test.txt'
+submission_file_path = data_dir + 'edges.txt'
+test_file_path = data_dir + 'problem15.9test.txt'
 
 from collections import defaultdict
 from time import time
 
-class Job():
+class CostGraph():
 
-    def __init__(self, weight : int, length : int):
-        self.weight = weight
-        self.length = length
-        self.complete = 0
+    class Node():
+        '''
+        each node has edges (keys) and weights (cost for v -> u)
+        '''
+        def __init__(self):
+            self.edges = {}
+        
+        def add_edge(self, v, c):
+            self.edges[v] = c
 
-    # diff scheduling
-    def diff(self):
-        return self.weight - self.length
-    
-    # ratio scheduling
-    def ratio(self):
-        return self.weight / self.length
+    def __init__(self):
+        self.nodes = defaultdict(self.Node)
 
-def read_jobs_data(file_path):
-    ''' read jobs
+    def add_connection(self, u, v, c):
+        self.nodes[u].add_edge(v, c)
+        self.nodes[v].add_edge(u, c)
 
-    this function simply reads a jobs definition
-    file and returns a list of job objects per
-    the specification.
+    def num_edges(self):
+        return len(self.nodes)
+
+def read_cost_graph_data(file_path):
+    ''' read cost graph
+
+    this function reads a cost graph from
+    a definition file where the first row
+    contains the # nodes / # edges, rows
+    2:n contain edges in v, u, c format.
     '''
 
     with open(file_path, 'r') as f:
 
         lines = f.read().splitlines()
-        num_jobs = int(lines[0])
-        
+        vertices, edges = lines[0].split(' ')
+
         # allocate storage
-        jobs = [None] * num_jobs
-        index = 0
+        g = CostGraph()
+
         for line in lines[1:]:
-            w, l = line.split(' ')
-            jobs[index] = Job(int(w), int(l))
-            index += 1
+            u, v, c = [int(d) for d in line.split(' ')]
 
-    return jobs
+            g.add_connection(u, v, c)
+        
+        
+    return g
 
-def diff_order(j):
-    return (-j.diff(), -j.weight)
-
-def ratio_order(j):
-    return -j.ratio()
-
-def schedule_jobs(jobs, schedule):
-    
-    ordered_jobs = sorted(jobs, key=schedule)
-
-    complete, weighted_complete = 0, 0
-
-    for job in ordered_jobs:
-        complete += job.length
-        weighted_complete += complete * job.weight
-
-    return weighted_complete
-
-jobs = read_jobs_data(submission_file_path)
-
-diff_wc = schedule_jobs(jobs, diff_order)
-ratio_wc = schedule_jobs(jobs, ratio_order)
-
-print([diff_wc, ratio_wc])
+g = read_cost_graph_data(test_file_path)
