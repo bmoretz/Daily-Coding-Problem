@@ -995,3 +995,160 @@ def schedule_jobs(jobs, schedule):
         weighted_complete += complete * job.weight
 
     return weighted_complete
+
+class CostGraph():
+
+    class Node():
+        '''
+        each node has edges (keys) and weights (cost for v -> u)
+        '''
+        def __init__(self):
+            self.edges = {}
+        
+        def add_edge(self, v, c):
+            self.edges[v] = c
+
+        def get_edges(self):
+
+            edges = []
+
+            for w in self.edges:
+                # edge & cost
+                edges += [(w, self.edges[w])]
+            
+            return edges
+
+    def __init__(self):
+        self.nodes = defaultdict(self.Node)
+
+    def add_connection(self, u, v, c):
+        self.nodes[u].add_edge(v, c)
+        self.nodes[v].add_edge(u, c)
+
+    def vertices(self):
+        return list(self.nodes.keys())
+
+    def edges(self):
+        e = []
+        for w in self.nodes:
+            for v in self.nodes[w].edges:
+                e += [(w, v)]
+        return e
+    
+    def __getitem__(self, key):
+        return self.nodes[key]
+
+def read_cost_graph_data(file_path):
+    ''' read cost graph
+
+    this function reads a cost graph from
+    a definition file where the first row
+    contains the # nodes / # edges, rows
+    2:n contain edges in v, u, c format.
+    '''
+
+    with open(file_path, 'r') as f:
+
+        lines = f.read().splitlines()
+        vert_count, edge_count = lines[0].split(' ')
+
+        g = CostGraph()
+
+        for line in lines[1:]:
+            u, v, c = [int(d) for d in line.split(' ')]
+
+            g.add_connection(u, v, c)
+
+        assert len(g.vertices()) == int(vert_count)
+        assert len(g.edges()) // 2 == int(edge_count)
+
+    return g
+
+def prim_slow(g):
+
+    if not g: return None
+
+    mst = {} # minimum spanning tree
+    to_visit = []
+    
+    n = len(g.vertices()) - 1
+
+    # pick an arbitrary vertex from s to start
+    s = g.vertices()[0]
+
+    while n != 0:
+
+        # add all of s's edges
+        for v, c in g[s].get_edges():
+            # unless its already in the mst
+            if v in mst:
+                continue
+
+            to_visit += [(v, c)]
+
+        # sort all pending edges by minimum weight
+        to_visit = sorted(to_visit, key=lambda n: n[1])
+
+        # lowest cost edge is next
+        v, c = to_visit[0]
+
+        # remove the edge we are going to visit from
+        # the queue of edge/cost pairs.
+        to_visit = [(e, c) for e, c in to_visit if e != v]
+
+        # save edge & cost
+        mst[s] = c
+
+        # visit and continue
+        s = v
+        n -= 1
+
+    cost = 0
+
+    for e in mst:
+        cost += mst[e]
+
+    return cost
+
+def prim_fast(g):
+
+    if not g: return None
+
+    mst = set()
+    costs = []
+    
+    n = set(g.vertices())
+
+    # pick an arbitrary vertex from s to start
+    s = g.vertices()[0]
+    mst.add(s)
+
+    # to visit heap
+    to_visit = []
+
+    while mst != n:
+
+        # add all of s's edges
+        for v, c in g[s].get_edges():
+            # unless its already in the mst
+            if v in mst:
+                continue
+
+            heapq.heappush(to_visit, (c, v))
+
+        # keep taking lowest cost edges until
+        # we have one that isn't part of
+        # the MST
+        while True:
+            c, v = to_visit[0]
+            heapq.heappop(to_visit)
+
+            if v not in mst:
+                break
+        
+        costs += [c]
+        mst.add(v)
+
+        s = v
+
+    return sum(costs)

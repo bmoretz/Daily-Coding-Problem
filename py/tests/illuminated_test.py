@@ -313,33 +313,33 @@ class Test_TwoSum(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.illuminated import read_jobs_data
-from py.problems.illuminated import ratio_order, diff_order, schedule_jobs
+from py.problems.illuminated import read_cost_graph_data
+from py.problems.illuminated import prim_slow, prim_fast
 
-class Test_Scheduling(unittest.TestCase):
+class Test_PrimsMST(unittest.TestCase):
 
     def setUp(self):
 
         from os import getcwd
         
-        data_dir = getcwd() + '\\data\\illuminated\\scheduling\\'
+        data_dir = getcwd() + '\\data\\illuminated\\prim-mst\\'
 
-        self.test_file_path = data_dir + 'problem13.4test.txt'
+        self.test_file_path = data_dir + 'problem15.9test.txt'
 
-    def test_diff(self):
+    def test_fast(self):
 
-        jobs = read_jobs_data(self.test_file_path)
+        graph = read_cost_graph_data(self.test_file_path)
 
-        actual = schedule_jobs(jobs, diff_order)
-        expected = 68615
+        actual = prim_slow(graph)
+        expected = 14
 
         assert actual == expected
 
-    def test_ratio(self):
+    def test_slow(self):
 
-        jobs = read_jobs_data(self.test_file_path)
+        graph = read_cost_graph_data(self.test_file_path)
 
-        actual = schedule_jobs(jobs, ratio_order)
-        expected = 67247
+        actual = prim_fast(graph)
+        expected = 14
 
         assert actual == expected
