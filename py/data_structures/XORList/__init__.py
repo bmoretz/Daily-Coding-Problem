@@ -15,7 +15,7 @@ get(index) which returns the node at index.
 '''
 
 class XorLinkedList(object):
-
+    
     class Node(object):
         def __init__(self, val):
             self.val = val
@@ -50,7 +50,7 @@ class XorLinkedList(object):
 
             if next_id:
                 prev_id = id(node)
-                node = _get_obj(next_id)
+                node = self._get_obj(next_id)
             else:
                 raise IndexError('Linked list index out of range')
         

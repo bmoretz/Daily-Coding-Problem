@@ -77,7 +77,7 @@ class LRUCache():
         O(K)
         '''
         def remove(self, value):
-            node, prev = self._head, None
+            node, prev = self.head, None
             
             while node:
                 if node.data == value:
@@ -126,7 +126,7 @@ class LRUCache():
     '''
     def get(self, key):
 
-        if self._data[key]:
+        if key in self._data:
             if self._keys.front() != key:
                 self._keys.remove(key)
                 self._keys.push_front(key)
@@ -137,3 +137,6 @@ class LRUCache():
 
     def __str__(self):
         return ', '.join([str(item) for item in self._data])
+
+    def __len__(self):
+        return len(self._data)
