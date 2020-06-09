@@ -1,77 +1,40 @@
-'''Calculator.
+'''Add without plus.
 
-Given an arithemetic equation consisting of positive integers, +, -,
-*, and / (no parenthesis), compute the result.
-
-EXAMPLE:
-
-Input: 2*3+5/6*3+15
-Output: 23.5
+Write a function that adds two numbers. You should not use + or any
+arithmetic operators.
 '''
 
-def calculate1(expr):
-    
-    def tokenize(expr):
-        ops = {
-            '+' : [ lambda x, y: x + y ],
-            '-' : [ lambda x, y: x - y ],
-            '*' : [ lambda x, y: x * y ],
-            '/' : [ lambda x, y: x / y ]
-        }
+def bin_add(a, b):
+    from math import log2, ceil
 
-        tokens, cur = [], ''
+    def get_bit(val, pos):
         
-        mults, adds = 0, 0
+        mask = 1 << pos
 
-        for c in expr:
-            if c in ops:
-                tokens += [int(cur)]
-                tokens += [(c, ops[c])]
+        return (val & mask) == mask
 
-                if c in ['+', '-']:
-                    adds += 1
-                else:
-                    mults += 1
-                
-                cur = ''
-            else:
-                cur += c
-        
-        tokens += [int(cur)]
+    if not (a and b): return None
 
-        return (tokens, mults, adds)
-
-    def process(tokens, op_type):
-
-        for index, token in enumerate(tokens):
-
-            if type(token) == tuple:
-                if token[0] in op_type:
-                    func, x, y = token[1][0], \
-                        tokens[index - 1], tokens[index + 1]
-
-                    left = tokens[:index - 1]
-                    result = [func(x, y)]
-                    right = tokens[index + 2:]
-
-                    return left + result + right
-
-        return tokens
-
-    if not expr: return None
-
-    tokens, mults, adds = tokenize(expr)
-
-    for _ in range(mults):
-        tokens = process(tokens, '*/')
+    base = a ^ b
+    carry = (a & b) << 1
     
-    for _ in range(adds):
-        tokens = process(tokens, '+-')
+    positions = ceil(log2(max(a, b)))
+    
+    result, has_carry = 0, False
 
-    return tokens[0]
+    for index in range(positions):
+        
+        j, k = get_bit(base, index), get_bit(carry, index)
 
-expr = "1+2+3+4+5/5"
+        if j & k:
+            carry <<= 1
+        elif j | k:
+            result |= ( 1 << index)
 
-res = calculate1(expr)
+    return result | carry
 
-print(res)
+a, b = 9101, 43
+
+result = bin_add(a, b)
+
+print(result)
