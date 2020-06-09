@@ -34,7 +34,7 @@ namespace bitmanip_problems
 	/// <param name="i">index of where m should start in n</param>
 	/// <param name="j">index of where m should end in m</param>
 	/// <returns>n + m inserted at positions i-j</returns>
-	inline auto insertion1( const int n, const int m, const int i, const int j )
+	static auto insertion1( const int n, const int m, const int i, const int j )
 	{
 		// total number of bits.
 		const auto length = static_cast< int >( log2( n ) );
@@ -76,7 +76,7 @@ namespace bitmanip_problems
 	/// </summary>
 	/// <param name="dec">floating point number</param>
 	/// <returns>binary string representation.</returns>
-	inline auto dec_to_bin( const std::float_t dec )
+	static auto dec_to_bin( const std::float_t dec )
 	{
 		// must be in range (0,1)
 		if( dec >= 1 || dec <= 0 )
@@ -118,5 +118,72 @@ namespace bitmanip_problems
 		}
 
 		return result;
+	}
+
+	/* Flip Bit to Win.
+	 *
+	 * You have an integer and you can flip exactly one bit from a
+	 * 0 to 1. Write code to find the lengths of the longest sequence
+	 * of 1's you could create.
+	 *
+	 * EXAMPLE:
+	 *
+	 * Input: 1755 (or: 11011101111)
+	 * Output: 8
+	 */
+
+	/// <summary>
+	/// flip bit to win
+	///
+	/// This approach first calculates how many digits we are working with,
+	/// (n), and then we negate the binary of the passed in number (we shift the
+	/// negation to ensure the loop captures the last 1 if the bit is set). Then we
+	/// iterate over the digits (0->n) until we find a 1 in the negation,
+	/// this will give us the length of all the distinct groups in the passed
+	/// in number. Once we have this, we can calculate the distinct adjacent
+	/// sums (std::transform). The result will be the max adjacent sum + 1 (for
+	/// the flipped bit to join them).
+	/// </summary>
+	/// <complexity>
+	/// O(n) where n = # of digits in the number.
+	/// </complexity>
+	/// <param name="num">binary digits to work with</param>
+	/// <returns>max adjacent sum by flipping a bit (0 -> 1)</returns>
+	static auto flip_to_win( const int num )
+	{
+		const auto n = static_cast< int >( ceil( log2( num ) ) );
+		const auto neg = ~num << 1;
+
+		auto counter = 0;
+		auto parts = std::vector<int>();
+
+		for( auto index = 0; index < n; ++index )
+		{
+			const auto mask = 1 << ( n - index );
+
+			if( ( neg & mask ) == mask )
+			{
+				parts.push_back( counter );
+				counter = 0;
+			}
+			else
+			{
+				++counter;
+			}
+		}
+
+		parts.push_back( counter );
+
+		auto results = std::vector<int>( parts.size() / 2 + 1 );
+
+		std::transform(
+			parts.begin(), parts.end() - 1,
+			parts.begin() + 1,
+			std::back_inserter( results ),
+			std::plus<>() );
+
+		const auto max_sum = *std::max_element( results.begin(), results.end() );
+
+		return  max_sum + 1;
 	}
 }

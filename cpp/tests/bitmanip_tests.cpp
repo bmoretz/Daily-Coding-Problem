@@ -158,4 +158,74 @@ namespace bitmanip_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for insertion.
+    /// </summary>
+    class flip_to_win_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Flip Bit to Win 1
+    //
+
+    TEST_F( flip_to_win_tests, flip_to_win1_case1 )
+    {
+        const auto num = 1775; // 11011101111
+
+        const auto actual = flip_to_win( num );
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( flip_to_win_tests, flip_to_win1_case2 )
+    {
+        const auto num = 1982; // 11110111110
+
+        const auto actual = flip_to_win( num );
+        const auto expected = 10;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( flip_to_win_tests, flip_to_win1_case3 )
+    {
+        const auto num = 20487; // 101000000000111
+
+        const auto actual = flip_to_win( num );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( flip_to_win_tests, flip_to_win1_case4 )
+    {
+        const auto num = 3258749; // 1100011011100101111101
+
+        const auto actual = flip_to_win( num );
+        const auto expected = 7;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( flip_to_win_tests, flip_to_win1_case5 )
+    {
+        const auto num = 3221009; // 1100010010011000010001
+
+        const auto actual = flip_to_win( num );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

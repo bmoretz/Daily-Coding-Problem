@@ -6,63 +6,64 @@
 #include <random>
 #include <bitset>
 
-/* Binary to String.
+/* Flip Bit to Win.
  *
- * Given a real number between 0 and 1 (e.g., 0.72) that is passed in as
- * a double, print the binary representation. If the number cannot be
- * represented accurately in binary with at most 32 characters, print
- * "ERROR".
+ * You have an integer and you can flip exactly one bit from a
+ * 0 to 1. Write code to find the lengths of the longest sequence
+ * of 1's you could create.
+ *
+ * EXAMPLE:
+ *
+ * Input: 1755 (or: 11011101111)
+ * Output: 8
  */
 
-auto dec_to_bin( const std::float_t dec )
+auto flip_to_win( const int num )
 {
-	// must in in range (0,1)
-	if( dec >= 1 || dec <= 0 )
-		return std::string("ERROR");
-	
-	// convert to base 10
-	auto n = dec, rem = dec;
-	const auto epsilon = 0.1e-30;
+	const auto n = static_cast< int >( ceil( log2( num ) ) );
+	const auto neg = ~num << 1;
 
-	while( rem > epsilon )
+	auto counter = 0;
+	auto parts = std::vector<int>();
+
+	const auto debug = std::bitset<11>( neg ).to_string();
+	
+	for( auto index = 0; index < n; ++index )
 	{
-		n /= 0.1f;
-		rem = n - static_cast< int >( n );  // NOLINT(bugprone-narrowing-conversions, cppcoreguidelines-narrowing-conversions)
-	}
-	
-	auto n_digits = std::ceil( log2( n ) );
+		const auto mask = 1 << ( n - index );
 
-	// must in in range (0,1)
-	if( n_digits < 0 || n_digits > 32 )
-		return std::string( "ERROR" );
-
-	auto result = std::string(".");
-	
-	while( n_digits >= 0 )
-	{
-		const auto cur = static_cast< int >( pow( 2, n_digits ) );
-
-		if( n >= cur )
+		if( ( neg & mask ) == mask )
 		{
-			result += "1";
-			n -= cur;
+			parts.push_back( counter );
+			counter = 0;
 		}
 		else
 		{
-			result += "0";
+			++counter;
 		}
-		
-		--n_digits;
 	}
 
-	return result;
+	parts.push_back( counter );
+
+	auto results = std::vector<int>(parts.size() / 2  + 1 );
+	
+	std::transform(
+		parts.begin(), parts.end() - 1,
+		parts.begin() + 1,
+		std::back_inserter( results ),
+		std::plus<>() );
+
+	const auto max_sum = *std::max_element( results.begin(), results.end() );
+	
+	return  max_sum + 1;
 }
 
 auto main() -> int
 {
-	const auto n = 0.1e-12;
-
-	auto res = dec_to_bin( n );
+	// const auto num = 1982;
+	const auto num = 3221009;
+	
+	const auto res = flip_to_win( num );
 
 	std::cout << res;
 }
