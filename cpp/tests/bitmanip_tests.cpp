@@ -253,7 +253,7 @@ namespace bitmanip_tests
     {
         const auto num = 8; // 1000
 
-        const auto actual = next_number( num );
+        const auto actual = next_number::get_next( num );
         // 4 -> 0100
 		// 16 -> 10000
     	const auto expected = std::make_tuple( 4, 16 );
@@ -265,46 +265,46 @@ namespace bitmanip_tests
     {
         const auto num = 12; // 1100
 
-        const auto actual = next_number( num );
-    	// 9 -> 01001
-    	// 24 -> 11000
-        const auto expected = std::make_tuple( 9, 24 );
+        const auto actual = next_number::get_next( num );
+    	// 10 -> 1010
+    	// 17 -> 10001
+        const auto expected = std::make_tuple( 10, 17 );
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( next_number_tests, next_number_case3 )
     {
-        const auto num = 15; // 1100
+        const auto num = 11; // 0 1011
 
-        const auto actual = next_number( num );
-        // 15 -> 01111 (there is no smaller number with 4 1's in binary)
-        // 30 -> 11110
-        const auto expected = std::make_tuple( 15, 30 );
+        const auto actual = next_number::get_next( num );
+    	// 7 -> 0111
+        // 13 -> 1101
+        const auto expected = std::make_tuple( 7, 13 );
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( next_number_tests, next_number_case4 )
     {
-        const auto num = 11; // 1011
+        const auto num = 24; // 01 1000
 
-        const auto actual = next_number( num );
-        // 7 -> 0111
-        // 14 -> 1110
-        const auto expected = std::make_tuple( 15, 30 );
+        const auto actual = next_number::get_next( num );
+    	// 20 -> 01 0100
+        // 33 -> 10 0001
+        const auto expected = std::make_tuple( 20, 33 );
 
         EXPECT_EQ( actual, expected );
     }
 
     TEST_F( next_number_tests, next_number_case5 )
     {
-        const auto num = 22; // 11000
+        const auto num = 326; // 101000110
 
-        const auto actual = next_number( num );
-        // 7 -> 0111
-        // 14 -> 1110
-        const auto expected = std::make_tuple( 15, 30 );
+        const auto actual = next_number::get_next( num );
+        // 198 -> 11000110
+        // 390 -> 110000110
+        const auto expected = std::make_tuple( 198, 390 );
 
         EXPECT_EQ( actual, expected );
     }

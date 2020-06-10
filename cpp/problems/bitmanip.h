@@ -19,21 +19,21 @@ namespace bitmanip_problems
 	 * Output: M = 10001001100
 	 */
 
-	/// <summary>
-	/// insertion 1
-	///
-	/// this approach finds the number of digits in n, saves the top value by
-	/// shifting n down by the length - the length of the middle (j + i). Then
-	/// we can simply combine n and m into one binary string by shifting the top
-	/// up by its length and or'ing it together with m. Finally, we extract the bottom
-	/// (bits 0 - i), by and'ing it with 2^i, and then the result is just the OR result
-	/// of these two.
-	/// </summary>
-	/// <param name="n">first (master) binary digit</param>
-	/// <param name="m">second binary digit (to be inserted)</param>
-	/// <param name="i">index of where m should start in n</param>
-	/// <param name="j">index of where m should end in m</param>
-	/// <returns>n + m inserted at positions i-j</returns>
+	 /// <summary>
+	 /// insertion 1
+	 ///
+	 /// this approach finds the number of digits in n, saves the top value by
+	 /// shifting n down by the length - the length of the middle (j + i). Then
+	 /// we can simply combine n and m into one binary string by shifting the top
+	 /// up by its length and or'ing it together with m. Finally, we extract the bottom
+	 /// (bits 0 - i), by and'ing it with 2^i, and then the result is just the OR result
+	 /// of these two.
+	 /// </summary>
+	 /// <param name="n">first (master) binary digit</param>
+	 /// <param name="m">second binary digit (to be inserted)</param>
+	 /// <param name="i">index of where m should start in n</param>
+	 /// <param name="j">index of where m should end in m</param>
+	 /// <returns>n + m inserted at positions i-j</returns>
 	static auto insertion1( const int n, const int m, const int i, const int j )
 	{
 		// total number of bits.
@@ -63,19 +63,19 @@ namespace bitmanip_problems
 	 * "ERROR".
 	 */
 
-	/// <summary>
-	/// decimal to binary (string)
-	///
-	/// this approach just converts the decimal (float) number to its base 10
-	/// (decimal) representation by dividing it by .1f and checking if the delta
-	/// is < epsilon (error threshold). Once we have a decimal number, the number
-	/// of binary digits = log2( N ), so we start there and for each power of 2
-	/// that is less than the number, we put a 1 in that digits place, and then
-	/// subtract that amount from the base 10. Continue until we have no digits
-	/// left to examine.
-	/// </summary>
-	/// <param name="dec">floating point number</param>
-	/// <returns>binary string representation.</returns>
+	 /// <summary>
+	 /// decimal to binary (string)
+	 ///
+	 /// this approach just converts the decimal (float) number to its base 10
+	 /// (decimal) representation by dividing it by .1f and checking if the delta
+	 /// is < epsilon (error threshold). Once we have a decimal number, the number
+	 /// of binary digits = log2( N ), so we start there and for each power of 2
+	 /// that is less than the number, we put a 1 in that digits place, and then
+	 /// subtract that amount from the base 10. Continue until we have no digits
+	 /// left to examine.
+	 /// </summary>
+	 /// <param name="dec">floating point number</param>
+	 /// <returns>binary string representation.</returns>
 	static auto dec_to_bin( const std::float_t dec )
 	{
 		// must be in range (0,1)
@@ -132,23 +132,23 @@ namespace bitmanip_problems
 	 * Output: 8
 	 */
 
-	/// <summary>
-	/// flip bit to win
-	///
-	/// This approach first calculates how many digits we are working with,
-	/// (n), and then we negate the binary of the passed in number (we shift the
-	/// negation to ensure the loop captures the last 1 if the bit is set). Then we
-	/// iterate over the digits (0->n) until we find a 1 in the negation,
-	/// this will give us the length of all the distinct groups in the passed
-	/// in number. Once we have this, we can calculate the distinct adjacent
-	/// sums (std::transform). The result will be the max adjacent sum + 1 (for
-	/// the flipped bit to join them).
-	/// </summary>
-	/// <complexity>
-	/// O(n) where n = # of digits in the number.
-	/// </complexity>
-	/// <param name="num">binary digits to work with</param>
-	/// <returns>max adjacent sum by flipping a bit (0 -> 1)</returns>
+	 /// <summary>
+	 /// flip bit to win
+	 ///
+	 /// This approach first calculates how many digits we are working with,
+	 /// (n), and then we negate the binary of the passed in number (we shift the
+	 /// negation to ensure the loop captures the last 1 if the bit is set). Then we
+	 /// iterate over the digits (0->n) until we find a 1 in the negation,
+	 /// this will give us the length of all the distinct groups in the passed
+	 /// in number. Once we have this, we can calculate the distinct adjacent
+	 /// sums (std::transform). The result will be the max adjacent sum + 1 (for
+	 /// the flipped bit to join them).
+	 /// </summary>
+	 /// <complexity>
+	 /// O(n) where n = # of digits in the number.
+	 /// </complexity>
+	 /// <param name="num">binary digits to work with</param>
+	 /// <returns>max adjacent sum by flipping a bit (0 -> 1)</returns>
 	static auto flip_to_win( const int num )
 	{
 		const auto n = static_cast< int >( ceil( log2( num ) ) );
@@ -195,88 +195,180 @@ namespace bitmanip_problems
 	 * binary representation.
 	 */
 
-	/// <summary>
-	/// next number (binary)
-	///
-	/// This approach first calculates the position of the maximum binary
-	/// digit position with a 1 in it. From that, we can find the next largest
-	/// digit by flipping the position with the lowest 1 in the binary representation
-	/// to
-	/// </summary>
-	/// <param name="num"></param>
-	/// <returns></returns>
-	static auto next_number( const unsigned int num )
+	class next_number
 	{
-		const auto neg = ~num;
-		auto max_one = static_cast< int >( std::floor( log2( num ) ) );
-
-		// find the position of largest index which contains a 1
-		while( true )
+		static bool get_bit( const int num, const int pos )
 		{
-			const auto mask = 1 << max_one;
+			const auto mask = 1 << pos;
 
-			if( ( mask & num ) == mask )
-				break;
-
-			--max_one;
+			return ( num & mask ) >> pos;
 		}
 
-		// find the smallest index position which contains a 1
-		auto smallest_one = 0;
-
-		while( ( neg & 1 << smallest_one ) == 1 << smallest_one )
-			++smallest_one;
-
-		// the next largest number will swap the smallest 1 with the
-		// position that contains the next zero after the smallest 1
-		auto next_zero = smallest_one + 1;
-
-		while( ( num & 1 << next_zero ) == 1 << next_zero )
-			++next_zero;
-
-		const auto next_largest = ( num ^ 1 << smallest_one ) | 1 << next_zero;
-
-		// the next smallest will move the next one (or, the only one iff only 1)
-		// down into the place of the maximum zero position. If there are no zeros
-		// between the largest one and the end (i.e., 1111) then we already have
-		// the smallest possible digit with n 1's, so just use it.
-		auto next_one = max_one - 1;
-
-		while( ( num & 1 << next_one ) != 1 << next_one )
-			--next_one;
-
-		auto smallest_zero = 0;
-
-		while( ( neg & 1 << smallest_zero ) != 1 << smallest_zero )
-			smallest_zero++;
-
-		auto next_smallest = 0;
-
-		if( next_one == smallest_one )
+		/// <summary>
+		/// returns the number of binary digits in the passed in number.
+		/// </summary>
+		/// <param name="num">number</param>
+		/// <returns>number of binary digits</returns>
+		static int length( const int num )
 		{
-			// all the binary positions are 1's, we
-			// can't change any positions and and get
-			// a smaller number with the same amount of 1's
-			next_smallest = num;
-		}
-		else if( next_one < 0 )
-		{
-			// there is only one 1 in the binary representation,
-			// just move it down one position.
-			next_smallest = 1 << ( max_one - 1 );
-		}
-		else if( next_one < next_zero )
-		{
-			// there is no space in the beginning to move a digit down,
-			// so we have to move the most significant digit down 1 place.
-			next_smallest = ( num ^ 1 << max_one ) | 1 << next_zero;
-		}
-		else
-		{
-			// finally, base case is swap the next 1 with the smallest zero
-			next_smallest = ( num ^ 1 << next_one ) | 1 << smallest_zero;
+			return static_cast< int >( std::floor( log2( num ) ) );
 		}
 
-		return std::make_tuple( next_smallest, next_largest );
-	}
+		/// <summary>
+		/// returns the first occurence of a one in the binary
+		/// representation of the passed in number starting at the
+		/// 'start' offset.
+		/// </summary>
+		/// <param name="num">number to evaluate</param>
+		/// <param name="start">starting offset</param>
+		/// <returns>position of next 1</returns>
+		static int next_one( const int num, const int start )
+		{
+			auto position = start;
+
+			while( get_bit( num, position ) != 1 )
+				--position;
+
+			return position;
+		}
+
+		/// <summary>
+		/// returns the previous 1 in the binary representation
+		/// of the passed in number starting at the specified
+		/// starting index.
+		/// </summary>
+		/// <param name="num">num to evaluate</param>
+		/// <param name="start">starting offset</param>
+		/// <returns>position of 1 digit</returns>
+		static int prev_one( const int num, const int start )
+		{
+			auto min_one = start;
+
+			for( auto index = start; index < length( num ); ++index )
+			{
+				const auto mask = 1 << index;
+
+				if( ( num & 1 << index ) == mask )
+					break;
+
+				++min_one;
+			}
+
+			return min_one;
+		}
+
+		/// <summary>
+		/// counts the number of 1s starting at a given index
+		/// </summary>
+		/// <param name="num">number</param>
+		/// <param name="start">starting offset</param>
+		/// <returns>number of 1's in the binary</returns>
+		static int count_ones( const int num, const int start )
+		{
+			auto num_ones = 0;
+
+			for( auto index = start; index > -1; index-- )
+			{
+				const auto mask = 1 << index;
+
+				if( ( num & mask ) == mask )
+					num_ones++;
+			}
+
+			return num_ones;
+		}
+
+		/// <summary>
+		/// next larger
+		///
+		/// this approach first counts the total number of 1's in the binary
+		/// representation (starting 1 below the MSB). If the digit directly below
+		/// the MSB is a 0 and we have 1's below that digit, then we know we can
+		/// have a larger number by simply setting bit N-1 to 1, and then setting
+		/// the next 1 after that to a zero. Otherwise, we must increment the MSB
+		/// to n+1, and then we can simply clear the rest of the bits, and starting
+		/// at index 0 flip 0's to 1's in order to get the smallest possible number
+		/// with n-1 bit set and n-1 remaining 1's to set.
+		/// </summary>
+		/// <param name="num"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		static auto larger( const int num, const int n )
+		{
+			const auto num_ones = count_ones( num, n - 1 );
+
+			auto next_larger = 0;
+
+			if( get_bit( num, n - 1 ) == 0 && num_ones > 0 )
+			{
+				const auto exchange_bit = next_one( num, n - 1 );
+
+				next_larger = num ^ 1 << exchange_bit;
+				next_larger |= 1 << ( exchange_bit + 1 );
+			}
+			else
+			{
+				next_larger = 1 << ( n + 1 );
+
+				for( auto index = 0; index < num_ones; ++index )
+					next_larger |= 1 << index;
+			}
+
+			return next_larger;
+		}
+
+		/// <summary>
+		/// next smaller
+		///
+		/// similar logic to the next larger routine. we first count the
+		/// number of one's starting at n-1. If there are no zeros remaining
+		/// in the binary representation then we know we have the smallest possible
+		/// number with n 1's in it's binary representation. Otherwise, we check
+		/// the MSB-1 for a 1, which would mean that if we have a zero below that
+		/// we can set that bit to zero and flip the next 1 to a zero. Finally,
+		/// if we can clear the MSB and find a zero below it to swap with that
+		/// handles all the cases.
+		/// </summary>
+		/// <param name="num"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		static auto smaller( const int num, const int n )
+		{
+			const auto num_ones = count_ones( num, n - 1 );
+			const auto num_zeros = n - num_ones;
+
+			// no zeros to switch, this is the smallest
+			// number with n 1's.
+			if( num_zeros == 0 )
+				return num;
+
+			const auto next_zero = next_one( ~num, n - 1 );
+
+			auto next_smallest = 0;
+
+			if( get_bit( num, n - 1 ) == 1 && num_zeros > 0 )
+			{
+				const auto exchange_bit = next_one( ~num, n - 2 );
+
+				next_smallest = num ^ 1 << ( n - 1 );
+				next_smallest |= 1 << exchange_bit;
+			}
+			else
+			{
+				next_smallest = num ^ ( 1 << n );
+				next_smallest |= 1 << next_zero;
+			}
+
+			return next_smallest;
+		}
+
+	public:
+
+		static auto get_next( const int num )
+		{
+			const auto n = length( num );
+
+			return std::make_tuple( smaller( num, n ), larger( num, n ) );
+		}
+	};
 }

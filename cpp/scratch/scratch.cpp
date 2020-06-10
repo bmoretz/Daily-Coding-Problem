@@ -14,86 +14,131 @@
  * binary representation.
  */
 
-auto next_number( const int num )
+class next_number
 {
-	const auto neg = ~num;
-	auto max_one = static_cast< int >( std::floor( log2( num ) ) );
-
-	// find the position of largest index which contains a 1
-	while( true )
+	static bool get_bit( const int num, const int pos )
 	{
-		const auto mask = 1 << max_one;
+		const auto mask = 1 << pos;
 
-		if( ( mask & num ) == mask )
-			break;
-
-		--max_one;
+		return ( num & mask ) >> pos;
 	}
 
-	// find the smallest index position which contains a 1
-	auto smallest_one = 0;
-
-	while( ( neg & 1 << smallest_one ) == 1 << smallest_one )
-		++smallest_one;
-
-	// the next largest number will swap the smallest 1 with the
-	// position that contains the next zero after the smallest 1
-	auto next_zero = smallest_one + 1;
-
-	while( ( num & 1 << next_zero ) == 1 << next_zero )
-		++next_zero;
-	
-	const auto next_largest = ( num ^ 1 << smallest_one ) | 1 << next_zero;
-
-	// the next smallest will move the next one (or, the only one iff only 1)
-	// down into the place of the maximum zero position. If there are no zeros
-	// between the largest one and the end (i.e., 1111) then we already have
-	// the smallest possible digit with n 1's, so just use it.
-	auto next_one = max_one - 1;
-
-	while( ( num & 1 << next_one ) != 1 << next_one )
-		--next_one;
-
-	auto smallest_zero = 0;
-
-	while( ( neg & 1 << smallest_zero ) != 1 << smallest_zero )
-		smallest_zero++;
-
-	auto next_smallest = 0;
-
-	if( next_one == smallest_one )
+	static int length( const int num )
 	{
-		// all the binary positions are 1's, we
-		// can't change any positions and and get
-		// a smaller number with the same amount of 1's
-		next_smallest = num;
+		return static_cast< int >( std::floor( log2( num ) ) );
 	}
-	else if( next_one < 0 )
+
+	static int next_one( const int num, const int start )
 	{
-		// there is only one 1 in the binary representation,
-		// just move it down one position.
-		next_smallest = 1 << ( max_one - 1 );
+		auto position = start;
+
+		while( get_bit( num, position ) != 1 )
+			--position;
+
+		return position;
 	}
-	else if( next_one < next_zero )
+
+	static int prev_one( const int num, const int start )
 	{
-		// there is no space in the beginning to move a digit down,
-		// so we have to move the most significant digit down 1 place.
-		next_smallest = ( num ^ 1 << max_one ) | 1 << next_zero;
+		auto min_one = start;
+
+		for( auto index = start; index < length( num ); ++index )
+		{
+			const auto mask = 1 << index;
+
+			if( ( num & 1 << index ) == mask )
+				break;
+
+			++min_one;
+		}
+
+		return min_one;
 	}
-	else
+
+	static int count_ones( const int num, const int start )
 	{
-		// finally, base case is swap the next 1 with the smallest zero
-		next_smallest = ( num ^ 1 << next_one ) | 1 << smallest_zero;
+		auto num_ones = 0;
+
+		for( auto index = start; index > -1; index-- )
+		{
+			const auto mask = 1 << index;
+
+			if( ( num & mask ) == mask )
+				num_ones++;
+		}
+
+		return num_ones;
 	}
-	
-	return std::make_tuple( next_smallest, next_largest );
-}
+
+	static auto larger( const int num, const int n )
+	{
+		const auto num_ones = count_ones( num, n - 1 );
+
+		auto next_larger = 0;
+
+		if( get_bit( num, n - 1 ) == 0 && num_ones > 0 )
+		{
+			const auto exchange_bit = next_one( num, n - 1 );
+
+			next_larger = num ^ 1 << exchange_bit;
+			next_larger |= 1 << ( exchange_bit + 1 );
+		}
+		else
+		{
+			next_larger = 1 << ( n + 1 );
+
+			for( auto index = 0; index < num_ones; ++index )
+				next_larger |= 1 << index;
+		}
+
+		return next_larger;
+	}
+
+	static auto smaller( const int num, const int n )
+	{
+		const auto num_ones = count_ones( num, n - 1 );
+		const auto num_zeros = n - num_ones;
+
+		// no zeros to switch, this is the smallest
+		// number with n 1's.
+		if( num_zeros == 0 )
+			return num;
+
+		const auto next_zero = next_one( ~num, n - 1 );
+
+		auto next_smallest = 0;
+
+		if( get_bit( num, n - 1 ) == 1 && num_zeros > 0 )
+		{
+			const auto exchange_bit = next_one( ~num, n - 2 );
+
+			next_smallest = num ^ 1 << ( n - 1 );
+			next_smallest |= 1 << exchange_bit;
+		}
+		else
+		{
+			next_smallest = num ^ ( 1 << n );
+			next_smallest |= 1 << next_zero;
+		}
+		
+		return next_smallest;
+	}
+
+public:
+
+	static auto get_next( const int num )
+	{
+		const auto n = length( num );
+		
+		return std::make_tuple( smaller( num, n ), larger( num, n ) );
+	}
+};
 
 auto main() -> int
 {
-	const auto num = 24;
-
-	const auto next = next_number( num );
+	const auto num = 326;
+	
+	const auto next = next_number::get_next( num );
 	
 	std::cout << std::get<0>( next ) << "," << std::get<1>( next );
 }
