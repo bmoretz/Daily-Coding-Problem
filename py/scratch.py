@@ -1,40 +1,76 @@
-'''Add without plus.
+'''Shuffle.
 
-Write a function that adds two numbers. You should not use + or any
-arithmetic operators.
+Write a method to shuffle a deck of cards. It must be a perfect shuffle --
+in  other words, each of the 51! permutations of the deck has to be equally
+likely. Assume that you are given a random number generator which is perfect.
 '''
 
-def bin_add(a, b):
-    from math import log2, ceil
+from enum import Enum
+from random import randint
 
-    def get_bit(val, pos):
-        
-        mask = 1 << pos
+class Suite(Enum):
+    Hearts = 1
+    Aces = 2
+    Spades = 3
+    Clubs = 4
 
-        return (val & mask) == mask
+class Deck():
 
-    if not (a and b): return None
-
-    base = a ^ b
-    carry = (a & b) << 1
+    def __init__(self):
+        self.cards = self._get_deck()
     
-    positions = ceil(log2(max(a, b)))
-    
-    result, has_carry = 0, False
-
-    for index in range(positions):
+    def _get_suite(self, suite : Suite ):
         
-        j, k = get_bit(base, index), get_bit(carry, index)
+        face = ['J', 'Q', 'K', 'A']
+        num = [str(n) for n in range(2, 11)]
 
-        if j & k:
-            carry <<= 1
-        elif j | k:
-            result |= ( 1 << index)
+        cards = []
 
-    return result | carry
+        for c in num + face:
+            cards += [(suite.name, c)]
+            
+        return cards
 
-a, b = 9101, 43
+    def get(self):
+        return self.cards
 
-result = bin_add(a, b)
+    def get_rand(self, minimum, maximum):
+        # assume perfect random uniform
+        return randint(minimum, maximum)
+        
+    def _get_deck(self):
+        
+        deck = []
 
-print(result)
+        for suite in Suite:
+            deck += self._get_suite(suite)
+
+        return deck
+
+    def shuffle(self):
+        
+        n = len(self.cards)
+
+        for index in range(n):
+            # uniform draw (0, 51)
+            draw = self.get_rand(0, n - 1)
+
+            # swap k & i
+            self.cards[index], self.cards[draw] = \
+                self.cards[draw], self.cards[index]
+
+deck = Deck()
+
+c = deck.get()
+
+print(len(c))
+print(c)
+
+deck.shuffle()
+
+c = deck.get()
+
+print(len(c))
+print(c)
+
+print(hash(deck))
