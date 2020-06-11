@@ -1,76 +1,44 @@
-'''Shuffle.
+'''Random Set.
 
-Write a method to shuffle a deck of cards. It must be a perfect shuffle --
-in  other words, each of the 51! permutations of the deck has to be equally
-likely. Assume that you are given a random number generator which is perfect.
+Write a method to randomly generate a set of m integers from 
+an array of size n. Each element must have equal probability
+to be chosen.
 '''
 
-from enum import Enum
 from random import randint
 
-class Suite(Enum):
-    Hearts = 1
-    Aces = 2
-    Spades = 3
-    Clubs = 4
+def get_unique_set(n, k):
 
-class Deck():
+    if k < n:
+        raise RuntimeError('Cannot generate a unique set with k < n.')
 
-    def __init__(self):
-        self.cards = self._get_deck()
+    results = set()
     
-    def _get_suite(self, suite : Suite ):
+    while len(results) < n:
+
+        new = randint(0, k)
+
+        if new not in results:
+            results.add(new)
+
+    return results
+
+def get_random_set(data, m):
+
+    bag = list(data)
+    results = []
+
+    while len(results) < m:
         
-        face = ['J', 'Q', 'K', 'A']
-        num = [str(n) for n in range(2, 11)]
+        index = randint(0, len(bag) - 1)
 
-        cards = []
+        results += [bag[index]]
+        del bag[index]
 
-        for c in num + face:
-            cards += [(suite.name, c)]
-            
-        return cards
+    return results
 
-    def get(self):
-        return self.cards
+items = get_unique_set(50, 100)
 
-    def get_rand(self, minimum, maximum):
-        # assume perfect random uniform
-        return randint(minimum, maximum)
-        
-    def _get_deck(self):
-        
-        deck = []
+sub = get_random_set(items, 5)
 
-        for suite in Suite:
-            deck += self._get_suite(suite)
-
-        return deck
-
-    def shuffle(self):
-        
-        n = len(self.cards)
-
-        for index in range(n):
-            # uniform draw (0, 51)
-            draw = self.get_rand(0, n - 1)
-
-            # swap k & i
-            self.cards[index], self.cards[draw] = \
-                self.cards[draw], self.cards[index]
-
-deck = Deck()
-
-c = deck.get()
-
-print(len(c))
-print(c)
-
-deck.shuffle()
-
-c = deck.get()
-
-print(len(c))
-print(c)
-
-print(hash(deck))
+print(sub)

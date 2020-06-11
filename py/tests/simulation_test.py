@@ -35,3 +35,42 @@ class Test_Shuffle(unittest.TestCase):
             seen.add(order)
 
         assert len(seen) == iters
+
+import numpy as np
+from collections import defaultdict
+from py.problems.simulation import get_unique_set, get_random_set
+class Test_RandomSet(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_randomness(self):
+        
+        master = get_unique_set(50, 100) # master set of items
+        iters = 1e4 # num sims
+        freq = defaultdict(int) # cum freq table
+        total = 0 # counter
+
+        # run sim
+        for _ in range(int(iters)):
+
+            sub = get_random_set(master, 5)
+
+            for i in sub:
+                freq[i] += 1
+
+            total += len(sub)
+        
+        # calc freq
+        frequencies = []
+        for k in freq:
+            frequencies += [freq[k] / total]
+
+        deltas = [None] * (len(frequencies) - 1)
+        epsilon = 0.01
+
+        for index in range(1, len(frequencies)):
+            deltas[index - 1] = abs(frequencies[index] - frequencies[index - 1])
+
+        over = sum([0 if d < epsilon else 1 for d in deltas])
+        assert over == 0
