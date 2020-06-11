@@ -371,4 +371,46 @@ namespace bitmanip_problems
 			return std::make_tuple( smaller( num, n ), larger( num, n ) );
 		}
 	};
+
+	/* Conversion:
+	 *
+	 * Write a function to determine the number of bits you would
+	 * need to flip to convert integer A to integer B.
+	 *
+	 * EXAMPLE:
+	 *
+	 * Input: 29 (or: 11101), 15 (or: 01111)
+	 * Output: 2
+	 */
+
+	/// <summary>
+	/// conversion 1
+	///
+	/// this approach just and's A & B to get the digits that are
+	/// both 1's (the digits that don't need to be changed), then
+	/// negates that result so that the digits that need to be
+	/// changed are 1's. Then we can simply sum the number of 1's
+	/// to get our result.
+	/// </summary>
+	/// <param name="a">A</param>
+	/// <param name="b">B</param>
+	/// <returns>number of digits that need to be flipped to 1 so that
+	/// they equal.</returns>
+	static auto conversion1( const int a, const int b )
+	{
+		const auto need_changed = ~( a & b );
+		const auto digits = std::ceil( log2( std::max( a, b ) ) );
+
+		auto ctr = 0;
+
+		for( auto index = 0; index < digits; ++index )
+		{
+			const auto mask = 1 << index;
+
+			if( ( need_changed & ( 1 << index ) ) == mask )
+				++ctr;
+		}
+
+		return ctr;
+	}
 }

@@ -308,4 +308,79 @@ namespace bitmanip_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for conversion.
+    /// </summary>
+    class conversion_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Conversion 1
+    //
+
+    TEST_F( conversion_tests, conversion_tests_case1 )
+    {
+        const auto a = 29; // 11101
+    	const auto b = 15; // 01111
+
+        const auto actual = conversion1( a, b );
+        const auto expected = 2;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( conversion_tests, conversion_tests_case2 )
+    {
+        const auto a = 65; // 1000001
+        const auto b = 8; // 1000
+
+        const auto actual = conversion1( a, b );
+        const auto expected = 7;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( conversion_tests, conversion_tests_case3 )
+    {
+        const auto a = 126; // 1111110
+        const auto b = 5; //   0000101
+
+        const auto actual = conversion1( a, b );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( conversion_tests, conversion_tests_case4 )
+    {
+        const auto a = 84; // 1010100
+        const auto b = 81; // 1010001
+
+        const auto actual = conversion1( a, b );
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( conversion_tests, conversion_tests_case5 )
+    {
+        const auto a = 92; // 1011100
+        const auto b = 665; //   1010011001
+
+        const auto actual = conversion1( a, b );
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
