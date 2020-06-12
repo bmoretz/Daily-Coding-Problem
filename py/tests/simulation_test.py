@@ -67,10 +67,9 @@ class Test_RandomSet(unittest.TestCase):
             frequencies += [freq[k] / total]
 
         deltas = [None] * (len(frequencies) - 1)
-        epsilon = 0.01
+        epsilon = 0.001
 
         for index in range(1, len(frequencies)):
             deltas[index - 1] = abs(frequencies[index] - frequencies[index - 1])
 
-        over = sum([0 if d < epsilon else 1 for d in deltas])
-        assert over == 0
+        assert sum([0 if d < epsilon else 1 for d in deltas]) == 0

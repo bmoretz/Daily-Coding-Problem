@@ -1,44 +1,51 @@
-'''Random Set.
+'''Missing Number.
 
-Write a method to randomly generate a set of m integers from 
-an array of size n. Each element must have equal probability
-to be chosen.
+An array A contains all the integers from 0 to n, except for one number
+which is missing. In this problem, we cannot access an entire integer in A
+with a single operation. The elements of A are represented in binary, and
+the only operation we can use to access them is "fetch the jth bit of A[i],"
+which takes constant time. Write code to find the missing integer. Can you
+do it in O(N) time?
 '''
 
-from random import randint
+def to_bin_arr(num):
+    return [int(s) for s in bin(num)[2:]]
 
-def get_unique_set(n, k):
+def build_num_arr(n, exclude):
 
-    if k < n:
-        raise RuntimeError('Cannot generate a unique set with k < n.')
+    arr = []
 
-    results = set()
-    
-    while len(results) < n:
+    for index in range(n+1):
 
-        new = randint(0, k)
+        if index == exclude:
+            continue
 
-        if new not in results:
-            results.add(new)
+        arr += to_bin_arr(index)
 
-    return results
+    return arr
 
-def get_random_set(data, m):
+def missing_brute(arr):
 
-    bag = list(data)
-    results = []
+    cur, index = 0, 0
+    n = len(arr)
 
-    while len(results) < m:
+    while index < n:
         
-        index = randint(0, len(bag) - 1)
+        expected = to_bin_arr(cur)
 
-        results += [bag[index]]
-        del bag[index]
+        for j in expected:
+            
+            if arr[index] != j:
+                return cur
 
-    return results
+            index += 1
 
-items = get_unique_set(50, 100)
+        cur += 1
+    
+    return cur
 
-sub = get_random_set(items, 5)
+s = build_num_arr(10, 10)
 
-print(sub)
+res = missing_brute(s)
+
+print(res)
