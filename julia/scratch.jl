@@ -1,57 +1,41 @@
 #=
-    Is Unique.
+    Check Permutation.
 
-    Implement an algorithm to determine if a string has
-    all unique characters. What if you cannot use additional
-    data structures?
+    Given two strings, write a function to decide if one is
+    a permutation of the other.
 =#
 
-# Straight forward approach using a hash set.
-function is_unique1(str)
+function is_permutation1(s₁::String, s₂::String)::Bool
 
-    if str == Nothing
-        return false
-    end
+    function to_dict(str::String)::Dict
+        dict = Dict{Char, Integer}()
 
-    chars = Set(str)
-
-    return length(chars) == length(str)
-end
-
-# Instead of a data structure we just use
-# a bit flag to track the characters we've
-# seen thusfar.
-function is_unique2(str)
-
-    if str == Nothing
-        return false
-    end
-
-    seen, offset = Int(0), Int('a')
-
-    for index in firstindex(str):lastindex(str)
-        char = str[index]
-
-        if isspace(char)
-            continue
+        for char in str
+            if char ∉ keys(dict)
+                dict[char] = 0
+            else
+                dict[char] += 1
+            end
         end
 
-        position = Int(char) - offset
-        mask = 1 << position
+        return dict
+    end
 
-        if seen & mask == mask
-            return false
-        end
+    (length(s₁) == 0 || length(s₂) == 0) && return false
 
-        seen |= mask
+    d₁ = to_dict(s₁); d₂ = to_dict(s₂)
+
+    keys(d₁) != keys(d₂) && return false
+
+    for k in keys(d₁)
+        d₁[k] != d₂[k] && return false
     end
 
     return true
 end
 
-str = Nothing
+str1, str2 = "abcdef", "fedcba"
 
-res1 = is_unique1(str)
-res2 = is_unique2(str)
+res = is_permutation1(str1, str2)
 
-print(res1)
+print(res)
