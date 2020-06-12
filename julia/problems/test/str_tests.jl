@@ -25,3 +25,11 @@ end
     @test is_permutation1("perm1", "1perm") == true
     @test is_permutation1("perm1", "perm2") == false
 end
+
+@testset "is permutation 2" begin
+    @test is_permutation2("abcdef", "fedcba") == true
+    @test is_permutation2("abcdef", "fedcbaa") == false
+    @test is_permutation2("fabfcdef", "abcdefff")  == true
+    @test is_permutation2("perm1", "1perm") == true
+    @test is_permutation2("perm1", "perm2") == false
+end
