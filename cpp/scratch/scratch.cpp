@@ -7,40 +7,33 @@
 #include <bitset>
 #include <string>
 
-/* Conversion:
+/* Pairwise Swap.
  *
- * Write a function to determine the number of bits you would
- * need to flip to convert integer A to integer B.
- *
- * EXAMPLE:
- *
- * Input: 29 (or: 11101), 15 (or: 01111)
- * Output: 2
+ * Write a program to swap odd and even bits in an integer with as
+ * few instructions as possible (e.g., bit 0 and bit 1 are swapped,
+ * bit 22 and bit 3 are swapped, and so on).
  */
 
-auto conversion( const int a, const int b )
+auto pairwise_swap( const int num )
 {
-	const auto need_changed = ~( a & b );
-	const auto digits = std::ceil( log2( std::max( a, b) ) );
-	
-	auto ctr = 0;
-	
-	for( auto index = 0; index < digits; ++index )
-	{
-		const auto mask = 1 << index;
+	// masks to get the odd/even numbers in the digit, i.e,
+	 
+	// BIN: 01010101010101010101010101010101
+	static const auto even_mask = 0xaaaaaaaa;
+	// BIN: 10101010101010101010101010101010
+	static const auto odd_mask = 0x55555555;
 
-		if( ( need_changed & ( 1 << index ) ) == mask )
-			++ctr;
-	}
-
-	return ctr;
+	return ( ( num & even_mask ) >> 1 ) | ( ( num & odd_mask ) << 1 );
 }
 
 auto main() -> int
 {
-	const auto a = 126, b = 5;
+	const auto num = 120528;
 
-	const auto res = conversion( a, b );
-
-	std::cout << res;
+	const auto res = pairwise_swap( num );
+	
+	const auto num_str = std::bitset<31>( num ).to_string();
+	const auto res_str = std::bitset<31>( res ).to_string();
+	
+	std::cout << num_str << std::endl << res_str << std::endl << res;
 }

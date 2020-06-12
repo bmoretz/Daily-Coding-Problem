@@ -372,7 +372,7 @@ namespace bitmanip_problems
 		}
 	};
 
-	/* Conversion:
+	/* Conversion.
 	 *
 	 * Write a function to determine the number of bits you would
 	 * need to flip to convert integer A to integer B.
@@ -412,5 +412,24 @@ namespace bitmanip_problems
 		}
 
 		return ctr;
+	}
+
+	/* Pairwise Swap.
+	 *
+	 * Write a program to swap odd and even bits in an integer with as
+	 * few instructions as possible (e.g., bit 0 and bit 1 are swapped,
+	 * bit 22 and bit 3 are swapped, and so on).
+	 */
+
+	static auto pairwise_swap( const int num )
+	{
+		// masks to get the odd/even numbers in the digit, i.e,
+
+		// BIN: 01010101010101010101010101010101
+		static const auto even_mask = 0xaaaaaaaa;
+		// BIN: 10101010101010101010101010101010
+		static const auto odd_mask = 0x55555555;
+
+		return ( ( num & even_mask ) >> 1 ) | ( ( num & odd_mask ) << 1 );
 	}
 }

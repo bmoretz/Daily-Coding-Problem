@@ -383,4 +383,74 @@ namespace bitmanip_tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    /// <summary>
+    /// Testing class for pairwise swap.
+    /// </summary>
+    class pairwise_swap_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Pairwise Swap 1
+    //
+
+    TEST_F( pairwise_swap_tests, pairwise_swap_tests_case1 )
+    {
+        const auto num = 172; // 10101100
+
+        const auto actual = pairwise_swap( num );
+        const auto expected = 92; // 0001011100
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pairwise_swap_tests, pairwise_swap_tests_case2 )
+    {
+        const auto num = 843; // 1101010101
+
+        const auto actual = pairwise_swap( num );
+        const auto expected = 903; // 1110000111
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pairwise_swap_tests, pairwise_swap_tests_case3 )
+    {
+        const auto num = 1586; // 11000110010
+
+        const auto actual = pairwise_swap( num );
+        const auto expected = 2353; // 0100110001
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pairwise_swap_tests, pairwise_swap_tests_case4 )
+    {
+        const auto num = 8563; // 10000101110011
+
+        const auto actual = pairwise_swap( num );
+        const auto expected = 4787; // 1010110011
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pairwise_swap_tests, pairwise_swap_tests_case5 )
+    {
+        const auto num = 120528; // 011101011011010000
+
+        const auto actual = pairwise_swap( num );
+        const auto expected = 190944; // 0101110100111100000
+
+        EXPECT_EQ( actual, expected );
+    }
 }
