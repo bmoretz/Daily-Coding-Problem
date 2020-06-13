@@ -163,3 +163,31 @@ class Test_SmallestDifference2(unittest.TestCase):
         expected = (255, 254, 1)
 
         assert actual == expected
+
+from py.problems.arr import letters_numbers1
+class Test_LettersNumbers1(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        arr = None
+        actual = letters_numbers1(None)
+        expected = None
+
+        assert actual == expected
+
+from py.problems.arr import letters_numbers2
+class Test_LettersNumbers2(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        arr = None
+        actual = letters_numbers2(None)
+        expected = None
+
+        assert actual == expected

@@ -352,8 +352,6 @@ and make sure each array position is what we would expect to have
 in that position incrementally, otherwise we can short circuit and
 exit with that position. if we make it to the end, then the missing
 number has to be the last one.
-
-O()
 '''
 def missing_number1(arr):
 
