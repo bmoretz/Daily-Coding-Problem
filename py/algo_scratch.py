@@ -1,36 +1,32 @@
 '''
-In this programming problem you'll code up Prim's minimum spanning tree algorithm.
+In this programming problem and the next you'll code up the clustering algorithm from lecture for computing a max-spacing kk-clustering.
 
-This file describes an undirected graph with integer edge costs. It has the format
+This file describes a distance function (equivalently, a complete graph with edge costs). It has the following format:
 
-[number_of_nodes] [number_of_edges]
+[number_of_nodes]
 
-[one_node_of_edge_1] [other_node_of_edge_1] [edge_1_cost]
+[edge 1 node 1] [edge 1 node 2] [edge 1 cost]
 
-[one_node_of_edge_2] [other_node_of_edge_2] [edge_2_cost]
+[edge 2 node 1] [edge 2 node 2] [edge 2 cost]
 
 ...
 
-For example, the third line of the file is "2 3 -8874", indicating that there is an edge connecting vertex #2 and vertex #3 that has cost -8874.
+There is one edge (i,j)(i,j) for each choice of n 1 ≤i < j ≤ n, where n is the number of nodes.
 
-You should NOT assume that edge costs are positive, nor should you assume that they are distinct.
+For example, the third line of the file is "1 3 5250", indicating that the distance between nodes 1 and 3 (equivalently, the cost of the edge (1,3)) is 5250. 
+You can assume that distances are positive, but you should NOT assume that they are distinct.
 
-Your task is to run Prim's minimum spanning tree algorithm on this graph. You should report the overall cost of a minimum spanning tree --- an integer, 
-which may or may not be negative --- in the box below.
+Your task in this problem is to run the clustering algorithm from lecture on this data set, where the target number kk of clusters is set to 4. What is the maximum spacing of a 4-clustering?
 
-IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn) time implementation of Prim's algorithm should work fine. 
-
-OPTIONAL: For those of you seeking an additional challenge, try implementing a heap-based version. The simpler approach, which should already give you a healthy
-speed-up, is to maintain relevant edges in a heap (with keys = edge costs). The superior approach stores the unprocessed vertices in the heap, as described in 
-lecture. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
+ADVICE: If you're not getting the correct answer, try debugging your algorithm using some small test cases. And then post them to the discussion forum!
 '''
 
 import os
 
-data_dir = os.getcwd() + '\\data\\illuminated\\prim-mst\\'
+data_dir = os.getcwd() + '\\data\\illuminated\\clustering\\one\\'
 
-submission_file_path = data_dir + 'edges.txt'
-test_file_path = data_dir + 'problem15.9test.txt'
+submission_file_path = data_dir + 'clustering1.txt'
+test_file_path = data_dir + 'input_completeRandom_6_4.txt'
 
 from collections import defaultdict
 import heapq
@@ -89,7 +85,7 @@ def read_cost_graph_data(file_path):
     with open(file_path, 'r') as f:
 
         lines = f.read().splitlines()
-        vert_count, edge_count = lines[0].split(' ')
+        vert_count = int(lines[0])
 
         g = CostGraph()
 
@@ -99,123 +95,81 @@ def read_cost_graph_data(file_path):
             g.add_connection(u, v, c)
 
         assert len(g.vertices()) == int(vert_count)
-        assert len(g.edges()) // 2 == int(edge_count)
 
     return g
 
-def prim_slow(g):
 
-    if not g: return None
-
-    mst = {} # minimum spanning tree
-    to_visit = []
+def cluster(g, k) -> int:
     
-    n = len(g.vertices()) - 1
+    c = defaultdict(set)
 
-    # pick an arbitrary vertex from s to start
-    s = g.vertices()[0]
+    # initial clusters
+    for node in g.nodes:
+        c[node] = [node]
 
-    while n != 0:
+    distances = []
 
-        # add all of s's edges
-        for v, c in g[s].get_edges():
-            # unless its already in the mst
-            if v in mst:
+    seen = defaultdict(set)
+
+    for node in g.nodes:
+        for neighbor in g[node].edges:
+
+            if neighbor in seen[node]:
                 continue
 
-            to_visit += [(v, c)]
+            cost = g[node].edges[neighbor]
+            heapq.heappush(distances, (cost, node, neighbor))
+            seen[neighbor].add(node)
 
-        # sort all pending edges by minimum weight
-        to_visit = sorted(to_visit, key=lambda n: n[1])
+    merged = {}
 
-        # lowest cost edge is next
-        v, c = to_visit[0]
-
-        # remove the edge we are going to visit from
-        # the queue of edge/cost pairs.
-        to_visit = [(e, c) for e, c in to_visit if e != v]
-
-        # save edge & cost
-        mst[s] = c
-
-        # visit and continue
-        s = v
-        n -= 1
-
-    cost = 0
-
-    for e in mst:
-        cost += mst[e]
-
-    return cost
-
-def prim_fast(g):
-
-    if not g: return None
-
-    mst = set()
-    costs = []
-    
-    n = set(g.vertices())
-
-    # pick an arbitrary vertex from s to start
-    s = g.vertices()[0]
-    mst.add(s)
-
-    # to visit heap
-    to_visit = []
-
-    while mst != n:
-
-        # add all of s's edges
-        for v, c in g[s].get_edges():
-            # unless its already in the mst
-            if v in mst:
-                continue
-
-            heapq.heappush(to_visit, (c, v))
-
-        # keep taking lowest cost edges until
-        # we have one that isn't part of
-        # the MST
-        while True:
-            c, v = to_visit[0]
-            heapq.heappop(to_visit)
-
-            if v not in mst:
-                break
+    while k < len(c):
         
-        costs += [c]
-        mst.add(v)
+        _, u, v = distances[0]
+        heapq.heappop(distances)
 
-        s = v
+        if u in merged:
+            if v in merged[u]:
+                continue
 
-    return sum(costs)
+            u = merged[u]
 
-def benchmark_prim(iters=30):
-    import time
+        if v in merged:
+            v = merged[v]
 
-    g = read_cost_graph_data(submission_file_path)
+        if u == v: continue
 
-    for approach in [prim_slow, prim_fast]:
-
-        times = []
-
-        for _ in range(iters):
-
-            start = time.time()
+        for node in g.nodes[v].edges:
             
-            approach(g)
+            if node == u:
+                continue
+            
+            if node in g.nodes[u].edges:
+                u_cost = g[u].edges[node]
+                v_cost = g[v].edges[node]
 
-            end = time.time()
+                g[u].edges[node] = min(u_cost, v_cost)
+            else:
+                g[u].edges[node] = g[v].edges[node]
 
-            times += [end - start]
+        merged[v].add(u)
+        c[u].add(v)
 
-        avg_time = sum(times)/len(times)
+        if v in c:
+            for m in c[v]:
+                if m in c[u]:
+                    continue
+                c[u].append(m)
 
-        print(f'{approach.__name__} - Results: Ran {iters} iterations with average execution time: {avg_time}.')
+        if v in c:
+            del c[v]
+    
+    min_spacing, _, _ = distances[0]
 
-benchmark_prim()
+    return min_spacing
 
-# prim_slow - Results: Ran 30 iterations with average execution time: 0.3260332743326823.
-# prim_fast - Results: Ran 30 iterations with average execution time: 0.004483270645141602. - nice.
+g = read_cost_graph_data(test_file_path)
+
+c = cluster(g, k=3)
+
+print(c)
