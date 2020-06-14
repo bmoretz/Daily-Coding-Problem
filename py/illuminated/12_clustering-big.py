@@ -1,6 +1,5 @@
 '''
-In this question your task is again to run the clustering algorithm from lecture, but on a MUCH bigger graph. So big, in fact, 
-that the distances (i.e., edge costs) are only defined implicitly, rather than being provided as an explicit list.
+In this question your task is again to run the clustering algorithm from lecture, but on a MUCH bigger graph. So big, in fact, that the distances (i.e., edge costs) are only defined implicitly, rather than being provided as an explicit list.
 
 The data set is below.
 
@@ -34,14 +33,6 @@ data_dir = os.getcwd() + '\\data\\illuminated\\clustering\\two\\'
 
 submission_file_path = data_dir + 'clustering_big.txt'
 test_file_path = data_dir + 'input_random_10_16_18.txt'
-
-'''
-this is a super slow, brute force approach
-
-needs to be refactored, badly.
-
-TODO: rewrite and optimize (in Julia?)
-'''
 
 class UnionFind:
 
@@ -128,4 +119,5 @@ def minimum_clusters(nodes, spacing=2):
     return len(union.leaders)
 
 nodes = read_hamming(submission_file_path)
+
 print(minimum_clusters(nodes))

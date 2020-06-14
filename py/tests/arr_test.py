@@ -279,4 +279,4 @@ class Test_LettersNumbers2(unittest.TestCase):
         actual = letters_numbers2(arr)
         expected = ['a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g']
 
-        assert actual == expected        
+        assert actual == expected
