@@ -26,7 +26,7 @@ import os
 data_dir = os.getcwd() + '\\data\\illuminated\\clustering\\one\\'
 
 submission_file_path = data_dir + 'clustering1.txt'
-test_file_path = data_dir + 'input_completeRandom_6_4.txt'
+test_file_path = data_dir + 'input_completeRandom_1_8.txt'
 
 from collections import defaultdict
 import heapq
@@ -98,78 +98,90 @@ def read_cost_graph_data(file_path):
 
     return g
 
+class UnionFind:
+    _n = 0
+    _number_unions = 0
 
-def cluster(g, k) -> int:
+    def __init__(self):
+        self.parent = self
+        self.rank = 0
+        self._inc_groups()
+
+    @classmethod
+    def _inc_groups(cls):
+        cls._n += 1
+
+
+def find(x):
+    # this is used exclusively to find if 2 objects belong to the same set
+    if x.parent != x:
+        x.parent = find(x.parent)
+    return x.parent
+
+def _link(x, y):
+    if x.rank < y.rank:
+        x.parent = y
+    else:
+        y.parent = x
+        if x.rank == y:
+            x.rank += 1
+
+def union(x, y):
+    a = find(x)
+    b = find(y)
+    if a != b:
+        UnionFind._number_unions += 1
+        _link(find(x), find(y))
+
+def groups():
+    return UnionFind._n - UnionFind._number_unions
+
+def k_cluster(g, k) -> int:
     
-    c = defaultdict(set)
+    def get_distances(g):
+        distances = []
+
+        seen = defaultdict(set)
+
+        for node in g.nodes:
+            for neighbor in g[node].edges:
+
+                if neighbor in seen[node]:
+                    continue
+
+                cost = g[node].edges[neighbor]
+                distances += [(cost, node, neighbor)]
+                seen[neighbor].add(node)
+
+        return sorted(distances)
+
+    component = defaultdict(set)
 
     # initial clusters
     for node in g.nodes:
-        c[node] = [node]
+        component[node].add(node)
 
-    distances = []
+    distances = get_distances(g)
 
-    seen = defaultdict(set)
-
-    for node in g.nodes:
-        for neighbor in g[node].edges:
-
-            if neighbor in seen[node]:
-                continue
-
-            cost = g[node].edges[neighbor]
-            heapq.heappush(distances, (cost, node, neighbor))
-            seen[neighbor].add(node)
-
-    merged = {}
-
-    while k < len(c):
+    while k < len(component):
         
         _, u, v = distances[0]
-        heapq.heappop(distances)
 
-        if u in merged:
-            if v in merged[u]:
-                continue
+        if component[u] != component[v]:
 
-            u = merged[u]
+            for w in g.nodes:
 
-        if v in merged:
-            v = merged[v]
+                if component[w] == component[v]:
+                    component[w] = component[u] 
 
-        if u == v: continue
+        del distances[0]
 
-        for node in g.nodes[v].edges:
-            
-            if node == u:
-                continue
-            
-            if node in g.nodes[u].edges:
-                u_cost = g[u].edges[node]
-                v_cost = g[v].edges[node]
-
-                g[u].edges[node] = min(u_cost, v_cost)
-            else:
-                g[u].edges[node] = g[v].edges[node]
-
-        merged[v].add(u)
-        c[u].add(v)
-
-        if v in c:
-            for m in c[v]:
-                if m in c[u]:
-                    continue
-                c[u].append(m)
-
-        if v in c:
-            del c[v]
-    
     min_spacing, _, _ = distances[0]
 
     return min_spacing
 
 g = read_cost_graph_data(test_file_path)
 
-c = cluster(g, k=3)
+c = k_cluster(g, k=4)
 
 print(c)

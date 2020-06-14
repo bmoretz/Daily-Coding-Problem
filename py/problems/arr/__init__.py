@@ -226,25 +226,23 @@ with an equal number of letters and numbers.
 '''
 brute force O(n^2)
 '''
-def letters_numbers1(arr) -> int:
-    
+def letters_numbers1(arr):
+
+    def encode_values(arr):
+        return [-1 if isinstance(e, int) else 1 for e in arr]
+
+    def is_balanced(encoded):
+        return sum(encoded) == 0
+
     if not arr: return -1
-
+    
     n = len(arr)
+    encoded = encode_values(arr)
 
-    encoded = [-1 if isinstance(e, int) else 1 for e in arr]
-
-    min_set, sub_arr = (-1, None), None
-
-    for i in range(n):
-        for j in range(i + 1, n):
-            
-            value, length = sum(encoded[i:j]), j - i - 1
-
-            if not min_set[1] or (value < min_set[0] and min_set[1] < length):
-                min_set, sub_arr = (value, length), arr[i:j]
-
-    return sub_arr
+    for end in range(n, 0, -1):
+        for begin in range(n - end):
+            if is_balanced(encoded[begin:end+1]):
+                return arr[begin-1:end]
 
 '''
 O(N) solution
@@ -316,4 +314,7 @@ def letters_numbers2(arr) -> int:
         
         leading, trailing = leading - 1, trailing + 1
     
-    return arr[start-1:end]
+    while trailing < n and encoded[trailing-1] + encoded[trailing] == 0:
+        trailing += abs(consecutive[trailing])
+
+    return arr[leading:trailing-1]
