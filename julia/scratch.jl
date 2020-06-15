@@ -1,59 +1,57 @@
 #=
-    Check Permutation.
+    URLify.
 
-    Given two strings, write a function to decide if one is
-    a permutation of the other.
+    Write a method to replacea all spaces in a string with
+    '%20'. You may assume that the string has sufficient space
+    at the end to hold the additional characters, and that you
+    are given the true length of the string.
+
+    EXAMPLE:
+
+    Input: "Mr John Smith    ", 13
+    Ouput: "Mr%20%John%20Smith"
 =#
 
-# O(S₁log(S₁) + S₂log(S₂))
-function is_permutation1(s₁::String, s₂::String)
+function urlify1(str::String, len::Integer)::String
 
-    char_sort(s) = string(sort(collect(s)))
+    function count_spaces(arr::Array{Char, 1})::Integer
+        counter = 0
+        for char in arr
+            isspace(char) && (counter += 1)
+        end
+        return counter
+    end
 
-    length(s₁) != length(s₂) && return false
+    arr = collect(str)
+    total_spaces = count_spaces(arr)
+    actual, position = length(arr), len
 
-    return char_sort(s₁) == char_sort(s₂)
-end
+    for index in len:-1:1
+        if isspace(arr[position])
+            arr[actual] = '0'
+            arr[actual-1] = '2'
+            arr[actual-2] = '%'
 
-# O(S₁ + S₂)
-function is_permutation2(s₁::String, s₂::String)::Bool
-
-    function to_dict(str::String)::Dict
-        dict = Dict{Char, Integer}()
-
-        for char in str
-            if char ∉ keys(dict)
-                dict[char] = 0
-            else
-                dict[char] += 1
-            end
+            actual -= 2
+        else
+            arr[actual] = arr[position]
         end
 
-        return dict
+        actual -= 1; position -= 1
     end
 
-    n₁ = length(s₁); n₂ = length(s₂)
-
-    n₁ != n₂ && return false
-
-    d₁, d₂ = (if (n₁ < n₂)
-                to_dict(s₁), to_dict(s₂)
-             else
-                 to_dict(s₂), to_dict(s₁)
-            end)
-
-    keys(d₁) != keys(d₂) && return false
-    
-    for k in keys(d₁)
-        d₁[k] != d₂[k] && return false
-    end
-
-    return true
+    return String(arr)
 end
 
-str1, str2 = "abcdef", "fedcba"
+function count_spaces(arr::Array{Char, 1})::Integer
+    counter = 0
+    for char in arr
+        isspace(char) && (counter += 1)
+    end
+    return counter
+end
 
-res1 = is_permutation1(str1, str2)
-res2 = is_permutation2(str1, str2)
+str = "Single Space  "
+t_len = length(str) - Int(2*count_spaces(collect(str))/3)
 
-print(res)
+url = urlify1(str, t_len)

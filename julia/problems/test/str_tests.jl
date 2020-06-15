@@ -33,3 +33,11 @@ end
     @test is_permutation2("perm1", "1perm") == true
     @test is_permutation2("perm1", "perm2") == false
 end
+
+@testset "urlify 1" begin
+    @test urlify1("", 0) == ""
+    @test urlify1("NoSpace", 7) == "NoSpace"
+    @test urlify1("Mr John Smith    ", 13) == "Mr%20John%20Smith"
+    @test urlify1("Single Space  ", 12)  == "Single%20Space"
+    @test urlify1("tr i pple Space      ", 15) == "tr%20i%20pple%20Space"
+end
