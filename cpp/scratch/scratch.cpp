@@ -5,9 +5,11 @@
 #include <unordered_map>
 #include <random>
 #include <bitset>
+#include <iomanip>
 #include <string>
 #include <ostream>
 #include <string>
+#include <sstream>
 
 /* Draw Line.
  *
@@ -23,21 +25,21 @@
  * drawLine(byte[] screen, int width, int x1, int x2, int y)
  */
 
-class screen
+class byte_screen
 {
 	int width_;
 	int height_;
 	std::unique_ptr<std::byte[]> screen_;
-	
+
 public:
-	
-	screen( const int width, const int height )
+
+	byte_screen( const int width, const int height )
 	{
 		width_ = width; height_ = height;
-		const auto size = width_ * height_;
+		const auto size = ( width_ * height_ ) / 8;
 		screen_ = std::make_unique<std::byte[]>( size );
 	}
-	
+
 	auto draw_line( const int x1, const int x2, const int y ) const
 	{
 		const auto start_offset = x1 % 8;
@@ -78,14 +80,57 @@ public:
 		}
 	}
 
-	auto display() const
+	auto draw_line2( const int x1, const int x2, const int y ) const
 	{
+		const auto line_width = x2 - x1;
+
+		if( line_width <= 0 ) return;
+
+		const auto offset = width_ * y + x1;
+		
+		const auto num_bytes = static_cast<unsigned int>( line_width / 8 );
+		unsigned int current_byte = 0;
+		
+		auto line_bytes = std::vector<std::byte>{};
+		
+		while( current_byte < num_bytes )
+		{
+			const auto mask = std::byte( std::pow(2, 8 ) - 1 );
+
+			screen_.get()[ offset + current_byte ] = mask;
+			++current_byte;
+		}
+	}
+	
+	[[nodiscard]] auto get_display() const
+	{
+		const auto size = static_cast< unsigned int >( width_ * height_ );
+
+		std::ostringstream stm;
+		stm << std::hex << std::uppercase;
+
+		for( std::size_t index = 0; index < size; ++index )
+		{
+			if( index % width_ == 0 )
+				stm << std::endl;
+
+			stm << std::setw( 1 ) << std::setfill( '*' )
+				<< unsigned( screen_.get()[ index ] );
+		}
+
+		stm << std::endl;
+		
+		return stm.str();
 	}
 };
 
 auto main() -> int
 {
-	auto s = screen(20, 20);
-	
-	s.draw_line( 3, 3, 8 );
+	const auto screen = byte_screen( 24, 24 );
+
+	std::cout << screen.get_display();
+
+	screen.draw_line2( 2, 10, 0 );
+
+	std::cout << screen.get_display();
 }
