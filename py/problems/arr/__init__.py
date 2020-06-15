@@ -228,7 +228,7 @@ brute force O(n^2)
 '''
 def letters_numbers1(arr):
 
-    def encode_values(arr):
+    def encode(arr):
         return [-1 if isinstance(e, int) else 1 for e in arr]
 
     def is_balanced(encoded):
@@ -237,84 +237,81 @@ def letters_numbers1(arr):
     if not arr: return -1
     
     n = len(arr)
-    encoded = encode_values(arr)
+    encoded = encode(arr)
 
     for end in range(n, 0, -1):
         for begin in range(n - end):
-            if is_balanced(encoded[begin:end+1]):
-                return arr[begin-1:end]
+            start, stop = begin, begin + end - 1
+            if is_balanced(encoded[start:stop]):
+                return arr[start:stop]
 
 '''
 O(N) solution
 
 steps:
 
-1.) encode the values isn the array as 1 for letters, -1 for numbers
-2.) calculate the consecutive sums of the values
-3.) find the largest adjacent sum (the two largest consecutive opposite sums)
-    this has to be the middle of the sum
-4.) tack on the trailing ends while we can append characters while maintaining the
-    sum invariant that all sums must equal 0.
-5.) return the values in the array that correspond to those index locations.
+1.) calculate a rolling sum of the number of letters and numbers seen so far
+i.e.,
+
+v: 'a', 'a', 1, 1, 'a', 1, 1
+l: 1, 2, 2, 2, 3, 3, 3
+n: 0, 0, 1, 2, 2, 3, 4
+d: 1, 2, 1, 0, 1, 0, -1
+
+2.) build two look-up tables, one that contains the min position of each
+delta, and one that contains the max position of each delta
+
+3.) the longest balanced sub-array is the sub-array defined by the largest
+difference of the same index in the min/max look-ups.
 '''
 def letters_numbers2(arr) -> int:
 
-    def encode_values(arr):
-        return [-1 if isinstance(e, int) else 1 for e in arr]
+    from collections import defaultdict
 
-    def get_consecutive_sums(encoded):
-        consecutive = []
-        index, prev = 1, encoded[0]
-        counter, n = 1, len(arr)
+    def rolling_delta(arr):
+        n = len(arr)
+        deltas = [None] * n
+        delta = 0
 
-        while index < n:
-            cur = encoded[index]
+        for index, char in enumerate(arr):
 
-            if cur == prev:
-                counter += cur
+            if isinstance(char, int):
+                delta -= 1
             else:
-                consecutive += [counter]
-                counter = cur
+                delta += 1
 
-            prev = cur
-            index += 1
+            deltas[index] = delta
 
-        consecutive += [counter]
+        return deltas
+    
+    def min_max_positions(arr):
+        mins, maxes = defaultdict(int), defaultdict(int)
 
-        return consecutive
+        for index, value in enumerate(rolling):
 
-    def get_max_adjacent(consecutive):
-        adj_indices, min_adj = None, consecutive[0]
-
-        for index in range(1, len(consecutive)):
-            a, b = consecutive[index-1], consecutive[index]
-            cur_adj = abs(a + b)
-
-            if cur_adj < min_adj:
-                adj_indices = (index - 1, index)
-                min_adj = cur_adj
+            if mins[value] == 0:
+                mins[value] = index
+            else:
+                mins[value] = min(mins[value], index)
+            
+            maxes[value] = max(maxes[value], index)
         
-        return adj_indices
+        return (mins, maxes)
 
     if not arr: return -1
 
-    encoded = encode_values(arr)
-    consecutive = get_consecutive_sums(encoded)
-    adj_indices = get_max_adjacent(consecutive)
+    rolling = rolling_delta(arr)
+    mins, maxes = min_max_positions(rolling)
 
-    start = sum([abs(i) for i in consecutive[:adj_indices[0]]])
-    end = start + abs(adj_indices[0]) + abs(adj_indices[1])
-    
-    leading, trailing = start - 1, end + 1
-    n = len(arr)
+    best_match = (0, 0)
 
-    while (leading > 0 and trailing < n):
-        if encoded[leading] + encoded[trailing] == 0:
-            start, end = start - 1, end + 1
-        
-        leading, trailing = leading - 1, trailing + 1
-    
-    while trailing < n and encoded[trailing-1] + encoded[trailing] == 0:
-        trailing += abs(consecutive[trailing])
+    for val in mins:
+        if val in maxes:
+            delta = maxes[val] - mins[val]
 
-    return arr[leading:trailing-1]
+            if best_match[0] <= delta:
+                best_match = (delta, val)
+
+    head, tail = mins[best_match[1]], maxes[best_match[1] - 1]
+
+    return arr[head:tail + 1]

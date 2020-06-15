@@ -189,10 +189,10 @@ class Test_LettersNumbers1(unittest.TestCase):
 
     def test_case2(self):
 
-        arr = ['a', 1, 1, 'a', 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
+        arr = ['a', 1, 'a', 1, 'a', 'a', 'a', 1, 'a', 'a', 'a', 1, 'a', 1, 'a', 'a', 1, 'a', 'a', 'a', 'a', 1, 'a', 1]
 
         actual = letters_numbers1(arr)
-        expected = ['a', 1, 1, 'a', 'a', 1, 'a', 1]
+        expected = [1, 'a', 1, 'a', 'a', 1]
 
         assert actual == expected
 
@@ -201,7 +201,7 @@ class Test_LettersNumbers1(unittest.TestCase):
         arr = ['a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
 
         actual = letters_numbers1(arr)
-        expected = [1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 'a']
+        expected = ['a', 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a']
 
         assert actual == expected
 
@@ -210,7 +210,7 @@ class Test_LettersNumbers1(unittest.TestCase):
         arr = ['a', 1, 1, 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
 
         actual = letters_numbers1(arr)
-        expected = ['a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1]
+        expected = ['a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a']
 
         assert actual == expected
 
@@ -219,7 +219,7 @@ class Test_LettersNumbers1(unittest.TestCase):
         arr = ['a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g', 4, 7, 'a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g', 'h', 7]
 
         actual = letters_numbers1(arr)
-        expected = ['a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g']
+        expected = ['b', 1, 'c', 'd', 'e', 3, 5, 6, 'g', 4, 7, 'a', 'b', 1, 'c', 'd', 'e', 3, 5, 6]
 
         assert actual == expected        
 
@@ -247,10 +247,10 @@ class Test_LettersNumbers2(unittest.TestCase):
 
     def test_case2(self):
 
-        arr = ['a', 1, 1, 'a', 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
+        arr = ['a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
 
         actual = letters_numbers2(arr)
-        expected = ['a', 1, 1, 'a', 'a', 1, 'a', 1]
+        expected = [1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a']
 
         assert actual == expected
 
@@ -259,7 +259,7 @@ class Test_LettersNumbers2(unittest.TestCase):
         arr = ['a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
 
         actual = letters_numbers2(arr)
-        expected = [1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 'a']
+        expected = [1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a']
 
         assert actual == expected
 
@@ -268,7 +268,7 @@ class Test_LettersNumbers2(unittest.TestCase):
         arr = ['a', 1, 1, 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 'a', 'a', 1]
 
         actual = letters_numbers2(arr)
-        expected = ['a', 1, 1, 1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1]
+        expected = [1, 'a', 1, 'a', 1, 'a', 1, 1, 1, 'a', 1, 'a', 1, 'a']
 
         assert actual == expected
 
@@ -277,6 +277,6 @@ class Test_LettersNumbers2(unittest.TestCase):
         arr = ['a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g', 4, 7, 'a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g', 'h', 7]
 
         actual = letters_numbers2(arr)
-        expected = ['a', 'b', 1, 'c', 'd', 'e', 3, 5, 6, 'g']
+        expected = ['b', 1, 'c', 'd', 'e', 3, 5, 6, 'g', 4, 7, 'a', 'b', 1, 'c', 'd', 'e', 3, 5, 6]
 
         assert actual == expected

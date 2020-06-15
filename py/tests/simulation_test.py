@@ -47,7 +47,7 @@ class Test_RandomSet(unittest.TestCase):
     def test_randomness(self):
         
         master = get_unique_set(50, 100) # master set of items
-        iters = 1e4 # num sims
+        iters = 5e4 # num sims
         freq = defaultdict(int) # cum freq table
         total = 0 # counter
 
@@ -72,4 +72,6 @@ class Test_RandomSet(unittest.TestCase):
         for index in range(1, len(frequencies)):
             deltas[index - 1] = abs(frequencies[index] - frequencies[index - 1])
 
-        assert sum([0 if d < epsilon else 1 for d in deltas]) == 0
+        num_over = sum([0 if d < epsilon else 1 for d in deltas])
+
+        assert num_over == 0
