@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <gtest/gtest.h>
 #include <bitset>
+#include <regex>
 
 #include "../problems/bitmanip.h"
 
@@ -450,6 +451,121 @@ namespace bitmanip_tests
 
         const auto actual = pairwise_swap( num );
         const auto expected = 190944; // 0101110100111100000
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    /// <summary>
+    /// Testing class for draw line.
+    /// </summary>
+    class draw_line_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+
+    	static auto format_for_testing( const std::string& input )
+    	{
+            return std::regex_replace( input, std::regex( "[^0-1]" ), std::string() );
+    	}
+    };
+
+    //
+    // Draw Line 1
+    //
+
+    TEST_F( draw_line_tests, draw_line_tests_case1 )
+    {
+        const auto screen = byte_screen( 5, 5 );
+
+        screen.draw_line( 2, 6, 3 );
+    	
+        const auto actual = format_for_testing( screen.get_display() );
+
+        const auto expected = format_for_testing(
+            "0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0011111000000000000000000000000000000000\
+			0000000000000000000000000000000000000000");
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( draw_line_tests, draw_line_tests_case2 )
+    {
+        const auto screen = byte_screen( 5, 5 );
+
+        screen.draw_line( 5, 10, 2 );
+
+        const auto actual = format_for_testing( screen.get_display() );
+
+        const auto expected = format_for_testing(
+            "0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000011111100000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000");
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( draw_line_tests, draw_line_tests_case3 )
+    {
+        const auto screen = byte_screen( 5, 5 );
+
+        screen.draw_line( 5, 10, 4 );
+
+        const auto actual = format_for_testing( screen.get_display() );
+
+        const auto expected = format_for_testing(
+            "0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000011111100000000000000000000000000000");
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( draw_line_tests, draw_line_tests_case4 )
+    {
+        const auto screen = byte_screen( 5, 5 );
+
+        screen.draw_line( 0, 39, 0 );
+
+        const auto actual = format_for_testing( screen.get_display() );
+
+        const auto expected = format_for_testing(
+            "1111111111111111111111111111111111111111\
+            0000000000000000000000000000000000000000\
+            0000000000000000000000000000000000000000\
+            0000000000000000000000000000000000000000\
+            0000000000000000000000000000000000000000" );
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( draw_line_tests, draw_line_tests_case5 )
+    {
+        const auto screen = byte_screen( 5, 5 );
+
+        screen.draw_line( 5, 10, 2 );
+
+        const auto actual = format_for_testing( screen.get_display() );
+
+        const auto expected = format_for_testing(
+            "0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000011111100000000000000000000000000000\
+			0000000000000000000000000000000000000000\
+			0000000000000000000000000000000000000000" );
 
         EXPECT_EQ( actual, expected );
     }
