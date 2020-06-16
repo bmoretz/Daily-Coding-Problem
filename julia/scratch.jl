@@ -1,42 +1,56 @@
 #=
-    Palindrome Permutation.
+    One Away.
 
-    Given a string, write a function to check if it is
-    a permutation of a palindrome. A palindrome is a word
-    or phrase that is the same forwards and backwards. A
-    permutation is a rearrangement of letters. The palindrome
-    does not need to be limited to just dictionary words.
+    There are three types of edits that can be performed on
+    strings: insert a character, remove a character, or
+    replace a character. Given two strings, write a function
+    to check if they are one edit (or zero edits) away.
 
     EXAMPLE:
 
-    Input: Tact Coa
-    Output: True (permutations: "taco cat", "atco cta", etc.)
+    pale, ple -> true
+    pales, pale -> true
+    pale, bale -> true
+    pale, bake -> false
 =#
 
-function is_pal_perm1(str::String)::Bool
-
-    function char_counts(str::String)
-        counts = Dict{Char, Integer}()
+function one_away(s₁::String, s₂)::Bool
+    function to_dict(str::String)::Dict{Char, Integer}
+        dict = Dict{Char, Integer}()
 
         for c in lowercase(str)
 
             !isletter(c) && continue
 
             if c ∉ keys(dict)
-                counts[c] = 1
+                dict[c] = 1
             else
-                counts[c] += 1
+                dict[c] += 1
             end
         end
 
-        return collect(values(counts))
+        return dict
     end
 
-    return count(x -> isodd(x), char_counts(str)) <= 1
+    (isempty(s₁) || isempty(s₂)) && return false
 
+    d₁, d₂ = (if (length(s₁) > length(s₂))
+                to_dict(s₁), to_dict(s₂)
+            else
+                to_dict(s₂), to_dict(s₁)
+            end)
+
+    δ = 0
+
+    for k in keys(d₁)
+        (k ∈ keys(d₂) && d₁[k] == d₂[k]) && continue
+        δ += d₁[k]
+
+        δ > 1 && return false
+    end
+
+    return true
 end
 
-str = "Amore, Roma."
-
-char_counts(str)
-is_pal_perm1(str)
+str1, str2 = "PALE    ", "b    aLe"
+one_away(str1, str2)

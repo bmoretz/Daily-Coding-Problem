@@ -49,3 +49,14 @@ end
     @test is_pal_perm1("Amore, Roma.") == true
     @test is_pal_perm1("Ed, I saw Harpo Marx ram Oprah W. aside.") == true
 end
+
+@testset "one away 1" begin
+    @test one_away1("", "") == false
+    @test one_away1("pale", "ple") == true
+    @test one_away1("pales", "pale") == true
+    @test one_away1("pale", "balep") == true
+    @test one_away1("pale", "bake") == false
+    @test one_away1("PALE", "baLe") == true
+    @test one_away1("PALE    ", "b    aLe") == true
+    @test one_away1("PALE", "PALEB") == true
+end
