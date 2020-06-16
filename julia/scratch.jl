@@ -1,57 +1,42 @@
 #=
-    URLify.
+    Palindrome Permutation.
 
-    Write a method to replacea all spaces in a string with
-    '%20'. You may assume that the string has sufficient space
-    at the end to hold the additional characters, and that you
-    are given the true length of the string.
+    Given a string, write a function to check if it is
+    a permutation of a palindrome. A palindrome is a word
+    or phrase that is the same forwards and backwards. A
+    permutation is a rearrangement of letters. The palindrome
+    does not need to be limited to just dictionary words.
 
     EXAMPLE:
 
-    Input: "Mr John Smith    ", 13
-    Ouput: "Mr%20%John%20Smith"
+    Input: Tact Coa
+    Output: True (permutations: "taco cat", "atco cta", etc.)
 =#
 
-function urlify1(str::String, len::Integer)::String
+function is_pal_perm1(str::String)::Bool
 
-    function count_spaces(arr::Array{Char, 1})::Integer
-        counter = 0
-        for char in arr
-            isspace(char) && (counter += 1)
-        end
-        return counter
-    end
+    function char_counts(str::String)
+        counts = Dict{Char, Integer}()
 
-    arr = collect(str)
-    total_spaces = count_spaces(arr)
-    actual, position = length(arr), len
+        for c in lowercase(str)
 
-    for index in len:-1:1
-        if isspace(arr[position])
-            arr[actual] = '0'
-            arr[actual-1] = '2'
-            arr[actual-2] = '%'
+            !isletter(c) && continue
 
-            actual -= 2
-        else
-            arr[actual] = arr[position]
+            if c ∉ keys(dict)
+                counts[c] = 1
+            else
+                counts[c] += 1
+            end
         end
 
-        actual -= 1; position -= 1
+        return collect(values(counts))
     end
 
-    return String(arr)
+    return count(x -> isodd(x), char_counts(str)) <= 1
+
 end
 
-function count_spaces(arr::Array{Char, 1})::Integer
-    counter = 0
-    for char in arr
-        isspace(char) && (counter += 1)
-    end
-    return counter
-end
+str = "Amore, Roma."
 
-str = "Single Space  "
-t_len = length(str) - Int(2*count_spaces(collect(str))/3)
-
-url = urlify1(str, t_len)
+char_counts(str)
+is_pal_perm1(str)

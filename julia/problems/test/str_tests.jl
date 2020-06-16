@@ -41,3 +41,11 @@ end
     @test urlify1("Single Space  ", 12)  == "Single%20Space"
     @test urlify1("tr i pple Space      ", 15) == "tr%20i%20pple%20Space"
 end
+
+@testset "is palindrome permutation 1" begin
+    @test is_pal_perm1("") == false
+    @test is_pal_perm1("atco cta") == true
+    @test is_pal_perm1("A nut for a jar of tuna") == true
+    @test is_pal_perm1("Amore, Roma.") == true
+    @test is_pal_perm1("Ed, I saw Harpo Marx ram Oprah W. aside.") == true
+end

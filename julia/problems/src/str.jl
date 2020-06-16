@@ -57,7 +57,7 @@ module str
     # O(S₁ + S₂)
     function is_permutation2(s₁::String, s₂::String)::Bool
 
-        function to_dict(str::String)::Dict
+        function to_dict(str::String)::Dict{Char, Integer}
             dict = Dict{Char, Integer}()
 
             for char in str
@@ -105,7 +105,8 @@ module str
     =#
 
     export urlify1
-    
+
+    # O(N), where N = len(S)
     function urlify1(str::String, len::Integer)::String
 
         function count_spaces(arr::Array{Char, 1})::Integer
@@ -135,6 +136,48 @@ module str
         end
 
         return String(arr)
+    end
+
+    #=
+        Palindrome Permutation.
+
+        Given a string, write a function to check if it is
+        a permutation of a palindrome. A palindrome is a word
+        or phrase that is the same forwards and backwards. A
+        permutation is a rearrangement of letters. The palindrome
+        does not need to be limited to just dictionary words.
+
+        EXAMPLE:
+
+        Input: Tact Coa
+        Output: True (permutations: "taco cat", "atco cta", etc.)
+    =#
+
+    export is_pal_perm1
+
+    # O(N), where N = len(S)
+    function is_pal_perm1(str::String)::Bool
+
+        function char_counts(str::String)::Array{Integer}
+            counts = Dict{Char, Integer}()
+
+            for c in lowercase(str)
+
+                !isletter(c) && continue
+
+                if c ∉ keys(counts)
+                    counts[c] = 1
+                else
+                    counts[c] += 1
+                end
+            end
+
+            return collect(values(counts))
+        end
+
+        isempty(str) && return false
+
+        return count(x -> isodd(x), char_counts(str)) <= 1
     end
 
 end # end module
