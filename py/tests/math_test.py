@@ -448,3 +448,123 @@ class Test_Calculate1(unittest.TestCase):
         expected = 11
 
         assert actual == expected
+
+from py.problems.math import count_twos1
+class Test_CountTwos1(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        number = None
+
+        actual = count_twos1(number)
+        expected = 0
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        number = 25
+
+        actual = count_twos1(number)
+        expected = 9
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        number = 50
+
+        actual = count_twos1(number)
+        expected = 15
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        number = 158
+
+        actual = count_twos1(number)
+        expected = 36
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        number = 1256
+
+        actual = count_twos1(number)
+        expected = 413
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        number = 12561
+
+        actual = count_twos1(number)
+        expected = 5378
+
+        assert actual == expected
+
+from py.problems.math import count_twos2
+class Test_CountTwos2(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        number = None
+
+        actual = count_twos2(number)
+        expected = 0
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        number = 25
+
+        actual = count_twos2(number)
+        expected = 9
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        number = 50
+
+        actual = count_twos2(number)
+        expected = 15
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        number = 158
+
+        actual = count_twos2(number)
+        expected = 36
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        number = 1256
+
+        actual = count_twos2(number)
+        expected = 413
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        number = 12561
+
+        actual = count_twos2(number)
+        expected = 5378
+
+        assert actual == expected
