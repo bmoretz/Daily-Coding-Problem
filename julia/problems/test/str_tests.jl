@@ -60,3 +60,11 @@ end
     @test one_away1("PALE    ", "b    aLe") == true
     @test one_away1("PALE", "PALEB") == true
 end
+
+@testset "compress 1" begin
+    @test compress1("") == ""
+    @test compress1("aa") == "aa"
+    @test compress1("aaa") == "a3"
+    @test compress1("aabcccccaaa") == "a2b1c5a3"
+    @test compress1("aaa111bbb44ccccc") == "a313b342c5"
+end

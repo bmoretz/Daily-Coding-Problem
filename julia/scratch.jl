@@ -1,56 +1,42 @@
 #=
-    One Away.
+    String Compression.
 
-    There are three types of edits that can be performed on
-    strings: insert a character, remove a character, or
-    replace a character. Given two strings, write a function
-    to check if they are one edit (or zero edits) away.
+    Implement  a method to perform basic string compression using
+    the counts of repeated characters. For example, the string
+    "aabcccccaaa" would become a2b1c5a3. If the "compressed" string
+    would not become smaller than the original string, your method
+    should return the original string. You can assume the string
+    has only uppercase and lowercase letters (a-z.)
 
-    EXAMPLE:
-
-    pale, ple -> true
-    pales, pale -> true
-    pale, bale -> true
-    pale, bake -> false
 =#
 
-function one_away(s₁::String, s₂)::Bool
-    function to_dict(str::String)::Dict{Char, Integer}
-        dict = Dict{Char, Integer}()
+using Printf
 
-        for c in lowercase(str)
+function compress1(str::String)::String
+    n = length(str)
+    n == 0 && return str
 
-            !isletter(c) && continue
+    prev, counter = str[1], 1
+    compressed = string()
 
-            if c ∉ keys(dict)
-                dict[c] = 1
-            else
-                dict[c] += 1
-            end
+    for index in 2:n
+        current = str[index]
+
+        if prev == current
+            counter += 1
+        else
+            compressed = @sprintf "%s%s%i" compressed prev counter
+            counter = 1
         end
-
-        return dict
+        prev = current
     end
 
-    (isempty(s₁) || isempty(s₂)) && return false
+    compressed = @sprintf "%s%s%i" compressed prev counter
 
-    d₁, d₂ = (if (length(s₁) > length(s₂))
-                to_dict(s₁), to_dict(s₂)
-            else
-                to_dict(s₂), to_dict(s₁)
-            end)
+    l₁, l₂ = length(str), length(compressed)
 
-    δ = 0
-
-    for k in keys(d₁)
-        (k ∈ keys(d₂) && d₁[k] == d₂[k]) && continue
-        δ += d₁[k]
-
-        δ > 1 && return false
-    end
-
-    return true
+    return if l₁ <= l₂ str else compressed end
 end
 
-str1, str2 = "PALE    ", "b    aLe"
-one_away(str1, str2)
+str = "aabcccccaaa"
+compress1(str)
