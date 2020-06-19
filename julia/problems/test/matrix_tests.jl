@@ -76,7 +76,6 @@ using problems.matrix
     end
 end
 
-
 @testset "matrix rotation 2" begin
 
     @testset "1x1" begin
@@ -148,4 +147,71 @@ end
 
         @test actual == expected
     end
+
+    @testset "zero matrix 1" begin
+
+        @testset "2x2" begin
+            mat = Int8[1 2;
+                       0 4]
+
+            actual = zero_matrix1(mat)
+
+            expected = Int8[0 2;
+                            0 0]
+
+            @test actual == expected
+        end
+
+    end
+
+    @testset "3x3" begin
+        mat = Int8[1 2 3;
+                   4 0 6;
+                   7 8 9]
+
+        actual = zero_matrix1(mat)
+
+        expected = Int8[1 0 3;
+                        0 0 0;
+                        7 0 9]
+
+        @test actual == expected
+    end
+
+    @testset "4x4" begin
+
+        mat = Int8[0 2 3 4;
+                   5 6 7 8;
+                   9 10 0 0;
+                   13 14 15 16]
+
+        actual = zero_matrix1(mat)
+
+        expected = Int8[0 0 0 0;
+                        0 6 0 0;
+                        0 0 0 0;
+                        0 14 0 0]
+
+        @test actual == expected
+    end
+
+    @testset "5x5" begin
+
+        mat = Int8[1 2 3 4 5;
+                   6 7 8 9 10;
+                   0 12 0 14 15;
+                   16 17 18 19 20;
+                   0 22 0 24 25]
+
+        actual = zero_matrix1(mat)
+
+        expected = Int8[0 2 0 4 5;
+                        0 7 0 9 10;
+                        0 0 0 0 0;
+                        0 17 0 19 20;
+                        0 0 0 0 0]
+
+        @test actual == expected
+    end
+
 end
