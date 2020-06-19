@@ -4,6 +4,9 @@ module matrix
 
     export rotate_matrix1
 
+    # long way, basically a brute force solution
+    # with O(n²) run-time and O(N) memory.
+    # Which, is bad.
     function rotate_matrix1(mat::Array)
 
         length(mat) <= 1 && return mat
@@ -20,5 +23,14 @@ module matrix
         return result
     end
 
+    export rotate_matrix2
+
+    # Rotate 90+ = transpose, rev
+    # in place
+    function rotate_matrix2(mat::Array)
+        length(mat) <= 1 && return mat
+        
+        return reverse(transpose(Matrix(mat)), dims=2)
+    end
 
 end # end module

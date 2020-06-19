@@ -10,25 +10,9 @@
 =#
 
 using LinearAlgebra
+using Printf
 
-function rotate_matrix1(mat::Array)
-
-    length(mat) <= 1 && return mat
-
-    width, height = size(mat)
-    result = Matrix(undef, width, height)
-
-    for row in 1:height
-        for col in 1:width
-            result[col, height - row + 1] = mat[row, col]
-        end
-    end
-
-    return result
-end
-
-n = 5
-mat = Matrix{Int8}(undef, n, n)
+using problems.matrix
 
 function get_inc_mat(T, n::Integer)
     mat = Matrix{T}(undef, n, n)
@@ -42,21 +26,11 @@ function get_inc_mat(T, n::Integer)
     return mat
 end
 
-mat = get_inc_mat(Int8, 3)
-width, height = size(mat)
+n = 2
+matrix = get_inc_mat(Int8, n)
+width, height = size(matrix)
 
-print(mat)
-println("")
-print(rotate_matrix1(mat))
+mat = Int8[1 2;
+           3 4]
 
-for row in 1:height
-    for col in 1:width
-        result[col, height - row + 1] = mat[row, col]
-    end
-end
-
-mat = Int8[1 2; 3 4]
-rotate_matrix1(mat)
-println("")
-
-result = rotate_matrix1(mat)
+rotate_matrix2(mat)
