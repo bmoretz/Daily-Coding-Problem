@@ -1,131 +1,177 @@
 '''
-In this question your task is again to run the clustering algorithm from lecture, but on a MUCH bigger graph. So big, in fact, 
-that the distances (i.e., edge costs) are only defined implicitly, rather than being provided as an explicit list.
+In this programming problem and the next you'll code up the greedy algorithm from the lectures on Huffman coding.
 
-The data set is below.
+This file describes an instance of the problem. It has the following format:
 
-clustering_big.txt
-The format is:
+[number_of_symbols]
 
-[# of nodes] [# of bits for each node's label]
+[weight of symbol #1]
 
-[first bit of node 1] ... [last bit of node 1]
-
-[first bit of node 2] ... [last bit of node 2]
+[weight of symbol #2]
 
 ...
 
-For example, the third line of the file "0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1" denotes the 24 bits associated with node #2.
+For example, the third line of the file is "6852892," indicating that the weight of the second symbol of the alphabet is 6852892. 
+(We're using weights instead of frequencies, like in the "A More Complex Example" video.)
 
-The distance between two nodes uu and vv in this problem is defined as the Hamming distance--- the number of differing bits --- between 
-the two nodes' labels. For example, the Hamming distance between the 24-bit label of node #2 above and the label 
-"0 1 0 0 0 1 0 0 0 1 0 1 1 1 1 1 1 0 1 0 0 1 0 1" is 3 (since they differ in the 3rd, 7th, and 21st bits).
+Your task in this problem is to run the Huffman coding algorithm from lecture on this data set. 
 
-The question is: what is the largest value of kk such that there is a kk-clustering with spacing at least 3? That is, how many clusters 
-are needed to ensure that no pair of nodes with all but 2 bits in common get split into different clusters?
-
-NOTE: The graph implicitly defined by the data file is so big that you probably can't write it out explicitly, let alone sort the edges 
-by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify
-the smallest distances without explicitly looking at every pair of nodes?'''
+What is the maximum length of a codeword in the resulting Huffman code?
+'''
 
 import os
 
-data_dir = os.getcwd() + '\\data\\illuminated\\clustering\\two\\'
+data_dir = os.getcwd() + '\\data\\illuminated\\huffman-coding\\'
 
-submission_file_path = data_dir + 'clustering_big.txt'
-test_file_path = data_dir + 'input_random_10_16_18.txt'
+submission_file_path = data_dir + 'huffman.txt'
+test_file_path = data_dir + 'problem14.6test2.txt'
 
-'''
-this is a super slow, brute force approach
+import heapq
+from collections import defaultdict
 
-needs to be refactored, badly.
+class TreeNode():
 
-TODO: rewrite and optimize (in Julia?)
-'''
+    def __init__(self, cost, left=None, right=None, parent=None):
+        self.cost = cost
+        self.left = left
+        self.right = right
+        self.parent = parent
 
-class UnionFind:
+    def depth(self):
 
-    def __init__(self, nodes):
-        self.nodes = nodes
-        self.leaders = dict()
-        self.members = dict()
+        if self.is_leaf(): return 1
 
-        for node in nodes:
-            # Keeps mapping of leaders to groups
-            if str(node) not in self.leaders:
-                self.leaders[str(node)] = [node]
-            # Account for duplicate node ids
-            else:
-                self.leaders[str(node)].append(node)
-            # Keeps mapping of nodes to leaders
-            self.members[str(node)] = node
+        return 1 + max(self.left.depth(), self.right.depth())
 
-    def find(self, node):
-        return self.members[str(node)]
+    def get_encoding(self):
+        
+        node, cost = self.parent, self.cost
+        value = []
 
-    def union(self, node1, node2):
-        # Find our two groups and decide which should be merged into which by
-        # size of group
-        (old_leader, new_leader) = sorted((self.find(node1), self.find(node2)),
-                                          key = lambda x:
-                                                len(self.leaders[str(x)]))
+        while node:
+            value.insert(0, 1 if node.left == cost else 0)
+            node, cost = node.parent, node.cost
+        
+        return value
 
-        # If these two nodes were already in the same group we are finished
-        if old_leader == new_leader:
-            return
+    def is_leaf(self):
+        return not( self.left or self.right )
+
+    def __lt__(self, other):
+
+        if isinstance(other, TreeNode):
+            return self.cost < other.cost
+        elif isinstance(other, int):
+            return self.cost < other
         else:
-            # Add the old group the new group
-            old_group = self.leaders.pop(str(old_leader))
-            self.leaders[str(new_leader)].extend(old_group)
+            return NotImplemented()
 
-            # Reassign the leaders in the old group
-            for node in old_group:
-                self.members[str(node)] = new_leader
+    def __eq__(self, other):
+        if isinstance(other, TreeNode):
+            return self.cost == other.cost
+        elif isinstance(other, int):
+            return self.cost == other
+        else:
+            return NotImplemented()
 
-def read_hamming(path):
+    def __gt__(self, other):
+        if isinstance(other, TreeNode):
+            return self.cost > other.cost
+        elif isinstance(other, int):
+            return self.cost > other
+        else:
+            return NotImplemented()
+
+    def __hash__(self):
+        return self.cost
+
+    def __str__(self):
+        return str(self.cost)
+
+def traverse(root):
+
+    current_level = [root]
+
+    while current_level:
+
+        print(' '.join(('\t'*node.depth() + str(node)) for node in current_level))
+        next_level = list()
+        for n in current_level:
+            if n.left:
+                next_level.append(n.left)
+            if n.right:
+                next_level.append(n.right)
+
+        current_level = next_level
+
+def merge(left : TreeNode, right : TreeNode) -> TreeNode:
+
+    merged = TreeNode(left.cost + right.cost)
+    merged.left = left
+    merged.right = right
     
-    with open(path, 'r') as handle:
-        lines = handle.readlines()
+    left.parent = merged
+    right.parent = merged
 
-    n_nodes, n_bits = lines.pop(0).split(' ', 1)
-    nodes = list()
+    return merged
+
+def read_huffman_coding(file_path):
+
+    with open(file_path, 'r') as f:
+
+        lines = f.read().splitlines()
+
+        weights = []
+        seen = set()
+
+        for line in lines:
+
+            value = int(line)
+
+            if value not in seen:
+                heapq.heappush(weights, TreeNode(value))
+                seen.add(value)
+
+        return weights
+        
+def get_encoding_tree(weights):
+
+    while len(weights) > 1:
+        
+        t1 = heapq.heappop(weights)
+        t2 = heapq.heappop(weights)
+
+        t3 = merge(t1, t2)
+
+        heapq.heappush(weights, t3)
+
+    return weights[0]
+
+def get_encodings(root : TreeNode):
+
+    path = [root]    
+    encodings = []
+
+    while path:
+
+        node = path.pop()
+
+        if node.is_leaf():
+            encodings += [(node.cost, len(node.get_encoding()))]
+
+        if node.left:
+            path += [node.left]
     
-    for index, line in enumerate(lines):
-        node_bits = bytearray([int(index) for index in line.split(' ', int(n_bits) - 1)])
-        nodes.append(node_bits)
+        if node.right:
+            path += [node.right]
 
-    return nodes
+    return sorted(encodings, key=lambda k: k[1])
 
-def hamming_possibilities(node, distance):
-    from itertools import combinations
-    import copy
-    '''
-    Calculate all possible nodes within a hamming distance of node
-    '''
-    ids = combinations(range(len(node)), distance)
-    
-    nodes = list()
-    for shift in ids:
-        new = copy.copy(node)
-        for pos in shift:
-            new[pos] = not node[pos]
-        nodes.append(new)
-    return nodes
+weights = read_huffman_coding(submission_file_path)
 
-def minimum_clusters(nodes, spacing=2):
-    '''
-    Find the minimum clusters needed to have a specific spacing
-    '''
-    union = UnionFind(nodes)
-    for i in range(1, spacing+1):
-        for node in union.nodes:
-            closest = hamming_possibilities(node, i)
-            for partner in closest:
-                try:
-                    union.union(node, partner)
-                except KeyError:
-                    pass
-    return len(union.leaders)
+encoding_tree = get_encoding_tree(weights)    
+encodings = get_encodings(encoding_tree)
 
-nodes = read_hamming(submission_file_path)
-print(minimum_clusters(nodes))
+low, high = min(encodings, key=lambda k: k[1]), max(encodings, key=lambda k: k[1])
+
+print(f'low - {low[1]}, high - {high[1]}')

@@ -33,7 +33,8 @@ function zero_matrix1(mat::Matrix)::Array
 
     height, width = size(mat)
 
-    zero_rows, zero_cols = Dict{Integer, Bool}(), Dict{Integer, Bool}()
+    zero_rows, zero_cols = Dict{Integer, Bool}(), \
+        Dict{Integer, Bool}()
 
     for row in 1:height
         for col in 1:width
@@ -66,7 +67,13 @@ end
 n = 4
 mat = get_inc_mat(Int8, n)
 mat[1, 1] = 0
+mat[3, 3] = 0
+mat[3, 4] = 0
+
+print(mat)
 
 mat = zero_matrix1(mat)
 
 mat
+
+print(mat)

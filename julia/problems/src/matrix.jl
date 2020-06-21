@@ -75,7 +75,8 @@ module matrix
 
         height, width = size(mat)
 
-        zero_rows, zero_cols = Dict{Integer, Bool}(), Dict{Integer, Bool}()
+        zero_rows = Dict{Integer, Bool}()
+        zero_cols = Dict{Integer, Bool}()
 
         for row in 1:height
             for col in 1:width
