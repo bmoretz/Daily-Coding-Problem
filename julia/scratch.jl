@@ -1,79 +1,41 @@
 #=
-    Zero Matrix.
+    String Rotation.
 
-    Write an algorithm such that if an element in an
-    MxN matrix is 0, its entire row and column are set
-    to zero.
+    Assume you have a method isSubstring which checks if one
+    word is a substring of another. Given two strings,
+    s₁ and s₂, write code to check if s₂ is a rotation
+    of s₁ using only one call to isSubstring (e.g,
+    "waterbottle" is a rotation of "erbottlewat").
 =#
 
-using LinearAlgebra
-using problems.matrix
-
-function zero_matrix1(mat::Matrix)::Array
-
-    function zero_row(mat::Matrix, row::Integer)
-
-        height, width = size(mat)
-
-        for index in 1:width
-            mat[row, index] = 0
-        end
-    end
-
-    function zero_column(mat::Matrix, col::Integer)
-
-        height, width = size(mat)
-
-        for index in 1:height
-            mat[index, col] = 0
-        end
-    end
-
-    length(mat) <= 1 && return mat
-
-    height, width = size(mat)
-
-    zero_rows, zero_cols = Dict{Integer, Bool}(), \
-        Dict{Integer, Bool}()
-
-    for row in 1:height
-        for col in 1:width
-            if mat[row, col] == 0
-                if row ∉ keys(zero_rows)
-                    zero_rows[row] = true
-                end
-
-                if col ∉ keys(zero_cols)
-                    zero_cols[col] = true
-                end
-
-            end
-        end
-    end
-
-    for row in keys(zero_rows)
-        zero_row(mat, row)
-    end
-
-    for col in keys(zero_cols)
-        print(col)
-        zero_column(mat, col)
-    end
-
-    return mat
+function is_substring(s₁::String, s₂::String)::Bool
+    return occursin(s₁, s₂)
 end
 
+function is_rotation1(s₁::String, s₂::String)::Bool
 
-n = 4
-mat = get_inc_mat(Int8, n)
-mat[1, 1] = 0
-mat[3, 3] = 0
-mat[3, 4] = 0
+    function get_rotations(str::String, delim::Char='|')::String
+        rotations = str * delim
 
-print(mat)
+        for index in firstindex(str):lastindex(str)
 
-mat = zero_matrix1(mat)
+            prefix = str[index + 1:end]
+            suffix = str[1:index]
 
-mat
+            rotations *= prefix * suffix * delim
+        end
 
-print(mat)
+        return rotations
+    end
+
+    (length(s₁) == 0 || length(s₂) == 0) && return false
+
+    rotations = get_rotations(s₁)
+
+    return is_substring(s₂, rotations)
+end
+
+s₁, s₂ = "waterbottle", "erbottlewat"
+
+print(length(s₂))
+result = is_rotation1(s₁, s₂)

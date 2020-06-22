@@ -68,3 +68,11 @@ end
     @test compress1("aabcccccaaa") == "a2b1c5a3"
     @test compress1("aaa111bbb44ccccc") == "a313b342c5"
 end
+
+@testset "is rotation 1" begin
+    @test is_rotation1("waterbottle", "") == false
+    @test is_rotation1("waterbottle", "erbottlewat") == true
+    @test is_rotation1("waterbottle", "bottlewater") == true
+    @test is_rotation1("waterbottle", "ttlewaterbo") == true
+    @test is_rotation1("waterbottle", "ttlewwaterbo") == false
+end
