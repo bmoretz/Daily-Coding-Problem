@@ -20,14 +20,13 @@ What is the maximum length of a codeword in the resulting Huffman code?
 '''
 
 import os
+import heapq
+from collections import defaultdict
 
 data_dir = os.getcwd() + '\\data\\illuminated\\huffman-coding\\'
 
 submission_file_path = data_dir + 'huffman.txt'
-test_file_path = data_dir + 'problem14.6test2.txt'
-
-import heapq
-from collections import defaultdict
+test_file_path = data_dir + 'problem14.6test1.txt'
 
 class TreeNode():
 
@@ -39,9 +38,13 @@ class TreeNode():
 
     def depth(self):
 
-        if self.is_leaf(): return 1
+        node, depth = self.parent, 0
 
-        return 1 + max(self.left.depth(), self.right.depth())
+        while node.parent:
+            node = node.parent
+            depth += 1
+
+        return depth
 
     def get_encoding(self):
         
@@ -106,12 +109,14 @@ def traverse(root):
 
 def merge(left : TreeNode, right : TreeNode) -> TreeNode:
 
-    merged = TreeNode(left.cost + right.cost)
-    merged.left = left
-    merged.right = right
-    
+    new_cost = left.cost + right.cost
+
+    merged = TreeNode(new_cost, left=left, right=right)
+
     left.parent = merged
     right.parent = merged
+
+    del left, right
 
     return merged
 
@@ -122,34 +127,30 @@ def read_huffman_coding(file_path):
         lines = f.read().splitlines()
 
         weights = []
-        seen = set()
 
-        for line in lines:
-
-            value = int(line)
-
-            if value not in seen:
-                heapq.heappush(weights, TreeNode(value))
-                seen.add(value)
+        for line in lines[1:]:
+            heapq.heappush(weights, TreeNode(int(line)))
 
         return weights
         
 def get_encoding_tree(weights):
 
-    while len(weights) > 1:
+    while len(weights) >= 2:
         
-        t1 = heapq.heappop(weights)
-        t2 = heapq.heappop(weights)
+        node_a = heapq.heappop(weights)
+        node_b = heapq.heappop(weights)
 
-        t3 = merge(t1, t2)
+        merged = merge(node_a, node_b)
 
-        heapq.heappush(weights, t3)
+        heapq.heappush(weights, merged)
 
-    return weights[0]
+    root = weights[0]
+
+    return root
 
 def get_encodings(root : TreeNode):
 
-    path = [root]    
+    path = [root]
     encodings = []
 
     while path:
@@ -157,7 +158,7 @@ def get_encodings(root : TreeNode):
         node = path.pop()
 
         if node.is_leaf():
-            encodings += [(node.cost, len(node.get_encoding()))]
+            encodings += [(node.cost, node.get_encoding())]
 
         if node.left:
             path += [node.left]
@@ -167,11 +168,19 @@ def get_encodings(root : TreeNode):
 
     return sorted(encodings, key=lambda k: k[1])
 
-weights = read_huffman_coding(submission_file_path)
+def run_huffman_coding(file_path):
 
-encoding_tree = get_encoding_tree(weights)    
-encodings = get_encodings(encoding_tree)
+    weights = read_huffman_coding(file_path)
 
-low, high = min(encodings, key=lambda k: k[1]), max(encodings, key=lambda k: k[1])
+    root = get_encoding_tree(weights)    
 
-print(f'low - {low[1]}, high - {high[1]}')
+    # optional, we can also get the number of encodings by simply
+    # looking at the min/max depth of the tree.
+    encodings = get_encodings(root)
+
+    minimum, maximum = min(encodings, key=lambda k: len(k[1])), max(encodings, key=lambda k: len(k[1]))
+
+    print(f'low - {minimum[1]} ({len(minimum[1])}), high - {maximum[1]} ({len(maximum[1])})')
+
+
+run_huffman_coding(submission_file_path)
