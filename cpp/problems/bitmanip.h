@@ -472,6 +472,7 @@ namespace bitmanip_problems
 
 			const auto end_offset = x2 % 8;
 			auto last_byte = x2 / 8;
+			
 			if( end_offset != 7 )
 				--last_byte;
 
