@@ -1,41 +1,61 @@
 #=
-    String Rotation.
+    Remove Dups.
 
-    Assume you have a method isSubstring which checks if one
-    word is a substring of another. Given two strings,
-    s₁ and s₂, write code to check if s₂ is a rotation
-    of s₁ using only one call to isSubstring (e.g,
-    "waterbottle" is a rotation of "erbottlewat").
+    Write code to remove duplicates from an unsorted linked list.
 =#
 
-function is_substring(s₁::String, s₂::String)::Bool
-    return occursin(s₁, s₂)
-end
+module scratch
 
-function is_rotation1(s₁::String, s₂::String)::Bool
+    const Opt = Union{T, Nothing} where T
 
-    function get_rotations(str::String, delim::Char='|')::String
-        rotations = str * delim
-
-        for index in firstindex(str):lastindex(str)
-
-            prefix = str[index + 1:end]
-            suffix = str[1:index]
-
-            rotations *= prefix * suffix * delim
-        end
-
-        return rotations
+    struct List{T}
+        head::T
+        tail::Opt{List{T}}
     end
 
-    (length(s₁) == 0 || length(s₂) == 0) && return false
+    head(l::List) = l.head
+    tail(l::List) = l.tail
 
-    rotations = get_rotations(s₁)
+    export buildlist
 
-    return is_substring(s₂, rotations)
+    # built a list from an array
+    buildlist(array::AbstractArray{T}, n) where T =
+        n == lastindex(array) ?
+        List{T}(array[n], nothing) :
+        List(array[n], buildlist(array, n+1))
+
+    buildlist(array) = buildlist(array, firstindex(array))
+
+    # implement the iteration protocol
+    Base.iterate(l::List) = iterate(l, l)
+    Base.iterate(::List, l::List) = head(l), tail(l)
+    Base.iterate(::List, ::Nothing) = nothing
+
+    # demo:
+    list = buildlist(1:5)
+    @show list
+
+    for val in list
+        println(val)
+    end
+
 end
 
-s₁, s₂ = "waterbottle", "erbottlewat"
+module remove_dupes
 
-print(length(s₂))
-result = is_rotation1(s₁, s₂)
+    abstract type AbstractNode{T} end
+
+    mutable struct ListNode{T} <: AbstractNode{T}
+        data::T
+        next::ListNode{T}
+        ListNode{T}() where T = (x=new(); x; x.next=x;)
+    end
+    ListNode(d::T, n) where T = ListNode{T}(d, n)
+
+end
+
+using .scratch
+
+# demo:
+list = buildlist(1:5)
+@show list

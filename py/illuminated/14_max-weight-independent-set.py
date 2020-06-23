@@ -27,7 +27,7 @@ import os
 import heapq
 from collections import defaultdict, namedtuple
 
-data_dir = os.getcwd() + '\\data\\illuminated\\min-weight-independent-set\\'
+data_dir = os.getcwd() + '\\data\\illuminated\\max-weight-independent-set\\'
 
 submission_file_path = data_dir + 'mwis.txt'
 test_file_path = data_dir + 'problem16.6test.txt'
