@@ -1,94 +1,88 @@
-'''Baby Names.
+'''Circus Tower.
 
-Each year, the government releases a list of the 10,000 most common baby names and
-their frequencies (the number of babies with that name). The only problem with this is
-that some names have multiple spellings. For example, "John" and "Jon" are essentially
-the same name but would be listed seperately in the list. Given two lists, one of names/
-frequencies and the other of pairs of equivalent names, write an algorithm to print a new
-list of the true frequencies of each name. Note that if John and Jon are synonyms, and
-Jon and Johnny are synonyms, then John and Johnny are synonyms. (It is both transitive
-and symmetric.) In the final list, any name can be used as the "real" name.
+A circus is designing a tower routine consisting of people standing
+atop one another's shoulders. For practical and aesthetic reasons,
+each person must be both shorter and lighter than the person below
+him or her. Given the heights and weights of each person in the circus,
+write a method to compute the largest possible number of people in such
+a tower.
 
 EXAMPLE
 
-Input:
-    Names: John (15), Jon (12), Chris (13), Christopher (19)
-    Synonyms: (John, Jon), (John, Johnny), (Chris, Kris), (Chris, Christopher)
-Output:
-    John (27), Kris (36)
+Input (ht, wt): 
+
+(65, 100), (70, 150), (56, 90), (75, 190), (60, 95), (68, 110)
+
+Output: The longest tower is length 6 and includes from top to bottom:
+
+(56, 90) (60, 95), (65, 100), (68, 110), (70, 150), (75, 190)
 '''
 
-class BabyNames():
+import copy
 
-    from collections import defaultdict
+class CircusTower():
     
-    class Node():
+    class Person():
+        def __init__(self, height, weight):
+            self.height = height
+            self.weight = weight
 
-        def __init__(self, name, count):
-            self.name = name
-            self.count = count
-            self.edges = []
+        def __lt__(self, other):
+            return self.height < other.height and \
+                self.weight < other.weight
+        
+        def __format__(self, format_spec):
+            return f'({self.height}, {self.weight})'
 
-        def add_edge(self, other):
-            self.edges += [other]
-
-        def __hash__(self):
-            return hash(self.name) + self.count
+        def __repr__(self):
+            return f'({self.height}, {self.weight})'
 
     def __init__(self):
-        self.names = defaultdict(self.Node)
+        self.people = []
+
+    def to_tuple(self, values):
+        return [(p.height, p.weight) for p in values]
+
+    def max_tower(self):
         
-    def add_name(self, name, count=0):
-        self.names[name] = self.Node(name, count)
+        tower = []
 
-    def add_synonym(self, primary, secondary):
-
-        if primary not in self.names:
-            self.add_name(primary)
+        height_order = sorted(self.people, key=lambda p: p.height)
         
-        if secondary not in self.names:
-            self.add_name(secondary)
+        solutions, best = [], None
 
-        a, b = self.names[primary], self.names[secondary]
+        for index in range(len(height_order)):
+            longest = self.best_seq(height_order, solutions, index)
+            solutions += [(index, longest)]
+            best = longest if not best or len(best) < len(longest) else best
 
-        a.add_edge( b )
-        b.add_edge( a )
+        return self.to_tuple(best)
 
-    def get_unique(self):
+    def best_seq(self, people, solutions, index):
 
-        totals = defaultdict(int)
-        seen = set()
+        current = people[index]
+        bestSeq = []
 
-        for name in self.names:
+        for i in range(index):
+            _, prev = solutions[i]
 
-            to_visit = [self.names[name]]
+            if prev[-1] < current:
+                bestSeq = prev if not bestSeq or len(prev) > len(bestSeq) else bestSeq
 
-            while to_visit:
-                
-                node = to_visit.pop()
+        best = copy.copy(bestSeq)
+        best += [current]
 
-                if node in seen:
-                    continue
+        return best
 
-                for neighbor in node.edges:
-                    to_visit += [neighbor]
+    def add_person(self, weight, height):
+        self.people +=[self.Person(weight, height)]
 
-                totals[name] += node.count
-                seen.add(node)
+people = [(65, 100), (70, 124), (56, 82), (48, 150), (60, 95), (68, 95), (45, 120), (45, 120)]
 
-        return totals
+ct = CircusTower()
 
-names = [('John', 15), ('Jon', 12), ('Chris', 13), ('Kris', 4), ('Christopher', 19)]
-synonyms = [('John', 'Jon'), ('John', 'Johnny'), ('Chris', 'Kris'), ('Chris', 'Christopher')]
+for weight, height in people:
+    ct.add_person(weight, height)
 
-bn = BabyNames()
-
-for name, count in names:
-    bn.add_name(name, count)
-
-for a, b in synonyms:
-    bn.add_synonym(a, b)
-
-result = bn.get_unique()
-
+result = ct.max_tower()
 print(result)

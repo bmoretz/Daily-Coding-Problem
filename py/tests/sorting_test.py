@@ -797,3 +797,90 @@ class Test_SubSort1(unittest.TestCase):
         expected = (4, 10)
 
         assert actual == expected
+
+from py.problems.sorting import CircusTower
+class Test_CircusTower(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+    
+    def test_none(self):
+
+        values = None
+
+        ct = CircusTower()
+
+        actual = ct.max_tower()
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        people = [(65, 100), (70, 150), (56, 90), (75, 190), (60, 95), (68, 110)]
+
+        ct = CircusTower()
+
+        for weight, height in people:
+            ct.add_person(weight, height)
+
+        actual = ct.max_tower()
+        expected = [(56, 90), (60, 95), (65, 100), (68, 110), (70, 150), (75, 190)]
+
+        assert actual == expected
+
+    def test_case2(self):
+
+        people = [(65, 100), (70, 150), (56, 90), (75, 190), (60, 95), (68, 110), (45, 120)]
+
+        ct = CircusTower()
+
+        for weight, height in people:
+            ct.add_person(weight, height)
+
+        actual = ct.max_tower()
+        expected = [(56, 90), (60, 95), (65, 100), (68, 110), (70, 150), (75, 190)]
+
+        assert actual == expected
+
+    def test_case3(self):
+
+        people = [(65, 100), (70, 150), (56, 90), (75, 190), (60, 95), (68, 110), (45, 120)]
+
+        ct = CircusTower()
+
+        for weight, height in people:
+            ct.add_person(weight, height)
+
+        actual = ct.max_tower()
+        expected = [(56, 90), (60, 95), (65, 100), (68, 110), (70, 150), (75, 190)]
+
+        assert actual == expected
+
+    def test_case4(self):
+
+        people = [(65, 100), (70, 212), (56, 32), (48, 190), (60, 95), (68, 110), (45, 120)]
+
+        ct = CircusTower()
+
+        for weight, height in people:
+            ct.add_person(weight, height)
+
+        actual = ct.max_tower()
+        expected = [(56, 32), (60, 95), (65, 100), (68, 110), (70, 212)]
+
+        assert actual == expected
+
+    def test_case5(self):
+
+        people = [(65, 100), (70, 124), (56, 82), (48, 150), (60, 95), (68, 95), (45, 120), (45, 120)]
+
+        ct = CircusTower()
+
+        for weight, height in people:
+            ct.add_person(weight, height)
+
+        actual = ct.max_tower()
+        expected = [(56, 82), (60, 95), (65, 100), (70, 124)]
+
+        assert actual == expected
