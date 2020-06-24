@@ -75,30 +75,23 @@ module matrix
 
         height, width = size(mat)
 
-        zero_rows = Dict{Integer, Bool}()
-        zero_cols = Dict{Integer, Bool}()
+        zero_rows = Set{Integer}()
+        zero_cols = Set{Integer}()
 
         for row in 1:height
             for col in 1:width
                 if mat[row, col] == 0
-                    if row ∉ keys(zero_rows)
-                        zero_rows[row] = true
-                    end
-
-                    if col ∉ keys(zero_cols)
-                        zero_cols[col] = true
-                    end
-
+                    zero_rows = union(zero_rows, row)
+                    zero_cols = union(zero_cols, col)
                 end
             end
         end
 
-        for row in keys(zero_rows)
+        for row in zero_rows
             zero_row(mat, row)
         end
 
-        for col in keys(zero_cols)
-            print(col)
+        for col in zero_cols
             zero_column(mat, col)
         end
 

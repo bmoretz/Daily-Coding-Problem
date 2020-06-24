@@ -4,58 +4,63 @@
     Write code to remove duplicates from an unsorted linked list.
 =#
 
-module scratch
+using DataStructures
 
-    const Opt = Union{T, Nothing} where T
+function dedupe(list::LinkedList{T}) where T
+    length(list) == 0 && return list
 
-    struct List{T}
-        head::T
-        tail::Opt{List{T}}
+    seen = Set{T}()
+    result = MutableLinkedList()
+
+    for value in list
+
+        value ∈ seen && continue
+
+        append!(result, value)
+        seen = union(seen, value)
     end
 
-    head(l::List) = l.head
-    tail(l::List) = l.tail
-
-    export buildlist
-
-    # built a list from an array
-    buildlist(array::AbstractArray{T}, n) where T =
-        n == lastindex(array) ?
-        List{T}(array[n], nothing) :
-        List(array[n], buildlist(array, n+1))
-
-    buildlist(array) = buildlist(array, firstindex(array))
-
-    # implement the iteration protocol
-    Base.iterate(l::List) = iterate(l, l)
-    Base.iterate(::List, l::List) = head(l), tail(l)
-    Base.iterate(::List, ::Nothing) = nothing
-
-    # demo:
-    list = buildlist(1:5)
-    @show list
-
-    for val in list
-        println(val)
-    end
-
+    return result
 end
 
-module remove_dupes
+function dedupe(list::MutableLinkedList{T}) where T
 
-    abstract type AbstractNode{T} end
+    length(list) == 0 && return list
 
-    mutable struct ListNode{T} <: AbstractNode{T}
-        data::T
-        next::ListNode{T}
-        ListNode{T}() where T = (x=new(); x; x.next=x;)
+    seen = Set{T}()
+    to_delete = Vector{Integer}()
+
+    for enum in enumerate(list)
+        index, value = enum
+        value ∈ seen && append!(to_delete, index)
+        seen = union(seen, value)
     end
-    ListNode(d::T, n) where T = ListNode{T}(d, n)
 
+    for enum in enumerate(to_delete)
+        index, value = enum
+        position = value - (index - 1)
+        delete!(list, position)
+    end
+
+    return list
 end
 
-using .scratch
+function to_list(values::Vector{T}) where T
+    list = MutableLinkedList()
 
-# demo:
-list = buildlist(1:5)
-@show list
+    for v in values
+        append!(l, v)
+    end
+
+    return
+end
+
+dedupe(list(1, 1, 'a', 2, 3, 1, 1, 2, 3, 'b', 4, 4))
+
+function are_equal(l₁::LinkedList{T}, l₂::LinkedList{T})::Bool where T
+    length(l₁) != length(l₂) && return false
+
+    return collect(l₁) == collect(l₂)
+end
+
+dedupe2(l)
