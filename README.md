@@ -1,2 +1,3 @@
 # Daily-Coding-Problem
-Working through some daily coding problems.
+
+Working through some coding problems from various sources.
