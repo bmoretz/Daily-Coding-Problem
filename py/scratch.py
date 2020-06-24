@@ -1,88 +1,73 @@
-'''Circus Tower.
+'''Kth Multiple.
 
-A circus is designing a tower routine consisting of people standing
-atop one another's shoulders. For practical and aesthetic reasons,
-each person must be both shorter and lighter than the person below
-him or her. Given the heights and weights of each person in the circus,
-write a method to compute the largest possible number of people in such
-a tower.
-
-EXAMPLE
-
-Input (ht, wt): 
-
-(65, 100), (70, 150), (56, 90), (75, 190), (60, 95), (68, 110)
-
-Output: The longest tower is length 6 and includes from top to bottom:
-
-(56, 90) (60, 95), (65, 100), (68, 110), (70, 150), (75, 190)
+Design an algorithm to find the kth number such that the only prime
+factors are 3, 5, and 7. Note that 3, 5 and 7 do not have to be
+factors, but it should not have any other prime factors. For
+example, the first several multiples would be (in order)
+1, 3, 5, 7, 9, 15, 21.
 '''
 
-import copy
+'''brute force O(k^3)'''
+def kth_smallest1(k):
 
-class CircusTower():
+    def all_possible(k):
+        solutions = []
+
+        for a in range(k):
+            for b in range(k):
+                for c in range(k):
+                    n = 3**a * 5**b * 7**c
+                    solutions += [n]
+        
+        return solutions
+
+    if k < 0: return 0
+
+    possible = all_possible(k)
+
+    possible = sorted(possible)
+
+    return possible[k - 1]
+
+'''O(K) solution'''
+def kth_smallest2(k):
     
-    class Person():
-        def __init__(self, height, weight):
-            self.height = height
-            self.weight = weight
+    from collections import deque
 
-        def __lt__(self, other):
-            return self.height < other.height and \
-                self.weight < other.weight
-        
-        def __format__(self, format_spec):
-            return f'({self.height}, {self.weight})'
+    def front_or_default(queue):
+        return queue[0] if len(queue) > 0 else float('inf')
 
-        def __repr__(self):
-            return f'({self.height}, {self.weight})'
+    if k < 0: return 0
+    
+    val = 0
 
-    def __init__(self):
-        self.people = []
+    q3, q5, q7 = deque(), deque(), deque()
+    
+    q3.append(1)
 
-    def to_tuple(self, values):
-        return [(p.height, p.weight) for p in values]
+    for index in range(k):
 
-    def max_tower(self):
-        
-        tower = []
+        v3 = front_or_default(q3)
+        v5 = front_or_default(q5)
+        v7 = front_or_default(q7)
 
-        height_order = sorted(self.people, key=lambda p: p.height)
-        
-        solutions, best = [], None
+        val = min(v3, min(v5, v7))
 
-        for index in range(len(height_order)):
-            longest = self.best_seq(height_order, solutions, index)
-            solutions += [(index, longest)]
-            best = longest if not best or len(best) < len(longest) else best
+        if val == v3:
+            q3.popleft()
+            q3.append(3 * val)
+            q5.append(5 * val)
+        elif val == v5:
+            q5.popleft()
+            q5.append(5 * val)
+        elif val == v7:
+            q7.popleft()
 
-        return self.to_tuple(best)
+        q7.append(7 * val)
 
-    def best_seq(self, people, solutions, index):
+    return val
 
-        current = people[index]
-        bestSeq = []
+k = 48
 
-        for i in range(index):
-            _, prev = solutions[i]
-
-            if prev[-1] < current:
-                bestSeq = prev if not bestSeq or len(prev) > len(bestSeq) else bestSeq
-
-        best = copy.copy(bestSeq)
-        best += [current]
-
-        return best
-
-    def add_person(self, weight, height):
-        self.people +=[self.Person(weight, height)]
-
-people = [(65, 100), (70, 124), (56, 82), (48, 150), (60, 95), (68, 95), (45, 120), (45, 120)]
-
-ct = CircusTower()
-
-for weight, height in people:
-    ct.add_person(weight, height)
-
-result = ct.max_tower()
-print(result)
+print(kth_smallest1(k))
+print(kth_smallest2(k))
