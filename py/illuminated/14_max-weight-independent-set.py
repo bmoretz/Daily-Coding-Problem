@@ -32,8 +32,6 @@ data_dir = os.getcwd() + '\\data\\illuminated\\max-weight-independent-set\\'
 submission_file_path = data_dir + 'mwis.txt'
 test_file_path = data_dir + 'problem16.6test.txt'
 
-Vertex = namedtuple("Vertex", 'index weight')
-
 def read_max_weight_independent(file_path):
 
     with open(file_path, 'r') as f:
