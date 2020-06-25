@@ -1,9 +1,5 @@
 #pragma once
 
-#pragma once
-
-#pragma once
-
 #include <algorithm>
 #include <memory>
 #include <ostream>
