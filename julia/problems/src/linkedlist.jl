@@ -93,4 +93,49 @@ module linkedlist
         return list
     end
 
+    #=
+        Kth to Last.
+
+        Implement an algorithm to find the kth to last
+        element of a singly linked list.
+    =#
+
+    export kth_last
+
+    #=
+    kth last
+
+    simple approach that uses two forward iterators, one
+    as the main iterator and one as a runner that only starts
+    iterating if the main iterator index is greater than k. Once
+    the main iterator reaches the end of the list, the runner will
+    be pointed to the kth last element, we just need to peel off
+    the value.
+    =#
+
+    # O(N) where N = length of the list, O(1)/constant space.
+    function kth_last(lst::LinkedList{T}, k::Integer) where T
+        result, index = nothing, 0
+
+        let iter = iterate(lst)
+            let runner = iterate(lst)
+                while iter !== nothing
+                    (_, main_state) = iter
+                    (_, run_state) = runner
+
+                    if k < index
+                        runner = iterate(lst, run_state)
+                    end
+
+                    iter = iterate(lst, main_state)
+                    index += 1
+                end
+
+                result, _ = Iterators.peel(runner)
+            end
+        end
+
+        return result
+    end
+
 end # end module

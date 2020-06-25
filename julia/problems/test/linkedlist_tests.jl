@@ -95,5 +95,57 @@ end
 
         @test actual == expected
     end
+end
 
+@testset "k-th last" begin
+
+    @testset "case 1" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = kth_last(lst, 0)
+        expected = 1
+
+        @test actual == expected
+    end
+
+    @testset "case 2" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = kth_last(lst, 1)
+        expected = 6
+
+        @test actual == expected
+    end
+
+    @testset "case 3" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = kth_last(lst, 2)
+        expected = 2
+
+        @test actual == expected
+    end
+
+    @testset "case 4" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = kth_last(lst, 7)
+        expected = 4
+
+        @test actual == expected
+    end
+
+    @testset "case 5" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = kth_last(lst, 6)
+        expected = 6
+
+        @test actual == expected
+    end
 end
