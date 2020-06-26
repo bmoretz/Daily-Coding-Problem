@@ -1,38 +1,41 @@
 #=
-    Kth to Last.
+    Delete Middle.
 
-    Implement an algorithm to find the kth to last
-    element of a singly linked list.
+    Implement an algorithm to delete a node in the middle (i.e.,
+    any node the first and last node, not necessarily the exact
+    middle) of a singly linked list.
+
+    EXAMPLE
+
+    Input: the node c from the linked list
+        a → b → c → d → e → f
+    Result:
+        a → b → d → e → f
 =#
 
 using DataStructures
 
+l = list(4, 6, 3, 1, 3, 2, 6, 1)
 
-function kth_last(lst::LinkedList{T}, k::Integer) where T
-    result, index = nothing, 0
+k = 3
 
-    let iter = iterate(lst)
-        let runner = iterate(lst)
-            while iter !== nothing
-                (_, main_state) = iter
-                (_, run_state) = runner
-
-                if k < index
-                    runner = iterate(lst, run_state)
-                end
-
-                iter = iterate(lst, main_state)
-                index += 1
+function delete_middle(lst::LinkedList, k::Integer)
+    T = typeof(lst).parameters[1]
+    let iter = iterate(l)
+        index, new = 1, nil(T)
+        while iter != nothing
+            (head, tail) = iter
+            index += 1
+            if index <= k
+                new = cat(new, list(head))
+                iter = iterate(lst, tail)
+            else
+                new = cat(new, tail)
+                break
             end
-
-            result, _ = Iterators.peel(runner)
         end
+        return new
     end
-
-    return result
 end
 
-l = list(4, 6, 3, 1, 3, 2, 6, 1)
-k = 0
-
-result = kth_last(l, k)
+node = delete_middle(l, 3)

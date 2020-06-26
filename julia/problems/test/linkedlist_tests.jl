@@ -149,3 +149,57 @@ end
         @test actual == expected
     end
 end
+
+
+@testset "delete middle" begin
+
+    @testset "case 1" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = delete_middle(lst, 4)
+        expected = list(4, 6, 3, 3, 2, 6, 1)
+
+        @test actual == expected
+    end
+
+    @testset "case 2" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1)
+
+        actual = delete_middle(lst, 3)
+        expected = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        @test actual == expected
+    end
+
+    @testset "case 3" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 7)
+
+        actual = delete_middle(lst, 6)
+        expected = list(4, 6, 2, 3, 1, 2, 6, 1, 7)
+
+        @test actual == expected
+    end
+
+    @testset "case 4" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 7, 8)
+
+        actual = delete_middle(lst, 2)
+        expected = list(4, 2, 3, 1, 3, 2, 6, 1, 7, 8)
+
+        @test actual == expected
+    end
+
+    @testset "case 5" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 7, 8, 10)
+
+        actual = delete_middle(lst, 10)
+        expected = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 8, 10)
+
+        @test actual == expected
+    end
+end

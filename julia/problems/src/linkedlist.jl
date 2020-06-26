@@ -138,4 +138,41 @@ module linkedlist
         return result
     end
 
+    #=
+        Delete Middle.
+
+        Implement an algorithm to delete a node in the middle (i.e.,
+        any node the first and last node, not necessarily the exact
+        middle) of a singly linked list.
+
+        EXAMPLE
+
+        Input: the node c from the linked list
+            a → b → c → d → e → f
+        Result:
+            a → b → d → e → f
+    =#
+
+    export delete_middle
+
+    # O(n) where N = length of list
+    function delete_middle(lst::LinkedList, k::Integer)
+        T = typeof(lst).parameters[1]
+        let iter = iterate(lst)
+            index, new = 1, nil(T)
+            while iter != nothing
+                (head, tail) = iter
+                index += 1
+                if index <= k
+                    new = cat(new, list(head))
+                    iter = iterate(lst, tail)
+                else
+                    new = cat(new, tail)
+                    break
+                end
+            end
+            return new
+        end
+    end
+
 end # end module

@@ -17,6 +17,15 @@ module matrix
         return mat
     end
 
+    #= Rotate Matrix.
+
+    Given an NxN image represented by an NxN matrix,
+    where each pixel in the image is 4 bytes, write a method
+    to rotate the image by 90°.
+
+    Can you do it in place?
+    =#
+
     export rotate_matrix1
 
     # long way, basically a brute force solution
@@ -41,12 +50,18 @@ module matrix
     export rotate_matrix2
 
     # Rotate 90+ = transpose, rev
-    # in place
+    # in place sln
     function rotate_matrix2(mat::Array)::Array
         length(mat) <= 1 && return mat
 
         return reverse(transpose(Matrix(mat)), dims=2)
     end
+
+    #= Zero Matrix.
+
+    Write an algorithm such that if an element in an NxM matrix is
+    0, its entire row and column are set to 0.
+    =#
 
     export zero_matrix1
 
