@@ -212,3 +212,65 @@ class Test_PairSum(unittest.TestCase):
 
         actual = pair_sum(arr, 9)
         expected = {(9, 0), (4, 5), (2, 7)}
+
+from py.problems.hashtable import WordDistances
+class Test_WordDistances(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_none(self):
+
+        words = None
+
+        wd = WordDistances(words)
+
+        actual = wd.get_distance(None, None)
+        expected = None
+
+        assert actual == expected
+
+    def test_case1(self):
+
+        words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
+
+        wd = WordDistances(words)
+
+        actual = wd.get_distance('rust', 'dog')
+        expected = 9
+
+    def test_case2(self):
+
+        words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
+
+        wd = WordDistances(words)
+
+        actual = wd.get_distance('rust', 'cat')
+        expected = 1
+
+    def test_case3(self):
+
+        words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
+
+        wd = WordDistances(words)
+
+        actual = wd.get_distance('dog', 'math')
+        expected = 5
+
+    def test_case4(self):
+
+        words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
+
+        wd = WordDistances(words)
+
+        actual = wd.get_distance('cat', 'prime')
+        expected = 4
+
+    def test_case5(self):
+
+        words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
+
+        wd = WordDistances(words)
+
+        actual = wd.get_distance('puppie', 'song')
+        expected = 2

@@ -1,49 +1,55 @@
-'''Majority Element.
+'''Word Distances.
 
-A majority element is an element that makes up more than half of the
-items in an array. Given a positive integer array, find the majority
-element. If there is no majority element, return -1. Do this in O(N)
-time and O(1) space.
-
-EXAMPLE:
-
-Input: 1, 2, 5, 9, 5, 9, 5, 5, 5
-Output: 5
+You have a large text file containing words. Given any two words,
+find the shortest distance (in terms of number of words) between
+them in the file. If the operation will be repeated many times
+for the same file (but different pairs of words), can you
+optimize your solution?
 '''
 
-def majority_element(arr):
-    
-    def occurrences(arr, element, start, stop):
-        count = 0
+from collections import defaultdict
 
-        for index in range(start, stop):
-            if arr[index] == element:
-                count += 1
+class WordDistances():
+
+    def __init__(self, words=None):
+        self.locations = defaultdict(list)
+        self.min_distances = defaultdict(int)
+
+        if words:
+            self.add_words(words)
+
+    def add_words(self, words):
+        for index, word in enumerate(words):
+            self.locations[word] += [index]
+
+    def get_distance(self, word1, word2):
+
+        if not (word1 and word2): return None
+
+        key = (word1, word2)
+
+        if key not in self.min_distances:
+            dist = self.shortest_distance(word1, word2)
+            self.min_distances[(word1, word2)] = dist
+            self.min_distances[(word2, word1)] = dist
         
-        return count
+        return self.min_distances[key]
 
-    if arr == None: return None
-    n, mid = len(arr), len(arr)//2
-    if n == 0: return -1
+    def shortest_distance(self, word1, word2):
 
-    threshold, majority = mid + 1, -1
+        ones, twos = self.locations[word1], self.locations[word2]
 
-    for index in range(0, threshold):
-        current = arr[index]
+        deltas = []
 
-        upper = occurrences(arr, current, threshold, n)
+        for a in ones:
+            for b in twos:
+                deltas += [a - b if a > b else b - a]
 
-        if upper >= threshold//2:
-            lower = occurrences(arr, current, 0, threshold)
+        return min(deltas) if deltas else None
 
-            if upper + lower >= threshold:
-                majority = current
-                break
+words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
 
-    return majority
-
-arr = [1, 2, 5, 9, 5, 9, 5, 5, 5, 1, 2, 1, 2, 5]
-
-res = majority_element(arr)
+wd = WordDistances(words)
+res = wd.get_distance('puppie', 'song')
 
 print(res)
