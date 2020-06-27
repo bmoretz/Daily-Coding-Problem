@@ -203,3 +203,56 @@ end
         @test actual == expected
     end
 end
+
+@testset "partition" begin
+
+    @testset "case 1" begin
+
+        lst = list(4, 6, 3, 1, 3, 2, 6, 1)
+
+        actual = partition(lst, 4)
+        expected = list(1, 2, 3, 1, 3, 6, 6, 4)
+
+        @test actual == expected
+    end
+
+    @testset "case 2" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1)
+
+        actual = partition(lst, 3)
+        expected = list(1, 2, 1, 2, 6, 3, 3, 6, 4)
+
+        @test actual == expected
+    end
+
+    @testset "case 3" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 7)
+
+        actual = partition(lst, 6)
+        expected = list(1, 2, 3, 1, 3, 2, 4, 7, 6, 6)
+
+        @test actual == expected
+    end
+
+    @testset "case 4" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 7, 8)
+
+        actual = partition(lst, 2)
+        expected = list(1, 1, 8, 7, 6, 2, 3, 3, 2, 6, 4)
+
+        @test actual == expected
+    end
+
+    @testset "case 5" begin
+
+        lst = list(4, 6, 2, 3, 1, 3, 2, 6, 1, 7, 8, 10)
+
+        actual = partition(lst, 10)
+        expected = list(8, 7, 1, 6, 2, 3, 1, 3, 2, 6, 4, 10)
+
+        @test actual == expected
+    end
+end
