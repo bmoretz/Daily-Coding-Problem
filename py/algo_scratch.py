@@ -66,13 +66,13 @@ def knapsack_fast(knapsack):
     
     capacity, count, items = knapsack
 
-    optimal, weights = [0] * (capacity + 1), [0] * (capacity + 1)
+    optimal, weights = [0] * (capacity), [0] * (capacity)
 
     for index, item in enumerate(items):
 
         weights[item.size] = optimal[item.size]
 
-        for x in range(item.size, capacity + 1):
+        for x in range(item.size, capacity):
             exclude = optimal[x]
 
             include = optimal[x-item.size] + item.value
@@ -104,6 +104,6 @@ def knapsack_brute(knapsack):
 
     return solutions[count - 1][capacity - 1]
 
-knapsack = read_knapsack(big_submission_file_path)
+knapsack = read_knapsack(submission_file_path)
 result = knapsack_fast(knapsack)
 print(result)
