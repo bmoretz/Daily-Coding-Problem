@@ -1003,3 +1003,83 @@ class SumTree1():
             self.root = self.TreeNode(value)
         else:
             insertInOrder(self.root, value)
+
+'''BiNode.
+
+Consider a simple data structure called BiNode, which has pointers
+to two other nodes.
+
+The data structure BiNode could be used to represent both a binary
+tree (where node1 is the left node and node2 is the right node) or
+a doubly linked list (where node1 is the previous node and node2
+is the next node). Implement a method to convert a binary search
+tree (implemented with BiNode) into a doubly linked list. The
+values should be kept in order and the operation should be
+performed in place (that is, on the original data structure).
+'''
+
+class TreeToList():
+
+    class NodePair():
+
+        def __init__(self, head=None, tail=None):
+            self.head = head
+            self.tail = tail
+
+    class BiNode():
+
+        def __init__(self, data=None, node1=None, node2=None):
+            self.data = data
+            self.node1 = node1
+            self.node2 = node2
+
+        def __str__(self):
+            return f'{self.data}'
+
+    def to_list(self, node):
+        
+        if not node: return None
+
+        part1 = self.to_list(node.node1)
+        part2 = self.to_list(node.node2)
+        
+        if part1:
+            self.concat(part1.tail, node)
+
+        if part2:
+            self.concat(node, part2.head)
+
+        return self.NodePair(node if not part1 else part1.head,
+                    node if not part2 else part2.tail)
+
+    @staticmethod
+    def flatten(head):
+
+        node = head.head
+
+        arr = []
+        while node:
+            arr.append(node.data)
+            node = node.node2
+
+        return arr
+
+    @staticmethod
+    def concat(x, y):
+        x.node2 = y
+        y.node1 = x
+
+    def build_tree(self, arr):
+
+        n = len(arr)
+        
+        if n == 0: return None
+
+        mid = n//2
+
+        node = self.BiNode(arr[mid])
+
+        if n > 0: node.node1 = self.build_tree(arr[:mid])
+        if n > 1: node.node2 = self.build_tree(arr[mid + 1:])
+
+        return node

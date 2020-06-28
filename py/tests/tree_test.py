@@ -1,3 +1,7 @@
+from py.problems.tree import TreeToList
+from py.problems.tree import get_height, get_width
+from py.problems.tree import populate_pre_order
+
 import unittest
 
 from py.problems.tree import Node
@@ -5,27 +9,26 @@ from py.problems.tree import Node
 tree1 = [0,
         [1, [], []],
         [0,
-            [1, [1], [1]], 
+            [1, [1], [1]],
             [0, [], []]
         ]]
 
 tree2 = ['a',
         ['a', [], []],
         ['a',
-            ['a', [], []], 
+            ['a', [], []],
             ['a', [], ['b']]
         ]]
 
-from py.problems.tree import populate_pre_order
-from py.problems.tree import get_height, get_width
+
 class Test_InitTree(unittest.TestCase):
-    
+
     def setUp(self):
         self.tree1 = populate_pre_order(tree1)
         self.tree2 = populate_pre_order(tree2)
 
     def test_case1(self):
-        
+
         assert get_height(self.tree1) == 4
 
     def test_case2(self):
@@ -39,13 +42,13 @@ class Test_InitTree(unittest.TestCase):
 
 from py.problems.tree import count_unival_subtrees1
 class Test_CountUnivalSubtree1(unittest.TestCase):
-    
+
     def setUp(self):
         self.tree1 = populate_pre_order(tree1)
         self.tree2 = populate_pre_order(tree2)
 
     def test_case1(self):
-        
+
         subtrees = count_unival_subtrees1(self.tree1)
 
         assert subtrees == 5
@@ -57,13 +60,13 @@ class Test_CountUnivalSubtree1(unittest.TestCase):
 
 from py.problems.tree import count_unival_subtrees2
 class Test_CountUnivalSubtree2(unittest.TestCase):
-    
+
     def setUp(self):
         self.tree1 = populate_pre_order(tree1)
         self.tree2 = populate_pre_order(tree2)
 
     def test_case1(self):
-        
+
         subtrees = count_unival_subtrees2(self.tree1)
 
         assert subtrees == 5
@@ -81,11 +84,11 @@ class Test_Serialization(unittest.TestCase):
         self.tree2 = populate_pre_order(tree2)
 
     def test_case1(self):
-        
+
         ser = serialize(self.tree1)
 
         tree1 = deserialize(ser)
-        
+
         assert tree1.data == 0
         assert tree1.left.data == 1
         assert tree1.right.data == 0
@@ -97,7 +100,7 @@ class Test_Reconstruct1(unittest.TestCase):
         pass
 
     def test_case1(self):
-        
+
         preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
         inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
 
@@ -126,7 +129,7 @@ class Test_Reconstruct2(unittest.TestCase):
         pass
 
     def test_case1(self):
-        
+
         preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
         inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
 
@@ -177,7 +180,7 @@ class Test_Arithmetic1(unittest.TestCase):
         result = evaluate1(operations)
 
         assert result == 18
-        
+
     def test_case3(self):
 
         ops = ['*',
@@ -201,7 +204,6 @@ class Test_MinSum1(unittest.TestCase):
         self.values2 = [5,
                         [1],
                         [2, [4], [5]]]
-
 
     def test_case1(self):
 
@@ -285,7 +287,7 @@ class Test_DepthList(unittest.TestCase):
         pass
 
     def test_case1(self):
-        
+
         dl = DepthList(None)
 
         assert dl
@@ -298,6 +300,7 @@ class Test_DepthList(unittest.TestCase):
        / \
       1   3
     '''
+
     def test_case2(self):
 
         dl = DepthList([1, 2, 3])
@@ -322,13 +325,14 @@ class Test_DepthList(unittest.TestCase):
 
     '''
     tree 2:
-    
+
         3
        / \
       2   4
      /
     1
     '''
+
     def test_case3(self):
 
         dl = DepthList([1, 2, 3, 4])
@@ -357,13 +361,14 @@ class Test_DepthList(unittest.TestCase):
 
     '''
     tree 3:
-    
+
         3
        /  \
       2    5
-     /    /  
-    1    4 
+     /    /
+    1    4
     '''
+
     def test_case4(self):
 
         dl = DepthList([1, 2, 3, 4, 5])
@@ -396,13 +401,14 @@ class Test_DepthList(unittest.TestCase):
 
     '''
     tree 4:
-    
+
          4
        /   \
       2     6
-     / \   /  \ 
+     / \   /  \
     1   3 5    7
     '''
+
     def test_case5(self):
 
         dl = DepthList([1, 2, 3, 4, 5, 6, 7])
@@ -448,6 +454,7 @@ class Test_DepthList(unittest.TestCase):
         / \
         1   3
         '''
+
         def test_case6(self):
 
             dl = DepthList([1, 2, 3])
@@ -472,13 +479,14 @@ class Test_DepthList(unittest.TestCase):
 
             '''
             tree 2:
-            
+
                 3
             / \
             2   4
             /
             1
             '''
+
             def test_case7(self):
 
                 dl = DepthList([1, 2, 3, 4])
@@ -507,13 +515,14 @@ class Test_DepthList(unittest.TestCase):
 
             '''
             tree 3:
-            
+
                 3
             /  \
             2    5
-            /    /  
-            1    4 
+            /    /
+            1    4
             '''
+
             def test_case7(self):
 
                 dl = DepthList([1, 2, 3, 4, 5])
@@ -546,13 +555,14 @@ class Test_DepthList(unittest.TestCase):
 
             '''
             tree 4:
-            
+
                 4
             /   \
             2     6
-            / \   /  \ 
+            / \   /  \
             1   3 5    7
             '''
+
             def test_case8(self):
 
                 dl = DepthList([1, 2, 3, 4, 5, 6, 7])
@@ -598,7 +608,7 @@ class Test_IsBalanced(unittest.TestCase):
         pass
 
     def test_case1(self):
-        
+
         root = None
 
         assert is_balanced(root) == True
@@ -613,6 +623,7 @@ class Test_IsBalanced(unittest.TestCase):
       /
     1
     '''
+
     def test_case2(self):
         root = Node(4)
         root.left = Node(3)
@@ -627,6 +638,7 @@ class Test_IsBalanced(unittest.TestCase):
       /   \
     1       3
     '''
+
     def test_case3(self):
 
         root = Node(2)
@@ -646,12 +658,13 @@ class Test_IsBalanced(unittest.TestCase):
                    \
                      5
     '''
+
     def test_case3(self):
 
         root = Node(2)
 
         root.left = Node(1)
-        
+
         root.right = Node(3)
         root.right.right = Node(4)
         root.right.right.right = Node(5)
@@ -668,6 +681,7 @@ class Test_IsBalanced(unittest.TestCase):
                     \
                       5
     '''
+
     def test_case3(self):
 
         root = Node(2)
@@ -692,7 +706,7 @@ class Test_IsBST(unittest.TestCase):
         tree = None
 
         assert is_bst(tree) == False
-    
+
     '''
     Tree #1:
 
@@ -700,8 +714,9 @@ class Test_IsBST(unittest.TestCase):
           /   \
         2       4
       /
-     1 
+     1
     '''
+
     def test_case2(self):
 
         tree = Node(3)
@@ -710,7 +725,7 @@ class Test_IsBST(unittest.TestCase):
         tree.left.left = Node(1)
 
         tree.right = Node(4)
-        
+
         assert is_bst(tree) == True
 
     '''
@@ -722,6 +737,7 @@ class Test_IsBST(unittest.TestCase):
       /           \
      1              4
     '''
+
     def test_case2(self):
 
         tree = Node(3)
@@ -743,6 +759,7 @@ class Test_IsBST(unittest.TestCase):
       /           \
      4              4
     '''
+
     def test_case3(self):
 
         tree = Node(1)
@@ -752,7 +769,7 @@ class Test_IsBST(unittest.TestCase):
 
         tree.right = Node(3)
         tree.right.right = Node(4)
-        
+
         assert is_bst(tree) == False
 
     '''
@@ -764,6 +781,7 @@ class Test_IsBST(unittest.TestCase):
       /  \     /  \
      1     3  5     5
     '''
+
     def test_case4(self):
 
         tree = Node(4)
@@ -787,6 +805,7 @@ class Test_IsBST(unittest.TestCase):
       /  \     /  \
      1     3  5     7
     '''
+
     def test_case5(self):
 
         tree = Node(4)
@@ -807,9 +826,10 @@ class Test_IsBST(unittest.TestCase):
            20
           /   \
         10     30
-         \    
-          25  
+         \
+          25
     '''
+
     def test_case6(self):
 
         tree = Node(20)
@@ -827,11 +847,12 @@ class Test_IsBST(unittest.TestCase):
            20
           /  \
         10    30
-       /  \    
+       /  \
       5    15
      /  \    \
     3    7    17
     '''
+
     def test_case7(self):
 
         tree = Node(20)
@@ -857,6 +878,7 @@ class Test_IsBST(unittest.TestCase):
       /  \     /  \
      1     3  6     7
     '''
+
     def test_case5(self):
 
         tree = Node(4)
@@ -902,6 +924,7 @@ class Test_Successor(unittest.TestCase):
             /
            21
     '''
+
     def test_case3(self):
 
         tree = Node(3)
@@ -942,6 +965,7 @@ class Test_Successor(unittest.TestCase):
             /
            21
     '''
+
     def test_case4(self):
 
         tree = Node(3)
@@ -984,6 +1008,7 @@ class Test_Successor(unittest.TestCase):
             /
            21
     '''
+
     def test_case5(self):
 
         tree = Node(3)
@@ -1027,6 +1052,7 @@ class Test_Successor(unittest.TestCase):
             /
            21
     '''
+
     def test_case6(self):
 
         tree = Node(3)
@@ -1051,7 +1077,7 @@ class Test_Successor(unittest.TestCase):
         # case where we want the successor to be in the
         # previously traversed path.
         actual = successor(tree, 28)
-        
+
         assert actual.data == 30
 
 from py.problems.tree import first_common_ancestor1
@@ -1077,7 +1103,8 @@ class Test_FirstCommonAncestor1(unittest.TestCase):
    12    10  2     7
             / \
            6   18
-    '''    
+    '''
+
     def test_case2(self):
 
         tree = Node(5)
@@ -1166,16 +1193,17 @@ class Test_CheckSubtree1(unittest.TestCase):
                50
             /      \
           30         70
-        /     \   /     \ 
+        /     \   /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             60
            /   \
-         55     65 
+         55     65
     '''
+
     def test_case1(self):
         t1 = Node(50)
 
@@ -1208,16 +1236,17 @@ class Test_CheckSubtree1(unittest.TestCase):
                50
             /      \
           30         70
-        /     \   /     \ 
+        /     \   /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             60
            /
-         55      
+         55
     '''
+
     def test_case2(self):
         t1 = Node(50)
 
@@ -1237,7 +1266,7 @@ class Test_CheckSubtree1(unittest.TestCase):
 
         t2 = Node(60)
         t2.left = Node(55)
-        
+
         actual = check_subtree1(t1, t2)
         expected = False
 
@@ -1249,16 +1278,17 @@ class Test_CheckSubtree1(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             20
            /
-          25 
+          25
     '''
+
     def test_case3(self):
         t1 = Node(50)
 
@@ -1278,7 +1308,7 @@ class Test_CheckSubtree1(unittest.TestCase):
 
         t2 = Node(20)
         t2.left = Node(25)
-        
+
         actual = check_subtree1(t1, t2)
         expected = False
 
@@ -1290,16 +1320,17 @@ class Test_CheckSubtree1(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             20
               \
                25
     '''
+
     def test_case4(self):
         t1 = Node(50)
 
@@ -1319,7 +1350,7 @@ class Test_CheckSubtree1(unittest.TestCase):
 
         t2 = Node(20)
         t2.right = Node(25)
-        
+
         actual = check_subtree1(t1, t2)
         expected = True
 
@@ -1331,14 +1362,15 @@ class Test_CheckSubtree1(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             60
     '''
+
     def test_case5(self):
         t1 = Node(50)
 
@@ -1357,7 +1389,7 @@ class Test_CheckSubtree1(unittest.TestCase):
         t1.right.right.right = Node(90)
 
         t2 = Node(60)
-        
+
         actual = check_subtree1(t1, t2)
         expected = False
 
@@ -1369,14 +1401,15 @@ class Test_CheckSubtree1(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             65
     '''
+
     def test_case6(self):
         t1 = Node(50)
 
@@ -1395,7 +1428,7 @@ class Test_CheckSubtree1(unittest.TestCase):
         t1.right.right.right = Node(90)
 
         t2 = Node(65)
-        
+
         actual = check_subtree1(t1, t2)
         expected = True
 
@@ -1413,16 +1446,17 @@ class Test_CheckSubtree2(unittest.TestCase):
                50
             /      \
           30         70
-        /     \   /     \ 
+        /     \   /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             60
            /   \
-         55     65 
+         55     65
     '''
+
     def test_case1(self):
         t1 = Node(50)
 
@@ -1455,16 +1489,17 @@ class Test_CheckSubtree2(unittest.TestCase):
                50
             /      \
           30         70
-        /     \   /     \ 
+        /     \   /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             60
            /
          55
     '''
+
     def test_case2(self):
         t1 = Node(50)
 
@@ -1484,7 +1519,7 @@ class Test_CheckSubtree2(unittest.TestCase):
 
         t2 = Node(60)
         t2.left = Node(55)
-        
+
         actual = check_subtree2(t1, t2)
         expected = False
 
@@ -1496,16 +1531,17 @@ class Test_CheckSubtree2(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             20
            /
-          25 
+          25
     '''
+
     def test_case3(self):
         t1 = Node(50)
 
@@ -1525,7 +1561,7 @@ class Test_CheckSubtree2(unittest.TestCase):
 
         t2 = Node(20)
         t2.left = Node(25)
-        
+
         actual = check_subtree2(t1, t2)
         expected = False
 
@@ -1537,16 +1573,17 @@ class Test_CheckSubtree2(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             20
               \
                25
     '''
+
     def test_case4(self):
         t1 = Node(50)
 
@@ -1566,7 +1603,7 @@ class Test_CheckSubtree2(unittest.TestCase):
 
         t2 = Node(20)
         t2.right = Node(25)
-        
+
         actual = check_subtree2(t1, t2)
         expected = True
 
@@ -1578,14 +1615,15 @@ class Test_CheckSubtree2(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             60
     '''
+
     def test_case5(self):
         t1 = Node(50)
 
@@ -1604,7 +1642,7 @@ class Test_CheckSubtree2(unittest.TestCase):
         t1.right.right.right = Node(90)
 
         t2 = Node(60)
-        
+
         actual = check_subtree2(t1, t2)
         expected = True
 
@@ -1616,14 +1654,15 @@ class Test_CheckSubtree2(unittest.TestCase):
                50
             /      \
           30         70
-        /    \    /     \ 
+        /    \    /     \
       20      40 60      80
         \       /  \    /   \
         25     55   65 75    90
-    
+
 
             65
     '''
+
     def test_case6(self):
         t1 = Node(50)
 
@@ -1642,7 +1681,7 @@ class Test_CheckSubtree2(unittest.TestCase):
         t1.right.right.right = Node(90)
 
         t2 = Node(65)
-        
+
         actual = check_subtree2(t1, t2)
         expected = True
 
@@ -1663,8 +1702,9 @@ class Test_RandomBinaryTree1(unittest.TestCase):
       /    \   /    \
      10    20 50     70
     '''
+
     def test_case1(self):
-        
+
         tree = RandomBinaryTree1()
 
         node_values = [40, 30, 60, 10, 20, 50, 70]
@@ -1688,7 +1728,7 @@ class Test_RandomBinaryTree1(unittest.TestCase):
         assert tree.find(40) == None
 
     def test_case2(self):
-        
+
         tree = RandomBinaryTree1()
 
         node_values = [40, 30, 60, 10, 20, 50, 70]
@@ -1713,8 +1753,9 @@ class Test_RandomBinaryTree1(unittest.TestCase):
      /        /         \
    14      40             81
     '''
+
     def test_case3(self):
-        
+
         tree = RandomBinaryTree1()
 
         node_values = [40, 30, 60, 10, 20, 50, 70, 40, 14, 81]
@@ -1728,7 +1769,7 @@ class Test_RandomBinaryTree1(unittest.TestCase):
 
             assert actual in node_values
 
-        tree.delete(40) # dup 40
+        tree.delete(40)  # dup 40
 
         assert tree.find(40) != None
 
@@ -1751,8 +1792,9 @@ class Test_RandomBinaryTree1(unittest.TestCase):
      /        /         \
    14      40             81
     '''
+
     def test_case4(self):
-        
+
         tree = RandomBinaryTree1()
 
         node_values = [40, 30, 60, 10, 20, 50, 70, 40, 14, 81]
@@ -1780,14 +1822,15 @@ class Test_SumTree1(unittest.TestCase):
       /   \     /   \
     2      4   7     10
     '''
+
     def test_case1(self):
-    
+
         tree = SumTree1()
 
         values = [5, 8, 3, 7, 4, 10, 2]
 
         for value in values:
-            tree.insert(value) 
+            tree.insert(value)
 
         assert tree.root.path_sums(8) == 1
 
@@ -1802,6 +1845,7 @@ class Test_SumTree1(unittest.TestCase):
       /
     2
     '''
+
     def test_case2(self):
 
         tree = SumTree1()
@@ -1809,7 +1853,7 @@ class Test_SumTree1(unittest.TestCase):
         values = [5, 8, 3, 7, 4, 10, 2, 2]
 
         for value in values:
-            tree.insert(value) 
+            tree.insert(value)
 
         # 5 -> 3 -> 2 -> 2 = 12
         # 5 -> 3 -> 4
@@ -1826,6 +1870,7 @@ class Test_SumTree1(unittest.TestCase):
       /
     2
     '''
+
     def test_case3(self):
 
         tree = SumTree1()
@@ -1833,7 +1878,7 @@ class Test_SumTree1(unittest.TestCase):
         values = [5, 8, 3, 7, 4, 10, 2, 2]
 
         for value in values:
-            tree.insert(value) 
+            tree.insert(value)
 
         # 3 -> 2 -> 2 = 7
         # 3 -> 4
@@ -1850,14 +1895,15 @@ class Test_SumTree1(unittest.TestCase):
               /
              3
     '''
+
     def test_case4(self):
-    
+
         tree = SumTree1()
 
         values = [5, 8, 3, 7, 4, 10, 2]
 
         for value in values:
-            tree.insert(value) 
+            tree.insert(value)
 
         # insert 3 below 7
         tree.insert_at(tree.root.right.left, 3)
@@ -1880,14 +1926,15 @@ class Test_SumTree1(unittest.TestCase):
             /
           -1
     '''
+
     def test_case5(self):
-    
+
         tree = SumTree1()
 
         values = [5, 8, 3, 7, 4, 10, 2]
 
         for value in values:
-            tree.insert(value) 
+            tree.insert(value)
 
         # insert 3 below 7
         tree.insert_at(tree.root.right.left, 3)
@@ -1901,3 +1948,67 @@ class Test_SumTree1(unittest.TestCase):
 
         assert actual == expected
 
+class Test_TreeToList(unittest.TestCase):
+
+	def setUp(self):
+		pass
+
+	def test_case1(self):
+
+		converter = TreeToList()
+
+		arr = [*range(1, 12)]
+
+		tree = converter.build_tree(arr)
+
+		actual_list = converter.to_list(tree)
+		actual = converter.flatten(actual_list)
+
+		expected = arr
+
+		assert actual == expected
+
+	def test_case2(self):
+
+		converter = TreeToList()
+
+		arr = [*range(1, 3)]
+
+		tree = converter.build_tree(arr)
+
+		actual_list = converter.to_list(tree)
+		actual = converter.flatten(actual_list)
+
+		expected = arr
+
+		assert actual == expected
+
+	def test_case3(self):
+
+		converter = TreeToList()
+
+		arr = [*range(1, 8)]
+
+		tree = converter.build_tree(arr)
+
+		actual_list = converter.to_list(tree)
+		actual = converter.flatten(actual_list)
+
+		expected = arr
+
+		assert actual == expected
+
+	def test_case4(self):
+
+		converter = TreeToList()
+
+		arr = [*range(7, 12)]
+
+		tree = converter.build_tree(arr)
+
+		actual_list = converter.to_list(tree)
+		actual = converter.flatten(actual_list)
+
+		expected = arr
+
+		assert actual == expected

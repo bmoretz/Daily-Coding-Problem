@@ -1,55 +1,87 @@
-'''Word Distances.
+'''BiNode.
 
-You have a large text file containing words. Given any two words,
-find the shortest distance (in terms of number of words) between
-them in the file. If the operation will be repeated many times
-for the same file (but different pairs of words), can you
-optimize your solution?
+Consider a simple data structure called BiNode, which has pointers
+to two other nodes.
+
+The data structure BiNode could be used to represent both a binary
+tree (where node1 is the left node and node2 is the right node) or
+a doubly linked list (where node1 is the previous node and node2
+is the next node). Implement a method to convert a binary search
+tree (implemented with BiNode) into a doubly linked list. The
+values should be kept in order and the operation should be
+performed in place (that is, on the original data structure).
 '''
 
-from collections import defaultdict
+class TreeToList():
 
-class WordDistances():
+    class NodePair():
 
-    def __init__(self, words=None):
-        self.locations = defaultdict(list)
-        self.min_distances = defaultdict(int)
+        def __init__(self, head=None, tail=None):
+            self.head = head
+            self.tail = tail
 
-        if words:
-            self.add_words(words)
+    class BiNode():
 
-    def add_words(self, words):
-        for index, word in enumerate(words):
-            self.locations[word] += [index]
+        def __init__(self, data=None, node1=None, node2=None):
+            self.data = data
+            self.node1 = node1
+            self.node2 = node2
 
-    def get_distance(self, word1, word2):
+        def __str__(self):
+            return f'{self.data}'
 
-        if not (word1 and word2): return None
-
-        key = (word1, word2)
-
-        if key not in self.min_distances:
-            dist = self.shortest_distance(word1, word2)
-            self.min_distances[(word1, word2)] = dist
-            self.min_distances[(word2, word1)] = dist
+    @staticmethod
+    def to_list(node):
         
-        return self.min_distances[key]
+        if not node: return None
 
-    def shortest_distance(self, word1, word2):
+        part1 = to_list(node.node1)
+        part2 = to_list(node.node2)
+        
+        if part1:
+            concat(part1.tail, node)
 
-        ones, twos = self.locations[word1], self.locations[word2]
+        if part2:
+            concat(node, part2.head)
 
-        deltas = []
+        return NodePair(node if not part1 else part1.head,
+                    node if not part2 else part2.tail)
 
-        for a in ones:
-            for b in twos:
-                deltas += [a - b if a > b else b - a]
+    @staticmethod
+    def concat(x, y):
+        x.node2 = y
+        y.node1 = x
 
-        return min(deltas) if deltas else None
+    @staticmethod
+    def build_tree(arr):
 
-words = ['cat', 'dog', 'puppie', 'rat', 'song', 'guess', 'math', 'prime', 'song', 'dust', 'rust', 'cat']
+        n = len(arr)
+        
+        if n == 0: return None
 
-wd = WordDistances(words)
-res = wd.get_distance('puppie', 'song')
+        mid = n//2
 
-print(res)
+        node = BiNode(arr[mid])
+
+        if n > 0: node.node1 = build_tree(arr[:mid])
+        if n > 1: node.node2 = build_tree(arr[mid + 1:])
+
+        return node
+
+    @staticmethod
+    def flatten(node):
+
+        arr = []
+        while node:
+            arr.append(node.data)
+            node = node.node2
+
+        return arr
+
+arr = list(range(1, 12))
+
+tree = build_tree(arr)
+
+lst = to_list(tree)
+
+print()
