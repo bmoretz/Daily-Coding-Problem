@@ -102,9 +102,9 @@ class Test_Reconstruct1(unittest.TestCase):
     def test_case1(self):
 
         preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
-        inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
+        in_order = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
 
-        tree = reconstruct1(preorder, inorder)
+        tree = reconstruct1(preorder, in_order)
 
         assert tree.data == 'a'
 
@@ -131,9 +131,9 @@ class Test_Reconstruct2(unittest.TestCase):
     def test_case1(self):
 
         preorder = ['a', 'b', 'd', 'e', 'c', 'f', 'g']
-        inorder = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
+        in_order = ['d', 'b', 'e', 'a', 'f', 'c', 'g']
 
-        tree = reconstruct2(preorder, inorder)
+        tree = reconstruct2(preorder, in_order)
 
         assert tree.data == 'a'
 

@@ -1,87 +1,85 @@
-'''BiNode.
+'''Smallest K.
 
-Consider a simple data structure called BiNode, which has pointers
-to two other nodes.
-
-The data structure BiNode could be used to represent both a binary
-tree (where node1 is the left node and node2 is the right node) or
-a doubly linked list (where node1 is the previous node and node2
-is the next node). Implement a method to convert a binary search
-tree (implemented with BiNode) into a doubly linked list. The
-values should be kept in order and the operation should be
-performed in place (that is, on the original data structure).
+Design an algorithm to find the smallest K numbers in an array.
 '''
 
-class TreeToList():
+import heapq
 
-    class NodePair():
+''' O(n log n) brute force '''
+def smallest_k1(arr, k):
+    if not arr: return None
 
-        def __init__(self, head=None, tail=None):
-            self.head = head
-            self.tail = tail
+    n = len(arr) - 1
+    s = sorted(arr)
 
-    class BiNode():
+    return s[:k] if k < n else s[:n]
 
-        def __init__(self, data=None, node1=None, node2=None):
-            self.data = data
-            self.node1 = node1
-            self.node2 = node2
+'''O(n log m)'''
+def smallest_k2(arr, k):
 
-        def __str__(self):
-            return f'{self.data}'
+    if not arr: return None
 
-    @staticmethod
-    def to_list(node):
+    heapq.heapify(arr)
+    n = len(arr) - 1
+
+    results = []
+
+    for _ in range(min(k, n)):
+        results.append(arr[0])
+        heapq.heappop(arr)
+    
+    return results
+
+from random import randint
+
+'''selection rank O(N)'''
+def smallest_k3(arr, k):
+
+    def rank_pivot(arr, left, right, rank):
+        r = randint(left, right)
+        pivot = arr[r]
+
+        left_end = partition(arr, left, right, pivot)
+        left_size = left_end - left + 1
+
+        if rank == left_size - 1:
+            return max(arr[left], arr[left_end])
+        elif rank < left_size:
+            return rank_pivot(arr, left, left_end, rank)
+        else:
+            return rank_pivot(arr, left_end + 1, right, rank - left_size)
+
+    def rank(arr, r):
+        return rank_pivot(arr, 0, len(arr) - 1, r)
+
+    def swap(arr, l, r):
+        arr[l], arr[r] = arr[r], arr[l]
+
+    def partition(arr, left, right, pivot):
         
-        if not node: return None
+        while left <= right:
+            if arr[left] > pivot:
+                swap(arr, left, right)
+                right -= 1
+            elif arr[right] <= pivot:
+                swap(arr, left, right)
+                left += 1
+            else:
+                left += 1
+                right -= 1
 
-        part1 = to_list(node.node1)
-        part2 = to_list(node.node2)
+        return left - 1
         
-        if part1:
-            concat(part1.tail, node)
+    if arr == None: return None
 
-        if part2:
-            concat(node, part2.head)
+    threshold = rank(arr, k)
+    take = min(len(arr) - 1, k)
 
-        return NodePair(node if not part1 else part1.head,
-                    node if not part2 else part2.tail)
+    return arr[:take]
 
-    @staticmethod
-    def concat(x, y):
-        x.node2 = y
-        y.node1 = x
 
-    @staticmethod
-    def build_tree(arr):
+arr = [2, 1, 5, 7, 9, 11, 3, 0, 8, 15, -1, 18]
+k = 3
 
-        n = len(arr)
-        
-        if n == 0: return None
-
-        mid = n//2
-
-        node = BiNode(arr[mid])
-
-        if n > 0: node.node1 = build_tree(arr[:mid])
-        if n > 1: node.node2 = build_tree(arr[mid + 1:])
-
-        return node
-
-    @staticmethod
-    def flatten(node):
-
-        arr = []
-        while node:
-            arr.append(node.data)
-            node = node.node2
-
-        return arr
-
-arr = list(range(1, 12))
-
-tree = build_tree(arr)
-
-lst = to_list(tree)
-
-print()
+actual = smallest_k3(arr, k)
+print(actual)
