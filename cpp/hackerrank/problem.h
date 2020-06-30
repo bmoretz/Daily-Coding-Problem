@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -43,64 +41,18 @@ namespace hackerrank
 		static int get_case_number( std::string file_name );
 		static std::map<int, fs::path> get_files( const fs::path& path );
 		[[nodiscard]] std::vector<test_case> find_test_cases() const;
-		void execute_test_case( const std::vector<test_case>::value_type& test );
+		void execute_test_case( const std::vector<test_case>::value_type& test, const fs::path& debug_file );
 
 		template<typename... Args>
 		static std::string string_format( const char* fmt, Args ... args );
 
-		bool run()
-		{
-			auto all_passed = true;
-			auto test_cases = find_test_cases();
+		bool run();
 
-			std::cout << "********************************************************" << std::endl;
-			std::cout << std::endl << std::endl;
+		static auto strip_feeds( std::string& str ) -> void;
 
-			for( const auto& test : test_cases )
-			{
-				auto debug_file = working_dir / debug_dir / string_format( "debug%i.txt", test.case_number );
+		static std::vector<std::basic_string<char>> read_file( std::ifstream& fs );
 
-				execute_test_case( test );
-
-				std::cout << "TEST RESULTS: Case " << test.case_number << std::endl;
-
-				const auto test_result = compare_files( debug_dir, test.output.string() );
-
-				if( test_result )
-					std::cout << "GREAT SUCCESS! VERY NICE" << std::endl;
-				else
-					std::cout << "TRY AGAIN, VANILLA FACE!" << std::endl;
-
-				std::cout << std::endl << std::endl;
-				all_passed &= test_result;
-			}
-
-			std::cout << "********************************************************" << std::endl;
-
-			return all_passed;
-		}
-
-		static auto strip_feeds( std::string& str ) -> void
-		{
-			str.erase( std::remove( str.begin(), str.end(), '\n' ), str.end() );
-			str.erase( std::remove( str.begin(), str.end(), '\r' ), str.end() );
-		}
-
-		static std::vector<std::string> read_file( std::ifstream& fs )
-		{
-			std::vector<std::string> content;
-			std::string buff;
-
-			while( std::getline( fs, buff ) )
-			{
-				strip_feeds( buff );
-				content.push_back( buff );
-			}
-
-			return content;
-		}
-
-		static bool compare_files( const std::string& p1, const std::string& p2 );
+		static bool compare_files( const fs::path& p1, const fs::path& p2 );
 	};
 
 	template <typename ... Args>
@@ -166,7 +118,8 @@ namespace hackerrank
 		return test_cases;
 	}
 
-	inline void problem::execute_test_case( const std::vector<test_case>::value_type& test )
+	inline void problem::execute_test_case( const std::vector<test_case>::value_type& test,
+		const fs::path& debug_file )
 	{
 		// redirect std i/o to test case / debug files.
 		const auto prev_in = std::cin.rdbuf();
@@ -174,7 +127,7 @@ namespace hackerrank
 		std::cin.rdbuf( new_in.rdbuf() );
 
 		const auto prev_out = std::cout.rdbuf();
-		auto new_out = std::ofstream( debug_dir );
+		auto new_out = std::ofstream( debug_file );
 		std::cout.rdbuf( new_out.rdbuf() );
 
 		// execute the problem to build output file.
@@ -188,7 +141,68 @@ namespace hackerrank
 		std::cout.rdbuf( prev_out );
 	}
 
-	inline bool problem::compare_files( const std::string& p1, const std::string& p2 )
+	inline bool problem::run()
+	{
+		auto all_passed = true;
+		auto test_cases = find_test_cases();
+
+		std::cout << "********************************************************" << std::endl;
+		std::cout << std::endl << std::endl;
+
+		for( const auto& test : test_cases )
+		{
+			auto debug_path = working_dir / debug_dir;
+
+			if( !exists( debug_path ) )
+				create_directory( debug_path );
+			
+			auto debug_file = debug_path / string_format( "debug%i.txt", test.case_number );
+			
+			execute_test_case( test, debug_file );
+
+			std::cout << "TEST RESULTS: Case " << test.case_number << std::endl;
+
+			const auto test_result = compare_files( debug_file, test.output );
+
+			if( test_result )
+			{
+				std::cout << "GREAT SUCCESS! VERY NICE" << std::endl;
+			}
+			else
+			{
+				std::cout << "TRY AGAIN, VANILLA FACE!" << std::endl;
+			}
+
+			std::cout << std::endl << std::endl;
+			all_passed &= test_result;
+		}
+
+		std::cout << "********************************************************" << std::endl;
+
+		return all_passed;
+	}
+
+	inline auto problem::strip_feeds( std::string& str ) -> void
+	{
+		str.erase( std::remove( str.begin(), str.end(), '\n' ), str.end() );
+		str.erase( std::remove( str.begin(), str.end(), '\r' ), str.end() );
+	}
+
+	inline std::vector<std::basic_string<char>> problem::read_file( std::ifstream& fs )
+	{
+		std::vector<std::string> content;
+		std::string buff;
+
+		while( std::getline( fs, buff ) )
+		{
+			strip_feeds( buff );
+			content.push_back( buff );
+		}
+
+		return content;
+	}
+
+	inline bool problem::compare_files( const fs::path& p1, const fs::path& p2 )
 	{
 		std::ifstream f1( p1, std::ifstream::binary | std::ifstream::ate );
 		std::ifstream f2( p2, std::ifstream::binary | std::ifstream::ate );

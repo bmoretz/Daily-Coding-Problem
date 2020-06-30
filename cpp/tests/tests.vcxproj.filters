@@ -15,6 +15,7 @@
     <ClCompile Include="ds_heap.cpp" />
     <ClCompile Include="bitmanip_tests.cpp" />
     <ClCompile Include="hr_arr.cpp" />
+    <ClCompile Include="hr_str.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
