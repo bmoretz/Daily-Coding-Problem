@@ -1,113 +1,112 @@
-#include <memory>
-#include <vector>
-#include <iostream>
-#include <utility>
-#include <unordered_map>
-#include <random>
-#include <bitset>
-#include <iomanip>
-#include <string>
-#include <ostream>
-#include <string>
-#include <sstream>
+#include <bits/stdc++.h>
+#include "../hackerrank/problem.h"
 
-/* Draw Line.
- *
- * A monochrome screen is stored as a single array of bytes, allowing
- * eight consecutive pixels to be stored in one byte. The screen has
- * width w, where w is divisible by 8 (that is, no byte will be split
- * across rows). The height of the screen, of course, can be derived
- * from the length of the array and the width. Implement a function
- * that draws a horizontal line from (x1, y) to (x2, y).
- *
- * The method signature should look something like this:
- *
- * drawLine(byte[] screen, int width, int x1, int x2, int y)
- */
+using namespace hackerrank;
 
-class byte_screen
+struct variable_sized_arrays final : problem
 {
-	int width_;
-	int height_;
-	std::unique_ptr<std::byte[]> screen_;
+	using problem::problem;
 
-public:
-
-	byte_screen( const int width, const int height )
+	static std::vector<std::basic_string<char>> split( const std::string& str, const std::string& delimiter )
 	{
-		width_ = width; height_ = height;
-		const auto size = width_ * height_;
-		screen_ = std::make_unique<std::byte[]>( size );
+		size_t pos_start = 0, pos_end;
+		const auto delimiter_length = delimiter.length();
+		std::vector<std::string> result;
+
+		while( ( pos_end = str.find( delimiter, pos_start ) ) != std::string::npos )
+		{
+			auto token = str.substr( pos_start, pos_end - pos_start );
+			pos_start = pos_end + delimiter_length;
+			result.push_back( token );
+		}
+
+		result.push_back( str.substr( pos_start ) );
+
+		return result;
 	}
 
-	auto draw_line( const int x1, const int x2, const int y ) const
+	std::vector<std::vector<int>> read_vectors( const std::size_t num_vectors,
+	                                                          const bool has_count = true ) const
 	{
-		const auto start_offset = x1 % 8;
-		auto first_byte = x1 / 8;
+		auto vectors = std::vector<std::vector<int>>( num_vectors );
 
-		if( start_offset != 0 )
-			++first_byte;
-
-		const auto end_offset = x2 % 8;
-		auto last_byte = x2 / 8;
-		if( end_offset != 7 )
-			--last_byte;
-
-		for( auto b = first_byte; b <= last_byte; ++b )
-			screen_.get()[ ( width_ / 8 ) * y + b ] = static_cast < std::byte > ( 0xFF );
-
-		const auto start_mask = static_cast< std::byte >( 0xFF >> start_offset );
-		const auto end_mask = static_cast< std::byte >( ~( 0xFF >> ( end_offset + 1 ) ) );
-
-		if( ( x1 / 8 ) == ( x2 / 8 ) )
+		for( size_t v = 0; v < num_vectors; v++ )
 		{
-			const auto mask = static_cast< std::byte >( start_mask & end_mask );
-			screen_.get()[ width_ * y + ( x1 / 8 ) ] |= mask;
-		}
-		else
-		{
-			if( start_offset != 0 )
+			std::string buff;
+			std::vector<int> tmp;
+
+			if( std::getline( std::cin, buff ) )
 			{
-				const auto byte_number = width_ * y + first_byte - 1;
-				screen_.get()[ byte_number ] |= start_mask;
+				auto pieces = split( buff, " " );
+				auto size = size_t();
+
+				if( has_count )
+				{
+					size = std::stoi( pieces.front() );
+					tmp.reserve( size );
+					pieces.erase( pieces.begin() );
+				}
+
+				for( const auto& val : pieces )
+				{
+					tmp.push_back( std::stoi( val ) );
+				}
 			}
 
-			if( end_offset != 7 )
-			{
-				const auto byte_number = width_ * y + last_byte + 1;
-				screen_.get()[ byte_number ] |= end_mask;
-			}
+			vectors[ v ] = tmp;
 		}
+
+		return vectors;
 	}
-	
-	[[nodiscard]] auto get_display() const
+
+	std::vector<int> read_vector() const
 	{
-		const auto size = static_cast< unsigned int >( width_ * height_ );
+		std::string buff;
+		std::vector<int> result;
 
-		std::ostringstream stm;
-		
-		for( std::size_t index = 0; index < size; ++index )
+		if( std::getline( std::cin, buff ) )
 		{
-			if( index % width_ == 0 )
-				stm << std::endl;
-
-			stm << std::setw( 8 ) << std::setfill( '0' )
-				<< std::bitset<8>( unsigned( screen_.get()[ index ] ) ).to_string();
+			for( const auto& val : split( buff, " " ) )
+			{
+				result.push_back( std::stoi( val ) );
+			}
 		}
 
-		stm << std::endl;
-		
-		return stm.str();
+		return result;
+	}
+
+	int main() override
+	{
+		auto sizes = read_vector();
+
+		const auto vectors = read_vectors( sizes[ 0 ] );
+		const auto queries = read_vectors( sizes[ 1 ], false );
+
+		std::ostringstream out;
+
+		for( auto index = 0; index < queries.size(); ++index )
+		{
+			const auto row = queries[ index ][ 0 ];
+			const auto col = queries[ index ][ 1 ];
+
+			out << vectors.at( row ).at( col );
+
+			if( index != queries.size() - 1 )
+				out << std::endl;
+		}
+
+		std::cout << out.str();
+
+		return 0;
 	}
 };
 
 auto main() -> int
 {
-	const auto screen = byte_screen( 5, 5 );
+	auto problem = 
+		variable_sized_arrays{ "variable-sized-arrays-testcases" };
 
-	std::cout << screen.get_display();
+	problem.run();
 
-	screen.draw_line( 0, 40, 2 );
-
-	std::cout << screen.get_display();
+	return 0;
 }
