@@ -9,6 +9,12 @@ namespace hackerrank::arr
 	{
 		using problem::problem;
 
+		explicit variable_sized_arrays( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+		
 		static std::vector<std::basic_string<char>> split( const std::string& str, const std::string& delimiter )
 		{
 			size_t pos_start = 0, pos_end;
@@ -77,7 +83,7 @@ namespace hackerrank::arr
 			return result;
 		}
 
-		int main() override
+		int main()
 		{
 			auto sizes = read_vector();
 

@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="arr.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="problem.h" />
     <ClInclude Include="pch.h" />

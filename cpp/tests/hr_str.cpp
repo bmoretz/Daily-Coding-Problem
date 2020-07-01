@@ -34,4 +34,33 @@ namespace hackerrank::str_tests
 
         EXPECT_TRUE( problem.run() );
     }
+
+
+    /// <summary>
+	/// Testing class for attribute parser.
+	/// </summary>
+    class attribute_parser_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // attribute parser, test cases
+    //
+
+    TEST_F( attribute_parser_tests, run_test_cases )
+    {
+        auto problem =
+            attribute_parser{ "attribute-parser-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }

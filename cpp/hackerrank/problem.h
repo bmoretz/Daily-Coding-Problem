@@ -7,6 +7,7 @@
 #include <map>
 #include <cstdio>
 #include <vector>
+#include <functional>
 
 namespace hackerrank
 {
@@ -23,14 +24,14 @@ namespace hackerrank
 		std::string problem_desc;
 		fs::path working_dir;
 
+		std::function<int()> entry_point;
+		
 		const std::basic_string<char> root = "hackerrank";
 		const std::basic_string<char> tests_dir = "input";
 		const std::basic_string<char> validation_dir = "output";
 		const std::basic_string<char> debug_dir = "debug";
 
 		std::vector<std::pair<fs::path, fs::path>> test_cases;
-
-		virtual int main() = 0;
 
 		explicit problem( std::string&& name ) :
 			problem_desc( std::move( name ) )
@@ -40,18 +41,16 @@ namespace hackerrank
 
 		static int get_case_number( std::string file_name );
 		static std::map<int, fs::path> get_files( const fs::path& path );
+		void execute_test_case( const std::vector<test_case>::value_type& test, const fs::path& debug_file ) const;
+		
 		[[nodiscard]] std::vector<test_case> find_test_cases() const;
-		void execute_test_case( const std::vector<test_case>::value_type& test, const fs::path& debug_file );
-
+		[[nodiscard]] bool run( int test_case = -1 ) const;
+		
 		template<typename... Args>
 		static std::string string_format( const char* fmt, Args ... args );
 
-		bool run();
-
 		static auto strip_feeds( std::string& str ) -> void;
-
 		static std::vector<std::basic_string<char>> read_file( std::ifstream& fs );
-
 		static bool compare_files( const fs::path& p1, const fs::path& p2 );
 	};
 
@@ -119,7 +118,7 @@ namespace hackerrank
 	}
 
 	inline void problem::execute_test_case( const std::vector<test_case>::value_type& test,
-		const fs::path& debug_file )
+		const fs::path& debug_file ) const
 	{
 		// redirect std i/o to test case / debug files.
 		const auto prev_in = std::cin.rdbuf();
@@ -131,7 +130,7 @@ namespace hackerrank
 		std::cout.rdbuf( new_out.rdbuf() );
 
 		// execute the problem to build output file.
-		main();
+		const auto result = entry_point();
 
 		// flush debug fstream and redirect back to std i/o
 		new_out.flush();
@@ -141,16 +140,19 @@ namespace hackerrank
 		std::cout.rdbuf( prev_out );
 	}
 
-	inline bool problem::run()
+	inline bool problem::run( const int test_case ) const
 	{
 		auto all_passed = true;
 		auto test_cases = find_test_cases();
 
-		std::cout << "********************************************************" << std::endl;
-		std::cout << std::endl << std::endl;
-
 		for( const auto& test : test_cases )
 		{
+			if( test_case > 0 && test.case_number != test_case )
+				continue;
+
+			std::cout << "********************************************************" << std::endl;
+			std::cout << std::endl << std::endl;
+			
 			auto debug_path = working_dir / debug_dir;
 
 			if( !exists( debug_path ) )
@@ -160,7 +162,7 @@ namespace hackerrank
 			
 			execute_test_case( test, debug_file );
 
-			std::cout << "TEST RESULTS: Case " << test.case_number << std::endl;
+			std::cout << "TEST RESULTS: Case " << test.case_number << " RESULTS: ";
 
 			const auto test_result = compare_files( debug_file, test.output );
 
@@ -174,11 +176,12 @@ namespace hackerrank
 			}
 
 			std::cout << std::endl << std::endl;
+			
 			all_passed &= test_result;
 		}
 
 		std::cout << "********************************************************" << std::endl;
-
+		
 		return all_passed;
 	}
 
