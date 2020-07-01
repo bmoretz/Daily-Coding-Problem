@@ -6,7 +6,7 @@
 
 using namespace stack_queue_problems;
 
-namespace stack_queue_tests
+namespace problems::stack_queue_tests
 {
     /// <summary>
     /// Testing class for min stack.

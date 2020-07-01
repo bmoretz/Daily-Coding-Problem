@@ -6,7 +6,7 @@
 
 using namespace tree_problems;
 
-namespace tree_tests
+namespace problems::tree_tests
 {
     /// <summary>
     /// Testing class for min tree.

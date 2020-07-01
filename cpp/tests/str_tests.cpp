@@ -5,7 +5,7 @@
 
 using namespace str_problems;
 
-namespace string_tests
+namespace problems::string_tests
 {
     /// <summary>
     /// Testing class for is_unique.

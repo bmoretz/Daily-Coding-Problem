@@ -47,7 +47,7 @@ namespace hackerrank::str
 	};
 
 	/// <summary>
-	/// https://www.hackerrank.com/challenges/attribute-parser/problem?isFullScreen=false
+	/// https://www.hackerrank.com/challenges/attribute-parser/problem
 	/// </summary>
 	struct attribute_parser final : problem
 	{
@@ -278,13 +278,14 @@ namespace hackerrank::str
 				if( query.tags.size() > 1 )
 					requested_tag = evaluate_sub_tags( requested_tag, query );
 
-				if( !requested_tag )
+				if( requested_tag )
+				{
+					display_attribute( *requested_tag, query );
+				}
+				else
 				{
 					display_not_found();
-					continue;
 				}
-
-				display_attribute( *requested_tag, query );
 			}
 		}
 

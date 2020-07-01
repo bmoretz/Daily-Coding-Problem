@@ -6,7 +6,7 @@
 
 using namespace math_problems;
 
-namespace math_tests
+namespace problems::math_tests
 {
     /// <summary>
     /// Testing class for ... .

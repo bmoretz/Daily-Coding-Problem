@@ -29,7 +29,7 @@ namespace hackerrank::str_tests
 
     TEST_F( tutorial_string_stream_tests, run_test_cases )
     {
-        auto problem =
+	    const auto problem =
             tutorial_string_stream{ "c-tutorial-stringstream-testcases" };
 
         EXPECT_TRUE( problem.run() );
@@ -58,7 +58,7 @@ namespace hackerrank::str_tests
 
     TEST_F( attribute_parser_tests, run_test_cases )
     {
-        auto problem =
+	    const auto problem =
             attribute_parser{ "attribute-parser-testcases" };
 
         EXPECT_TRUE( problem.run() );

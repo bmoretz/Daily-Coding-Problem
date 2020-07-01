@@ -3,7 +3,7 @@
 
 #include "../data-structures/arr_stack.h"
 
-namespace data_structure_tests::arr_stack_tests
+namespace data_structure::arr_stack_tests
 {
     using namespace data_structures::arr_stack;
 

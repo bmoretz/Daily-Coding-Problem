@@ -7,7 +7,7 @@
 
 using namespace bitmanip_problems;
 
-namespace bitmanip_tests
+namespace problems::bitmanip_tests
 {
     /// <summary>
     /// Testing class for insertion.

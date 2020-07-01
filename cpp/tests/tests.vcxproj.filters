@@ -14,13 +14,25 @@
     <ClCompile Include="ds_arr_stack.cpp" />
     <ClCompile Include="ds_heap.cpp" />
     <ClCompile Include="bitmanip_tests.cpp" />
-    <ClCompile Include="hr_arr.cpp" />
-    <ClCompile Include="hr_str.cpp" />
+    <ClCompile Include="hr_arr.cpp">
+      <Filter>hackerrank</Filter>
+    </ClCompile>
+    <ClCompile Include="hr_debug.cpp">
+      <Filter>hackerrank</Filter>
+    </ClCompile>
+    <ClCompile Include="hr_str.cpp">
+      <Filter>hackerrank</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="hackerrank">
+      <UniqueIdentifier>{d4c59d9b-085d-46ad-93db-fe21548ba654}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

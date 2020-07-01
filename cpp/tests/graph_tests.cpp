@@ -6,7 +6,7 @@
 
 using namespace graph_problems;
 
-namespace graph_tests
+namespace problems::graph_tests
 {
     /// <summary>
     /// Testing class for has path.

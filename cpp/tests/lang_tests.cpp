@@ -6,7 +6,7 @@
 
 using namespace lang_problems;
 
-namespace lang_tests
+namespace problems::lang_tests
 {
     /// <summary>
     /// Testing class for ... .

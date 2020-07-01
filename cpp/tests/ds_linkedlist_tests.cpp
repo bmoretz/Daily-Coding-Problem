@@ -3,7 +3,7 @@
 
 #include "../data-structures/linked_list.h"
 
-namespace data_structure_tests::linked_list_tests
+namespace data_structure::linked_list_tests
 {
     using namespace data_structures::linked_list;
 	

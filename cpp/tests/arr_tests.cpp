@@ -5,7 +5,7 @@
 
 using namespace arr_problems;
 
-namespace arr_tests
+namespace problems::arr_tests
 {
     using namespace matrix_problems;
 

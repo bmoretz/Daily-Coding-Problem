@@ -5,7 +5,7 @@
 
 using namespace linkedlist_problems;
 
-namespace linkedlist_tests
+namespace problems::linkedlist_tests
 {
     /// <summary>
     /// Testing class for dedupe.
