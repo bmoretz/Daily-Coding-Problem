@@ -51,7 +51,9 @@ namespace hackerrank
 
 		static auto strip_feeds( std::string& str ) -> void;
 		static std::vector<std::basic_string<char>> read_file( std::ifstream& fs );
-		static bool compare_files( const fs::path& p1, const fs::path& p2 );
+		static bool compare_files( const fs::path& p1, const fs::path& p2, std::string& detail );
+		static std::string get_failure_detail( const std::vector<std::string>& actual,
+			const std::vector<std::string>& expected );
 	};
 
 	template <typename ... Args>
@@ -151,7 +153,7 @@ namespace hackerrank
 				continue;
 
 			std::cout << "********************************************************" << std::endl;
-			std::cout << std::endl << std::endl;
+			std::cout << std::endl;
 			
 			auto debug_path = working_dir / debug_dir;
 
@@ -164,7 +166,8 @@ namespace hackerrank
 
 			std::cout << "TEST RESULTS: Case " << test.case_number << " RESULTS: ";
 
-			const auto test_result = compare_files( debug_file, test.output );
+			std::string detail;
+			const auto test_result = compare_files( debug_file, test.output, detail );
 
 			if( test_result )
 			{
@@ -173,9 +176,10 @@ namespace hackerrank
 			else
 			{
 				std::cout << "TRY AGAIN, VANILLA FACE!" << std::endl;
+				std::cout << detail;
 			}
 
-			std::cout << std::endl << std::endl;
+			std::cout << std::endl;
 			
 			all_passed &= test_result;
 		}
@@ -205,7 +209,9 @@ namespace hackerrank
 		return content;
 	}
 
-	inline bool problem::compare_files( const fs::path& p1, const fs::path& p2 )
+
+	inline bool problem::compare_files( const fs::path& p1, const fs::path& p2, 
+		std::string& detail )
 	{
 		std::ifstream f1( p1, std::ifstream::binary | std::ifstream::ate );
 		std::ifstream f2( p2, std::ifstream::binary | std::ifstream::ate );
@@ -220,6 +226,49 @@ namespace hackerrank
 		const auto lines1 = read_file( f1 );
 		const auto lines2 = read_file( f2 );
 
+		if( lines1 == lines2 )
+		{
+			return true;
+		}
+		else
+		{
+			detail = get_failure_detail( lines1, lines2 );
+		}
 		return lines1 == lines2;
+	}
+
+	static std::string build_line( const std::string& l, const std::string& r, 
+		const std::size_t width )
+	{
+		return l + std::string( width - l.length(), ' ' ) + r;
+	}
+	
+	inline std::string problem::get_failure_detail( const std::vector<std::string>& actual, 
+		const std::vector<std::string>& expected )
+	{
+		auto max_width = std::size_t{};
+
+		for( const auto& line : actual )
+			max_width = std::max( max_width, line.length() );
+
+		max_width += 5; // buffer
+		std::ostringstream oss;
+
+		oss << std::endl << std::endl << build_line( "ACTUAL:", "EXPECTED:", max_width ) << std::endl;
+
+		const auto num_lines = std::max( actual.size(), expected.size() );
+
+		for( auto index = std::size_t{}; index < num_lines; ++index )
+		{
+			auto left = index < actual.size() ?
+				actual[ index ] : "";
+
+			auto right = index < expected.size() ?
+				expected[ index ] : "";
+
+			oss << build_line( left, right, max_width ) << std::endl;
+		}
+
+		return oss.str();
 	}
 }

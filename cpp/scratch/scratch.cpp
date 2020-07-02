@@ -12,22 +12,18 @@ struct box_it final : problem
 	}
 
 
-	// The class should have the following functions : 
-
+	using box_size = unsigned long long;
 	//Implement the class Box  
 	//l,b,h are integers representing the dimensions of the box
 	class Box
 	{
-		int l_, b_, h_;
+		box_size l_{}, b_{}, h_{};
 
 	public:
 
-		Box()
-		{
+		Box() {}
 
-		}
-
-		Box( const int l, const int b, const int h )
+		Box( const box_size l, const box_size b, const box_size h )
 			: l_{ l }, b_{ b }, h_{ h }
 		{
 		}
@@ -43,29 +39,37 @@ struct box_it final : problem
 		{ }
 
 		// int getLength(); // Return box's length
-		int getLength() const { return l_; }
+		box_size getLength() const { return l_; }
 		// int getBreadth (); // Return box's breadth
-		int getBreath() const { return b_; }
+		box_size getBreath() const { return b_; }
 		// int getHeight ();  //Return box's height
-		int getHeight() const { return h_; }
-		// long long CalculateVolume(); // Return the volume of the box	
-		long long CalculateVolume() const
+		box_size getHeight() const { return h_; }
+		// long long CalculateVolume(); // Return the volume of the box    
+		box_size CalculateVolume() const
 		{
 			return l_ * b_ * h_;
 		}
 
 		//Overload operator < as specified
-		//bool operator<(Box& b)		
+		//bool operator<(Box& b)        
 		bool operator<( const Box& b )
 		{
-			return CalculateVolume() < b.CalculateVolume();
+			return
+				( l_ < b.l_ ) ||
+				( b_ < b.b_&& l_ == b.l_ ) ||
+				( h_ < b.h_&& b_ == b.b_ && l_ == b.l_ );
 		}
 
 		//Overload operator << as specified
 		//ostream& operator<<(ostream& out, Box& B)
-		friend std::ostream& operator<<( std::ostream& out, const Box& other );
+		friend std::ostream& operator<<( std::ostream& out, const Box& other )
+		{
+			out << other.getLength() << " " << other.getBreath() << " " << other.getHeight();
+
+			return out;
+		}
 	};
-	
+
 	void check2()
 	{
 		int n;
@@ -121,13 +125,6 @@ struct box_it final : problem
 		return 0;
 	}
 };
-
-std::ostream& operator<<( std::ostream& out, const box_it::Box& other )
-{
-	out << other.getLength() << " " << other.getBreath() << " " << other.getHeight();
-
-	return out;
-}
 
 auto main() -> int
 {

@@ -114,20 +114,19 @@ namespace hackerrank::sample
 
 		// The class should have the following functions : 
 
+		using box_size = unsigned long long;
+
 		//Implement the class Box  
 		//l,b,h are integers representing the dimensions of the box
 		class box
 		{
-			int l_, b_, h_;
+			box_size l_{}, b_{}, h_{};
 
 		public:
 
-			box() :
-				l_( 0 ), b_( 0 ), h_( 0 )
-			{
-			}
+			box() { }
 
-			box( const int l, const int b, const int h )
+			box( const box_size l, const box_size b, const box_size h )
 				: l_{ l }, b_{ b }, h_{ h }
 			{
 			}
@@ -136,30 +135,29 @@ namespace hackerrank::sample
 			// Box();
 			// Box(int,int,int);
 			// Box(Box);
-			box( const box& other )
-				: l_{ other.l_ },
-				b_{ other.b_ },
-				h_{ other.h_ }
-			{
-			}
+			box( const box& other ) = default;
 
 			// int getLength(); // Return box's length
-			int getLength() const { return l_; }
+			box_size getLength() const { return l_; }
 			// int getBreadth (); // Return box's breadth
-			int getBreath() const { return b_; }
+			box_size getBreath() const { return b_; }
 			// int getHeight ();  //Return box's height
-			int getHeight() const { return h_; }
+			box_size getHeight() const { return h_; }
+
 			// long long CalculateVolume(); // Return the volume of the box	
-			long long CalculateVolume() const
+			box_size CalculateVolume() const
 			{
 				return l_ * b_ * h_;
 			}
 
 			//Overload operator < as specified
 			//bool operator<(Box& b)		
-			bool operator<( const box& b ) const
+			bool operator<( const box& b )
 			{
-				return CalculateVolume() < b.CalculateVolume();
+				return
+					( l_ < b.l_ ) ||
+					( b_ < b.b_&& l_ == b.l_ ) ||
+					( h_ < b.h_&& b_ == b.b_ && l_ == b.l_ );
 			}
 
 			//Overload operator << as specified

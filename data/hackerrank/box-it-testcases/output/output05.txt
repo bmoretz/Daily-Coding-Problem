@@ -1,0 +1,11 @@
+0 0 0
+3 84 2
+504
+2 39 21
+2 39 21
+1638
+Greater
+43 45 39
+Greater
+Greater
+Lesser
