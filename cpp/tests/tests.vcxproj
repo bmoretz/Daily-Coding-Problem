@@ -46,6 +46,7 @@
     <ClCompile Include="ds_heap.cpp" />
     <ClCompile Include="ds_arr_stack.cpp" />
     <ClCompile Include="ds_linkedlist_tests.cpp" />
+    <ClCompile Include="framework.cpp" />
     <ClCompile Include="graph_tests.cpp" />
     <ClCompile Include="hr_arr.cpp" />
     <ClCompile Include="hr_debug.cpp" />

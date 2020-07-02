@@ -162,6 +162,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="problem.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="sample.h" />
     <ClInclude Include="str.h" />
   </ItemGroup>
   <ItemGroup>

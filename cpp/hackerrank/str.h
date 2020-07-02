@@ -8,44 +8,7 @@
 #include "problem.h"
 
 namespace hackerrank::str
-{
-	struct tutorial_string_stream final : problem
-	{
-		using problem::problem;
-		
-		explicit tutorial_string_stream( std::string&& name ) :
-			problem( std::move( name ) )
-		{
-			entry_point = []() { return main(); };
-		}
-
-		static std::vector<int> parse_integers( const std::string& str )
-		{
-			std::istringstream iss( str );
-			std::vector<int> results;
-			std::string integer;
-
-			while( std::getline( iss, integer, ',' ) )
-				results.emplace_back( std::stoi( integer ) );
-
-			return results;
-		}
-
-		static int main()
-		{
-			std::string str;
-			std::cin >> str;
-			auto integers = parse_integers( str );
-
-			for( auto integer : integers )
-			{
-				std::cout << integer << "\n";
-			}
-
-			return 0;
-		}
-	};
-
+{	
 	/// <summary>
 	/// https://www.hackerrank.com/challenges/attribute-parser/problem
 	/// </summary>

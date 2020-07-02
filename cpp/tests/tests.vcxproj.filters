@@ -23,6 +23,9 @@
     <ClCompile Include="hr_str.cpp">
       <Filter>hackerrank</Filter>
     </ClCompile>
+    <ClCompile Include="framework.cpp">
+      <Filter>hackerrank</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
