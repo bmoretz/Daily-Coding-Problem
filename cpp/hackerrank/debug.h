@@ -1,9 +1,8 @@
 #pragma once
 
-#include <sstream>
 #include <stack>
-#include <memory>
 #include <cassert>
+#include <random>
 
 #include "problem.h"
 
@@ -243,10 +242,10 @@ namespace hackerrank::debug
 		explicit exception_handling( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
-		int largest_proper_divisor( const int n )
+		static int largest_proper_divisor( const int n )
 		{
 			if( n == 0 )
 				throw std::invalid_argument( "largest proper divisor is not defined for n=0" );
@@ -267,7 +266,7 @@ namespace hackerrank::debug
 			return largest;
 		}
 
-		void process_input( const int n )
+		static void process_input( const int n )
 		{
 			try
 			{
@@ -282,10 +281,152 @@ namespace hackerrank::debug
 			std::cout << "returning control flow to caller" << std::endl;
 		}
 
-		int main() {
+		static int main() {
 			int n;
 			std::cin >> n;
 			process_input( n );
+			return 0;
+		}
+	};
+
+	struct override_ostream final : problem
+	{
+		explicit override_ostream( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+
+		class person {
+		public:
+			person( std::string first_name, std::string last_name ) :
+				first_name_{ std::move( first_name ) },
+				last_name_{ std::move( last_name ) }
+			{}
+
+			const std::string& get_first_name() const {
+				return first_name_;
+			}
+
+			const std::string& get_last_name() const {
+				return last_name_;
+			}
+
+			friend std::ostream& operator<<( std::ostream& os, const person& person )
+			{
+				os << "first_name=" << person.get_first_name() << ","
+					<< "last_name=" << person.get_last_name();
+
+				return os;
+			}
+
+		private:
+			std::string first_name_;
+			std::string last_name_;
+		};
+
+		int main()
+		{
+			std::string first_name, last_name, event;
+			std::cin >> first_name >> last_name >> event;
+			const auto p = person( first_name, last_name );
+			std::cout << p << " " << event << std::endl;
+			return 0;
+		}
+	};
+	
+	struct message_factory final : problem
+	{
+		explicit message_factory( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = []() { return main(); };
+		}
+
+		class message {
+			std::string text_;
+			int order_;
+		public:
+
+			explicit message( std::string text, const int order ) :
+				text_{ std::move( text ) }, order_{ order }
+			{}
+
+			const std::string& get_text() const {
+				return text_;
+			}
+
+			bool operator <( const message& other ) const
+			{
+				return this->order_ < other.order_;
+			}
+		};
+
+		class msg_factory
+		{
+			int counter_;
+
+		public:
+			explicit msg_factory()
+				: counter_{ }
+			{ }
+
+			message create_message( const std::string& text ) {
+				return message{ text, ++counter_ };
+			}
+		};
+
+		class recipient {
+		public:
+			recipient() {}
+
+			void receive( const message& msg ) {
+				messages_.push_back( msg );
+			}
+
+			void print_messages() {
+				fix_order();
+				for( auto& msg : messages_ ) {
+					std::cout << msg.get_text() << std::endl;
+				}
+				messages_.clear();
+			}
+		private:
+			void fix_order() {
+				std::sort( messages_.begin(), messages_.end() );
+			}
+			std::vector<message> messages_;
+		};
+
+		class network {
+		public:
+			static void send_messages( std::vector<message> messages, recipient& recipient ) {
+				// simulates the unpredictable network, where sent messages might arrive in unspecified order
+				const unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+				std::default_random_engine e( seed );
+
+				std::shuffle( messages.begin(), messages.end(), e );
+
+				for( const auto& msg : messages ) {
+					recipient.receive( msg );
+				}
+			}
+		};
+
+		static int main()
+		{
+			msg_factory message_factory;
+			recipient recipient;
+			std::vector<message> messages;
+			std::string text;
+
+			while( getline( std::cin, text ) ) {
+				messages.push_back( message_factory.create_message( text ) );
+			}
+
+			network::send_messages( messages, recipient );
+			recipient.print_messages();
+
 			return 0;
 		}
 	};

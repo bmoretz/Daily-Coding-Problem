@@ -1,56 +1,53 @@
 #include <bits/stdc++.h>
+#include <algorithm>
+#include <random>
+#include <utility>
 #include "../hackerrank/problem.h"
 
 using namespace hackerrank;
 
-struct exception_handling final : problem
+struct override_ostream final : problem
 {
-    explicit exception_handling( std::string&& name )
+    explicit override_ostream( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
     }
 
-	int largest_proper_divisor( const int n )
-    {
-        if( n == 0 )
-            throw std::invalid_argument( "largest proper divisor is not defined for n=0" );
+    class person {
+    public:
+        person( std::string first_name, std::string last_name ) :
+            first_name_{std::move(first_name)},
+            last_name_{std::move(last_name)}
+    	{}
     	
-        auto largest = 0;
-
-    	for( auto index = n - 1; index > 0; --index )
-    	{
-	        const auto result = n % index;
-
-            if( result == 0 )
-            {
-                largest = index;
-                break;
-            }
-    	}
+        const std::string& get_first_name() const {
+            return first_name_;
+        }
     	
-        return largest;
-    }
+        const std::string& get_last_name() const {
+            return last_name_;
+        }
+
+        friend std::ostream& operator<<( std::ostream& os, const person& person )
+        {
+            os << "first_name=" << person.get_first_name() << ","
+                << "last_name=" << person.get_last_name();
+
+            return os;
+        }
+    	
+    private:
+        std::string first_name_;
+        std::string last_name_;
+    };
 	
-    void process_input( const int n )
-    {
-        try
-        {
-            const auto d = largest_proper_divisor( n );
-            std::cout << "result=" << d << std::endl;
-        }
-        catch( const std::invalid_argument& iae )
-        {
-            std::cout << iae.what() << std::endl;
-        }
-
-        std::cout << "returning control flow to caller" << std::endl;
-    }
-
-    int main() {
-        int n;
-        std::cin >> n;
-        process_input( n );
+    int main()
+	{
+        std::string first_name, last_name, event;
+        std::cin >> first_name >> last_name >> event;
+        const auto p = person( first_name, last_name );
+        std::cout << p << " " << event << std::endl;
         return 0;
     }
 };
@@ -58,7 +55,7 @@ struct exception_handling final : problem
 auto main() -> int
 {
 	const auto problem =
-		exception_handling{"cpp-exception-handling-testcases"};
+		override_ostream{"overloading-ostream-operator-testcases"};
 
 	return problem.run();
 }
