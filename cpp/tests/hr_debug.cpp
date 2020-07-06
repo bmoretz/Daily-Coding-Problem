@@ -95,4 +95,32 @@ namespace hackerrank::debug_tests
 
         EXPECT_TRUE( problem.run() );
     }
+
+    /// <summary>
+    /// Testing class for hotel_room.
+    /// </summary>
+    class exception_handling_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Exceptional Server, test cases
+    //
+
+    TEST_F( exception_handling_tests, run_test_cases )
+    {
+        const auto problem =
+            exception_handling{ "cpp-exception-handling-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }
