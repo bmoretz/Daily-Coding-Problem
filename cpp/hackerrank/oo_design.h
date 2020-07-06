@@ -18,16 +18,15 @@ namespace hackerrank::oo_design
             entry_point = []() { return main(); };
         }
 
-        class Person
+        class person
         {
         protected:
             std::string name_;
             int age_;
 
         public:
-            Person() = default;
 
-            std::istringstream virtual getdata()
+            std::istringstream virtual get_data()
             {
                 std::string buff;
                 std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
@@ -39,13 +38,13 @@ namespace hackerrank::oo_design
                 return iss;
             }
 
-            void virtual putdata()
+            void virtual put_data()
             {
                 std::cout << name_ << " " << age_ << " ";
             }
         };
 
-        class Professor : public Person
+        class professor : public person
         {
             int publications_;
 
@@ -53,22 +52,18 @@ namespace hackerrank::oo_design
 
             static int cur_id;
 
-            Professor()
-                : Person()
-            { }
-
-            std::istringstream getdata() override
+            std::istringstream get_data() override
             {
-                auto iss = Person::getdata();
+                auto iss = person::get_data();
 
                 iss >> publications_;
 
                 return iss;
             }
 
-            void putdata() override
+            void put_data() override
             {
-                Person::putdata();
+                person::put_data();
 
                 std::ostringstream oss;
 
@@ -78,7 +73,7 @@ namespace hackerrank::oo_design
             }
         };
 
-        class Student : public Person
+        class student : public person
         {
             int marks_[ 6 ];
 
@@ -86,13 +81,9 @@ namespace hackerrank::oo_design
 
             static int cur_id;
 
-            Student()
-                : Person()
-            { }
-
-            std::istringstream getdata() override
+            std::istringstream get_data() override
             {
-                auto iss = Person::getdata();
+                auto iss = person::get_data();
 
                 for( auto index = 0; index < 6; ++index )
                 {
@@ -102,9 +93,9 @@ namespace hackerrank::oo_design
                 return iss;
             }
 
-            void putdata() override
+            void put_data() override
             {
-                Person::putdata();
+                person::put_data();
 
                 std::ostringstream oss;
 
@@ -123,36 +114,36 @@ namespace hackerrank::oo_design
         {
             int n, val;
             std::cin >> n;
-            const auto per = std::unique_ptr<Person* []>( new Person * [ n ] );
+            const auto per = std::unique_ptr<person* []>( new person * [ n ] );
 
             for( auto i = 0; i < n; i++ )
             {
                 std::cin >> val;
 
                 if( val == 1 )
-                    per[ i ] = new Professor;
+                    per[ i ] = new professor;
                 else
-                    per[ i ] = new Student;
+                    per[ i ] = new student;
 
-                per[ i ]->getdata();
+                per[ i ]->get_data();
             }
 
             for( auto i = 0; i < n; i++ )
-                per[ i ]->putdata();
+                per[ i ]->put_data();
 
             return 0;
         }
     };
 	
-    int virtual_functions::Student::cur_id = 0;
-    int virtual_functions::Professor::cur_id = 0;
+    int virtual_functions::student::cur_id = 0;
+    int virtual_functions::professor::cur_id = 0;
 
     struct override_ostream final : problem
     {
         explicit override_ostream( std::string&& name )
             : problem( std::move( name ) )
         {
-            entry_point = [this]() { return main(); };
+            entry_point = []() { return main(); };
         }
 
         class person {
@@ -183,12 +174,174 @@ namespace hackerrank::oo_design
             std::string last_name_;
         };
 
-        int main()
+        static int main()
         {
             std::string first_name, last_name, event;
             std::cin >> first_name >> last_name >> event;
             const auto p = person( first_name, last_name );
             std::cout << p << " " << event << std::endl;
+            return 0;
+        }
+    };
+
+    struct abstract_classes final : problem
+    {
+        explicit abstract_classes( std::string&& name )
+            : problem( std::move( name ) )
+        {
+            entry_point = [this]() { return main(); };
+        }
+
+        struct Node;
+
+        using node_ptr = std::unique_ptr<Node>;
+
+        class Cache;
+        class LRUCache;
+
+        class Node
+        {
+            friend class Cache;
+            friend class LRUCache;
+
+            Node* next_, * prev_;
+
+            int value;
+            int key;
+
+        protected:
+
+            void unlink()
+            {
+                const auto next = next_;
+                const auto prev = prev_;
+
+                next->prev_ = prev;
+                prev->next_ = next;
+
+                next_ = this;
+                prev_ = this;
+            }
+
+        public:
+            Node()
+                : next_{ this }, prev_{ this },
+                value{ }, key{ }
+            {}
+
+            Node( Node* p, Node* n, const int k, const int val ) :
+                next_{ n }, prev_( p ),
+                value( val ), key( k )
+            { }
+
+            Node( const int k, const int val ) :
+                next_( nullptr ), prev_( nullptr ),
+                value( val ), key( k )
+            {}
+
+            ~Node()
+            {
+                unlink();
+            }
+        };
+
+        class Cache
+        {
+        protected:
+            std::map<int, node_ptr> map_{};
+            int capacity_;
+            int length_;
+            node_ptr head_{}, tail_{};
+
+            virtual void set( int, int ) = 0;
+            virtual int get( int ) = 0;
+
+        public:
+
+            explicit Cache( const int capacity )
+                : capacity_{ capacity }, length_{ }
+            {
+                head_ = std::make_unique<Node>( 0, 0 );
+                tail_ = std::make_unique<Node>( 0, 0 );
+
+                head_->next_ = tail_.get();
+                head_->prev_ = tail_.get();
+
+                tail_->next_ = head_.get();
+                tail_->prev_ = head_.get();
+            }
+
+            virtual ~Cache() = default;
+        };
+
+        class LRUCache : public Cache
+        {
+        public:
+
+            explicit LRUCache( const int capacity )
+                : Cache( capacity )
+            {  }
+
+            void set( const int key, const int value ) override
+            {
+                const auto existing = map_.find( key );
+
+                if( existing == map_.end() )
+                {
+                    map_.insert( std::make_pair( key, std::make_unique<Node>(
+                        head_.get(), head_->next_, key, value ) ) );
+
+                    head_->next_->prev_ = map_[ key ].get();
+                    head_->next_ = map_[ key ].get();
+
+                    length_++;
+
+                    if( length_ > capacity_ )
+                    {
+                        const auto to_remove = tail_->prev_->key;
+                        map_.erase( to_remove );
+                        length_--;
+                    }
+                }
+                else
+                {
+                    existing->second->value = value;
+                    existing->second->next_ = head_->next_;
+
+                    head_->next_ = existing->second.get();
+                }
+            }
+
+            int get( const int key ) override
+            {
+                const auto location = map_.find( key );
+
+                return location == map_.end() ? -1 : location->second->value;
+            }
+        };
+
+        int main()
+        {
+            int n, capacity;
+            std::cin >> n >> capacity;
+            LRUCache l( capacity );
+
+            for( auto i = 0; i < n; i++ ) {
+                std::string command;
+                std::cin >> command;
+
+                if( command == "get" ) {
+                    int key;
+                    std::cin >> key;
+                    std::cout << l.get( key ) << std::endl;
+                }
+                else if( command == "set" ) {
+                    int key, value;
+                    std::cin >> key >> value;
+                    l.set( key, value );
+                }
+            }
+
             return 0;
         }
     };

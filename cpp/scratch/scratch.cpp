@@ -6,147 +6,144 @@
 
 using namespace hackerrank;
 
-struct virtual_functions final : problem
+struct abstract_classes final : problem
 {
-    explicit virtual_functions( std::string&& name )
+    explicit abstract_classes( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
     }
 
-    class Person
-    {
+    struct Node {
+        Node* next;
+        Node* prev;
+        int value;
+        int key;
+        Node( Node* p, Node* n, int k, int val ) :prev( p ), next( n ), key( k ), value( val ) {};
+        Node( int k, int val ) :prev( NULL ), next( NULL ), key( k ), value( val ) {};
+    };
+
+    class Cache {
+
     protected:
-        std::string name_;
-        int age_;
-
-    public:
-        Person() = default;
-
-        std::istringstream virtual getdata()
-        {	
-            std::string buff;
-            std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
-            std::getline( std::cin, buff );
-            std::istringstream iss( buff );
-
-            iss >> name_ >> age_;
-
-            return iss;
-        }
-    	
-        void virtual putdata()
-        {
-            std::cout << name_ << " " << age_ << " ";
-        }
+        std::map<int, Node*> mp; //map the key to the node in the linked list
+        int cp;  //capacity
+        Node* tail; // double linked list tail pointer
+        Node* head; // double linked list head pointer
+        virtual void set( int, int ) = 0; //set function
+        virtual int get( int ) = 0; //get function
     };
 
-    class Professor : public Person
-    {
-        int publications_;
+    static void unlink( Node* node )
+    {    	
+        const auto new_next = node->next;
+        const auto new_prev = node->prev;
+
+        node->next->prev = new_prev;
+        node->prev->next = new_next;
+
+        delete node;
+    }
+
+	class LRUCache : public Cache
+	{
+	public:
+
+        int length = 0;
     	
-    public:
+		explicit LRUCache( const int capacity )
+		{
+            head = new Node( 0, 0 );
+            tail = new Node( 0, 0 );
 
-        static int cur_id;
+            head->next = tail;
+            head->prev = tail;
+
+            tail->next = head;
+            tail->prev = head;
+			
+            this->cp = capacity;
+		}
+
+    	~LRUCache()
+		{
+            delete head;
+            delete tail;
+		}
     	
-        Professor()
-            : Person()
-        { }
+		void set( const int key, const int value ) override
+		{
+            const auto existing = mp.find( key );
 
-        std::istringstream getdata() override
-        {
-            auto iss = Person::getdata();
+			if( existing == mp.end() )
+			{
+				const auto new_node = new Node(
+                    head, head->next, key, value );
+				
+                mp.insert( std::make_pair( key, new_node ) );
 
-            iss >> publications_;
+				head->next->prev = mp[ key ];
+                head->next = mp[ key ];
 
-            return iss;
-        }
+                length++;
+				
+                if( length > cp )
+                {
+                    const auto to_remove = tail->prev->key;
+                    mp.erase( to_remove );
 
-        void putdata() override
-        {
-            Person::putdata();
-        	
-            std::ostringstream oss;
+                    unlink( tail->prev );
 
-            oss << publications_ << " " << ++cur_id << std::endl;
-
-            std::cout << oss.str();
-        }
-    };
-
-    class Student : public Person
-    {
-        int marks_[ 6 ];
-        
-    public:
-
-        static int cur_id;
-    	
-        Student()
-            : Person()
-        { }
-
-        std::istringstream getdata() override
-        {
-            auto iss = Person::getdata();
-        	
-            for( auto index = 0; index < 6; ++index )
+                    length--;
+                }
+			}
+            else
             {
-            	iss >> marks_[ index ];
+                existing->second->value = value;
+                existing->second->next = head->next;
+            	
+                head->next = existing->second;
             }
+		}
 
-            return iss;
-        }
+		int get( const int key ) override
+		{
+            const auto location = mp.find( key );
 
-        void putdata() override
-        {
-            Person::putdata();
-        	
-            std::ostringstream oss;
-
-            const auto total = std::accumulate(
-                std::begin( marks_ ),
-                std::end( marks_ ),
-                0 );
-
-            oss << total << " " << ++cur_id << std::endl;
-
-            std::cout << oss.str();
-        }
-    };
-
+            return location == mp.end() ? -1 : location->second->value;
+		}
+	};
+	
     int main()
     {
-        int n, val;
-        std::cin >> n;
-        const auto per = std::unique_ptr<Person* []>( new Person * [ n ] );
+        int n, capacity;
+        std::cin >> n >> capacity;
+        LRUCache l( capacity );
 
-        for( auto i = 0; i < n; i++ )
-        {
-            std::cin >> val;
-
-            if( val == 1 )
-                per[ i ] = new Professor;
-            else
-                per[ i ] = new Student;
-
-            per[ i ]->getdata();
+    	for( auto i = 0; i < n; i++ ) {
+            std::string command;
+            std::cin >> command;
+    		
+            if( command == "get" ) {
+                int key;
+                std::cin >> key;
+                std::cout << l.get( key ) << std::endl;
+            }
+            else if( command == "set" ) {
+                int key, value;
+                std::cin >> key >> value;
+                l.set( key, value );
+            }
         }
-
-        for( auto i = 0; i < n; i++ )
-            per[ i ]->putdata();
-
+    	
         return 0;
     }
 };
 
-int virtual_functions::Student::cur_id = 0;
-int virtual_functions::Professor::cur_id = 0;
-
 auto main() -> int
 {
 	const auto problem =
-		virtual_functions{"virtual-functions-testcases"};
+		abstract_classes{"abstract-classes-polymorphism-testcases"};
 
-	return problem.run();
+	return problem.run(0);
 }

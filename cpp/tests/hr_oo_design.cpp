@@ -63,4 +63,32 @@ namespace hackerrank::oo_design
 
         EXPECT_TRUE( problem.run() );
     }
+
+    /// <summary>
+    /// Testing class for abstract_classes.
+    /// </summary>
+    class abstract_classes_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // abstract_classes, test cases
+    //
+
+    TEST_F( abstract_classes_tests, run_test_cases )
+    {
+        const auto problem =
+            abstract_classes{ "abstract-classes-polymorphism-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }
