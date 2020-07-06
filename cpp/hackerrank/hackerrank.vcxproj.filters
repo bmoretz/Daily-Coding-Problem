@@ -39,6 +39,9 @@
     <ClInclude Include="sample.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="oo_design.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -123,34 +123,6 @@ namespace hackerrank::debug_tests
 
         EXPECT_TRUE( problem.run() );
     }
-
-    /// <summary>
-    /// Testing class for override_ostream.
-    /// </summary>
-    class override_ostream_tests :
-        public ::testing::Test {
-
-    protected:
-        void SetUp() override
-        {
-        }
-
-        void TearDown() override
-        {
-        }
-    };
-
-    //
-    // message_factory_tests, test cases
-    //
-
-    TEST_F( override_ostream_tests, run_test_cases )
-    {
-        const auto problem =
-            override_ostream{ "overloading-ostream-operator-testcases" };
-
-        EXPECT_TRUE( problem.run() );
-    }
 	
     /// <summary>
     /// Testing class for message_factory.
