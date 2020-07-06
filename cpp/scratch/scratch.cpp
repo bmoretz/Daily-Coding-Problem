@@ -3,86 +3,77 @@
 
 using namespace hackerrank;
 
-struct exceptional_server final : problem
+struct hotel_prices final : problem
 {
-	explicit exceptional_server( std::string&& name )
-		: problem( std::move( name ) )
-	{
-		entry_point = [this]() { return main(); };
-	}
+    explicit hotel_prices( std::string&& name )
+        : problem( std::move( name ) )
+    {
+        entry_point = [this]() { return main(); };
+    }
 
+    class HotelRoom {
+    public:
+        HotelRoom( int bedrooms, int bathrooms )
+            : bedrooms_( bedrooms ), bathrooms_( bathrooms ) {}
 
-	class Server {
-		static int load;
-		
-	public:
-		static int compute( long long A, long long B ) {
-			load += 1;
-			if( A < 0 ) {
-				throw std::invalid_argument( "A is negative" );
-			}
-			std::vector<int> v( A, 0 );
-			int real = -1, cmplx = sqrt( -1 );
-			if( B == 0 ) throw 0;
-			real = ( A / B ) * real;
-			int ans = v.at( B );
-			return real + A - B * ans;
-		}
-		
-		static int getLoad() {
-			return load;
-		}
+        virtual int get_price() {
+            return 50 * bedrooms_ + 100 * bathrooms_;
+        }
+    	
+    private:
+        int bedrooms_;
+        int bathrooms_;
+    };
 
-		static void resetLoad()
-		{
-			load = 0;
-		}
-	};
+    class HotelApartment : public HotelRoom {
+    public:
+        HotelApartment( int bedrooms, int bathrooms )
+            : HotelRoom( bedrooms, bathrooms ) {}
 
-	int main() {
-		
-		int t;
-		std::cin >> t;
-		while( t-- ) {
-			long long A, B;
-			std::cin >> A >> B;
+		int get_price() override	
+        {
+            return HotelRoom::get_price() + 100;
+        }
+    };
 
-			try
-			{
-				const auto result = Server::compute( A, B );
+    int main() {
+        int n;
+        std::cin >> n;
+        std::vector<HotelRoom*> rooms;
+        for( auto i = 0; i < n; ++i ) {
+            std::string room_type;
+            int bedrooms;
+            int bathrooms;
+            std::cin >> room_type >> bedrooms >> bathrooms;
+            if( room_type == "standard" ) {
+                rooms.push_back( new HotelRoom( bedrooms, bathrooms ) );
+            }
+            else {
+                rooms.push_back( new HotelApartment( bedrooms, bathrooms ) );
+            }
+        }
 
-				std::cout << result << std::endl;
-			}
-			catch( const std::bad_alloc& )
-			{
-				std::cout << "Not enough memory" << std::endl;
-			}
-			catch( const std::out_of_range& oor ) {
-				std::cout << "Exception: vector::_M_range_check: __n (which is " << B << 
-					") >= this->size() (which is " << A << ")" << std::endl;
-			}
-			catch( std::exception const& ex )
-			{
-				std::cout << "Exception: " << ex.what() << std::endl;
-			}
-			catch( ... )
-			{
-				std::cout << "Other Exception" << std::endl;
-			}
-		}
-				
-		std::cout << Server::getLoad() << std::endl;
-		Server::resetLoad();
-		return 0;
-	}
+        auto total_profit = 0;
+        for( auto room : rooms ) {
+            total_profit += room->get_price();
+        }
+
+        std::cout << total_profit << std::endl;
+
+        for( auto room : rooms ) {
+            delete room;
+        }
+
+        rooms.clear();
+
+        return 0;
+    }
 };
-
-int exceptional_server::Server::load = 0;
 
 auto main() -> int
 {
 	const auto problem =
-		exceptional_server{"exceptional-server-testcases"};
+		hotel_prices{"hotel-prices-testcases"};
 
-	return problem.run(3);
+	return problem.run();
 }

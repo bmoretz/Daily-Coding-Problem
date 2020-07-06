@@ -67,4 +67,32 @@ namespace hackerrank::debug_tests
         EXPECT_TRUE( problem.run() );
         */
     }
+
+    /// <summary>
+    /// Testing class for hotel_room.
+    /// </summary>
+    class hotel_room_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Exceptional Server, test cases
+    //
+
+    TEST_F( hotel_room_tests, run_test_cases )
+    { 
+        const auto problem =
+            hotel_prices{ "hotel-prices-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }
