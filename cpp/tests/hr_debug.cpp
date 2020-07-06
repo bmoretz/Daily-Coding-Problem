@@ -35,4 +35,36 @@ namespace hackerrank::debug_tests
 
         EXPECT_TRUE( problem.run() );
     }
+
+    /// <summary>
+    /// Testing class for exceptional_server.
+    /// </summary>
+    class exceptional_server_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // Exceptional Server, test cases
+    //
+	
+    TEST_F( exceptional_server_tests, run_test_cases )
+    {
+    	// test execution takes too long.
+    	
+    	/*
+        const auto problem =
+            exceptional_server{ "exceptional-server-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+        */
+    }
 }

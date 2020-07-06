@@ -1,0 +1,3 @@
+Exception: A is negative
+Not enough memory
+2

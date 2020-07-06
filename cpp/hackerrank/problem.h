@@ -221,8 +221,6 @@ namespace hackerrank
 		f1.seekg( 0, std::ifstream::beg );
 		f2.seekg( 0, std::ifstream::beg );
 
-		auto are_equal = true;
-
 		const auto lines1 = read_file( f1 );
 		const auto lines2 = read_file( f2 );
 
@@ -230,17 +228,19 @@ namespace hackerrank
 		{
 			return true;
 		}
-		else
-		{
-			detail = get_failure_detail( lines1, lines2 );
-		}
-		return lines1 == lines2;
+		
+		detail = get_failure_detail( lines1, lines2 );
+
+		return false;
 	}
 
 	static std::string build_line( const std::string& l, const std::string& r, 
 		const std::size_t width )
 	{
-		return l + std::string( width - l.length(), ' ' ) + r;
+		const auto padding = width > l.length() ? 
+			width - l.length() : 0ULL;
+		
+		return l + std::string( padding, ' ' ) + r;
 	}
 	
 	inline std::string problem::get_failure_detail( const std::vector<std::string>& actual, 
@@ -254,9 +254,12 @@ namespace hackerrank
 		max_width += 5; // buffer
 		std::ostringstream oss;
 
-		oss << std::endl << std::endl << build_line( "ACTUAL:", "EXPECTED:", max_width ) << std::endl;
+		oss << std::endl << std::endl << 
+			build_line( "ACTUAL:", "EXPECTED:", max_width )
+				<< std::endl;
 
-		const auto num_lines = std::max( actual.size(), expected.size() );
+		const auto num_lines = 
+			std::max( actual.size(), expected.size() );
 
 		for( auto index = std::size_t{}; index < num_lines; ++index )
 		{

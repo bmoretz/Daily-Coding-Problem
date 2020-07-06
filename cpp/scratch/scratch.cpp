@@ -3,133 +3,86 @@
 
 using namespace hackerrank;
 
-struct box_it final : problem
+struct exceptional_server final : problem
 {
-	explicit box_it( std::string&& name )
+	explicit exceptional_server( std::string&& name )
 		: problem( std::move( name ) )
 	{
 		entry_point = [this]() { return main(); };
 	}
 
 
-	using box_size = unsigned long long;
-	//Implement the class Box  
-	//l,b,h are integers representing the dimensions of the box
-	class Box
-	{
-		box_size l_{}, b_{}, h_{};
-
+	class Server {
+		static int load;
+		
 	public:
-
-		Box() {}
-
-		Box( const box_size l, const box_size b, const box_size h )
-			: l_{ l }, b_{ b }, h_{ h }
-		{
+		static int compute( long long A, long long B ) {
+			load += 1;
+			if( A < 0 ) {
+				throw std::invalid_argument( "A is negative" );
+			}
+			std::vector<int> v( A, 0 );
+			int real = -1, cmplx = sqrt( -1 );
+			if( B == 0 ) throw 0;
+			real = ( A / B ) * real;
+			int ans = v.at( B );
+			return real + A - B * ans;
+		}
+		
+		static int getLoad() {
+			return load;
 		}
 
-		// Constructors: 
-		// Box();
-		// Box(int,int,int);
-		// Box(Box);
-		Box( const Box& other )
-			: l_{ other.l_ },
-			b_{ other.b_ },
-			h_{ other.h_ }
-		{ }
-
-		// int getLength(); // Return box's length
-		box_size getLength() const { return l_; }
-		// int getBreadth (); // Return box's breadth
-		box_size getBreath() const { return b_; }
-		// int getHeight ();  //Return box's height
-		box_size getHeight() const { return h_; }
-		// long long CalculateVolume(); // Return the volume of the box    
-		box_size CalculateVolume() const
+		static void resetLoad()
 		{
-			return l_ * b_ * h_;
-		}
-
-		//Overload operator < as specified
-		//bool operator<(Box& b)        
-		bool operator<( const Box& b )
-		{
-			return
-				( l_ < b.l_ ) ||
-				( b_ < b.b_&& l_ == b.l_ ) ||
-				( h_ < b.h_&& b_ == b.b_ && l_ == b.l_ );
-		}
-
-		//Overload operator << as specified
-		//ostream& operator<<(ostream& out, Box& B)
-		friend std::ostream& operator<<( std::ostream& out, const Box& other )
-		{
-			out << other.getLength() << " " << other.getBreath() << " " << other.getHeight();
-
-			return out;
+			load = 0;
 		}
 	};
 
-	void check2()
-	{
-		int n;
-		std::cin >> n;
-		Box temp;
-		for( int i = 0; i < n; i++ )
-		{
-			int type;
-			std::cin >> type;
-			if( type == 1 )
-			{
-				std::cout << temp << std::endl;
-			}
-			if( type == 2 )
-			{
-				int l, b, h;
-				std::cin >> l >> b >> h;
-				Box NewBox( l, b, h );
-				temp = NewBox;
-				std::cout << temp << std::endl;
-			}
-			if( type == 3 )
-			{
-				int l, b, h;
-				std::cin >> l >> b >> h;
-				Box NewBox( l, b, h );
-				if( NewBox < temp )
-				{
-					std::cout << "Lesser\n";
-				}
-				else
-				{
-					std::cout << "Greater\n";
-				}
-			}
-			if( type == 4 )
-			{
-				std::cout << temp.CalculateVolume() << std::endl;
-			}
-			if( type == 5 )
-			{
-				Box NewBox( temp );
-				std::cout << NewBox << std::endl;
-			}
+	int main() {
+		
+		int t;
+		std::cin >> t;
+		while( t-- ) {
+			long long A, B;
+			std::cin >> A >> B;
 
+			try
+			{
+				const auto result = Server::compute( A, B );
+
+				std::cout << result << std::endl;
+			}
+			catch( const std::bad_alloc& )
+			{
+				std::cout << "Not enough memory" << std::endl;
+			}
+			catch( const std::out_of_range& oor ) {
+				std::cout << "Exception: vector::_M_range_check: __n (which is " << B << 
+					") >= this->size() (which is " << A << ")" << std::endl;
+			}
+			catch( std::exception const& ex )
+			{
+				std::cout << "Exception: " << ex.what() << std::endl;
+			}
+			catch( ... )
+			{
+				std::cout << "Other Exception" << std::endl;
+			}
 		}
-	}
-
-	int main()
-	{
-		check2();
-
+				
+		std::cout << Server::getLoad() << std::endl;
+		Server::resetLoad();
 		return 0;
 	}
 };
 
+int exceptional_server::Server::load = 0;
+
 auto main() -> int
 {
 	const auto problem =
-		box_it{"box-it-testcases"};
+		exceptional_server{"exceptional-server-testcases"};
 
-	return problem.run();
+	return problem.run(3);
 }
