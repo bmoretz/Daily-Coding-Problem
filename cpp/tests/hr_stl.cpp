@@ -91,4 +91,60 @@ namespace hackerrank::stl
 
         EXPECT_TRUE( problem.run() );
     }
+
+    /// <summary>
+    /// Testing class for set.
+    /// </summary>
+    class stl_set_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // set test cases
+    //
+
+    TEST_F( stl_set_tests, run_test_cases )
+    {
+        const auto problem =
+            stl_set{ "cpp-sets-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
+
+    /// <summary>
+    /// Testing class for map.
+    /// </summary>
+    class stl_map_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // map, test cases
+    //
+
+    TEST_F( stl_map_tests, run_test_cases )
+    {
+        const auto problem =
+            stl_map{ "cpp-maps-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }

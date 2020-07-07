@@ -5,7 +5,7 @@
 
 using namespace hackerrank::str;
 
-namespace hackerrank::str_tests
+namespace hackerrank::str
 {
 
     /// <summary>

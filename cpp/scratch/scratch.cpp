@@ -6,9 +6,9 @@
 
 using namespace hackerrank;
 
-struct stl_set final : problem
+struct stl_map final : problem
 {
-    explicit stl_set( std::string&& name )
+    explicit stl_map( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
@@ -16,20 +16,53 @@ struct stl_set final : problem
 
     static void process_queries()
     {
-        std::set<int> values{};
+        std::map<std::string, int> values{};
 
-        int op, n;
-
-        while( std::cin >> op >> n )
+        int op;
+        std::string name;
+    	
+        while( std::cin >> op >> name )
         {
-            const auto exists = values.find( n ) != values.end();
+            const auto exists = values.find( name ) != values.end();
         	
             switch( op )
             {
-            case 1: values.insert( n ); break;
-            case 2: if( exists ) values.erase( n ); break;
-            case 3: std::cout << ( exists ? "Yes" : "No" ) << std::endl; break;
+            case 1:
+            {
+                int marks;
+                std::cin >> marks;
 
+                if( !exists )
+                {
+                    values.insert( std::make_pair( name, marks ) );
+                }
+                else
+                {
+                    values[ name ] += marks;
+                }
+            } break;
+
+            case 2:
+            {
+                if( exists )
+                {
+                    values.erase( name );
+                }
+            } break;
+            	
+            case 3:
+            {
+                if( exists )
+                {
+                    std::cout << values[ name ] << std::endl;
+                }
+                else
+                {
+                    std::cout << 0 << std::endl;
+                }
+            		
+            } break;
+            	
             default:
                 break;
             }
@@ -50,7 +83,7 @@ struct stl_set final : problem
 auto main() -> int
 {
 	const auto problem =
-		stl_set{"cpp-sets-testcases"};
+		stl_map{"cpp-maps-testcases"};
 
 	return problem.run(0);
 }

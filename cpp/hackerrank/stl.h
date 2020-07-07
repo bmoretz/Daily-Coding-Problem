@@ -1,9 +1,8 @@
 #pragma once
 
 #include <sstream>
-#include <stack>
-#include <memory>
-#include <cassert>
+#include <set>
+#include <map>
 
 #include "problem.h"
 
@@ -170,6 +169,121 @@ namespace hackerrank::stl
 
             read_vector( integers );
             process_queries( integers );
+
+            return 0;
+        }
+    };
+
+    struct stl_set final : problem
+    {
+        explicit stl_set( std::string&& name )
+            : problem( std::move( name ) )
+        {
+            entry_point = []() { return main(); };
+        }
+
+        static void process_queries()
+        {
+            std::set<int> values{};
+
+            int op, n;
+
+            while( std::cin >> op >> n )
+            {
+                const auto exists = values.find( n ) != values.end();
+
+                switch( op )
+                {
+                case 1: values.insert( n ); break;
+                case 2: if( exists ) values.erase( n ); break;
+                case 3: std::cout << ( exists ? "Yes" : "No" ) << std::endl; break;
+
+                default:
+                    break;
+                }
+            }
+        }
+
+        static int main()
+        {
+            int n;
+            std::cin >> n;
+
+            process_queries();
+
+            return 0;
+        }
+    };
+
+    struct stl_map final : problem
+    {
+        explicit stl_map( std::string&& name )
+            : problem( std::move( name ) )
+        {
+            entry_point = [this]() { return main(); };
+        }
+
+        static void process_queries()
+        {
+            std::map<std::string, int> values{};
+
+            int op;
+            std::string name;
+
+            while( std::cin >> op >> name )
+            {
+                const auto exists = values.find( name ) != values.end();
+
+                switch( op )
+                {
+                case 1:
+                {
+                    int marks;
+                    std::cin >> marks;
+
+                    if( !exists )
+                    {
+                        values.insert( std::make_pair( name, marks ) );
+                    }
+                    else
+                    {
+                        values[ name ] += marks;
+                    }
+                } break;
+
+                case 2:
+                {
+                    if( exists )
+                    {
+                        values.erase( name );
+                    }
+                } break;
+
+                case 3:
+                {
+                    if( exists )
+                    {
+                        std::cout << values[ name ] << std::endl;
+                    }
+                    else
+                    {
+                        std::cout << 0 << std::endl;
+                    }
+
+                } break;
+
+                default:
+                    break;
+                }
+            }
+        }
+
+        int main()
+        {
+            int n;
+            std::cin >> n;
+
+            process_queries();
 
             return 0;
         }
