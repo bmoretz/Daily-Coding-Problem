@@ -6,135 +6,61 @@
 
 using namespace hackerrank;
 
-struct abstract_classes final : problem
+struct vector_erase final : problem
 {
-    explicit abstract_classes( std::string&& name )
+    explicit vector_erase( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
     }
 
-    struct Node {
-        Node* next;
-        Node* prev;
-        int value;
-        int key;
-        Node( Node* p, Node* n, int k, int val ) :prev( p ), next( n ), key( k ), value( val ) {};
-        Node( int k, int val ) :prev( NULL ), next( NULL ), key( k ), value( val ) {};
-    };
+    static void read_vector( std::vector<int>& integers )
+    {
+        std::string buff;
+        std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+        std::getline( std::cin, buff );
+        std::stringstream ss( buff );
 
-    class Cache {
+        int tmp;
 
-    protected:
-        std::map<int, Node*> mp; //map the key to the node in the linked list
-        int cp;  //capacity
-        Node* tail; // double linked list tail pointer
-        Node* head; // double linked list head pointer
-        virtual void set( int, int ) = 0; //set function
-        virtual int get( int ) = 0; //get function
-    };
-
-    static void unlink( Node* node )
-    {    	
-        const auto new_next = node->next;
-        const auto new_prev = node->prev;
-
-        node->next->prev = new_prev;
-        node->prev->next = new_next;
-
-        delete node;
+        while( ss >> tmp )
+            integers.push_back( tmp );
     }
 
-	class LRUCache : public Cache
-	{
-	public:
+    static void process_erases( std::vector<int>& integers )
+    {
+        int position;
+        std::cin >> position;
+        integers.erase( integers.begin() + position - 1 );
 
-        int length = 0;
+        int start, stop;
+        std::cin >> start >> stop;
+        integers.erase( integers.begin() + start - 1, integers.begin() + stop - 1 );
+    }
+
+    static void print( std::vector<int> integers )
+    {
+        std::cout << integers.size() << std::endl;
     	
-		explicit LRUCache( const int capacity )
-		{
-            head = new Node( 0, 0 );
-            tail = new Node( 0, 0 );
+        for( auto index = 0; index < integers.size(); ++index )
+        {
+            std::cout << integers[ index ];
 
-            head->next = tail;
-            head->prev = tail;
-
-            tail->next = head;
-            tail->prev = head;
-			
-            this->cp = capacity;
-		}
-
-    	~LRUCache()
-		{
-            delete head;
-            delete tail;
-		}
-    	
-		void set( const int key, const int value ) override
-		{
-            const auto existing = mp.find( key );
-
-			if( existing == mp.end() )
-			{
-				const auto new_node = new Node(
-                    head, head->next, key, value );
-				
-                mp.insert( std::make_pair( key, new_node ) );
-
-				head->next->prev = mp[ key ];
-                head->next = mp[ key ];
-
-                length++;
-				
-                if( length > cp )
-                {
-                    const auto to_remove = tail->prev->key;
-                    mp.erase( to_remove );
-
-                    unlink( tail->prev );
-
-                    length--;
-                }
-			}
-            else
-            {
-                existing->second->value = value;
-                existing->second->next = head->next;
-            	
-                head->next = existing->second;
-            }
-		}
-
-		int get( const int key ) override
-		{
-            const auto location = mp.find( key );
-
-            return location == mp.end() ? -1 : location->second->value;
-		}
-	};
+            if( index < integers.size() - 1 )
+                std::cout << " ";
+        }
+    }
 	
     int main()
     {
-        int n, capacity;
-        std::cin >> n >> capacity;
-        LRUCache l( capacity );
+        int n;
+        std::cin >> n;
 
-    	for( auto i = 0; i < n; i++ ) {
-            std::string command;
-            std::cin >> command;
-    		
-            if( command == "get" ) {
-                int key;
-                std::cin >> key;
-                std::cout << l.get( key ) << std::endl;
-            }
-            else if( command == "set" ) {
-                int key, value;
-                std::cin >> key >> value;
-                l.set( key, value );
-            }
-        }
+    	std::vector<int> integers;
+    	
+        read_vector( integers );
+        process_erases( integers );
+        print( integers );
     	
         return 0;
     }
@@ -143,7 +69,7 @@ struct abstract_classes final : problem
 auto main() -> int
 {
 	const auto problem =
-		abstract_classes{"abstract-classes-polymorphism-testcases"};
+		vector_erase{"vector-erase-testcases"};
 
 	return problem.run(0);
 }

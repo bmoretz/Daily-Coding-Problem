@@ -29,6 +29,9 @@
     <ClCompile Include="hr_oo_design.cpp">
       <Filter>hackerrank</Filter>
     </ClCompile>
+    <ClCompile Include="hr_stl.cpp">
+      <Filter>hackerrank</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

@@ -25,13 +25,13 @@ namespace hackerrank::oo_design
     };
 
     //
-    // attribute parser, test cases
+    // virtual functions, test cases
     //
 
     TEST_F( virtual_functions_tests, run_test_cases )
     {
         const auto problem =
-	        hackerrank::oo_design::virtual_functions{ "virtual-functions-testcases" };
+	        virtual_functions{ "virtual-functions-testcases" };
 
         EXPECT_TRUE( problem.run() );
     }
