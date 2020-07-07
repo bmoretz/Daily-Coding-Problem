@@ -6,45 +6,34 @@
 
 using namespace hackerrank;
 
-struct lower_bound final : problem
+struct stl_set final : problem
 {
-    explicit lower_bound( std::string&& name )
+    explicit stl_set( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
     }
 
-    static void read_vector( std::vector<int>& integers )
+    static void process_queries()
     {
-        std::string buff;
-        std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
-        std::getline( std::cin, buff );
-        std::stringstream ss( buff );
+        std::set<int> values{};
 
-        int tmp;
+        int op, n;
 
-        while( ss >> tmp )
-            integers.push_back( tmp );
-    }
+        while( std::cin >> op >> n )
+        {
+            const auto exists = values.find( n ) != values.end();
+        	
+            switch( op )
+            {
+            case 1: values.insert( n ); break;
+            case 2: if( exists ) values.erase( n ); break;
+            case 3: std::cout << ( exists ? "Yes" : "No" ) << std::endl; break;
 
-    static void process_queries( std::vector<int>& integers )
-    {
-        std::string buff;
-        int num;
-        std::cin >> num; // throw away
-    	
-    	while( std::cin >> num )
-    	{
-            const auto exists = 
-                std::binary_search( integers.begin(), integers.end(), num );
-    		
-            const auto bound = 
-                std::lower_bound( integers.begin(), integers.end(), num );
-
-            std::cout << ( exists ? "Yes" : "No" ) << " "
-    				  << std::distance( integers.begin(), bound ) + 1
-    				  << std::endl;
-    	}
+            default:
+                break;
+            }
+        }
     }
 
     int main()
@@ -52,11 +41,7 @@ struct lower_bound final : problem
         int n;
         std::cin >> n;
 
-    	std::vector<int> integers;
-        integers.reserve( n );
-    	
-        read_vector( integers );
-        process_queries( integers );
+        process_queries();
     	
         return 0;
     }
@@ -65,7 +50,7 @@ struct lower_bound final : problem
 auto main() -> int
 {
 	const auto problem =
-		lower_bound{"cpp-lower-bound-testcases"};
+		stl_set{"cpp-sets-testcases"};
 
 	return problem.run(0);
 }
