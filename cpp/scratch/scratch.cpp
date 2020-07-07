@@ -6,9 +6,9 @@
 
 using namespace hackerrank;
 
-struct vector_erase final : problem
+struct lower_bound final : problem
 {
-    explicit vector_erase( std::string&& name )
+    explicit lower_bound( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
@@ -27,40 +27,36 @@ struct vector_erase final : problem
             integers.push_back( tmp );
     }
 
-    static void process_erases( std::vector<int>& integers )
+    static void process_queries( std::vector<int>& integers )
     {
-        int position;
-        std::cin >> position;
-        integers.erase( integers.begin() + position - 1 );
-
-        int start, stop;
-        std::cin >> start >> stop;
-        integers.erase( integers.begin() + start - 1, integers.begin() + stop - 1 );
-    }
-
-    static void print( std::vector<int> integers )
-    {
-        std::cout << integers.size() << std::endl;
+        std::string buff;
+        int num;
+        std::cin >> num; // throw away
     	
-        for( auto index = 0; index < integers.size(); ++index )
-        {
-            std::cout << integers[ index ];
+    	while( std::cin >> num )
+    	{
+            const auto exists = 
+                std::binary_search( integers.begin(), integers.end(), num );
+    		
+            const auto bound = 
+                std::lower_bound( integers.begin(), integers.end(), num );
 
-            if( index < integers.size() - 1 )
-                std::cout << " ";
-        }
+            std::cout << ( exists ? "Yes" : "No" ) << " "
+    				  << std::distance( integers.begin(), bound ) + 1
+    				  << std::endl;
+    	}
     }
-	
+
     int main()
     {
         int n;
         std::cin >> n;
 
     	std::vector<int> integers;
+        integers.reserve( n );
     	
         read_vector( integers );
-        process_erases( integers );
-        print( integers );
+        process_queries( integers );
     	
         return 0;
     }
@@ -69,7 +65,7 @@ struct vector_erase final : problem
 auto main() -> int
 {
 	const auto problem =
-		vector_erase{"vector-erase-testcases"};
+		lower_bound{"cpp-lower-bound-testcases"};
 
 	return problem.run(0);
 }

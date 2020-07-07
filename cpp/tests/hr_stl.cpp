@@ -63,4 +63,32 @@ namespace hackerrank::stl
 
         EXPECT_TRUE( problem.run() );
     }
+
+    /// <summary>
+    /// Testing class for lower bound.
+    /// </summary>
+    class lower_bound_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    //
+    // lower bound, test cases
+    //
+
+    TEST_F( lower_bound_tests, run_test_cases )
+    {
+        const auto problem =
+            lower_bound{ "cpp-lower-bound-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }
