@@ -6,67 +6,12 @@
 
 using namespace hackerrank;
 
-struct stl_map final : problem
+struct pretty_print final : problem
 {
-    explicit stl_map( std::string&& name )
+    explicit pretty_print( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
-    }
-
-    static void process_queries()
-    {
-        std::map<std::string, int> values{};
-
-        int op;
-        std::string name;
-    	
-        while( std::cin >> op >> name )
-        {
-            const auto exists = values.find( name ) != values.end();
-        	
-            switch( op )
-            {
-            case 1:
-            {
-                int marks;
-                std::cin >> marks;
-
-                if( !exists )
-                {
-                    values.insert( std::make_pair( name, marks ) );
-                }
-                else
-                {
-                    values[ name ] += marks;
-                }
-            } break;
-
-            case 2:
-            {
-                if( exists )
-                {
-                    values.erase( name );
-                }
-            } break;
-            	
-            case 3:
-            {
-                if( exists )
-                {
-                    std::cout << values[ name ] << std::endl;
-                }
-                else
-                {
-                    std::cout << 0 << std::endl;
-                }
-            		
-            } break;
-            	
-            default:
-                break;
-            }
-        }
     }
 
     int main()
@@ -74,7 +19,39 @@ struct stl_map final : problem
         int n;
         std::cin >> n;
 
-        process_queries();
+    	while( n-- )
+    	{
+            double A, B, C;
+            std::cin >> A >> B >> C;
+
+    		std::ostringstream oss;
+    		
+            oss << std::nouppercase
+                << std::showbase
+                << std::right
+                << std::hex
+                << static_cast< long long > ( A )
+    			<< std::endl;
+    		
+            oss << std::showpos
+                << std::setw( 15 )
+                << std::setfill( '_' )
+                << std::right
+    			<< std::fixed
+                << std::setprecision( 2 )
+    			<< B
+    			<< std::endl;
+
+            oss << std::setiosflags( std::ios::uppercase )
+    			<< std::noshowpos
+    			<< std::setprecision( 9 )
+    			<< std::setw( 9 )
+    			<< std::scientific
+    			<< C
+    			<< std::endl;
+    		
+            std::cout << oss.str();
+    	}
     	
         return 0;
     }
@@ -83,7 +60,7 @@ struct stl_map final : problem
 auto main() -> int
 {
 	const auto problem =
-		stl_map{"cpp-maps-testcases"};
+		pretty_print{"prettyprint-testcases"};
 
-	return problem.run(0);
+	return problem.run(6);
 }

@@ -149,7 +149,7 @@ namespace hackerrank
 
 		for( const auto& test : test_cases )
 		{
-			if( test_case > 0 && test.case_number != test_case )
+			if( test_case >= 0 && test.case_number != test_case )
 				continue;
 
 			std::cout << "********************************************************" << std::endl;

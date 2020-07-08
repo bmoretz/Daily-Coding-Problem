@@ -24,10 +24,6 @@ namespace hackerrank::stl
         }
     };
 
-    //
-    // vector sort, test cases
-    //
-
     TEST_F( vector_sort_tests, run_test_cases )
     {
         const auto problem =
@@ -51,10 +47,6 @@ namespace hackerrank::stl
         {
         }
     };
-
-    //
-    // vector erase, test cases
-    //
 
     TEST_F( vector_erase_tests, run_test_cases )
     {
@@ -80,10 +72,6 @@ namespace hackerrank::stl
         }
     };
 
-    //
-    // lower bound, test cases
-    //
-
     TEST_F( lower_bound_tests, run_test_cases )
     {
         const auto problem =
@@ -107,10 +95,6 @@ namespace hackerrank::stl
         {
         }
     };
-
-    //
-    // set test cases
-    //
 
     TEST_F( stl_set_tests, run_test_cases )
     {
@@ -136,14 +120,34 @@ namespace hackerrank::stl
         }
     };
 
-    //
-    // map, test cases
-    //
-
     TEST_F( stl_map_tests, run_test_cases )
     {
         const auto problem =
             stl_map{ "cpp-maps-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
+
+    /// <summary>
+    /// Testing class for pretty print.
+    /// </summary>
+    class pretty_print_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( pretty_print_tests, run_test_cases )
+    {
+        const auto problem =
+            pretty_print{ "prettyprint-testcases" };
 
         EXPECT_TRUE( problem.run() );
     }
