@@ -6,53 +6,72 @@
 
 using namespace hackerrank;
 
-struct pretty_print final : problem
+struct stl_dequeue final : problem
 {
-    explicit pretty_print( std::string&& name )
+    explicit stl_dequeue( std::string&& name )
         : problem( std::move( name ) )
     {
         entry_point = [this]() { return main(); };
     }
 
+    void print_k_max( const std::vector<int>& vector, const int n, const int k )
+    {
+        std::deque<int> dequeue;
+    	
+        for( auto index = 0; index < k; index++ )
+        {
+            while( !dequeue.empty() && vector[ index ] >= vector[ dequeue.back() ] )
+            {
+                dequeue.pop_back();
+            }
+
+            dequeue.push_back( index );
+        }
+
+        for( auto index = k; index < n; index++ )
+        {
+            std::cout << vector[ dequeue.front() ] << " ";
+
+            while( !dequeue.empty() && dequeue.front() <= index - k )
+            {
+                dequeue.pop_front();
+            }
+        	
+            while( !dequeue.empty() && vector[ index ] >= vector[ dequeue.back() ] )
+            {
+                dequeue.pop_back();
+            }
+        	
+            dequeue.push_back( index );
+
+        }
+
+        std::cout << vector[ dequeue.front() ] << std::endl;
+    }
+
     int main()
     {
-        int n;
-        std::cin >> n;
+        int t;
+        std::cin >> t;
 
-    	while( n-- )
-    	{
-            double A, B, C;
-            std::cin >> A >> B >> C;
+        while( t-- )
+        {
+            int n, k;
+            std::cin >> n >> k;
 
-    		std::ostringstream oss;
-    		
-            oss << std::nouppercase
-                << std::showbase
-                << std::right
-                << std::hex
-                << static_cast< long long > ( A )
-    			<< std::endl;
-    		
-            oss << std::showpos
-                << std::setw( 15 )
-                << std::setfill( '_' )
-                << std::right
-    			<< std::fixed
-                << std::setprecision( 2 )
-    			<< B
-    			<< std::endl;
+            int tmp;
+            std::vector<int> vector = { };
+            vector.resize( n );
+        	
+            for( auto index = 0; index < n; index++ )
+            {
+                std::cin >> tmp;
+                vector.at( index ) = tmp;
+            }
 
-            oss << std::setiosflags( std::ios::uppercase )
-    			<< std::noshowpos
-    			<< std::setprecision( 9 )
-    			<< std::setw( 9 )
-    			<< std::scientific
-    			<< C
-    			<< std::endl;
-    		
-            std::cout << oss.str();
-    	}
-    	
+            print_k_max( vector, n, k );
+        }
+
         return 0;
     }
 };
@@ -60,7 +79,7 @@ struct pretty_print final : problem
 auto main() -> int
 {
 	const auto problem =
-		pretty_print{"prettyprint-testcases"};
+        stl_dequeue{"deque-stl-testcases"};
 
-	return problem.run(6);
+	return problem.run();
 }

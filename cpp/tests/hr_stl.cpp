@@ -151,4 +151,28 @@ namespace hackerrank::stl
 
         EXPECT_TRUE( problem.run() );
     }
+
+    /// <summary>
+    /// Testing class for print k max.
+    /// </summary>
+    class print_k_max_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( print_k_max_tests, run_test_cases )
+    {
+        const auto problem =
+            stl_dequeue{ "deque-stl-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }

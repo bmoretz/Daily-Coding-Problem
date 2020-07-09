@@ -226,4 +226,54 @@ namespace hackerrank::sample
 
 		return out;
 	}
+
+	struct fizz_buzz final : problem
+	{
+		explicit fizz_buzz( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+
+		void fizzBuzz( const int n )
+		{
+			for( auto index = 1; index < n + 1; ++index )
+			{
+				if( index % 3 == 0 )
+					std::cout << "Fizz";
+
+				if( index % 5 == 0 )
+					std::cout << "Buzz";
+
+				if( index % 3 != 0 && index % 5 != 0 )
+					std::cout << index;
+
+				std::cout << std::endl;
+			}
+		}
+
+		int main()
+		{
+			std::string n_temp;
+			std::getline( std::cin, n_temp );
+
+			const auto n = std::stoi( ltrim( rtrim( n_temp ) ) );
+
+			fizzBuzz( n );
+
+			return 0;
+		}
+
+		std::string ltrim( const std::string& str ) {
+			auto s( str );
+
+			return s.erase( 0, s.find_first_not_of( ' ' ) );;
+		}
+
+		std::string rtrim( const std::string& str ) {
+			auto s( str );
+
+			return s.substr( s.find_first_not_of( ' ' ) );;
+		}
+	};
 }
