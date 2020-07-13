@@ -316,4 +316,93 @@ namespace hackerrank::sample
 			return 0;
 		}
 	};
+
+	struct ra_inheritance final : problem
+	{
+		explicit ra_inheritance( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+
+		class rectangle
+		{
+		protected:
+			int width_ = 0, height_ = 0;
+
+		public:
+			virtual ~rectangle() = default;
+
+			virtual void read_input() = 0;
+			virtual void display()
+			{
+				std::cout << width_ << " " << height_ << std::endl;
+			}
+		};
+
+		class rectangle_area : public rectangle
+		{
+		public:
+			void read_input() override
+			{
+				std::cin >> width_ >> height_;
+			}
+
+			void display() override
+			{
+				std::cout << width_ * height_ << std::endl;
+			}
+		};
+
+		int main() {
+			rectangle_area r_area;
+
+			r_area.read_input();
+			r_area.rectangle::display();
+			r_area.display();
+
+			return 0;
+		}
+	};
+
+	struct mult_inheritance final : problem
+	{
+		explicit mult_inheritance( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+
+		class tri {
+		public:
+			void triangle() {
+				std::cout << "I am a triangle\n";
+			}
+		};
+
+		class iso : public tri {
+		public:
+			void isosceles() {
+				std::cout << "I am an isosceles triangle" << std::endl;
+			}
+		};
+
+		class equ : public iso
+		{
+		public:
+			void equilateral()
+			{
+				std::cout << "I am an equilateral triangle" << std::endl;
+			}
+		};
+
+		int main() {
+			equ eqr;
+			eqr.equilateral();
+			eqr.isosceles();
+			eqr.triangle();
+
+			return 0;
+		}
+	};
 }
