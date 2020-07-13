@@ -8,9 +8,6 @@ using namespace hackerrank::oo_design;
 
 namespace hackerrank::oo_design
 {
-    /// <summary>
-    /// Testing class for virtual functions.
-    /// </summary>
     class virtual_functions_tests :
         public ::testing::Test {
 
@@ -24,10 +21,6 @@ namespace hackerrank::oo_design
         }
     };
 
-    //
-    // virtual functions, test cases
-    //
-
     TEST_F( virtual_functions_tests, run_test_cases )
     {
         const auto problem =
@@ -36,9 +29,6 @@ namespace hackerrank::oo_design
         EXPECT_TRUE( problem.run() );
     }
 
-    /// <summary>
-    /// Testing class for override_ostream.
-    /// </summary>
     class override_ostream_tests :
         public ::testing::Test {
 
@@ -52,10 +42,6 @@ namespace hackerrank::oo_design
         }
     };
 
-    //
-    // override_ostream, test cases
-    //
-
     TEST_F( override_ostream_tests, run_test_cases )
     {
         const auto problem =
@@ -64,9 +50,6 @@ namespace hackerrank::oo_design
         EXPECT_TRUE( problem.run() );
     }
 
-    /// <summary>
-    /// Testing class for abstract_classes.
-    /// </summary>
     class abstract_classes_tests :
         public ::testing::Test {
 
@@ -80,14 +63,31 @@ namespace hackerrank::oo_design
         }
     };
 
-    //
-    // abstract_classes, test cases
-    //
-
     TEST_F( abstract_classes_tests, run_test_cases )
     {
         const auto problem =
             abstract_classes{ "abstract-classes-polymorphism-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
+
+    class multiple_inherited_functions_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( multiple_inherited_functions_tests, run_test_cases )
+    {
+        const auto problem =
+            multiple_inherited_functions{ "accessing-inherited-functions-testcases" };
 
         EXPECT_TRUE( problem.run() );
     }

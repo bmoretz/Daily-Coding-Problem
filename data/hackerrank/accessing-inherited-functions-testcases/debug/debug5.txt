@@ -1,0 +1,4 @@
+Value = 3600
+A's func called 4 times
+B's func called 2 times
+C's func called 2 times

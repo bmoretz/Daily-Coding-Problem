@@ -354,7 +354,7 @@ namespace hackerrank::sample
 			}
 		};
 
-		int main() {
+		static int main() {
 			rectangle_area r_area;
 
 			r_area.read_input();
@@ -370,7 +370,7 @@ namespace hackerrank::sample
 		explicit mult_inheritance( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
 		class tri {
@@ -396,7 +396,7 @@ namespace hackerrank::sample
 			}
 		};
 
-		int main() {
+		static int main() {
 			equ eqr;
 			eqr.equilateral();
 			eqr.isosceles();
