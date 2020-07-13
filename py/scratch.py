@@ -1,85 +1,56 @@
-'''Smallest K.
-
-Design an algorithm to find the smallest K numbers in an array.
+'''
 '''
 
-import heapq
+import os
+from datetime import datetime
 
-''' O(n log n) brute force '''
-def smallest_k1(arr, k):
-    if not arr: return None
+def format():
 
-    n = len(arr) - 1
-    s = sorted(arr)
+    arr = []
 
-    return s[:k] if k < n else s[:n]
+    return arr
 
-'''O(n log m)'''
-def smallest_k2(arr, k):
+fn = "cme_globex30_Snap_310_A_20190213.pcap.gz"
 
-    if not arr: return None
+def get_path_name(file_name):
 
-    heapq.heapify(arr)
-    n = len(arr) - 1
+    def get_provider_name(fn) -> str:
 
-    results = []
-
-    for _ in range(min(k, n)):
-        results.append(arr[0])
-        heapq.heappop(arr)
-    
-    return results
-
-from random import randint
-
-'''selection rank O(N)'''
-def smallest_k3(arr, k):
-
-    def rank_pivot(arr, left, right, rank):
-        r = randint(left, right)
-        pivot = arr[r]
-
-        left_end = partition(arr, left, right, pivot)
-        left_size = left_end - left + 1
-
-        if rank == left_size - 1:
-            return max(arr[left], arr[left_end])
-        elif rank < left_size:
-            return rank_pivot(arr, left, left_end, rank)
-        else:
-            return rank_pivot(arr, left_end + 1, right, rank - left_size)
-
-    def rank(arr, r):
-        return rank_pivot(arr, 0, len(arr) - 1, r)
-
-    def swap(arr, l, r):
-        arr[l], arr[r] = arr[r], arr[l]
-
-    def partition(arr, left, right, pivot):
         
-        while left <= right:
-            if arr[left] > pivot:
-                swap(arr, left, right)
-                right -= 1
-            elif arr[right] <= pivot:
-                swap(arr, left, right)
-                left += 1
-            else:
-                left += 1
-                right -= 1
+        provider_pos = fn.lower().find("incr")
 
-        return left - 1
-        
-    if arr == None: return None
+        if provider_pos == -1:
+            provider_pos = fn.lower().find("snap")
 
-    threshold = rank(arr, k)
-    take = min(len(arr) - 1, k)
+        provider = fn[0:provider_pos-1]
 
-    return arr[:take]
+        return provider
 
+    def parse_rec_date(fn):
+        start = fn.find("_A_")
+        stop = fn.find("pcap.gz")
+        dt_str = fn[start+3:stop-1]
+        dt = datetime.strptime(dt_str, '%Y%m%d')
 
-arr = [2, 1, 5, 7, 9, 11, 3, 0, 8, 15, -1, 18]
-k = 3
+        return dt
 
-actual = smallest_k3(arr, k)
-print(actual)
+    def get_path_date(fn) -> str:
+
+        dt = parse_rec_date(fn)
+
+        yr = '{:04}'.format(dt.year)
+        mon = '{:02}'.format(dt.month)
+        d = '{:02}'.format(dt.day)
+
+        return f'{yr}/{mon}/{d}'
+
+    provider = get_provider_name(file_name)
+    rec_date = get_path_date(fn)
+
+    return f'{provider}/{rec_date}/{fn}'
+
+out_path = get_path_name(fn)
+
+assert out_path == 'cme_globex30/2019/02/12/cme_globex30_Incr_310_A_20190212.pcap.gz'
+
+print(out_path)
