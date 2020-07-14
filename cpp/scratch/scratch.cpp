@@ -6,200 +6,89 @@
 
 using namespace hackerrank;
 
-struct magic_spells final : problem
+constexpr unsigned exponent = 31;
+constexpr unsigned two_to_exponent = 1u << exponent;
+
+struct bit_array final : problem
 {
-	explicit magic_spells( std::string&& name )
+	explicit bit_array( std::string&& name )
 		: problem( std::move( name ) )
 	{
 		entry_point = [this]() { return main(); };
 	}
 
-	class spell
+	bool solve()
 	{
-		std::string scroll_name_{};
+		// set up variables and constants and read input
+		unsigned int N, S, P, Q, mu, nu;
 
-	public:
+		const unsigned int m = 1 << 31;
 
-		spell() = default;
+		std::cin >> N >> S >> P >> Q;
 
-		explicit spell( std::string name ) :
-			scroll_name_(std::move(name))
-		{ }
+		// set up sequence
+		unsigned int* a = new unsigned int[ N ];
 
-		virtual ~spell() {}
-
-		std::string reveal_scroll_name() const
+		a[ 0 ] = S % m;
+		for( int i = 1; i < N; i++ ) 
 		{
-			return scroll_name_;
-		}
-	};
-
-	class fireball final : public spell
-	{
-		int power_;
-	public:
-
-		explicit fireball( const int power ) : power_( power )
-		{
+			a[ i ] = ( a[ i - 1 ] * P + Q ) % m;
 		}
 
-		void reveal_fire_power() const
+		// begin cycle detection (-> floyd's algorithm)
+		for( auto i = 0; i < N; i++ ) 
 		{
-			std::cout << "Fireball: " << power_ << std::endl;
-		}
-	};
-
-	class frostbite final : public spell
-	{
-		int power_;
-	public:
-		explicit frostbite( const int power ) : power_( power )
-		{
-		}
-
-		void reveal_frost_power() const
-		{
-			std::cout << "Frostbite: " << power_ << std::endl;
-		}
-	};
-
-	class thunderstorm final : public spell
-	{
-		int power;
-	public:
-		explicit thunderstorm( const int power ) : power( power )
-		{ }
-
-		void reveal_thunder_power() const
-		{
-			std::cout << "Thunderstorm: " << power << std::endl;
-		}
-	};
-
-	class waterbolt final : public spell
-	{
-		int power_;
-
-	public:
-
-		explicit waterbolt( const int power ) : power_( power )
-		{ }
-
-		void reveal_water_power() const
-		{
-			std::cout << "Waterbolt: " << power_ << std::endl;
-		}
-	};
-
-	class spell_journal
-	{
-	public:
-		static std::string journal;
-
-		static std::string read()
-		{
-			return journal;
-		}
-	};
-	
-	void counter_spell( spell* spell )
-	{
-		if( dynamic_cast< fireball* >( spell ) != nullptr )
-		{
-			dynamic_cast< fireball* >( spell )->reveal_fire_power();
-		}
-		else if( dynamic_cast< frostbite* >( spell ) != nullptr )
-		{
-			dynamic_cast< frostbite* >( spell )->reveal_frost_power();
-		}
-		else if( dynamic_cast< waterbolt* >( spell ) != nullptr )
-		{
-			dynamic_cast< waterbolt* >( spell )->reveal_water_power();
-		}
-		else if( dynamic_cast< thunderstorm* >( spell ) != nullptr )
-		{
-			dynamic_cast< thunderstorm* >( spell )->reveal_thunder_power();
-		}
-		else
-		{
-			auto spell_name = spell->reveal_scroll_name();
-			auto journal = spell_journal::read();
-			
-			std::vector<std::vector<int> > dp( spell_name.size() + 1, std::vector<int>( journal.size() + 1 ) );
-			for( auto i = 1; i <= spell_name.size(); i++ )
+			if( ( 2 * i ) + 1 > N - 1 ) 
 			{
-				for( auto j = 1; j <= journal.size(); j++ )
-				{
-					if( spell_name[ i - 1 ] == journal[ j - 1 ] )
-						dp[ i ][ j ] = 1 + dp[ i - 1 ][ j - 1 ];
-					else
-						dp[ i ][ j ] = std::max( dp[ i - 1 ][ j ], dp[ i ][ j - 1 ] );
-				}
+				// no cycle found -> N distinct values, output N, clean up and terminate execution
+				std::cout << N;
+				delete[] a;
+				return true;
 			}
-			
-			std::cout << dp[ spell_name.size() ][ journal.size() ] << std::endl;
+        	
+			if( a[ i ] == a[ ( 2 * i ) + 1 ] ) 
+			{
+				// cycle detected, break loop to proceed with algorithm
+				nu = i + 1;
+				break;
+			}
 		}
+
+		// find first element of cycle
+		for( auto i = 0; i < N; i++ )
+		{
+			if( a[ i ] == a[ i + nu ] ) 
+			{
+				mu = i;
+				break;
+			}
+		}
+
+		// find first reoccurence of first cycle element
+		for( int i = mu + 1; i < N; i++ ) 
+		{
+			if( a[ mu ] == a[ i ] ) {
+
+				std::cout << i << std::endl;
+				break;
+			}
+		}
+
+		delete[] a;
+		
+		return false;
 	}
-
-	class wizard
-	{
-	public:
-		spell* cast()
-		{
-			spell* current;
-			std::string s;
-			std::cin >> s;
-			int power;
-			std::cin >> power;
-			
-			if( s == "fire" )
-			{
-				current = new fireball( power );
-			}
-			else if( s == "frost" )
-			{
-				current = new frostbite( power );
-			}
-			else if( s == "water" )
-			{
-				current = new waterbolt( power );
-			}
-			else if( s == "thunder" )
-			{
-				current = new thunderstorm( power );
-			}
-			else
-			{
-				current = new spell( s );
-				std::cin >> spell_journal::journal;
-			}
-			
-			return current;
-		}
-	};
 
 	int main()
 	{
-		int n;
-		std::cin >> n;
-		wizard arawn;
-
-		while( n-- )
-		{
-			const auto spell = arawn.cast();
-			counter_spell( spell );
-		}
-
-		return 0;
+		return solve();
 	}
 };
-
-std::string magic_spells::spell_journal::journal = "";
 
 auto main() -> int
 {
 	const auto problem =
-		magic_spells{"magic-spells-testcases"};
+		bit_array{"bitset-1-testcases"};
 
 	return problem.run();
 }

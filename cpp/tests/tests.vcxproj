@@ -49,6 +49,7 @@
     <ClCompile Include="framework.cpp" />
     <ClCompile Include="graph_tests.cpp" />
     <ClCompile Include="hr_arr.cpp" />
+    <ClCompile Include="hr_bitmanip.cpp" />
     <ClCompile Include="hr_debug.cpp" />
     <ClCompile Include="hr_oo_design.cpp" />
     <ClCompile Include="hr_stl.cpp" />
