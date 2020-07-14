@@ -6,144 +6,200 @@
 
 using namespace hackerrank;
 
-struct multiple_inherited_functions final : problem
+struct magic_spells final : problem
 {
-    explicit multiple_inherited_functions( std::string&& name )
-        : problem( std::move( name ) )
-    {
-        entry_point = [this]() { return main(); };
-    }
+	explicit magic_spells( std::string&& name )
+		: problem( std::move( name ) )
+	{
+		entry_point = [this]() { return main(); };
+	}
 
-    class A
-    {
-    public:
-        A() {
-            callA = 0;
-        }
-    private:
-        int callA;
-        void inc() {
-            callA++;
-        }
+	class spell
+	{
+		std::string scroll_name_{};
 
-    protected:
-        void func( int& a )
-        {
-            a = a * 2;
-            inc();
-        }
-    public:
-        int getA() {
-            return callA;
-        }
-    };
+	public:
 
-    class B
-    {
-    public:
-        B() {
-            callB = 0;
-        }
-    private:
-        int callB;
-        void inc() {
-            callB++;
-        }
-    protected:
-        void func( int& a )
-        {
-            a = a * 3;
-            inc();
-        }
-    public:
-        int getB() {
-            return callB;
-        }
-    };
+		spell() = default;
 
-    class C
-    {
-    public:
-        C() {
-            callC = 0;
-        }
-    private:
-        int callC;
-        void inc() {
-            callC++;
-        }
-    protected:
-        void func( int& a )
-        {
-            a = a * 5;
-            inc();
-        }
-    public:
-        int getC() {
-            return callC;
-        }
-    };
+		explicit spell( std::string name ) :
+			scroll_name_(std::move(name))
+		{ }
 
-    class D : public A, B, C
-    {
-        int val;
-    public:
-        //Initially val is 1
-        D()
-        {
-            val = 1;
-        }
-    	
-        //Implement this function
-        void update_val( int new_val )
-        {
-            while( new_val % 2 == 0 )
-            {
-                A::func( val );
-                new_val /= 2;
-            }
-        	
-            while( new_val % 3 == 0 )
-            {
-                B::func( val );
-                new_val /= 3;
-            }
-        	
-            while( new_val % 5 == 0 )
-            {
-                C::func( val );
-                new_val /= 5;
-            }
-        }
+		virtual ~spell() {}
 
-        void check( const int new_val )
+		std::string reveal_scroll_name() const
+		{
+			return scroll_name_;
+		}
+	};
 
-    	{
-            update_val( new_val );
-        	
-            std::cout
-        		<< "Value = " << val << std::endl
-                << "A's func called " << getA() << " times" << std::endl
-                << "B's func called " << getB() << " times" << std::endl
-                << "C's func called " << getC() << " times";
-        }
-    };
+	class fireball final : public spell
+	{
+		int power_;
+	public:
 
-    int main()
-    {
-        D d;
-        int new_val;
-        std::cin >> new_val;
-        d.check( new_val );
+		explicit fireball( const int power ) : power_( power )
+		{
+		}
 
-        return 0;
-    }
+		void reveal_fire_power() const
+		{
+			std::cout << "Fireball: " << power_ << std::endl;
+		}
+	};
+
+	class frostbite final : public spell
+	{
+		int power_;
+	public:
+		explicit frostbite( const int power ) : power_( power )
+		{
+		}
+
+		void reveal_frost_power() const
+		{
+			std::cout << "Frostbite: " << power_ << std::endl;
+		}
+	};
+
+	class thunderstorm final : public spell
+	{
+		int power;
+	public:
+		explicit thunderstorm( const int power ) : power( power )
+		{ }
+
+		void reveal_thunder_power() const
+		{
+			std::cout << "Thunderstorm: " << power << std::endl;
+		}
+	};
+
+	class waterbolt final : public spell
+	{
+		int power_;
+
+	public:
+
+		explicit waterbolt( const int power ) : power_( power )
+		{ }
+
+		void reveal_water_power() const
+		{
+			std::cout << "Waterbolt: " << power_ << std::endl;
+		}
+	};
+
+	class spell_journal
+	{
+	public:
+		static std::string journal;
+
+		static std::string read()
+		{
+			return journal;
+		}
+	};
+	
+	void counter_spell( spell* spell )
+	{
+		if( dynamic_cast< fireball* >( spell ) != nullptr )
+		{
+			dynamic_cast< fireball* >( spell )->reveal_fire_power();
+		}
+		else if( dynamic_cast< frostbite* >( spell ) != nullptr )
+		{
+			dynamic_cast< frostbite* >( spell )->reveal_frost_power();
+		}
+		else if( dynamic_cast< waterbolt* >( spell ) != nullptr )
+		{
+			dynamic_cast< waterbolt* >( spell )->reveal_water_power();
+		}
+		else if( dynamic_cast< thunderstorm* >( spell ) != nullptr )
+		{
+			dynamic_cast< thunderstorm* >( spell )->reveal_thunder_power();
+		}
+		else
+		{
+			auto spell_name = spell->reveal_scroll_name();
+			auto journal = spell_journal::read();
+			
+			std::vector<std::vector<int> > dp( spell_name.size() + 1, std::vector<int>( journal.size() + 1 ) );
+			for( auto i = 1; i <= spell_name.size(); i++ )
+			{
+				for( auto j = 1; j <= journal.size(); j++ )
+				{
+					if( spell_name[ i - 1 ] == journal[ j - 1 ] )
+						dp[ i ][ j ] = 1 + dp[ i - 1 ][ j - 1 ];
+					else
+						dp[ i ][ j ] = std::max( dp[ i - 1 ][ j ], dp[ i ][ j - 1 ] );
+				}
+			}
+			
+			std::cout << dp[ spell_name.size() ][ journal.size() ] << std::endl;
+		}
+	}
+
+	class wizard
+	{
+	public:
+		spell* cast()
+		{
+			spell* current;
+			std::string s;
+			std::cin >> s;
+			int power;
+			std::cin >> power;
+			
+			if( s == "fire" )
+			{
+				current = new fireball( power );
+			}
+			else if( s == "frost" )
+			{
+				current = new frostbite( power );
+			}
+			else if( s == "water" )
+			{
+				current = new waterbolt( power );
+			}
+			else if( s == "thunder" )
+			{
+				current = new thunderstorm( power );
+			}
+			else
+			{
+				current = new spell( s );
+				std::cin >> spell_journal::journal;
+			}
+			
+			return current;
+		}
+	};
+
+	int main()
+	{
+		int n;
+		std::cin >> n;
+		wizard arawn;
+
+		while( n-- )
+		{
+			const auto spell = arawn.cast();
+			counter_spell( spell );
+		}
+
+		return 0;
+	}
 };
+
+std::string magic_spells::spell_journal::journal = "";
 
 auto main() -> int
 {
 	const auto problem =
-        multiple_inherited_functions{"accessing-inherited-functions-testcases"};
+		magic_spells{"magic-spells-testcases"};
 
 	return problem.run();
 }

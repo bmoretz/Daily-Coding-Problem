@@ -1,0 +1,10 @@
+Thunderstorm: 48096
+6
+Frostbite: 67386
+5
+Waterbolt: 9241
+6
+Thunderstorm: 64405
+18
+6
+15

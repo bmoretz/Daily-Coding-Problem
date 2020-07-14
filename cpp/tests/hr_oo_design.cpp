@@ -91,4 +91,25 @@ namespace hackerrank::oo_design
 
         EXPECT_TRUE( problem.run() );
     }
+
+    class magic_spells_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( magic_spells_tests, run_test_cases )
+    {
+        const auto problem =
+            magic_spells{ "magic-spells-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }
