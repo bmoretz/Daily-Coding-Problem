@@ -1,9 +1,6 @@
 #pragma once
 
 #include <deque>
-#include <sstream>
-#include <set>
-#include <map>
 
 #include "problem.h"
 
@@ -14,10 +11,10 @@ namespace hackerrank::bitmanip
 		explicit bit_array( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
-		bool solve()
+		static bool solve()
 		{
 			// set up variables and constants and read input
 			unsigned int N, S, P, Q, mu, nu;
@@ -79,7 +76,7 @@ namespace hackerrank::bitmanip
 			return false;
 		}
 
-		int main()
+		static int main()
 		{
 			return solve();
 		}
