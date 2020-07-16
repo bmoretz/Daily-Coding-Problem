@@ -48,4 +48,25 @@ namespace hackerrank::bitmanip_tests
 
         EXPECT_TRUE( problem.run() );
     }
+
+    class cpp_operator_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( cpp_operator_tests, run_test_cases )
+    {
+        const auto problem =
+            cpp_operator_overloading{ "operator-overloading-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }
