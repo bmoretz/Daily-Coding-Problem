@@ -167,6 +167,7 @@
     <ClInclude Include="sample.h" />
     <ClInclude Include="stl.h" />
     <ClInclude Include="str.h" />
+    <ClInclude Include="lang.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

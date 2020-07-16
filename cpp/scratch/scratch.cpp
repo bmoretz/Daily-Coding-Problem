@@ -6,89 +6,101 @@
 
 using namespace hackerrank;
 
-constexpr unsigned exponent = 31;
-constexpr unsigned two_to_exponent = 1u << exponent;
-
-struct bit_array final : problem
+struct cpp_template final : problem
 {
-	explicit bit_array( std::string&& name )
+	explicit cpp_template( std::string&& name )
 		: problem( std::move( name ) )
 	{
 		entry_point = [this]() { return main(); };
 	}
 
-	bool solve()
+	template<class T>
+	class add_elements
 	{
-		// set up variables and constants and read input
-		unsigned int N, S, P, Q, mu, nu;
+		T value_;
 
-		const unsigned int m = 1 << 31;
-
-		std::cin >> N >> S >> P >> Q;
-
-		// set up sequence
-		unsigned int* a = new unsigned int[ N ];
-
-		a[ 0 ] = S % m;
-		for( int i = 1; i < N; i++ ) 
+	public:
+		explicit add_elements( T val )
 		{
-			a[ i ] = ( a[ i - 1 ] * P + Q ) % m;
+			value_ = val;
 		}
 
-		// begin cycle detection (-> floyd's algorithm)
-		for( auto i = 0; i < N; i++ ) 
+		T add( T other )
 		{
-			if( ( 2 * i ) + 1 > N - 1 ) 
-			{
-				// no cycle found -> N distinct values, output N, clean up and terminate execution
-				std::cout << N;
-				delete[] a;
-				return true;
-			}
-        	
-			if( a[ i ] == a[ ( 2 * i ) + 1 ] ) 
-			{
-				// cycle detected, break loop to proceed with algorithm
-				nu = i + 1;
-				break;
-			}
+			return value_ + other;
+		}
+	};
+
+	template<>
+	class add_elements<int>
+	{
+		int value_;
+
+	public:
+		explicit add_elements( int val ) { value_ = val; }
+
+		int add( const int other )
+		{
+			return value_ + other;
+		}
+	};
+
+	template<>
+	class add_elements<std::string>
+	{
+		std::string value_;
+
+	public:
+
+		explicit add_elements( const std::string& val )
+		{
+			value_ = val;
 		}
 
-		// find first element of cycle
-		for( auto i = 0; i < N; i++ )
+		std::string concatenate( const std::string& other )
 		{
-			if( a[ i ] == a[ i + nu ] ) 
-			{
-				mu = i;
-				break;
-			}
+			return value_.append( other );
 		}
-
-		// find first reoccurence of first cycle element
-		for( int i = mu + 1; i < N; i++ ) 
-		{
-			if( a[ mu ] == a[ i ] ) {
-
-				std::cout << i << std::endl;
-				break;
-			}
-		}
-
-		delete[] a;
-		
-		return false;
-	}
-
+	};
+	
 	int main()
 	{
-		return solve();
+		int n, i;
+		std::cin >> n;
+		
+		for( i = 0; i < n; i++ ) {
+			std::string type;
+			std::cin >> type;
+			
+			if( type == "float" ) {
+				double element1, element2;
+				std::cin >> element1 >> element2;
+
+				add_elements<double> myfloat( element1 );
+				std::cout << myfloat.add( element2 ) << std::endl;
+			}
+			else if( type == "int" ) {
+				int element1, element2;
+				std::cin >> element1 >> element2;
+				add_elements<int> myint( element1 );
+				std::cout << myint.add( element2 ) << std::endl;
+			}
+			else if( type == "string" ) {
+				std::string element1, element2;
+				std::cin >> element1 >> element2;
+				add_elements<std::string> mystring( element1 );
+				std::cout << mystring.concatenate( element2 ) << std::endl;
+			}
+		}
+		
+		return 0;
 	}
 };
 
 auto main() -> int
 {
 	const auto problem =
-		bit_array{"bitset-1-testcases"};
+		cpp_template{"c-class-templates-testcases"};
 
 	return problem.run();
 }
