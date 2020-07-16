@@ -51,6 +51,7 @@
     <ClCompile Include="hr_arr.cpp" />
     <ClCompile Include="hr_bitmanip.cpp" />
     <ClCompile Include="hr_debug.cpp" />
+    <ClCompile Include="hr_lang.cpp" />
     <ClCompile Include="hr_oo_design.cpp" />
     <ClCompile Include="hr_stl.cpp" />
     <ClCompile Include="hr_str.cpp" />

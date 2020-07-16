@@ -35,6 +35,9 @@
     <ClCompile Include="hr_bitmanip.cpp">
       <Filter>hackerrank</Filter>
     </ClCompile>
+    <ClCompile Include="hr_lang.cpp">
+      <Filter>hackerrank</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
