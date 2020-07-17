@@ -1,25 +1,18 @@
 '''
-In this programming problem and the next you'll code up the knapsack algorithm from lecture.
+In this assignment you will implement one or more algorithms for the all-pairs shortest-path problem. Here are data files describing three graphs:
 
-Let's start with a warm-up. Download the text file below.
+The first line indicates the number of vertices and edges, respectively. Each subsequent line describes an edge (the first two numbers are its tail and head, respectively) and its length (the third number). NOTE: some of the edge lengths are negative. NOTE: These graphs may or may not have negative-cost cycles.
 
-This file describes a knapsack instance, and it has the following format:
+Your task is to compute the "shortest shortest path". Precisely, you must first identify which, if any, of the three graphs have no negative cycles. For each such graph, you should compute all-pairs shortest paths and remember the smallest one (i.e., compute \min_{u,v \in V} d(u,v)min 
+u,v∈V
+​	
+ d(u,v), where d(u,v)d(u,v) denotes the shortest-path distance from uu to vv).
 
-[knapsack_size][number_of_items]
+If each of the three graphs has a negative-cost cycle, then enter "NULL" in the box below. If exactly one graph has no negative-cost cycles, then enter the length of its shortest shortest path in the box below. If two or more of the graphs have no negative-cost cycles, then enter the smallest of the lengths of their shortest shortest paths in the box below.
 
-[value_1] [weight_1]
+OPTIONAL: You can use whatever algorithm you like to solve this question. If you have extra time, try comparing the performance of different all-pairs shortest-path algorithms!
 
-[value_2] [weight_2]
-
-...
-
-For example, the third line of the file is "50074 659", indicating that the second item has value 50074 and size 659, respectively.
-
-You can assume that all numbers are positive. You should assume that item weights and the knapsack capacity are integers.
-
-In the box below, type in the value of the optimal solution.
-
-ADVICE: If you're not getting the correct answer, try debugging your algorithm using some small test cases. And then post them to the discussion forum!
+OPTIONAL: Here is a bigger data set to play with.
 '''
 
 import os

@@ -6,93 +6,84 @@
 
 using namespace hackerrank;
 
-struct cpp_operator_overloading final : problem
+struct overload_operators final : problem
 {
-	explicit cpp_operator_overloading( std::string&& name )
+	explicit overload_operators( std::string&& name )
 		: problem( std::move( name ) )
 	{
 		entry_point = [this]() { return main(); };
 	}
 
-	class Matrix
-	{
-	public:
-        std::vector<std::vector<int>> a;
+    class Complex
+    {
+    public:
+        int a, b;
 
-        Matrix() = default;
+        Complex() = default;
 		
-        Matrix( const int rows, const int cols )
+        Complex( const int r, const int i )
         {
-            a.resize( rows );
-
-            for( auto row = 0; row < rows; ++row )
-            {
-                a[ row ].resize( cols );
-            }
+            a = r; b = i;
         }
-		
-		Matrix operator+( const Matrix& other )
-		{
-            const auto rows = a.size(), cols = a[ 0 ].size();
-            Matrix result( rows, cols );
 			
-			for( auto row = 0; row < rows; ++row )
-			{
-				for( auto col = 0; col < cols; ++col )
-				{
-                    result.a[ row ][ col ] = a[ row ][ col ] + other.a[ row ][ col ];
-				}
-			}
+        void input( std::string s )
+        {
+	        int v1 = 0;
+	        int i = 0;
+        	
+            while( s[ i ] != '+' )
+            {
+                v1 = v1 * 10 + s[ i ] - '0';
+                i++;
+            }
+        	
+            while( s[ i ] == ' ' || s[ i ] == '+' || s[ i ] == 'i' )
+            {
+                i++;
+            }
 
-            return result;
-		}
-	};
-	
-	int main() {
-		
-        int cases, k;
-        std::cin >> cases;
-        for( k = 0; k < cases; k++ ) {
-            Matrix x;
-            Matrix y;
-            Matrix result;
-            int n, m, i, j;
-            std::cin >> n >> m;
-            for( i = 0; i < n; i++ ) {
-                std::vector<int> b;
-                int num;
-                for( j = 0; j < m; j++ ) {
-                    std::cin >> num;
-                    b.push_back( num );
-                }
-                x.a.push_back( b );
+	        int v2 = 0;
+            while( i < s.length() )
+            {
+                v2 = v2 * 10 + s[ i ] - '0';
+                i++;
             }
-            for( i = 0; i < n; i++ ) {
-                std::vector<int> b;
-                int num;
-                for( j = 0; j < m; j++ ) {
-                    std::cin >> num;
-                    b.push_back( num );
-                }
-                y.a.push_back( b );
-            }
-            result = x + y;
-            for( i = 0; i < n; i++ ) {
-                for( j = 0; j < m; j++ ) {
-                    std::cout << result.a[ i ][ j ] << " ";
-                }
-                std::cout << std::endl;
-            }
+            a = v1;
+            b = v2;
         }
-		
-		return 0;
-	}
+
+        Complex operator+( const Complex& other ) const
+        {
+            return Complex( a + other.a, (b + other.b) );
+        }
+
+        friend std::ostream& operator<<( std::ostream& os, const Complex& obj )
+        {
+            os << obj.a << "+i" << obj.b;
+
+            return os;
+        }
+    };
+	
+    int main() {
+
+        Complex x, y;
+        std::string s1, s2;
+        std::cin >> s1;
+        std::cin >> s2;
+        x.input( s1 );
+        y.input( s2 );
+        Complex z = x + y;
+        std::cout << z << std::endl;
+
+        return 0;
+    }
 };
 
 auto main() -> int
 {
-	const auto problem =
-		cpp_operator_overloading{"operator-overloading-testcases"};
+    const auto problem =
+        overload_operators{ "overload-operators-testcases" };
 
-	return problem.run();
+    return problem.run();
 }
