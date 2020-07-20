@@ -90,4 +90,25 @@ namespace hackerrank::bitmanip_tests
 
         EXPECT_TRUE( problem.run() );
     }
+
+    class workshop_optimization_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( workshop_optimization_tests, run_test_cases )
+    {
+        const auto problem =
+            workshop_optimization{ "attending-workshops-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }

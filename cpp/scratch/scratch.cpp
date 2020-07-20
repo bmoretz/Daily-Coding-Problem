@@ -6,75 +6,85 @@
 
 using namespace hackerrank;
 
-struct overload_operators final : problem
+struct workshop_optimization final : problem
 {
-	explicit overload_operators( std::string&& name )
-		: problem( std::move( name ) )
-	{
-		entry_point = [this]() { return main(); };
-	}
-
-    class Complex
+    explicit workshop_optimization( std::string&& name )
+        : problem( std::move( name ) )
     {
-    public:
-        int a, b;
+        entry_point = [this]() { return main(); };
+    }
 
-        Complex() = default;
-		
-        Complex( const int r, const int i )
+    struct workshop
+    {
+        int end_time;
+        int start_time;
+        int duration;
+
+        bool operator<( const workshop& r ) const
         {
-            a = r; b = i;
-        }
-			
-        void input( std::string s )
-        {
-	        int v1 = 0;
-	        int i = 0;
-        	
-            while( s[ i ] != '+' )
-            {
-                v1 = v1 * 10 + s[ i ] - '0';
-                i++;
-            }
-        	
-            while( s[ i ] == ' ' || s[ i ] == '+' || s[ i ] == 'i' )
-            {
-                i++;
-            }
-
-	        int v2 = 0;
-            while( i < s.length() )
-            {
-                v2 = v2 * 10 + s[ i ] - '0';
-                i++;
-            }
-            a = v1;
-            b = v2;
-        }
-
-        Complex operator+( const Complex& other ) const
-        {
-            return Complex( a + other.a, (b + other.b) );
-        }
-
-        friend std::ostream& operator<<( std::ostream& os, const Complex& obj )
-        {
-            os << obj.a << "+i" << obj.b;
-
-            return os;
+            return end_time < r.end_time;
         }
     };
-	
-    int main() {
 
-        Complex x, y;
-        std::string s1, s2;
-        std::cin >> s1;
-        std::cin >> s2;
-        x.input( s1 );
-        y.input( s2 );
-        Complex z = x + y;
-        std::cout << z << std::endl;
+    struct available_workshops
+    {
+        int n;
+        workshop* a;
+    };
+
+    static available_workshops* initialize( const int* start_time, const int* duration, const int n )
+    {
+        const auto ptr = new available_workshops;
+        ptr->n = n;
+        ptr->a = new workshop[ n ];
+
+        for( auto i = 0; i < n; i++ )
+        {
+            ptr->a[ i ].start_time = start_time[ i ];
+            ptr->a[ i ].duration = duration[ i ];
+            ptr->a[ i ].end_time = start_time[ i ] + duration[ i ];
+        }
+
+        return ptr;
+    }
+
+    int calculate_max_workshops( available_workshops* ptr ) const
+    {
+        std::sort( ptr->a, ptr->a + ptr->n );
+        auto m = 1;
+        auto end_time = ptr->a[ 0 ].end_time;
+
+        for( auto i = 1; i < ptr->n; i++ )
+        {
+            if( ptr->a[ i ].start_time >= end_time )
+            {
+                m += 1;
+                end_time = ptr->a[ i ].end_time;
+            }
+        }
+
+        return m;
+    }
+
+    int main()
+    {
+        int n;
+        std::cin >> n;
+        const auto start_time = new int[ n ];
+        const auto duration = new int[ n ];
+
+        for( auto i = 0; i < n; i++ )
+        {
+            std::cin >> start_time[ i ];
+        }
+
+        for( auto i = 0; i < n; i++ )
+        {
+            std::cin >> duration[ i ];
+        }
+
+        const auto ptr = initialize( start_time, duration, n );
+        std::cout << calculate_max_workshops( ptr ) << std::endl;
 
         return 0;
     }
@@ -83,7 +93,7 @@ struct overload_operators final : problem
 auto main() -> int
 {
     const auto problem =
-        overload_operators{ "overload-operators-testcases" };
+        workshop_optimization{ "attending-workshops-testcases" };
 
     return problem.run();
 }

@@ -143,7 +143,7 @@ namespace hackerrank::lang
 		explicit cpp_operator_overloading( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
 		class Matrix
@@ -180,7 +180,7 @@ namespace hackerrank::lang
 			}
 		};
 
-		int main() {
+		static int main() {
 
 			int cases, k;
 			std::cin >> cases;
@@ -226,25 +226,25 @@ namespace hackerrank::lang
 		explicit overload_operators( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
-		class Complex
+		class complex
 		{
 		public:
 			int a, b;
 
-			Complex() = default;
+			complex() = default;
 
-			Complex( const int r, const int i )
+			complex( const int r, const int i )
 			{
 				a = r; b = i;
 			}
 
 			void input( std::string s )
 			{
-				int v1 = 0;
-				int i = 0;
+				auto v1 = 0;
+				auto i = 0;
 
 				while( s[ i ] != '+' )
 				{
@@ -257,22 +257,24 @@ namespace hackerrank::lang
 					i++;
 				}
 
-				int v2 = 0;
+				auto v2 = 0;
+
 				while( i < s.length() )
 				{
 					v2 = v2 * 10 + s[ i ] - '0';
 					i++;
 				}
+				
 				a = v1;
 				b = v2;
 			}
 
-			Complex operator+( const Complex& other ) const
+			complex operator+( const complex& other ) const
 			{
-				return Complex( a + other.a, ( b + other.b ) );
+				return complex( a + other.a, ( b + other.b ) );
 			}
 
-			friend std::ostream& operator<<( std::ostream& os, const Complex& obj )
+			friend std::ostream& operator<<( std::ostream& os, const complex& obj )
 			{
 				os << obj.a << "+i" << obj.b;
 
@@ -280,16 +282,101 @@ namespace hackerrank::lang
 			}
 		};
 
-		int main() {
-
-			Complex x, y;
+		static int main()
+		{
+			complex x, y;
 			std::string s1, s2;
 			std::cin >> s1;
 			std::cin >> s2;
 			x.input( s1 );
 			y.input( s2 );
-			Complex z = x + y;
+			
+			const auto z = x + y;
 			std::cout << z << std::endl;
+
+			return 0;
+		}
+	};
+
+	struct workshop_optimization final : problem
+	{
+		explicit workshop_optimization( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+
+		struct workshop
+		{
+			int end_time;
+			int start_time;
+			int duration;
+
+			bool operator<( const workshop& r ) const
+			{
+				return end_time < r.end_time;
+			}
+		};
+
+		struct available_workshops
+		{
+			int n;
+			workshop* a;
+		};
+
+		static available_workshops* initialize( const int* start_time, const int* duration, const int n )
+		{
+			const auto ptr = new available_workshops;
+			ptr->n = n;
+			ptr->a = new workshop[ n ];
+
+			for( auto i = 0; i < n; i++ )
+			{
+				ptr->a[ i ].start_time = start_time[ i ];
+				ptr->a[ i ].duration = duration[ i ];
+				ptr->a[ i ].end_time = start_time[ i ] + duration[ i ];
+			}
+
+			return ptr;
+		}
+
+		int calculate_max_workshops( available_workshops* ptr ) const
+		{
+			std::sort( ptr->a, ptr->a + ptr->n );
+			auto m = 1;
+			auto end_time = ptr->a[ 0 ].end_time;
+
+			for( auto i = 1; i < ptr->n; i++ )
+			{
+				if( ptr->a[ i ].start_time >= end_time )
+				{
+					m += 1;
+					end_time = ptr->a[ i ].end_time;
+				}
+			}
+
+			return m;
+		}
+
+		int main()
+		{
+			int n;
+			std::cin >> n;
+			const auto start_time = new int[ n ];
+			const auto duration = new int[ n ];
+
+			for( auto i = 0; i < n; i++ )
+			{
+				std::cin >> start_time[ i ];
+			}
+
+			for( auto i = 0; i < n; i++ )
+			{
+				std::cin >> duration[ i ];
+			}
+
+			const auto ptr = initialize( start_time, duration, n );
+			std::cout << calculate_max_workshops( ptr ) << std::endl;
 
 			return 0;
 		}
