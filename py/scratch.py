@@ -15,7 +15,6 @@ fn = "cme_globex30_Snap_310_A_20190213.pcap.gz"
 def get_path_name(file_name):
 
     def get_provider_name(fn) -> str:
-
         
         provider_pos = fn.lower().find("incr")
 

@@ -451,7 +451,7 @@ namespace hackerrank::lang
 		explicit variadic_template( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
 		template <bool... Digits> struct ReversedBinaryValue;
@@ -491,7 +491,7 @@ namespace hackerrank::lang
 			}
 		};
 
-		int main()
+		static int main()
 		{
 			int t; std::cin >> t;
 
