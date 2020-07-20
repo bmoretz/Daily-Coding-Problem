@@ -111,4 +111,25 @@ namespace hackerrank::bitmanip_tests
 
         EXPECT_TRUE( problem.run() );
     }
+
+    class template_specialization_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( template_specialization_tests, run_test_cases )
+    {
+        const auto problem =
+            template_specialization{ "cpp-class-template-specialization-testcases" };
+
+        EXPECT_TRUE( problem.run() );
+    }
 }

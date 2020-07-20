@@ -63,10 +63,10 @@ namespace hackerrank::lang
 
 		static int main()
 		{
-			int n, i;
+			int n;
 			std::cin >> n;
 
-			for( i = 0; i < n; i++ )
+			for( auto index = 0; index < n; index++ )
 			{
 				std::string type;
 				std::cin >> type;
@@ -377,6 +377,70 @@ namespace hackerrank::lang
 
 			const auto ptr = initialize( start_time, duration, n );
 			std::cout << calculate_max_workshops( ptr ) << std::endl;
+
+			return 0;
+		}
+	};
+
+	struct template_specialization final : problem
+	{
+		explicit template_specialization( std::string&& name )
+			: problem( std::move( name ) )
+		{
+			entry_point = [this]() { return main(); };
+		}
+
+		enum class fruit { apple, orange, pear };
+		enum class color { red, green, orange };
+
+		template <typename T> struct traits;
+
+		template <>
+		struct traits<fruit> {
+			static std::string name( const int index )
+			{
+				switch( index )
+				{
+					case 0:return "apple";
+					case 1: return "orange";
+					case 2: return "pear";
+						
+					default: ;
+				}
+
+				return "unknown";
+			}
+		};
+
+		template <>
+		struct traits<color> {
+			static std::string name( const int index )
+			{
+				switch( index )
+				{
+					case 0:return "red";
+					case 1: return "green";
+					case 2: return "orange";
+
+					default: ;
+				}
+				
+				return "unknown";
+			}
+		};
+
+		static int main()
+		{
+			auto t = 0; std::cin >> t;
+
+			for( auto index = 0; index != t; ++index )
+			{
+				int index1; std::cin >> index1;
+				int index2; std::cin >> index2;
+				
+				std::cout << traits<color>::name( index1 ) << " ";
+				std::cout << traits<fruit>::name( index2 ) << "\n";
+			}
 
 			return 0;
 		}
