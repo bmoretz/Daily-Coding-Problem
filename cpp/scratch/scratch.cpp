@@ -2,75 +2,63 @@
 #include <algorithm>
 #include <random>
 #include <utility>
-#include "../hackerrank/problem.h"
+#include <map>
 
-using namespace hackerrank;
+/*
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
 
-struct variadic_template final : problem
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+Example:
+
+Given nums = [2, 7, 11, 15], target = 9,
+
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+ */
+
+class two_sum1
 {
-    explicit variadic_template( std::string&& name )
-        : problem( std::move( name ) )
-    {
-        entry_point = [this]() { return main(); };
-    }
-
-    template <bool... Digits> struct ReversedBinaryValue;
-
-    template <>
-    struct ReversedBinaryValue<> {
-        static constexpr int value = 0;
-    };
-
-    template <bool first, bool... digits>
-    struct ReversedBinaryValue<first, digits...> {
-        static constexpr int value = first + 2 * ReversedBinaryValue<digits...>::value;
-    };
-
-    template <bool...Digits>
-    static int reversed_binary_value()
-    {
-        return ReversedBinaryValue<Digits...>::value;
-    }
-	
-    template <int N, bool...Digits>
-    struct check_values
+	static std::map<int, int> to_lookup( const std::vector<int>& numbers )
 	{
-        static void check( int x, int y )
-        {
-            check_values<N - 1, 0, Digits...>::check( x, y );
-            check_values<N - 1, 1, Digits...>::check( x, y );
-        }
-    };
+		std::map<int, int> lookup;
 
-    template <bool...Digits>
-    struct check_values<0, Digits...> {
-        static void check( const int x, const int y )
-        {
-	        const int z = reversed_binary_value<Digits...>();
-            std::cout << ( z + 64 * y == x );
-        }
-    };
+		for( auto index = 0; index < numbers.size(); ++index )
+		{
+			lookup.insert( std::make_pair( numbers.at( index ), index ) );
+		}
+
+		return lookup;
+	}
 	
-    int main()
-    {
-        int t; std::cin >> t;
+public:
 
-        for( auto i = 0; i != t; ++i ) 
-        {
-            int x, y;
-            std::cin >> x >> y;
-            check_values<6>::check( x, y );
-            std::cout << "\n";
-        }
-    	
-        return 0;
-    }
+	static std::vector<int> twoSum( const std::vector<int>& numbers, const int target )
+	{
+		auto lookup = to_lookup( numbers );
+		
+		for( auto index = 0; index < numbers.size(); ++index )
+		{
+			const auto match = target - numbers.at( index );
+			const auto key = lookup.find( match );
+
+			if( key != lookup.end() && key->second != index )
+			{
+				return std::vector<int>{ index , key->second };
+			}
+		}
+		
+		return std::vector<int>();
+	}
+
 };
 
 auto main() -> int
 {
-    const auto problem =
-        variadic_template{ "cpp-variadics-testcases" };
+	auto nums = { 2, 7, 11, 15 };
+	auto target = 9;
 
-    return problem.run();
+	const auto result = two_sum1::twoSum( nums, target );
+	
+    return 0;
 }

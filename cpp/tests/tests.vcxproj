@@ -56,6 +56,7 @@
     <ClCompile Include="hr_stl.cpp" />
     <ClCompile Include="hr_str.cpp" />
     <ClCompile Include="lang_tests.cpp" />
+    <ClCompile Include="lc_arr.cpp" />
     <ClCompile Include="linkedlist_tests.cpp" />
     <ClCompile Include="math_tests.cpp" />
     <ClCompile Include="stack_queue_tests.cpp" />

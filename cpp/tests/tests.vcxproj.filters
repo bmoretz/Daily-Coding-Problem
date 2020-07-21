@@ -2,18 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="str_tests.cpp" />
-    <ClCompile Include="arr_tests.cpp" />
-    <ClCompile Include="ds_linkedlist_tests.cpp" />
-    <ClCompile Include="linkedlist_tests.cpp" />
-    <ClCompile Include="stack_queue_tests.cpp" />
-    <ClCompile Include="graph_tests.cpp" />
-    <ClCompile Include="tree_tests.cpp" />
-    <ClCompile Include="math_tests.cpp" />
-    <ClCompile Include="lang_tests.cpp" />
-    <ClCompile Include="ds_arr_stack.cpp" />
-    <ClCompile Include="ds_heap.cpp" />
-    <ClCompile Include="bitmanip_tests.cpp" />
     <ClCompile Include="hr_arr.cpp">
       <Filter>hackerrank</Filter>
     </ClCompile>
@@ -38,6 +26,45 @@
     <ClCompile Include="hr_lang.cpp">
       <Filter>hackerrank</Filter>
     </ClCompile>
+    <ClCompile Include="ds_arr_stack.cpp">
+      <Filter>data-structures</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_heap.cpp">
+      <Filter>data-structures</Filter>
+    </ClCompile>
+    <ClCompile Include="ds_linkedlist_tests.cpp">
+      <Filter>data-structures</Filter>
+    </ClCompile>
+    <ClCompile Include="arr_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="bitmanip_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="graph_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="lang_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="linkedlist_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="math_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="stack_queue_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="str_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="tree_tests.cpp">
+      <Filter>problems</Filter>
+    </ClCompile>
+    <ClCompile Include="lc_arr.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -48,6 +75,15 @@
   <ItemGroup>
     <Filter Include="hackerrank">
       <UniqueIdentifier>{d4c59d9b-085d-46ad-93db-fe21548ba654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="leetcode">
+      <UniqueIdentifier>{f191f0ca-57ea-4413-af2c-ee9ffea1edf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="data-structures">
+      <UniqueIdentifier>{a6a982bb-6d00-46b0-858d-9c8e32acfc5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="problems">
+      <UniqueIdentifier>{c2b73fba-796e-4b35-ba92-224f3d354e76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
