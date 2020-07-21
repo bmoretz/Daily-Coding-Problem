@@ -4,9 +4,7 @@
 
 #include "../hackerrank/stl.h"
 
-using namespace hackerrank::stl;
-
-namespace hackerrank::stl
+namespace hackerrank::stl::tests
 {
     /// <summary>
     /// Testing class for vector sort.

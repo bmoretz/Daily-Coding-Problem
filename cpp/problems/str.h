@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-namespace str_problems
+namespace problems::string
 {
 	/*
 	 * Is Unique.

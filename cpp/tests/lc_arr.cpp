@@ -3,9 +3,7 @@
 
 #include "../leetcode/arr.h"
 
-using namespace leetcode::arr;
-
-namespace leetcode::tests::arr
+namespace leetcode::arr::tests
 {
     class two_sum_tests :
         public ::testing::Test {

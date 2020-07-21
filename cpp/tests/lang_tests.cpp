@@ -4,9 +4,7 @@
 
 #include "../problems/lang.h"
 
-using namespace lang_problems;
-
-namespace problems::lang_tests
+namespace problems::lang::tests
 {
     /// <summary>
     /// Testing class for ... .

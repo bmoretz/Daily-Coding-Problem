@@ -1,6 +1,6 @@
 #pragma once
 
-namespace math_problems
+namespace problems::math
 {
 	
 }

@@ -4,9 +4,7 @@
 
 #include "../hackerrank/oo_design.h"
 
-using namespace hackerrank::oo_design;
-
-namespace hackerrank::oo_design
+namespace hackerrank::oo_design::tests
 {
     class virtual_functions_tests :
         public ::testing::Test {

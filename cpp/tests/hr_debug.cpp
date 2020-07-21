@@ -4,9 +4,7 @@
 
 #include "../hackerrank/debug.h"
 
-using namespace hackerrank::debug;
-
-namespace hackerrank::debug_tests
+namespace hackerrank::debug::tests
 {
     /// <summary>
     /// Testing class for variable_sized_arrays.

@@ -3,9 +3,7 @@
 
 #include "../hackerrank/arr.h"
 
-using namespace hackerrank::arr;
-
-namespace hackerrank::arr_tests
+namespace hackerrank::arr::tests
 {
     /// <summary>
     /// Testing class for variable_sized_arrays.

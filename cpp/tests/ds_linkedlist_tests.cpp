@@ -3,10 +3,8 @@
 
 #include "../data-structures/linked_list.h"
 
-namespace data_structure::linked_list_tests
+namespace data_structures::linkedlist::tests
 {
-    using namespace data_structures::linked_list;
-	
     using int_list = linked_list<int>;
 
     /// <summary>

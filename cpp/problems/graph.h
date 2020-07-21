@@ -7,7 +7,7 @@
 #include <stack>
 #include <queue>
 
-namespace graph_problems
+namespace problems::graph
 {
 	/* Route Between Nodes:
 	 *

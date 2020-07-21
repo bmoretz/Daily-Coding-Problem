@@ -4,9 +4,7 @@
 
 #include "../problems/graph.h"
 
-using namespace graph_problems;
-
-namespace problems::graph_tests
+namespace problems::graph::tests
 {
     /// <summary>
     /// Testing class for has path.

@@ -3,9 +3,7 @@
 
 #include "../problems/str.h"
 
-using namespace str_problems;
-
-namespace problems::string_tests
+namespace problems::string::tests
 {
     /// <summary>
     /// Testing class for is_unique.

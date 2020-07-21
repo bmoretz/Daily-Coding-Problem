@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace data_structures::linked_list
+namespace data_structures::linkedlist
 {
 	class list_node
 	{

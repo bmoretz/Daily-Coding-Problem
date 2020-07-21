@@ -4,9 +4,7 @@
 
 #include "../problems/tree.h"
 
-using namespace tree_problems;
-
-namespace problems::tree_tests
+namespace problems::tree::tests
 {
     /// <summary>
     /// Testing class for min tree.

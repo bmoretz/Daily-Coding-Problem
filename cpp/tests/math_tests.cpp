@@ -4,9 +4,7 @@
 
 #include "../problems/math.h"
 
-using namespace math_problems;
-
-namespace problems::math_tests
+namespace problems::math::tests
 {
     /// <summary>
     /// Testing class for ... .

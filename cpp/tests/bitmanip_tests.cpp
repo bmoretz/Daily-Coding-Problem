@@ -5,9 +5,7 @@
 
 #include "../problems/bitmanip.h"
 
-using namespace bitmanip_problems;
-
-namespace problems::bitmanip_tests
+namespace problems::bitmanip::tests
 {
     /// <summary>
     /// Testing class for insertion.

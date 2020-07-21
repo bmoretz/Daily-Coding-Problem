@@ -2,7 +2,7 @@
 
 #include "list_node.h"
 
-namespace data_structures::linked_list
+namespace data_structures::linkedlist
 {
 	class list_node_iterator
 	{

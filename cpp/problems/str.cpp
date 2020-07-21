@@ -4,7 +4,7 @@
 #include <set>
 #include <algorithm>
 
-namespace str_problems
+namespace problems::string
 {
 	/// <summary>
 	/// is_unique1

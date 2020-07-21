@@ -3,9 +3,7 @@
 
 #include "../leetcode/linkedlist.h"
 
-using namespace leetcode::linkedlist;
-
-namespace leetcode::tests::linkedlist
+namespace leetcode::linkedlist::tests
 {
     class sum_two_numbers_test :
         public ::testing::Test {

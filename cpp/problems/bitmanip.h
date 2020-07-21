@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace bitmanip_problems
+namespace problems::bitmanip
 {
 	/* Insertion.
 	 *

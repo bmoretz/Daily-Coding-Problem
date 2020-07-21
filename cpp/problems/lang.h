@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lang_problems
+namespace problems::lang
 {
 	
 }

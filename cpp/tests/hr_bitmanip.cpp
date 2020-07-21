@@ -3,9 +3,7 @@
 
 #include "../hackerrank/bitmanip.h"
 
-using namespace hackerrank::bitmanip;
-
-namespace hackerrank::bitmanip_tests
+namespace hackerrank::bitmanip::tests
 {
     class bit_array_tests :
         public ::testing::Test {

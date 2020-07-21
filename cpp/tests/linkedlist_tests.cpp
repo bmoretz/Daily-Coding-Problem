@@ -3,9 +3,7 @@
 
 #include "../problems/linkedlist.h"
 
-using namespace linkedlist_problems;
-
-namespace problems::linkedlist_tests
+namespace problems::linkedlist::tests
 {
     /// <summary>
     /// Testing class for dedupe.

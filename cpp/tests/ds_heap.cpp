@@ -3,10 +3,8 @@
 
 #include "../data-structures/heap.h"
 
-namespace data_structure::heap_tests
+namespace data_structures::heap::tests
 {
-    using namespace data_structures::heap;
-
     /// <summary>
     /// Testing class for heap.
     /// </summary>

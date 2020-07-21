@@ -11,7 +11,7 @@
 #include <random>
 #include <unordered_map>
 
-namespace tree_problems
+namespace problems::tree
 {
 	/* Minimal Tree.
 	 *

@@ -1,14 +1,14 @@
 #include "pch.h"
 #include <gtest/gtest.h>
 
-#include "../problems/arr.h"
+#include "../problems/matrix.h"
 
-using namespace arr_problems;
+using namespace problems::matrix;
 
-namespace problems::arr_tests
+namespace problems::tests::matrix
 {
-    using namespace matrix_problems;
-
+    using matrix = problems::matrix::matrix;
+	
     /// <summary>
     /// Testing class for matrix rotation.
     /// </summary>

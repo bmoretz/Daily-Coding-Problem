@@ -3,7 +3,7 @@
 #include <vector>
 #include <list>
 
-namespace stack_queue_problems
+namespace problems::stack_queue
 {
     /* Min Stack.
      *

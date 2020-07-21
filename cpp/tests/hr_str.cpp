@@ -3,11 +3,8 @@
 
 #include "../hackerrank/str.h"
 
-using namespace hackerrank::str;
-
-namespace hackerrank::str
+namespace hackerrank::str::tests
 {
-
     /// <summary>
 	/// Testing class for attribute parser.
 	/// </summary>

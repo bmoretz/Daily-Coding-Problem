@@ -6,7 +6,7 @@
 #include "list_node.h"
 #include "list_node_iterator.h"
 
-namespace data_structures::linked_list
+namespace data_structures::linkedlist
 {
 	template<class Ty>
 	class linked_list

@@ -4,7 +4,7 @@
 #include <vector>
 #include <set>
 
-namespace linkedlist_problems
+namespace problems::linkedlist
 {
 	/* Remove Duplicates.
 	 *

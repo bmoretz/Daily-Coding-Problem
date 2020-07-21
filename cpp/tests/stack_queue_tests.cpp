@@ -4,9 +4,7 @@
 
 #include "../problems/stack_queue.h"
 
-using namespace stack_queue_problems;
-
-namespace problems::stack_queue_tests
+namespace problems::stack_queue::tests
 {
     /// <summary>
     /// Testing class for min stack.

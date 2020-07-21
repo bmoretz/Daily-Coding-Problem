@@ -71,15 +71,12 @@
     <ClCompile Include="tree_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\data-structures\data-structures.vcxproj">
-      <Project>{318ca0bc-0139-42ae-af51-07343d0f080c}</Project>
-    </ProjectReference>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\problems\problems.vcxproj">
       <Project>{0fb46cec-5e9b-4e66-af06-97948c28ea45}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,9 +3,7 @@
 
 #include "../hackerrank/lang.h"
 
-using namespace hackerrank::lang;
-
-namespace hackerrank::bitmanip_tests
+namespace hackerrank::lang::tests
 {
     class cpp_template_tests :
         public ::testing::Test {
