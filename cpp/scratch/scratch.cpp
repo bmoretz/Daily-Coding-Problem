@@ -5,60 +5,95 @@
 #include <map>
 
 /*
-Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+You are given two non-empty linked lists representing two non-negative integers. The digits are
+stored in reverse order and each of their nodes contain a single digit. Add the two numbers and
+return it as a linked list.
 
-You may assume that each input would have exactly one solution, and you may not use the same element twice.
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
 
 Example:
 
-Given nums = [2, 7, 11, 15], target = 9,
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8
+Explanation: 342 + 465 = 807.
+*/
 
-Because nums[0] + nums[1] = 2 + 7 = 9,
-return [0, 1].
- */
-
-class two_sum1
+struct add_numbers
 {
-	static std::map<int, int> to_lookup( const std::vector<int>& numbers )
+	struct list_node
 	{
-		std::map<int, int> lookup;
+		int val;
+		list_node* next;
 
-		for( auto index = 0; index < numbers.size(); ++index )
-		{
-			lookup.insert( std::make_pair( numbers.at( index ), index ) );
-		}
+		list_node() : val( 0 ), next( nullptr ) {}
+		explicit list_node( const int x ) : val( x ), next( nullptr ) {}
+		list_node( const int x, list_node* next ) : val( x ), next( next ) {}
+	};
 
-		return lookup;
-	}
-	
-public:
-
-	static std::vector<int> twoSum( const std::vector<int>& numbers, const int target )
+	static list_node* add_two_numbers( list_node* l1, list_node* l2 )
 	{
-		auto lookup = to_lookup( numbers );
+		auto carry = 0;
+		list_node *head = nullptr, *prev = nullptr;
 		
-		for( auto index = 0; index < numbers.size(); ++index )
+		while( l1 != nullptr || l2 != nullptr || carry > 0 )
 		{
-			const auto match = target - numbers.at( index );
-			const auto key = lookup.find( match );
-
-			if( key != lookup.end() && key->second != index )
+			const auto left = l1 == nullptr ? 0 : l1->val;
+			const auto right = l2 == nullptr ? 0 : l2->val;
+			const auto value = left + right + carry;
+			
+			const auto current = new list_node( value % 10 );
+			
+			if( head == nullptr )
 			{
-				return std::vector<int>{ index , key->second };
+				head = current;
 			}
+			else
+			{
+				prev->next = current;
+			}
+
+			carry = value > 9 ? 1 : 0;
+			prev = current;
+			
+			if( l1 != nullptr ) l1 = l1->next;
+			if( l2 != nullptr ) l2 = l2->next;
 		}
-		
-		return std::vector<int>();
+
+		return head;
 	}
 
+	static auto build_list( const std::initializer_list<int>& values )
+	{
+		using node = list_node;
+
+		node* head = nullptr, * prev = nullptr;
+
+		for( auto value : values )
+		{
+			const auto current = new node( value );
+
+			if( head == nullptr )
+			{
+				head = current;
+			}
+			else
+			{
+				prev->next = current;
+			}
+
+			prev = current;
+		}
+
+		return head;
+	}
 };
 
 auto main() -> int
 {
-	auto nums = { 2, 7, 11, 15 };
-	auto target = 9;
+	const auto l1 = add_numbers::build_list( { 9, 9, 9 } );
+	const auto l2 = add_numbers::build_list( { 1 } );
 
-	const auto result = two_sum1::twoSum( nums, target );
-	
-    return 0;
+	const auto result = add_numbers::add_two_numbers( l1, l2 );
+
+	return 0;
 }

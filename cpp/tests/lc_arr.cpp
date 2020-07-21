@@ -25,7 +25,7 @@ namespace leetcode::tests::arr
         const auto numbers = { 2, 7, 11, 15 };
         const auto target = 9;
 
-        const auto actual = two_sum1::twoSum( numbers, target );
+        const auto actual = target_two_sum::two_sum( numbers, target );
         const auto expected = std::vector<int>{ 0, 1 };
     	
         EXPECT_EQ( actual, expected );

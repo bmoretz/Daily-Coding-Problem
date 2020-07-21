@@ -18,7 +18,7 @@ namespace leetcode::arr
 	return [0, 1].
 	 */
 
-	class two_sum1
+	class target_two_sum
 	{
 		static std::map<int, int> to_lookup( const std::vector<int>& numbers )
 		{
@@ -34,7 +34,7 @@ namespace leetcode::arr
 
 	public:
 
-		static std::vector<int> twoSum( const std::vector<int>& numbers, const int target )
+		static std::vector<int> two_sum( const std::vector<int>& numbers, const int target )
 		{
 			auto lookup = to_lookup( numbers );
 

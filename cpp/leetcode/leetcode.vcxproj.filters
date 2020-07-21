@@ -24,6 +24,9 @@
     <ClInclude Include="arr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="linkedlist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="leetcode.cpp">
