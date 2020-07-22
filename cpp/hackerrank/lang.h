@@ -13,12 +13,12 @@ namespace hackerrank::lang
 		}
 
 		template <class T>
-		class add_elements
+		class floating
 		{
 			T value_;
 
 		public:
-			explicit add_elements( T val )
+			explicit floating( T val )
 			{
 				value_ = val;
 			}
@@ -30,27 +30,27 @@ namespace hackerrank::lang
 		};
 
 		template <>
-		class add_elements<int>
+		class floating<int>
 		{
 			int value_;
 
 		public:
-			explicit add_elements( const int val ) { value_ = val; }
+			explicit floating( const int val ) { value_ = val; }
 
-			int add( const int other ) const
+			[[nodiscard]] int add( const int other ) const
 			{
 				return value_ + other;
 			}
 		};
 
 		template <>
-		class add_elements<std::string>
+		class floating<std::string>
 		{
 			std::string value_;
 
 		public:
 
-			explicit add_elements( const std::string& val )
+			explicit floating( const std::string& val )
 			{
 				value_ = val;
 			}
@@ -76,22 +76,22 @@ namespace hackerrank::lang
 					double element1, element2;
 					std::cin >> element1 >> element2;
 
-					add_elements<double> myfloat( element1 );
-					std::cout << myfloat.add( element2 ) << std::endl;
+					floating<double> floating( element1 );
+					std::cout << floating.add( element2 ) << std::endl;
 				}
 				else if( type == "int" )
 				{
 					int element1, element2;
 					std::cin >> element1 >> element2;
-					add_elements<int> myint( element1 );
-					std::cout << myint.add( element2 ) << std::endl;
+					floating<int> integer( element1 );
+					std::cout << integer.add( element2 ) << std::endl;
 				}
 				else if( type == "string" )
 				{
 					std::string element1, element2;
 					std::cin >> element1 >> element2;
-					add_elements<std::string> mystring( element1 );
-					std::cout << mystring.concatenate( element2 ) << std::endl;
+					floating<std::string> str( element1 );
+					std::cout << str.concatenate( element2 ) << std::endl;
 				}
 			}
 
@@ -120,19 +120,27 @@ namespace hackerrank::lang
 		FUNCTION( minimum, < )
 			FUNCTION( maximum, > )
 
-			int main() {
-			int n; std::cin >> n;
+		int main()
+		{
+			int n;
+			std::cin >> n;
 			std::vector<int> v( n );
-			foreach( v, i ) {
+
+			foreach( v, i )
+			{
 				io( v )[ i ];
 			}
+
 			int mn = INF;
 			int mx = -INF;
-			foreach( v, i ) {
+
+			foreach( v, i )
+			{
 				minimum( mn, v[ i ] );
 				maximum( mx, v[ i ] );
 			}
-			int ans = mx - mn;
+
+			const auto ans = mx - mn;
 			std::cout << toStr( Result = ) << ' ' << ans;
 			return 0;
 		}
@@ -146,14 +154,14 @@ namespace hackerrank::lang
 			entry_point = []() { return main(); };
 		}
 
-		class Matrix
+		class matrix
 		{
 		public:
 			std::vector<std::vector<int>> a;
 
-			Matrix() = default;
+			matrix() = default;
 
-			Matrix( const int rows, const int cols )
+			matrix( const int rows, const int cols )
 			{
 				a.resize( rows );
 
@@ -163,10 +171,10 @@ namespace hackerrank::lang
 				}
 			}
 
-			Matrix operator+( const Matrix& other )
+			matrix operator+( const matrix& other )
 			{
 				const auto rows = a.size(), cols = a[ 0 ].size();
-				Matrix result( rows, cols );
+				matrix result( rows, cols );
 
 				for( auto row = 0; row < rows; ++row )
 				{
@@ -180,37 +188,44 @@ namespace hackerrank::lang
 			}
 		};
 
-		static int main() {
-
-			int cases, k;
+		static int main()
+		{
+			int cases;
 			std::cin >> cases;
-			for( k = 0; k < cases; k++ ) {
-				Matrix x;
-				Matrix y;
-				Matrix result;
+			for( auto k = 0; k < cases; k++ )
+			{
+				matrix x;
+				matrix y;
+				matrix result;
 				int n, m, i, j;
 				std::cin >> n >> m;
-				for( i = 0; i < n; i++ ) {
+				for( i = 0; i < n; i++ )
+				{
 					std::vector<int> b;
 					int num;
-					for( j = 0; j < m; j++ ) {
+					for( j = 0; j < m; j++ )
+					{
 						std::cin >> num;
 						b.push_back( num );
 					}
 					x.a.push_back( b );
 				}
-				for( i = 0; i < n; i++ ) {
+				for( i = 0; i < n; i++ )
+				{
 					std::vector<int> b;
 					int num;
-					for( j = 0; j < m; j++ ) {
+					for( j = 0; j < m; j++ )
+					{
 						std::cin >> num;
 						b.push_back( num );
 					}
 					y.a.push_back( b );
 				}
 				result = x + y;
-				for( i = 0; i < n; i++ ) {
-					for( j = 0; j < m; j++ ) {
+				for( i = 0; i < n; i++ )
+				{
+					for( j = 0; j < m; j++ )
+					{
 						std::cout << result.a[ i ][ j ] << " ";
 					}
 					std::cout << std::endl;
@@ -238,10 +253,11 @@ namespace hackerrank::lang
 
 			complex( const int r, const int i )
 			{
-				a = r; b = i;
+				a = r;
+				b = i;
 			}
 
-			void input( std::string s )
+			void input( const std::string& s )
 			{
 				auto v1 = 0;
 				auto i = 0;
@@ -264,7 +280,7 @@ namespace hackerrank::lang
 					v2 = v2 * 10 + s[ i ] - '0';
 					i++;
 				}
-				
+
 				a = v1;
 				b = v2;
 			}
@@ -284,13 +300,15 @@ namespace hackerrank::lang
 
 		static int main()
 		{
-			complex x, y;
+			complex x{};
+			complex y{};
+			
 			std::string s1, s2;
 			std::cin >> s1;
 			std::cin >> s2;
 			x.input( s1 );
 			y.input( s2 );
-			
+
 			const auto z = x + y;
 			std::cout << z << std::endl;
 
@@ -303,7 +321,7 @@ namespace hackerrank::lang
 		explicit workshop_optimization( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
 		struct workshop
@@ -340,7 +358,7 @@ namespace hackerrank::lang
 			return ptr;
 		}
 
-		int calculate_max_workshops( available_workshops* ptr ) const
+		static int calculate_max_workshops( available_workshops* ptr )
 		{
 			std::sort( ptr->a, ptr->a + ptr->n );
 			auto m = 1;
@@ -358,7 +376,7 @@ namespace hackerrank::lang
 			return m;
 		}
 
-		int main()
+		static int main()
 		{
 			int n;
 			std::cin >> n;
@@ -387,57 +405,40 @@ namespace hackerrank::lang
 		explicit template_specialization( std::string&& name )
 			: problem( std::move( name ) )
 		{
-			entry_point = [this]() { return main(); };
+			entry_point = []() { return main(); };
 		}
 
 		enum class fruit { apple, orange, pear };
+
 		enum class color { red, green, orange };
 
-		template <typename T> struct traits;
+		template <typename T>
+		struct traits;
 
 		template <>
-		struct traits<fruit> {
-			static std::string name( const int index )
-			{
-				switch( index )
-				{
-					case 0:return "apple";
-					case 1: return "orange";
-					case 2: return "pear";
-						
-					default: ;
-				}
-
-				return "unknown";
-			}
+		struct traits<fruit>
+		{
+			static std::string name( int index );
 		};
 
 		template <>
-		struct traits<color> {
-			static std::string name( const int index )
-			{
-				switch( index )
-				{
-					case 0:return "red";
-					case 1: return "green";
-					case 2: return "orange";
-
-					default: ;
-				}
-				
-				return "unknown";
-			}
+		struct traits<color>
+		{
+			static std::string name( int index );
 		};
 
 		static int main()
 		{
-			auto t = 0; std::cin >> t;
+			auto t = 0;
+			std::cin >> t;
 
 			for( auto index = 0; index != t; ++index )
 			{
-				int index1; std::cin >> index1;
-				int index2; std::cin >> index2;
-				
+				int index1;
+				std::cin >> index1;
+				int index2;
+				std::cin >> index2;
+
 				std::cout << traits<color>::name( index1 ) << " ";
 				std::cout << traits<fruit>::name( index2 ) << "\n";
 			}
@@ -445,6 +446,34 @@ namespace hackerrank::lang
 			return 0;
 		}
 	};
+
+	inline std::string template_specialization::traits<template_specialization::fruit>::name( const int index )
+	{
+		switch( index )
+		{
+		case 0: return "apple";
+		case 1: return "orange";
+		case 2: return "pear";
+
+		default:;
+		}
+
+		return "unknown";
+	}
+
+	inline std::string template_specialization::traits<template_specialization::color>::name( const int index )
+	{
+		switch( index )
+		{
+		case 0: return "red";
+		case 1: return "green";
+		case 2: return "orange";
+
+		default:;
+		}
+
+		return "unknown";
+	}
 
 	struct variadic_template final : problem
 	{
@@ -454,15 +483,18 @@ namespace hackerrank::lang
 			entry_point = []() { return main(); };
 		}
 
-		template <bool... Digits> struct ReversedBinaryValue;
+		template <bool... Digits>
+		struct ReversedBinaryValue;
 
 		template <>
-		struct ReversedBinaryValue<> {
+		struct ReversedBinaryValue<>
+		{
 			static constexpr int value = 0;
 		};
 
 		template <bool first, bool... digits>
-		struct ReversedBinaryValue<first, digits...> {
+		struct ReversedBinaryValue<first, digits...>
+		{
 			static constexpr int value = first + 2 * ReversedBinaryValue<digits...>::value;
 		};
 
@@ -483,7 +515,8 @@ namespace hackerrank::lang
 		};
 
 		template <bool...Digits>
-		struct check_values<0, Digits...> {
+		struct check_values<0, Digits...>
+		{
 			static void check( const int x, const int y )
 			{
 				const int z = reversed_binary_value<Digits...>();
@@ -493,14 +526,15 @@ namespace hackerrank::lang
 
 		static int main()
 		{
-			int t; std::cin >> t;
+			int t;
+			std::cin >> t;
 
 			for( auto i = 0; i != t; ++i )
 			{
 				int x, y;
 				std::cin >> x >> y;
 				check_values<6>::check( x, y );
-				std::cout << "\n";
+				std::cout << std::endl;
 			}
 
 			return 0;

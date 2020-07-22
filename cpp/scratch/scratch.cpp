@@ -4,96 +4,111 @@
 #include <utility>
 #include <map>
 
-/*
-You are given two non-empty linked lists representing two non-negative integers. The digits are
-stored in reverse order and each of their nodes contain a single digit. Add the two numbers and
-return it as a linked list.
+/* Longest Substring Without Repeating Characters.
+ 
+Given a string, find the length of the longest substring without repeating characters.
 
-You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+Example 1:
 
-Example:
+Input: "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
 
-Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
-Output: 7 -> 0 -> 8
-Explanation: 342 + 465 = 807.
+Example 2:
+
+Input: "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+
+Example 3:
+
+Input: "pwwkew"
+Output: 3
+Explanation: The answer is "wke", with the length of 3.
+			 Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
 */
 
-struct add_numbers
+struct Solution
 {
-	struct list_node
+	/// <summary>
+	/// length of longest substring, sliding window
+	/// </summary>
+	/// <param name="str">input string</param>
+	/// <complexity>
+	///		<run-time>O(n)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <returns>length of the longest substring.</returns>
+	static int lengthOfLongestSubstring2( const std::string& str )
 	{
-		int val;
-		list_node* next;
+		auto n = str.length();
 
-		list_node() : val( 0 ), next( nullptr ) {}
-		explicit list_node( const int x ) : val( x ), next( nullptr ) {}
-		list_node( const int x, list_node* next ) : val( x ), next( next ) {}
-	};
+		std::set<char> seen;
 
-	static list_node* add_two_numbers( list_node* l1, list_node* l2 )
-	{
-		auto carry = 0;
-		list_node *head = nullptr, *prev = nullptr;
-		
-		while( l1 != nullptr || l2 != nullptr || carry > 0 )
+		auto longest = 0UL, start = 0UL, stop = 0UL;
+
+		while( start < n && stop < n )
 		{
-			const auto left = l1 == nullptr ? 0 : l1->val;
-			const auto right = l2 == nullptr ? 0 : l2->val;
-			const auto value = left + right + carry;
-			
-			const auto current = new list_node( value % 10 );
-			
-			if( head == nullptr )
+			if( seen.find( str.at( stop ) ) == std::end( seen ) )
 			{
-				head = current;
+				seen.insert( str.at( stop++ ) );
+				longest = std::max( longest, stop - start );
 			}
 			else
 			{
-				prev->next = current;
+				seen.erase( str.at( start++ ) );
 			}
-
-			carry = value > 9 ? 1 : 0;
-			prev = current;
-			
-			if( l1 != nullptr ) l1 = l1->next;
-			if( l2 != nullptr ) l2 = l2->next;
 		}
 
-		return head;
+		return longest;
 	}
 
-	static auto build_list( const std::initializer_list<int>& values )
+	/// <summary>
+	/// length of longest substring, brute force approach
+	/// </summary>
+	/// <complexity>
+	///		<run-time>O(n^2)</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="str">input string</param>
+	/// <returns>length of the longest substring.</returns>
+	static int lengthOfLongestSubstring1( const std::string& str )
 	{
-		using node = list_node;
+		if( str.length() == 1 ) return 1;
+		
+		auto longest = 0ULL;
 
-		node* head = nullptr, * prev = nullptr;
-
-		for( auto value : values )
+		for( auto start = 0UL; start < str.length() - 1; ++start )
 		{
-			const auto current = new node( value );
-
-			if( head == nullptr )
+			for( auto stop = start + 1; stop < str.length(); ++stop )
 			{
-				head = current;
+				const auto sub = str.substr( start, stop );
+				const auto unique = std::set<char>( std::begin( sub ), std::end( sub ) );
+				
+				if( sub.length() == unique.size() )
+				{
+					longest = std::max( longest, sub.length() ) ;
+				}
 			}
-			else
-			{
-				prev->next = current;
-			}
-
-			prev = current;
 		}
 
-		return head;
+		return longest;
 	}
 };
 
 auto main() -> int
 {
-	const auto l1 = add_numbers::build_list( { 9, 9, 9 } );
-	const auto l2 = add_numbers::build_list( { 1 } );
+	const auto s1 = "ccabcdef";
+	const auto s2 = "a";
+	const auto s3 = "ababcbac";
+	const auto s4 = "pwwkew";
+	const auto s5 = "ohomm";
+	const auto s6 = "asjrgapa";
+	
+	const auto result = Solution::lengthOfLongestSubstring2( s1 );
 
-	const auto result = add_numbers::add_two_numbers( l1, l2 );
-
+	std::cout << "Result: " << result;
+	
 	return 0;
 }
