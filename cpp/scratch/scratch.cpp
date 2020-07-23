@@ -1,112 +1,66 @@
 #include <bits/stdc++.h>
-#include <algorithm>
-#include <random>
-#include <utility>
-#include <map>
 
-/* Longest Substring Without Repeating Characters.
+/* Minimum Moves to Equal Array Elements II.
  
-Given a string, find the length of the longest substring without repeating characters.
+Given a non-empty integer array, find the minimum number of moves required to make all array elements equal,
+where a move is incrementing a selected element by 1 or decrementing a selected element by 1.
 
-Example 1:
+You may assume the array's length is at most 10,000.
 
-Input: "abcabcbb"
-Output: 3
-Explanation: The answer is "abc", with the length of 3.
+Example:
 
-Example 2:
+Input: [1,2,3]
+Output: 2
 
-Input: "bbbbb"
-Output: 1
-Explanation: The answer is "b", with the length of 1.
+Explanation:
+Only two moves are needed (remember each move increments or decrements one element):
 
-Example 3:
-
-Input: "pwwkew"
-Output: 3
-Explanation: The answer is "wke", with the length of 3.
-			 Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
-
+[1,2,3]  =>  [2,2,3]  =>  [2,2,2]
 */
 
 struct Solution
 {
 	/// <summary>
-	/// length of longest substring, sliding window
-	/// </summary>
-	/// <param name="str">input string</param>
-	/// <complexity>
-	///		<run-time>O(n)</run-time>
-	///		<space>O(N)</space>
-	/// </complexity>
-	/// <returns>length of the longest substring.</returns>
-	static int lengthOfLongestSubstring2( const std::string& str )
-	{
-		auto n = str.length();
-
-		std::set<char> seen;
-
-		auto longest = 0UL, start = 0UL, stop = 0UL;
-
-		while( start < n && stop < n )
-		{
-			if( seen.find( str.at( stop ) ) == std::end( seen ) )
-			{
-				seen.insert( str.at( stop++ ) );
-				longest = std::max( longest, stop - start );
-			}
-			else
-			{
-				seen.erase( str.at( start++ ) );
-			}
-		}
-
-		return longest;
-	}
-
-	/// <summary>
-	/// length of longest substring, brute force approach
+	/// min moves
 	/// </summary>
 	/// <complexity>
-	///		<run-time>O(n^2)</run-time>
-	///		<space>O(N)</space>
+	///		<run-time>O(n log n)</run-time>
+	///		<space>O(1)</space>
 	/// </complexity>
-	/// <param name="str">input string</param>
-	/// <returns>length of the longest substring.</returns>
-	static int lengthOfLongestSubstring1( const std::string& str )
+	/// <param name="numbers"></param>
+	/// <returns>the minimum number of moves to make all the array elements equal</returns>
+	int minMoves2( std::vector<int>& numbers ) const
 	{
-		if( str.length() == 1 ) return 1;
+		auto result = 0;
 		
-		auto longest = 0ULL;
-
-		for( auto start = 0UL; start < str.length() - 1; ++start )
+		if( !numbers.empty() )
 		{
-			for( auto stop = start + 1; stop < str.length(); ++stop )
+			std::sort( std::begin( numbers ), std::end( numbers ) );
+			
+			const auto mid = numbers.at( ( numbers.size() - 1 ) / 2 );
+
+			for( auto num : numbers )
 			{
-				const auto sub = str.substr( start, stop );
-				const auto unique = std::set<char>( std::begin( sub ), std::end( sub ) );
-				
-				if( sub.length() == unique.size() )
-				{
-					longest = std::max( longest, sub.length() ) ;
-				}
+				result += std::abs( mid - num );
 			}
 		}
-
-		return longest;
+		
+		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto s1 = "ccabcdef";
-	const auto s2 = "a";
-	const auto s3 = "ababcbac";
-	const auto s4 = "pwwkew";
-	const auto s5 = "ohomm";
-	const auto s6 = "asjrgapa";
+	Solution sln;
+
+	auto input1 = std::vector<int>{ 1, 2, 3 };
+	auto input2 = std::vector<int>{ 1, 6, 2, 4 };
+	auto input3 = std::vector<int>{ 1, 6, 2, 4 };
+	auto input4 = std::vector<int>{ 1 };
+	auto input5 = std::vector<int>{ 1, 0, 0, 8, 6 };
+	auto input6 = std::vector<int>{ 203125577,-349566234,230332704,48321315,66379082,386516853,50986744,-250908656,-425653504,-212123143 };
 	
-	const auto result = Solution::lengthOfLongestSubstring2( s1 );
+	const auto result = sln.minMoves2( input6 );
 
 	std::cout << "Result: " << result;
 	

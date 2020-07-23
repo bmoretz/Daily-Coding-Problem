@@ -58,6 +58,7 @@
     <ClCompile Include="lang_tests.cpp" />
     <ClCompile Include="lc_arr.cpp" />
     <ClCompile Include="lc_linkedlist.cpp" />
+    <ClCompile Include="lc_math.cpp" />
     <ClCompile Include="lc_str.cpp" />
     <ClCompile Include="linkedlist_tests.cpp" />
     <ClCompile Include="math_tests.cpp" />
