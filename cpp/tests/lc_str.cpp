@@ -125,4 +125,77 @@ namespace leetcode::str::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class len_last_word_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( len_last_word_tests, case1 )
+    {
+        std::string input = "Hello World";
+
+        const auto actual =
+            length_of_last_word::len_last_word( input );
+    	
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( len_last_word_tests, case2 )
+    {
+        std::string input = "NoWords";
+
+        const auto actual =
+            length_of_last_word::len_last_word( input );
+
+        const auto expected = 7;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( len_last_word_tests, case3 )
+    {
+        std::string input = "this has many words";
+
+        const auto actual =
+            length_of_last_word::len_last_word( input );
+
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( len_last_word_tests, case4 )
+    {
+        std::string input = "            many        spaces              ";
+
+        const auto actual =
+            length_of_last_word::len_last_word( input );
+
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( len_last_word_tests, case5 )
+    {
+        std::string input = " fda fdsafdsa  FDSAfFDS ";
+
+        const auto actual =
+            length_of_last_word::len_last_word( input );
+
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

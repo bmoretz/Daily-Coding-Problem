@@ -75,4 +75,62 @@ namespace leetcode::str
 			return longest;
 		}
 	};
+
+	/* Length of Last Word.
+
+	Given a string s consists of upper/lower-case alphabets and empty space characters ' ', return the length of
+	last word (last word means the last appearing word if we loop from left to right) in the string.
+
+	If the last word does not exist, return 0.
+
+	Note: A word is defined as a maximal substring consisting of non-space characters only.
+
+	Example:
+
+	Input: "Hello World"
+	Output: 5
+
+	*/
+
+	struct length_of_last_word
+	{
+		/// <summary>
+		/// trims the trailing spaces from a given input and returns the number
+		/// of characters trimmed.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <returns></returns>
+		static std::size_t rtrim( std::string& str )
+		{
+			auto trimmed = std::size_t();
+
+			for( auto index = str.length();
+				index > 0 && str.at( index - 1 ) == ' '; --index, ++trimmed )
+			{
+				str.erase( index - 1 );
+			}
+
+			return trimmed;
+		}
+
+		/// <summary>
+		/// returns the length of the last word
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(n)</run-time>
+		///		<space>O(1)</space>
+		/// </complexity>
+		/// <param name="str">the input string</param>
+		/// <returns>length of last word</returns>
+		static std::size_t len_last_word( std::string& str )
+		{
+			if( str.empty() ) return 0;
+
+			const auto len = str.length();
+			const auto trimmed = rtrim( str );
+			const auto last_space = str.rfind( ' ' );
+
+			return len - trimmed - last_space - 1;
+		}
+	};
 }

@@ -1,51 +1,45 @@
 #include <bits/stdc++.h>
 
-/* Minimum Moves to Equal Array Elements II.
+/* Length of Last Word.
  
-Given a non-empty integer array, find the minimum number of moves required to make all array elements equal,
-where a move is incrementing a selected element by 1 or decrementing a selected element by 1.
+Given a string s consists of upper/lower-case alphabets and empty space characters ' ', return the length of
+last word (last word means the last appearing word if we loop from left to right) in the string.
 
-You may assume the array's length is at most 10,000.
+If the last word does not exist, return 0.
+
+Note: A word is defined as a maximal substring consisting of non-space characters only.
 
 Example:
 
-Input: [1,2,3]
-Output: 2
+Input: "Hello World"
+Output: 5
 
-Explanation:
-Only two moves are needed (remember each move increments or decrements one element):
-
-[1,2,3]  =>  [2,2,3]  =>  [2,2,2]
 */
 
 struct Solution
 {
-	/// <summary>
-	/// min moves
-	/// </summary>
-	/// <complexity>
-	///		<run-time>O(n log n)</run-time>
-	///		<space>O(1)</space>
-	/// </complexity>
-	/// <param name="numbers"></param>
-	/// <returns>the minimum number of moves to make all the array elements equal</returns>
-	int minMoves2( std::vector<int>& numbers ) const
+	static std::size_t rtrim( std::string& str )
 	{
-		auto result = 0;
-		
-		if( !numbers.empty() )
-		{
-			std::sort( std::begin( numbers ), std::end( numbers ) );
-			
-			const auto mid = numbers.at( ( numbers.size() - 1 ) / 2 );
+		auto trimmed = std::size_t();
 
-			for( auto num : numbers )
-			{
-				result += std::abs( mid - num );
-			}
+		for( auto index = str.length();
+			index > 0 && str.at( index - 1 ) == ' '; --index, ++trimmed )
+		{
+			str.erase( index - 1 );
 		}
-		
-		return result;
+
+		return trimmed;
+	}
+	
+	std::size_t lengthOfLastWord( std::string& str )
+	{
+		if( str.empty() ) return 0;
+
+		const auto len = str.length();
+		const auto trimmed = rtrim( str );
+		const auto last_space = str.rfind( ' ' );
+
+		return len - trimmed - last_space - 1;
 	}
 };
 
@@ -53,14 +47,14 @@ auto main() -> int
 {
 	Solution sln;
 
-	auto input1 = std::vector<int>{ 1, 2, 3 };
-	auto input2 = std::vector<int>{ 1, 6, 2, 4 };
-	auto input3 = std::vector<int>{ 1, 6, 2, 4 };
-	auto input4 = std::vector<int>{ 1 };
-	auto input5 = std::vector<int>{ 1, 0, 0, 8, 6 };
-	auto input6 = std::vector<int>{ 203125577,-349566234,230332704,48321315,66379082,386516853,50986744,-250908656,-425653504,-212123143 };
+	std::string input1 = "Hello World";
+	std::string input2 = "NoWords";
+	std::string input3 = "this has many words";
+	std::string input4 = "            many        spaces              ";
+	std::string input5 = "    noprefix";
+	std::string input6 = " fda fdsafdsa  FDSAfFDS ";
 	
-	const auto result = sln.minMoves2( input6 );
+	const auto result = sln.lengthOfLastWord( input4 );
 
 	std::cout << "Result: " << result;
 	
