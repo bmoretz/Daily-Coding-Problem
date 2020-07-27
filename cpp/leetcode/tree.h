@@ -9,6 +9,33 @@
 
 namespace leetcode::tree
 {
+	/* 652 - Find Duplicate Subtrees.
+
+	Given a binary tree, return all duplicate subtrees. For each kind of duplicate subtrees, you only need to
+	return the root node of any one of them.
+
+	Two trees are duplicate if they have the same structure with same node values.
+
+	Example 1:
+
+			1
+		   / \
+		  2   3
+		 /   / \
+		4   2   4
+		   /
+		  4
+	The following are two duplicate subtrees:
+
+		  2
+		 /
+		4
+	and
+
+		4
+	Therefore, you need to return above trees' root in the form of a list.
+
+	*/
 	struct find_dup_subtrees
 	{
 		struct tree_node
@@ -28,6 +55,30 @@ namespace leetcode::tree
 				right.swap( other.right );
 			}
 
+			tree_node& operator=( const tree_node& other ) noexcept
+			{
+				if( this == &other )
+					return *this;
+
+				val = other.val;
+				left.reset( other.left.get() );
+				right.reset( other.right.get() );
+
+				return *this;
+			}
+
+			tree_node& operator=( tree_node&& other ) noexcept
+			{
+				if( this == &other )
+					return *this;
+
+				val = other.val;
+				left = std::move( other.left );
+				right = std::move( other.right );
+
+				return *this;
+			}
+			
 			~tree_node() = default;
 		};
 
