@@ -18,7 +18,7 @@ namespace leetcode::math::tests
         }
     };
 
-    TEST_F( min_moves_tests, test_case_1 )
+    TEST_F( min_moves_tests, case1 )
     {
         auto input = std::vector<int>{ 1, 2, 3 };
 
@@ -28,7 +28,7 @@ namespace leetcode::math::tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( min_moves_tests, test_case_2 )
+    TEST_F( min_moves_tests, case2 )
     {
         auto input = std::vector<int>{ 1, 6, 2, 4 };
 
@@ -38,7 +38,7 @@ namespace leetcode::math::tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( min_moves_tests, test_case_3 )
+    TEST_F( min_moves_tests, case3 )
     {
         auto input = std::vector<int>{ 1, 0, 0, 8, 6 };
 
@@ -48,7 +48,7 @@ namespace leetcode::math::tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( min_moves_tests, test_case_4 )
+    TEST_F( min_moves_tests, case4 )
     {
         auto input = std::vector<int>{ 203125577,-349566234,230332704,48321315,66379082,386516853,50986744,-250908656,-425653504,-212123143 };
 
@@ -58,7 +58,7 @@ namespace leetcode::math::tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( min_moves_tests, test_case_5 )
+    TEST_F( min_moves_tests, case5 )
     {
         auto input = std::vector<int>{ 1 };
 

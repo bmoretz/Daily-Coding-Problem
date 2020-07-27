@@ -60,6 +60,7 @@
     <ClCompile Include="lc_linkedlist.cpp" />
     <ClCompile Include="lc_math.cpp" />
     <ClCompile Include="lc_str.cpp" />
+    <ClCompile Include="lc_tree.cpp" />
     <ClCompile Include="linkedlist_tests.cpp" />
     <ClCompile Include="math_tests.cpp" />
     <ClCompile Include="stack_queue_tests.cpp" />

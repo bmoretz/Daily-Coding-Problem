@@ -160,6 +160,7 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="str.h" />
+    <ClInclude Include="tree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="leetcode.cpp" />
