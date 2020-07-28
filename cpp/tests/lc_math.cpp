@@ -67,4 +67,77 @@ namespace leetcode::math::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class number_of_1s_substrings_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( number_of_1s_substrings_tests, case1 )
+    {
+        const auto sln = number_of_1s_substrings::number_of_subgroups;
+    	
+        const auto input = "0110111";
+
+        const auto actual = sln( input );
+        const auto expected = 9;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_1s_substrings_tests, case2 )
+    {
+        const auto sln = number_of_1s_substrings::number_of_subgroups;
+
+        const auto input = "101";
+
+        const auto actual = sln( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_1s_substrings_tests, case3 )
+    {
+        const auto sln = number_of_1s_substrings::number_of_subgroups;
+
+        const auto input = "111111";
+
+        const auto actual = sln( input );
+        const auto expected = 21;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_1s_substrings_tests, case4 )
+    {
+        const auto sln = number_of_1s_substrings::number_of_subgroups;
+
+        const auto input = "000";
+
+        const auto actual = sln( input );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_1s_substrings_tests, case5 )
+    {
+        const auto sln = number_of_1s_substrings::number_of_subgroups;
+
+        const auto input = "0101111111010111101111111111111111111111011111111111111111111111111111111111";
+
+        const auto actual = sln( input );
+        const auto expected = 923;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
