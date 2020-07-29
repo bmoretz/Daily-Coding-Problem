@@ -1,100 +1,88 @@
 #include <bits/stdc++.h>
 
-/* 1513. Number of Substrings With Only 1s.
- 
-Given a binary string s (a string consisting only of '0' and '1's).
-Return the number of substrings with all characters 1's.
+/* 49. Group Anagrams.
 
-Since the answer may be too large, return it modulo 10^9 + 7.
+Given an array of strings, group anagrams together.
 
-Example 1:
+Example:
 
-Input: s = "0110111"
-Output: 9
-Explanation: There are 9 substring in total with only 1's characters.
+Input: ["eat", "tea", "tan", "ate", "nat", "bat"],
+Output:
+[
+  ["ate","eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+Note:
 
-"1" -> 5 times.
-"11" -> 3 times.
-"111" -> 1 time.
-
-Example 2:
-
-Input: s = "101"
-Output: 2
-Explanation: Substring "1" is shown 2 times in s.
-
-Example 3:
-
-Input: s = "111111"
-Output: 21
-Explanation: Each substring contains only 1's characters.
-Example 4:
-
-Input: s = "000"
-Output: 0
+All inputs will be in lowercase.
+The order of your output does not matter.
 */
 
-struct number_of_1s_substrings
+struct group_anagrams
 {
-	static std::unordered_map<std::size_t, std::size_t> get_ones_counts( const std::string& input )
+	static std::vector<std::vector<std::string>> to_vector( const std::unordered_map<std::string, std::vector<std::string>>& map )
 	{
-		std::unordered_map<std::size_t, std::size_t> groups;
+		std::vector<std::vector<std::string>> results;
 
-		auto current_len = std::size_t();
-
-		for( auto chr : input )
-		{
-			if( chr == '1' )
+		std::for_each( map.begin(), map.end(),
+			[&results]( const std::pair<std::string, std::vector<std::string>>& entry )
 			{
-				++current_len;
-			}
-			else if( current_len > 0 )
-			{
-				groups[ current_len ]++;
-				current_len = std::size_t();
-			}
-		}
+				results.push_back( entry.second );
+			} );
 
-		if( current_len > 0 )
-			groups[ current_len ]++;
-
-		return groups;
+		return results;
 	}
 
 	/// <summary>
-	/// number of subgroups
+	/// group anagrams 1
+	///
+	/// straight forward approach: take a copy of each of the strings and sort it for use a key
+	/// in a hash-map. Then to get the resulting groups simply flatten the values of the hash-map
+	/// to a nested vector.
 	/// </summary>
-	/// <param name="str">input string</param>
-	/// <returns>number of ways to choose subgroups of 1's</returns>
-	static int number_of_subgroups( const std::string& str ) const
+	/// <complexity>
+	///		<run-time>O(N + M), where n is the number of strings and m is the number of groups.</run-time>
+	///		<space>O(N)</space>
+	/// </complexity>
+	/// <param name="input">vector of strings</param>
+	/// <returns>grouped anagrams</returns>
+	static std::vector<std::vector<std::string>> group_anagrams1( const std::vector<std::string>& input )
 	{
-		auto group_counts = get_ones_counts( str );
-		auto perms = 0;
-		const unsigned long long mod_op = std::pow(10, 9 ) + 7;
+		std::unordered_map<std::string, std::vector<std::string>> groups;
 
-		for( const auto& group : group_counts )
+		for( const auto& str : input )
 		{
-			const auto intermediate = group.second * ( group.first * ( group.first + 1 ) / 2 );
-			perms = ( static_cast<std::size_t>( perms ) + intermediate ) % mod_op;
+			auto key = str;
+
+			std::sort( key.begin(), key.end() );
+
+			groups[ key ].push_back( str );
 		}
 
-		return perms;
+		return to_vector( groups );
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = "0110111";
-	auto input2 = "101";
-	auto input3 = "111111";
-	auto input4 = "000";
-	auto input5 = "0101111111010111101111111111111111111111011111111111111111111111111111111111";
+	auto input1 = std::vector<std::string>{ "eat","tea","tan","ate","nat","bat" };
+	auto input2 = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat" };
+	auto input3 = std::vector<std::string>{ "eat","tea","tan","ate","nat","bat", "" };
+	auto input4 = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101" };
+	auto input5 = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101", "tab" };
 	
-	number_of_1s_substrings sln;
-	
-	const auto result = sln.number_of_subgroups( input1 );
-	
-	std::cout << "Result: " << result << std::endl;
+	const auto result = group_anagrams::group_anagrams1( input3 );
+
+	for( const auto& group : result )
+	{
+		for( const auto& value : group )
+		{
+			std::cout << value << ",";
+		}
+
+		std::cout << std::endl;
+	}
 	
 	return 0;
 }
