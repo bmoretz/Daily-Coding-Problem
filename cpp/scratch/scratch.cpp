@@ -1,88 +1,64 @@
 #include <bits/stdc++.h>
 
-/* 49. Group Anagrams.
+/* 509. Fibonacci Number
 
-Given an array of strings, group anagrams together.
+The Fibonacci numbers, commonly denoted F(n) form a sequence, called the Fibonacci sequence, such that each number is
+the sum of the two preceding ones, starting from 0 and 1. That is,
 
-Example:
+F(0) = 0,   F(1) = 1
+F(N) = F(N - 1) + F(N - 2), for N > 1.
+Given N, calculate F(N).
 
-Input: ["eat", "tea", "tan", "ate", "nat", "bat"],
-Output:
-[
-  ["ate","eat","tea"],
-  ["nat","tan"],
-  ["bat"]
-]
-Note:
+Example 1:
 
-All inputs will be in lowercase.
-The order of your output does not matter.
+Input: 2
+Output: 1
+Explanation: F(2) = F(1) + F(0) = 1 + 0 = 1.
+
+Example 2:
+
+Input: 3
+Output: 2
+Explanation: F(3) = F(2) + F(1) = 1 + 1 = 2.
+
+Example 3:
+
+Input: 4
+Output: 3
+Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3.
 */
 
-struct group_anagrams
+struct fibonacci_number
 {
-	static std::vector<std::vector<std::string>> to_vector( const std::unordered_map<std::string, std::vector<std::string>>& map )
+	static int fib( const int n )
 	{
-		std::vector<std::vector<std::string>> results;
+		std::unordered_map<unsigned long, unsigned long> lookup { { 0, 0 }, { 1, 1 } };
 
-		std::for_each( map.begin(), map.end(),
-			[&results]( const std::pair<std::string, std::vector<std::string>>& entry )
-			{
-				results.push_back( entry.second );
-			} );
-
-		return results;
+		return fib( n, lookup );
 	}
 
-	/// <summary>
-	/// group anagrams 1
-	///
-	/// straight forward approach: take a copy of each of the strings and sort it for use a key
-	/// in a hash-map. Then to get the resulting groups simply flatten the values of the hash-map
-	/// to a nested vector.
-	/// </summary>
-	/// <complexity>
-	///		<run-time>O(N + M), where n is the number of strings and m is the number of groups.</run-time>
-	///		<space>O(N)</space>
-	/// </complexity>
-	/// <param name="input">vector of strings</param>
-	/// <returns>grouped anagrams</returns>
-	static std::vector<std::vector<std::string>> group_anagrams1( const std::vector<std::string>& input )
+	static int fib( const int n, std::unordered_map<unsigned long, unsigned long>& lookup )
 	{
-		std::unordered_map<std::string, std::vector<std::string>> groups;
-
-		for( const auto& str : input )
+		if( lookup.find( n ) == lookup.end() )
 		{
-			auto key = str;
-
-			std::sort( key.begin(), key.end() );
-
-			groups[ key ].push_back( str );
+			lookup[ n ] = fib( n - 1, lookup ) + fib( n - 2, lookup );
 		}
 
-		return to_vector( groups );
+		return lookup[ n ];
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<std::string>{ "eat","tea","tan","ate","nat","bat" };
-	auto input2 = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat" };
-	auto input3 = std::vector<std::string>{ "eat","tea","tan","ate","nat","bat", "" };
-	auto input4 = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101" };
-	auto input5 = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101", "tab" };
+	auto input1 = 3;
+	auto input2 = 5;
+	auto input3 = 10;
+	auto input4 = 20;
+	auto input5 = 30;
 	
-	const auto result = group_anagrams::group_anagrams1( input3 );
+	const auto result = fibonacci_number::fib( input3 );
 
-	for( const auto& group : result )
-	{
-		for( const auto& value : group )
-		{
-			std::cout << value << ",";
-		}
-
-		std::cout << std::endl;
-	}
+	std::cout << result << std::endl;
 	
 	return 0;
 }

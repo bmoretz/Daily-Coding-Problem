@@ -140,4 +140,77 @@ namespace leetcode::math::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class fibonacci_number_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( fibonacci_number_tests, case1 )
+    {
+        const auto sln = fibonacci_number::fib1;
+
+        const auto input = 0;
+
+        const auto actual = sln( input );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( fibonacci_number_tests, case2 )
+    {
+        const auto sln = fibonacci_number::fib1;
+
+        const auto input = 5;
+
+        const auto actual = sln( input );
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( fibonacci_number_tests, case3 )
+    {
+        const auto sln = fibonacci_number::fib1;
+
+        const auto input = 10;
+
+        const auto actual = sln( input );
+        const auto expected = 55;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( fibonacci_number_tests, case4 )
+    {
+        const auto sln = fibonacci_number::fib1;
+
+        const auto input = 20;
+
+        const auto actual = sln( input );
+        const auto expected = 6765;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( fibonacci_number_tests, case5 )
+    {
+        const auto sln = fibonacci_number::fib1;
+
+        const auto input = 30;
+
+        const auto actual = sln( input );
+        const auto expected = 832040;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
