@@ -99,7 +99,9 @@ namespace leetcode::tree
 			if( node == nullptr ) return "#";
 
 			std::ostringstream key;
-			key << std::to_string( node->val ) << "," << preorder( node->left.get() ) << "," << preorder( node->right.get() );
+			key << std::to_string( node->val ) << ","
+				<< preorder( node->left.get() ) << ","
+				<< preorder( node->right.get() );
 
 			if( trees.find( key.str() ) != trees.end() && trees.at( key.str() ) == 1 )
 			{
@@ -111,37 +113,167 @@ namespace leetcode::tree
 			return key.str();
 		}
 
-		static std::unique_ptr<tree_node> build_tree( const std::vector<int>& values )
+		static std::unique_ptr<tree_node> build_tree( const std::vector<std::string>& values )
 		{
 			if( values.size() == std::size_t() ) return nullptr;
 
 			std::queue<tree_node*> nodes;
 
-			auto index = 0ULL;
-			auto root = std::make_unique<tree_node>( values[ index++ ] );
+			auto index = std::size_t();
+
+			const auto root_value = std::stoi( values[ index++ ] );
+			auto root = std::make_unique<tree_node>( root_value );
 			nodes.push( root.get() );
 
 			while( index < values.size() )
 			{
 				auto node = nodes.front();
 
-				while( node->val == NULL )
+				if( index < values.size() && !values[ index ].empty() )
 				{
-					nodes.pop();
-					node = nodes.front();
+					node->left = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
+					nodes.push( node->left.get() );
 				}
 
-				node->left = index < values.size() ?
-					std::make_unique<tree_node>( values[ index++ ] ) : nullptr;
+				index++;
 
-				if( node->left != nullptr )
-					nodes.push( node->left.get() );
-
-				node->right = index < values.size() ?
-					std::make_unique<tree_node>( values[ index++ ] ) : nullptr;
-
-				if( node->right != nullptr )
+				if( index < values.size() && !values[ index ].empty() )
+				{
+					node->right = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
 					nodes.push( node->right.get() );
+				}
+
+				index++;
+
+				nodes.pop();
+			}
+
+			return std::move( root );
+		}
+	};
+
+	/* 107. Binary Tree Level Order Traversal II.
+
+	Given a binary tree, return the bottom-up level order traversal of its nodes' values. (ie, from left to right, level by level from leaf to root).
+
+	For example:
+	Given binary tree [3,9,20,null,null,15,7],
+		3
+	   / \
+	  9  20
+		/  \
+	   15   7
+	return its bottom-up level order traversal as:
+	[
+	  [15,7],
+	  [9,20],
+	  [3]
+	]
+	*/
+
+	struct level_order_ii
+	{
+		struct tree_node
+		{
+			int val;
+			std::unique_ptr<tree_node> left, right;
+
+			explicit  tree_node( const int x ) :
+				val( x ), left( nullptr ), right( nullptr ) {}
+
+			tree_node( const tree_node& other ) = delete;
+
+			tree_node( tree_node&& other ) noexcept
+				: val{ other.val }
+			{
+				left.swap( other.left );
+				right.swap( other.right );
+			}
+
+			tree_node& operator=( const tree_node& other ) noexcept
+			{
+				if( this == &other )
+					return *this;
+
+				val = other.val;
+				left.reset( other.left.get() );
+				right.reset( other.right.get() );
+
+				return *this;
+			}
+
+			tree_node& operator=( tree_node&& other ) noexcept
+			{
+				if( this == &other )
+					return *this;
+
+				val = other.val;
+				left = std::move( other.left );
+				right = std::move( other.right );
+
+				return *this;
+			}
+
+			~tree_node() = default;
+		};
+
+		static void traverse( const tree_node* node, int level, std::map<int, std::vector<int>>& results )
+		{
+			if( node == nullptr ) return;
+
+			results[ level++ ].push_back( node->val );
+
+			traverse( node->left.get(), level, results );
+			traverse( node->right.get(), level, results );
+		}
+
+		static std::vector<std::vector<int>> level_order_bottom( const tree_node* root )
+		{
+			auto level_order = std::map<int, std::vector<int>>();
+
+			traverse( root, 0, level_order );
+
+			auto result = std::vector<std::vector<int>>();
+
+			for( auto level = level_order.size(); level > 0; --level )
+			{
+				result.push_back( level_order[ level - 1 ] );
+			}
+
+			return result;
+		}
+
+		static std::unique_ptr<tree_node> build_tree( const std::vector<std::string>& values )
+		{
+			if( values.size() == std::size_t() ) return nullptr;
+
+			std::queue<tree_node*> nodes;
+
+			auto index = std::size_t();
+
+			const auto root_value = std::stoi( values[ index++ ] );
+			auto root = std::make_unique<tree_node>( root_value );
+			nodes.push( root.get() );
+
+			while( index < values.size() )
+			{
+				auto node = nodes.front();
+
+				if( index < values.size() && !values[ index ].empty() )
+				{
+					node->left = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
+					nodes.push( node->left.get() );
+				}
+
+				index++;
+
+				if( index < values.size() && !values[ index ].empty() )
+				{
+					node->right = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
+					nodes.push( node->right.get() );
+				}
+
+				index++;
 
 				nodes.pop();
 			}

@@ -1,146 +1,150 @@
 '''
-In this assignment you will implement one or more algorithms for the all-pairs shortest-path problem. Here are data files describing three graphs:
+In this assignment you will implement one or more algorithms for the traveling salesman problem, such as the dynamic programming 
+algorithm covered in the video lectures. Here is a data file describing a TSP instance.
 
-The first line indicates the number of vertices and edges, respectively. Each subsequent line describes an edge (the first two numbers are its tail and head, respectively) 
-and its length (the third number). NOTE: some of the edge lengths are negative. NOTE: These graphs may or may not have negative-cost cycles.
+tsp.txt
+The first line indicates the number of cities. Each city is a point in the plane, and each subsequent line indicates the x- and y-coordinates of a single city.
 
-Your task is to compute the "shortest shortest path". Precisely, you must first identify which, if any, of the three graphs have no negative cycles. For each such graph, 
-you should compute all-pairs shortest paths and remember the smallest one (i.e., compute \min_{u,v \in V} d(u,v)min u,v ∈ V d(u,v), where d(u,v)d(u,v) denotes the shortest-path distance from uu to vv).
+The distance between two cities is defined as the Euclidean distance --- that is, two cities at locations
+(x, y)(x, y) and (z, w)(z, w) have distance \sqrt{(x-z)^2 + (y-w)^2}(x−z)^2+(y−w) 2 between them.
 
-If each of the three graphs has a negative-cost cycle, then enter "NULL" in the box below. If exactly one graph has no negative-cost cycles, then enter the length of its shortest shortest 
-path in the box below. If two or more of the graphs have no negative-cost cycles, then enter the smallest of the lengths of their shortest shortest paths in the box below.
+In the box below, type in the minimum cost of a traveling salesman tour for this instance, rounded down to the nearest integer.
 
-OPTIONAL: You can use whatever algorithm you like to solve this question. If you have extra time, try comparing the performance of different all-pairs shortest-path algorithms!
+OPTIONAL: If you want bigger data sets to play with, check out the TSP instances from around the world here. The smallest data set (Western Sahara) has 29 cities, and most of the data sets are much bigger than that. What's the largest of these data sets that you're able to solve --- using dynamic programming or, if you like, a completely different method?
 
-OPTIONAL: Here is a bigger data set to play with.
+HINT: You might experiment with ways to reduce the data set size. For example, trying plotting the points. Can you infer any structure of the optimal solution? Can you use that structure to speed up your algorithm?
+
+
 '''
 
 import os, math
-from collections import defaultdict
-from heapq import heappop, heappush
-
 import numpy as np
+import matplotlib.pyplot as plt
+
+from collections import defaultdict, namedtuple
 from tqdm import tqdm
+from itertools import permutations
 
-data_dir = os.getcwd() + '\\data\\illuminated\\shortest-paths\\'
+City = namedtuple('City', 'x y id')
 
-submission_file_paths = [data_dir + sub for sub in ['g1.txt', 'g2.txt', 'g3.txt']]
-big_submission_file_path = data_dir + 'large.txt'
+data_dir = os.getcwd() + '\\data\\illuminated\\tsp\\'
 
-test_file_path = data_dir + 'problem18.8test1.txt'
+submission_file_paths = data_dir + 'tsp.txt'
+test_file_path = data_dir + 'tsptest3.txt'
 
-def bellman_ford(graph, graph_inverted):
-    """
-    Implementation of the Bellman-Ford algorithm to find the single-source shortest path for a graph possibly containing
-    negative edges.
-    """
+def read_cities(file_path):
+
+    print(f'processing {file_path}')
     
-    print('creating modified graph by adding artificial start vertex s (id=0) with zero-edge to each vertex')
-
-    s = 0
-    graph_ = defaultdict(set, graph)
-    graph_inverted_ = defaultdict(set, graph_inverted)
-
-    for vertex in graph.keys():
-        graph_[s].add(vertex)
-        graph_inverted_[vertex].add((0, s))
-
-    n = len(graph_)
-    A = np.full(n, np.inf)
-    A[s] = 0
-
-    # we don't need to compute the full DP matrix, only the last 2 columns
-    arrays_are_equal = False
-    for _ in tqdm(range(1, n + 1)):
-        A_next = np.full(n, np.inf)
-        for v in graph.keys():
-            case_1 = A[v]
-
-            if v in graph_inverted:
-                # v has incoming edges from vertices w: compute path to v with at most i-1 edges from all ws
-                case_2 = min(A[w] + c for (c, w) in graph_inverted[v])
-            else:
-                case_2 = math.inf
-
-            A_next[v] = min(case_1, case_2)
-
-        arrays_are_equal = np.array_equal(A, A_next)
-    
-        if arrays_are_equal:
-            print('early stopping because no change in previous iteration')
-            return A[1:]
-
-        A = A_next
-
-    if not arrays_are_equal:
-        print('negative cycle detected in additional iteration')
-        return None
-
-    print('no negative cycle detected')
-    return A[1:]
-
-def dijkstra(graph, s, t):
-    """
-    Heap-based implementation of Dijkstra's algorithms for SSSP for a given source vertex s and target vertex t
-    :param graph: graph as dictionary mapping the edges for each vertex as follows:
-                    source_vertex -> {(cost, target_vertex}
-    :param s: start vertex
-    :param t: target vertex
-    :return: the cost and path of the minimal path from s to t if there is one, else infinity
-    """
-    q, seen, mins = [(0, s, ())], set(), {s: 0}
-    while q:
-        (cost, v1, path) = heappop(q)
-        if v1 not in seen:
-            seen.add(v1)
-            path = (v1, path)
-            if v1 == t:
-                return cost, path
-
-            for c, v2 in graph.get(v1, ()):
-                if v2 in seen:
-                    continue
-                prev = mins.get(v2, None)
-                next = cost + c
-                if prev is None or next < prev:
-                    mins[v2] = next
-                    heappush(q, (next, v2, path))
-
-    return float("inf")
-
-def johnson(filename):
-
-    print(f'processing {filename}')
-    
-    with open(filename) as f:
+    with open(file_path) as f:
         lines = f.readlines()
 
-    n_vertices, n_edges = map(int, lines[0].split())
+    n_cities = int(lines[0])
     
-    print(f'number of vertices: {n_vertices}')
-    print(f'number of edges: {n_edges}')
+    print(f'number of cities: {n_cities}')
 
-    # create graph as dict: source -> (cost, target)
-    graph = defaultdict(set)
-    graph_inverted = defaultdict(set)  # precompute incoming edges for performance speedup
-    
+    cities = list()
+    index = 0
     for line in lines[1:]:
-        u, v, c = map(int, line.split())
-        graph[u].add((c, v))
-        graph_inverted[v].add((c, u))
+        x, y = map(float, line.split())
+        cities += [City(x=x, y=y, id=index)]
+        index += 1
 
-    assert len(graph.keys()) == n_vertices, 'length of vertices does not match'
-    assert len(list(edge for edges in graph.values() for edge in edges)) == n_edges, 'length of edges does not match'
+    assert len(cities) == n_cities, 'length of cities does not match'
+    return cities
 
-    print('running Bellman-Ford once to get single-source shortest path for a graph with possibly negative edges')
+def calculate_distance_matrix(cities):
+
+    n = len(cities)
+    distances = [[None for _ in range(n)] for _ in range(n)]
+
+    for i in range(n):
+        outer = cities[i]
+        for j in range(n):
+            inner = cities[j]
+
+            distances[i][j] = math.sqrt(pow(outer.x - inner.x, 2) + pow(outer.y - inner.y, 2))
+
+    return distances
+
+def lexicographical_permutation(input):
+    results = set()
+    for perm in [''.join(chars) for chars in permutations(input)]:
+        results.add(perm)
+    return results
     
-    A = bellman_ford(graph, graph_inverted)
-    
-    if A is None:
-        # negative cost cycle detected
-        return math.inf
+test ='00000011'
+perms = lexicographical_permutation(test)
+print(perms)
 
-    return min(A)
+def find_minimum_cost_tour(cities, distances):
 
-for s in submission_file_paths:
-    print(f'{s}: {johnson(s)}')
+    num_points = len(cities)
+    num_subsets = 1 << num_points
+
+    # build lookup table for all cities
+    lookup_table = [[float('inf') for _ in range(num_points)] for _ in range(num_subsets)]
+    # base case
+    lookup_table[1][0] = 0
+
+    for size in range(2, num_points):
+
+        mask_str = str('1' * size) + str('0' * (num_points - size))
+
+        mask_permutations = lexicographical_permutation(mask_str)
+
+        for perm in mask_permutations:
+
+            if perm[0] == '0':
+                continue
+            
+            bitmask = 1
+
+            for index in range(num_points):
+                if mask_str[index] == '1':
+                    bitmask = bitmask | 1 << index
+
+            for index in range(1, num_points):
+
+                if (((bitmask >> index) & 1) == 1):
+
+                    rev_bitmask = bitmask ^ (2 << index)
+
+                    min_cost = float('inf')
+
+                    for k in range(num_points):
+
+                        if (((rev_bitmask >> k) & 1) == 1):
+                            a, b = lookup_table[rev_bitmask][k], distances[k][index]
+
+                            min_cost = min(a + b, min_cost)
+
+                lookup_table[bitmask][index] = min_cost
+
+    min_cost = float('inf')
+    complete_set = num_subsets - 1
+
+    for index in range(2, num_points):
+        min_cost = min(lookup_table[complete_set][index] + distances[index][0], min_cost)
+
+    return min_cost
+
+def plot_cities(cities):
+
+    data = np.array([[c.x, c.y, c.id] for c in cities])
+
+    fig, ax = plt.subplots()
+
+    scatter = ax.scatter(data[:, 0], data[:, 1], label=data[:, 2])
+
+    ax.grid()
+    plt.show()
+
+cities = read_cities(test_file_path)
+
+# plot_cities(cities)
+
+distances = calculate_distance_matrix(cities)
+
+min_cost_tour = find_minimum_cost_tour(cities, distances)
+print(min_cost_tour)
