@@ -216,7 +216,7 @@ namespace leetcode::str::tests
     {
 	    const auto sln = group_anagrams::group_anagrams1;
     	
-        const auto input = std::vector<std::string>{ "eat", "tea", "tan", "ate", "nat", "bat" };;
+        const auto input = std::vector<std::string>{ "eat", "tea", "tan", "ate", "nat", "bat" };
 
         const auto actual = sln( input );
 
@@ -233,7 +233,7 @@ namespace leetcode::str::tests
     {
         const auto sln = group_anagrams::group_anagrams1;
 
-        const auto input = std::vector<std::string>{ "eat", "tab", "tea", "tan", "ate", "nat", "bat" };;
+        const auto input = std::vector<std::string>{ "eat", "tab", "tea", "tan", "ate", "nat", "bat" };
 
         const auto actual = sln( input );
 
@@ -250,7 +250,7 @@ namespace leetcode::str::tests
     {
         const auto sln = group_anagrams::group_anagrams1;
 
-        const auto input = std::vector<std::string>{ "eat","tea","tan","ate","nat","bat", "" };;
+        const auto input = std::vector<std::string>{ "eat","tea","tan","ate","nat","bat", "" };
 
         const auto actual = sln( input );
 
@@ -267,7 +267,7 @@ namespace leetcode::str::tests
     {
         const auto sln = group_anagrams::group_anagrams1;
 
-        const auto input = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101" };;
+        const auto input = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101" };
 
         const auto actual = sln( input );
 
@@ -285,7 +285,7 @@ namespace leetcode::str::tests
     {
         const auto sln = group_anagrams::group_anagrams1;
 
-        const auto input = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101", "tab" };;
+        const auto input = std::vector<std::string>{ "eat","tab", "tea","tan","ate","nat","bat", "bat", "101ab", "ab101", "tab" };
 
         const auto actual = sln( input );
 
@@ -295,6 +295,84 @@ namespace leetcode::str::tests
             { "101ab", "ab101" },
             { "tan", "nat" }
         };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    class break_palindrome_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( break_palindrome_tests, case1 )
+    {
+        const auto sln = break_palindrome::break_palindrome1;
+
+        const auto input = "abccba";
+
+        const auto actual = sln( input );
+
+        const auto expected = "aaccba";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( break_palindrome_tests, case2 )
+    {
+        const auto sln = break_palindrome::break_palindrome1;
+
+        const auto input = "repaper";
+
+        const auto actual = sln( input );
+
+        const auto expected = "aepaper";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( break_palindrome_tests, case3 )
+    {
+        const auto sln = break_palindrome::break_palindrome1;
+
+        const auto input = "aba";
+
+        const auto actual = sln( input );
+
+        const auto expected = "abb";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( break_palindrome_tests, case4 )
+    {
+        const auto sln = break_palindrome::break_palindrome1;
+
+        const auto input = "a";
+
+        const auto actual = sln( input );
+
+        const auto expected = "";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( break_palindrome_tests, case5 )
+    {
+        const auto sln = break_palindrome::break_palindrome1;
+
+        const auto input = "acca";
+
+        const auto actual = sln( input );
+
+        const auto expected = "aaca";
 
         EXPECT_EQ( actual, expected );
     }

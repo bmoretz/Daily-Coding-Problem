@@ -9,6 +9,88 @@
 
 namespace leetcode::tree
 {
+	struct tree_node
+	{
+		int val;
+		std::unique_ptr<tree_node> left, right;
+
+		explicit  tree_node( const int x ) :
+			val( x ), left( nullptr ), right( nullptr ) {}
+
+		tree_node( const tree_node& other ) = delete;
+
+		tree_node( tree_node&& other ) noexcept
+			: val{ other.val }
+		{
+			left.swap( other.left );
+			right.swap( other.right );
+		}
+
+		tree_node& operator=( const tree_node& other ) noexcept
+		{
+			if( this == &other )
+				return *this;
+
+			val = other.val;
+			left.reset( other.left.get() );
+			right.reset( other.right.get() );
+
+			return *this;
+		}
+
+		tree_node& operator=( tree_node&& other ) noexcept
+		{
+			if( this == &other )
+				return *this;
+
+			val = other.val;
+			left = std::move( other.left );
+			right = std::move( other.right );
+
+			return *this;
+		}
+
+		~tree_node() = default;
+	};
+
+	static std::unique_ptr<tree_node> build_tree_in_order( const std::vector<std::string>& values )
+	{
+		if( values.size() == std::size_t() ) return nullptr;
+
+		std::queue<tree_node*> nodes;
+
+		auto index = std::size_t();
+
+		const auto root_value = std::stoi( values[ index++ ] );
+		auto root = std::make_unique<tree_node>( root_value );
+		nodes.push( root.get() );
+
+		while( index < values.size() )
+		{
+			auto node = nodes.front();
+
+			if( index < values.size() && !values[ index ].empty() )
+			{
+				node->left = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
+				nodes.push( node->left.get() );
+			}
+
+			index++;
+
+			if( index < values.size() && !values[ index ].empty() )
+			{
+				node->right = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
+				nodes.push( node->right.get() );
+			}
+
+			index++;
+
+			nodes.pop();
+		}
+
+		return std::move( root );
+	}
+	
 	/* 652 - Find Duplicate Subtrees.
 
 	Given a binary tree, return all duplicate subtrees. For each kind of duplicate subtrees, you only need to
@@ -38,50 +120,6 @@ namespace leetcode::tree
 	*/
 	struct find_dup_subtrees
 	{
-		struct tree_node
-		{
-			int val;
-			std::unique_ptr<tree_node> left, right;
-
-			explicit  tree_node( const int x ) :
-				val( x ), left( nullptr ), right( nullptr ) {}
-
-			tree_node( const tree_node& other ) = delete;
-
-			tree_node( tree_node&& other ) noexcept
-				: val{ other.val }
-			{
-				left.swap( other.left );
-				right.swap( other.right );
-			}
-
-			tree_node& operator=( const tree_node& other ) noexcept
-			{
-				if( this == &other )
-					return *this;
-
-				val = other.val;
-				left.reset( other.left.get() );
-				right.reset( other.right.get() );
-
-				return *this;
-			}
-
-			tree_node& operator=( tree_node&& other ) noexcept
-			{
-				if( this == &other )
-					return *this;
-
-				val = other.val;
-				left = std::move( other.left );
-				right = std::move( other.right );
-
-				return *this;
-			}
-			
-			~tree_node() = default;
-		};
-
 		int t{};
 		std::unordered_map<std::string, int> trees;
 		std::unordered_map<int, int> count;
@@ -112,44 +150,6 @@ namespace leetcode::tree
 
 			return key.str();
 		}
-
-		static std::unique_ptr<tree_node> build_tree( const std::vector<std::string>& values )
-		{
-			if( values.size() == std::size_t() ) return nullptr;
-
-			std::queue<tree_node*> nodes;
-
-			auto index = std::size_t();
-
-			const auto root_value = std::stoi( values[ index++ ] );
-			auto root = std::make_unique<tree_node>( root_value );
-			nodes.push( root.get() );
-
-			while( index < values.size() )
-			{
-				auto node = nodes.front();
-
-				if( index < values.size() && !values[ index ].empty() )
-				{
-					node->left = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
-					nodes.push( node->left.get() );
-				}
-
-				index++;
-
-				if( index < values.size() && !values[ index ].empty() )
-				{
-					node->right = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
-					nodes.push( node->right.get() );
-				}
-
-				index++;
-
-				nodes.pop();
-			}
-
-			return std::move( root );
-		}
 	};
 
 	/* 107. Binary Tree Level Order Traversal II.
@@ -173,50 +173,6 @@ namespace leetcode::tree
 
 	struct level_order_ii
 	{
-		struct tree_node
-		{
-			int val;
-			std::unique_ptr<tree_node> left, right;
-
-			explicit  tree_node( const int x ) :
-				val( x ), left( nullptr ), right( nullptr ) {}
-
-			tree_node( const tree_node& other ) = delete;
-
-			tree_node( tree_node&& other ) noexcept
-				: val{ other.val }
-			{
-				left.swap( other.left );
-				right.swap( other.right );
-			}
-
-			tree_node& operator=( const tree_node& other ) noexcept
-			{
-				if( this == &other )
-					return *this;
-
-				val = other.val;
-				left.reset( other.left.get() );
-				right.reset( other.right.get() );
-
-				return *this;
-			}
-
-			tree_node& operator=( tree_node&& other ) noexcept
-			{
-				if( this == &other )
-					return *this;
-
-				val = other.val;
-				left = std::move( other.left );
-				right = std::move( other.right );
-
-				return *this;
-			}
-
-			~tree_node() = default;
-		};
-
 		static void traverse( const tree_node* node, int level, std::map<int, std::vector<int>>& results )
 		{
 			if( node == nullptr ) return;
@@ -241,44 +197,6 @@ namespace leetcode::tree
 			}
 
 			return result;
-		}
-
-		static std::unique_ptr<tree_node> build_tree( const std::vector<std::string>& values )
-		{
-			if( values.size() == std::size_t() ) return nullptr;
-
-			std::queue<tree_node*> nodes;
-
-			auto index = std::size_t();
-
-			const auto root_value = std::stoi( values[ index++ ] );
-			auto root = std::make_unique<tree_node>( root_value );
-			nodes.push( root.get() );
-
-			while( index < values.size() )
-			{
-				auto node = nodes.front();
-
-				if( index < values.size() && !values[ index ].empty() )
-				{
-					node->left = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
-					nodes.push( node->left.get() );
-				}
-
-				index++;
-
-				if( index < values.size() && !values[ index ].empty() )
-				{
-					node->right = std::make_unique<tree_node>( std::stoi( values[ index ] ) );
-					nodes.push( node->right.get() );
-				}
-
-				index++;
-
-				nodes.pop();
-			}
-
-			return std::move( root );
 		}
 	};
 }
