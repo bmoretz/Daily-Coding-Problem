@@ -1,57 +1,91 @@
 #include <bits/stdc++.h>
 
-/* 525. Contiguous Array.
+/* 678. Valid Parenthesis String.
 
-Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+Given a string containing only three types of characters: '(', ')' and '*', write a function to check
+whether this string is valid. We define the validity of a string by these rules:
+
+Any left parenthesis '(' must have a corresponding right parenthesis ')'.
+Any right parenthesis ')' must have a corresponding left parenthesis '('.
+Left parenthesis '(' must go before the corresponding right parenthesis ')'.
+'*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string.
+
+An empty string is also valid.
 
 Example 1:
-Input: [0,1]
-Output: 2
-Explanation: [0, 1] is the longest contiguous subarray with equal number of 0 and 1.
+Input: "()"
+Output: True
 
 Example 2:
-Input: [0,1,0]
-Output: 2
-Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray with equal number of 0 and 1.
+Input: "(*)"
+Output: True
 
-Note: The length of the given binary array will not exceed 50,000.
+Example 3:
+Input: "(*))"
+Output: True
+Note:
+
+The string size will be in the range [1, 100].
 */
 
-struct contiguous_array
+struct valid_parenthesis
 {
-	static int find_max_length( const std::vector<int>& numbers )
+	static bool check_valid_string( const std::string& input )
 	{
-		std::map<int, int> map { { 0, -1 } };
-		auto longest = 0, count = 0;
+		if( input.empty() ) return true;
 
-		for( auto index = 0; index < numbers.size(); ++index )
+		auto parens = std::stack<char>();
+		auto wildcards = 0;
+
+		for( auto chr : input )
 		{
-			count = count + ( numbers[ index ] == 0 ? -1 : 1 );
-
-			if( map.find( count ) != std::end( map ) )
+			if( chr == '(' )
 			{
-				longest = std::max( longest, index - map[ count ] );
+				parens.push( chr );
+			}
+			else if( chr == ')' )
+			{
+				if( !parens.empty() )
+				{
+					parens.pop();
+				}
+				else if( wildcards > 0 )
+				{
+					wildcards--;
+				}
+				else
+				{
+					return false;
+				}
 			}
 			else
 			{
-				map.insert( std::make_pair( count, index ) );
+				wildcards++;
+
+				if( !parens.empty() )
+				{
+					parens.pop();
+					wildcards++;
+				}
 			}
 		}
 
-		return longest;
+		return parens.empty();
 	}
 };
 
 auto main() -> int
 {
-    const auto input1 = std::vector<int>{ 0, 1 }; // 2
-    const auto input2 = std::vector<int>{ 0, 1, 0 }; // 2
-	const auto input3 = std::vector<int>{ 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0 ,1, 0, 0, 1, 1, 1, 0 }; // 26
-	const auto input4 = std::vector<int>{ 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 ,1, 0, 0, 1, 1, 1, 0 }; // 22
-	const auto input5 = std::vector<int>{ 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 ,1, 0, 0, 1, 1, 1, 0 }; // 20
-	const auto input6 = std::vector<int>{ 0, 1, 1, 0, 1, 1 }; // 4
+	const auto input1 = "(*)))";
+    const auto input2 = "((((((*)))";
+	const auto input3 = "((((((*)))12121";
+	const auto input4 = "((((((*)))*****";
+	const auto input5 = "((((((*)))*****)))(";
+	const auto input6 = "((((((*)))*****)))(((";
+	const auto input7 = "(())((())()()(*)(*()(())())())()()((()())((()))(*";
+	const auto input8 = "(*))";
 	
-	const auto result = contiguous_array::find_max_length( input6 );
+	const auto result = valid_parenthesis::check_valid_string( input8 );
 
 	std::cout << result;
 	
