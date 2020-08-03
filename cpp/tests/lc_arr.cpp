@@ -91,4 +91,77 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class contiguous_array_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( contiguous_array_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 0, 1 };
+
+        const auto actual = contiguous_array::find_max_length( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( contiguous_array_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 0, 1, 0 };
+
+        const auto actual = contiguous_array::find_max_length( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( contiguous_array_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0 ,1, 0, 0, 1, 1, 1, 0 };
+
+        const auto actual = contiguous_array::find_max_length( input );
+        const auto expected = 26;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( contiguous_array_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 ,1, 0, 0, 1, 1, 1, 0 };
+
+        const auto actual = contiguous_array::find_max_length( input );
+        const auto expected = 22;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( contiguous_array_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 ,1, 0, 0, 1, 1, 1, 0 };
+
+        const auto actual = contiguous_array::find_max_length( input );
+        const auto expected = 20;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( contiguous_array_tests, case6 )
+    {
+        const auto input = std::vector<int>{ 0, 1, 1, 0, 1, 1 };
+
+        const auto actual = contiguous_array::find_max_length( input );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
