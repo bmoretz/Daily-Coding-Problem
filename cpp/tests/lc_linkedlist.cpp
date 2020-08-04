@@ -112,4 +112,96 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class copy_list_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( copy_list_test, case1 )
+    {
+        const auto head = copy_list::make_list
+        ( {
+                {3, copy_list::tail_value},
+                {3, 0},
+                {3, copy_list::tail_value}
+            } );
+
+        const auto copy = copy_list::copy_random_list( head.get() );
+
+        auto orig_node = head.get();
+        auto copy_node = copy.get();
+
+    	while( orig_node || copy_node )
+    	{
+            EXPECT_EQ( orig_node->val, copy_node->val );
+
+    		if( orig_node->random )
+				EXPECT_EQ( orig_node->random->val, orig_node->random->val );
+
+            orig_node = orig_node->next.get();
+            copy_node = copy_node->next.get();
+    	}
+    }
+
+    TEST_F( copy_list_test, case2 )
+    {
+        const auto head = copy_list::make_list
+        ( {
+                {7, copy_list::tail_value},
+				{13, 0},
+                {11, 4},
+				{10, 2},
+				{1, 0}
+            } );
+
+        const auto copy = copy_list::copy_random_list( head.get() );
+
+        auto orig_node = head.get();
+        auto copy_node = copy.get();
+
+        while( orig_node || copy_node )
+        {
+            EXPECT_EQ( orig_node->val, copy_node->val );
+
+            if( orig_node->random )
+                EXPECT_EQ( orig_node->random->val, orig_node->random->val );
+
+            orig_node = orig_node->next.get();
+            copy_node = copy_node->next.get();
+        }
+    }
+
+    TEST_F( copy_list_test, case3 )
+    {
+        const auto head = copy_list::make_list
+        ( {
+                {1, 1},
+				{2, 1}
+            } );
+
+        const auto copy = copy_list::copy_random_list( head.get() );
+
+        auto orig_node = head.get();
+        auto copy_node = copy.get();
+
+        while( orig_node || copy_node )
+        {
+            EXPECT_EQ( orig_node->val, copy_node->val );
+
+            if( orig_node->random )
+                EXPECT_EQ( orig_node->random->val, orig_node->random->val );
+
+            orig_node = orig_node->next.get();
+            copy_node = copy_node->next.get();
+        }
+    }
 }
