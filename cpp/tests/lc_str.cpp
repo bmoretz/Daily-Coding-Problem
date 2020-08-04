@@ -314,12 +314,9 @@ namespace leetcode::str::tests
 
     TEST_F( break_palindrome_tests, case1 )
     {
-        const auto sln = break_palindrome::break_palindrome1;
-
         const auto input = "abccba";
 
-        const auto actual = sln( input );
-
+        const auto actual = break_palindrome::break_palindrome1( input );
         const auto expected = "aaccba";
 
         EXPECT_EQ( actual, expected );
@@ -327,12 +324,9 @@ namespace leetcode::str::tests
 
     TEST_F( break_palindrome_tests, case2 )
     {
-        const auto sln = break_palindrome::break_palindrome1;
-
         const auto input = "repaper";
 
-        const auto actual = sln( input );
-
+        const auto actual = break_palindrome::break_palindrome1( input );
         const auto expected = "aepaper";
 
         EXPECT_EQ( actual, expected );
@@ -340,12 +334,9 @@ namespace leetcode::str::tests
 
     TEST_F( break_palindrome_tests, case3 )
     {
-        const auto sln = break_palindrome::break_palindrome1;
-
         const auto input = "aba";
 
-        const auto actual = sln( input );
-
+        const auto actual = break_palindrome::break_palindrome1( input );
         const auto expected = "abb";
 
         EXPECT_EQ( actual, expected );
@@ -353,12 +344,9 @@ namespace leetcode::str::tests
 
     TEST_F( break_palindrome_tests, case4 )
     {
-        const auto sln = break_palindrome::break_palindrome1;
-
         const auto input = "a";
 
-        const auto actual = sln( input );
-
+        const auto actual = break_palindrome::break_palindrome1( input );
         const auto expected = "";
 
         EXPECT_EQ( actual, expected );
@@ -366,13 +354,73 @@ namespace leetcode::str::tests
 
     TEST_F( break_palindrome_tests, case5 )
     {
-        const auto sln = break_palindrome::break_palindrome1;
-
         const auto input = "acca";
 
-        const auto actual = sln( input );
-
+        const auto actual = break_palindrome::break_palindrome1( input );
         const auto expected = "aaca";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    class reverse_string_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( reverse_string_tests, case1 )
+    { 
+        auto input = std::string("       the    sky     is    blue            ");
+
+        const auto actual = reverse_string::reverse_words( input );
+        const auto expected = "blue is sky the";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_string_tests, case2 )
+    {
+        auto input = std::string( "hello world!" );
+
+        const auto actual = reverse_string::reverse_words( input );
+        const auto expected = "world! hello";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_string_tests, case3 )
+    {
+        auto input = std::string( "a good   example" );
+
+        const auto actual = reverse_string::reverse_words( input );
+        const auto expected = "example good a";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_string_tests, case4 )
+    {
+        auto input = std::string( "                   " );
+
+        const auto actual = reverse_string::reverse_words( input );
+        const auto expected = "";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_string_tests, case5 )
+    {
+        auto input = std::string( "                      blue               " );
+
+        const auto actual = reverse_string::reverse_words( input );
+        const auto expected = "blue";
 
         EXPECT_EQ( actual, expected );
     }

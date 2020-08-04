@@ -1,91 +1,69 @@
 #include <bits/stdc++.h>
 
-/* 678. Valid Parenthesis String.
+/* 151. Reverse Words in a String.
 
-Given a string containing only three types of characters: '(', ')' and '*', write a function to check
-whether this string is valid. We define the validity of a string by these rules:
-
-Any left parenthesis '(' must have a corresponding right parenthesis ')'.
-Any right parenthesis ')' must have a corresponding left parenthesis '('.
-Left parenthesis '(' must go before the corresponding right parenthesis ')'.
-'*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string.
-
-An empty string is also valid.
-
-Example 1:
-Input: "()"
-Output: True
-
-Example 2:
-Input: "(*)"
-Output: True
-
-Example 3:
-Input: "(*))"
-Output: True
-Note:
-
-The string size will be in the range [1, 100].
+Given an input string, reverse the string word by word.
 */
 
-struct valid_parenthesis
+struct reverse_string
 {
-	static bool check_valid_string( const std::string& input )
+	static void trim( std::string& str )
 	{
-		if( input.empty() ) return true;
+		while( !str.empty() && std::isspace( str.front() ) )
+			str.erase( 0, 1 );
 
-		auto parens = std::stack<char>();
-		auto wildcards = 0;
+		while( !str.empty() && std::isspace( str.back() ) )
+			str.erase( str.size() - 1, 1 );
+	}
+	
+	static std::string reverse_words( std::string& input )
+	{
+		if( input.empty() ) return input;
+		
+		trim( input );
 
-		for( auto chr : input )
+		auto pos = std::size_t();
+		std::string buff, result;
+
+		while( pos < input.size() )
 		{
-			if( chr == '(' )
+			if( std::isspace( input.at( pos ) ) )
 			{
-				parens.push( chr );
+				if( !result.empty() )
+					result.insert( 0, " " );
+				
+				result.insert( 0, buff );
+				buff.clear();
+				++pos;
+				
+				while( std::isspace( input.at( pos ) ) )
+					++pos;
 			}
-			else if( chr == ')' )
-			{
-				if( !parens.empty() )
-				{
-					parens.pop();
-				}
-				else if( wildcards > 0 )
-				{
-					wildcards--;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				wildcards++;
-
-				if( !parens.empty() )
-				{
-					parens.pop();
-					wildcards++;
-				}
-			}
+			
+			buff.push_back( input.at( pos++ ) );
 		}
 
-		return parens.empty();
+		if( !buff.empty() )
+		{
+			if( !result.empty() )
+				result.insert( 0, " " );
+			
+			result.insert( 0, buff);
+		}
+		
+		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = "(*)))";
-    const auto input2 = "((((((*)))";
-	const auto input3 = "((((((*)))12121";
-	const auto input4 = "((((((*)))*****";
-	const auto input5 = "((((((*)))*****)))(";
-	const auto input6 = "((((((*)))*****)))(((";
-	const auto input7 = "(())((())()()(*)(*()(())())())()()((()())((()))(*";
-	const auto input8 = "(*))";
+	std::string input1 = "       the    sky     is    blue            ";
+    const auto input2 = "  hello world!  ";
+	const auto input3 = "a good   example";
+	const auto input4 = "                   ";
+	const auto input5 = "                      blue               ";
 	
-	const auto result = valid_parenthesis::check_valid_string( input8 );
+	const auto result = reverse_string::reverse_words( input1 );
 
 	std::cout << result;
 	
