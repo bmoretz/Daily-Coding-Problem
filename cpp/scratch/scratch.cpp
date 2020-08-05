@@ -1,143 +1,83 @@
 #include <bits/stdc++.h>
 
-/* 138. Copy List with Random Pointer.
+/* 1005. Maximize Sum Of Array After K Negations.
 
-A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+Given an array A of integers, we must modify the array in the following way: we choose an i and replace A[i] with -A[i], and we
+repeat this process K times in total.  (We may choose the same index i multiple times.)
 
-Return a deep copy of the list.
-
-The Linked List is represented in the input/output as a list of n nodes. Each node is represented as a pair of [val, random_index] where:
-
-val: an integer representing Node.val
-random_index: the index of the node (range from 0 to n-1) where random pointer points to, or null if it does not point to any node.
- 
+Return the largest possible sum of the array after modifying it in this way. 
 
 Example 1:
+Input: A = [4,2,3], K = 1
+Output: 5
+Explanation: Choose indices (1,) and A becomes [4,-2,3].
 
-
-Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
-Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
 Example 2:
+Input: A = [3,-1,0,2], K = 3
+Output: 6
+Explanation: Choose indices (1, 2, 2) and A becomes [3,1,0,2].
 
-
-Input: head = [[1,1],[2,1]]
-Output: [[1,1],[2,1]]
 Example 3:
-
-
-
-Input: head = [[3,null],[3,0],[3,null]]
-Output: [[3,null],[3,0],[3,null]]
-Example 4:
-
-Input: head = []
-Output: []
-Explanation: Given linked list is empty (null pointer), so return null.
+Input: A = [2,-3,-1,5,-4], K = 2
+Output: 13
+Explanation: Choose indices (1, 4) and A becomes [2,3,-1,5,4].
  
 
-Constraints:
+Note:
 
--10000 <= Node.val <= 10000
-Node.random is null or pointing to a node in the linked list.
-Number of Nodes will not exceed 1000.
+1 <= A.length <= 10000
+1 <= K <= 10000
+-100 <= A[i] <= 100
 */
 
-struct copy_list
+struct k_negations
 {
-	class Node
+	/// <summary>
+	/// max sum after k negations
+	///
+	/// the strategy here is to us a heap to take the k minimum elements one by one,
+	/// push the negated version back into the array using heap push, then take the next
+	/// until we have negated k values.
+	/// </summary>
+	/// <param name="arr">array of values</param>
+	/// <param name="k">number of negations allowed</param>
+	/// <returns>max sum</returns>
+	static int largest_sum_after_k_negations( std::vector<int>& arr, int k )
 	{
-	public:
-		int val;
-		std::unique_ptr<Node> next;
-		Node* random;
-
-		explicit Node( const int value )
-			: val{ value }, random{ }
-		{ }
-	};
-	
-	static Node* copyRandomList( Node* head )
-	{
-		if( head == nullptr ) return nullptr;
-
-		const auto new_head = std::make_unique<Node>( head->val );
-
-		auto old_new_map = std::map<Node*, Node*>{ { head, new_head.get() } };
-
-		auto node = head->next.get();
-		auto prev = new_head.get();
+		if( arr.empty() ) return 0;
+		if( k == 0 ) return std::accumulate( arr.begin(), arr.end(), 0 );
 		
-		while( node )
-		{
-			prev->next = std::make_unique<Node>( node->val );
-			old_new_map[ node ] = prev->next.get();
-
-			prev = prev->next.get();
-			node = node->next.get();
-		}
-
-		node = head;
+		std::make_heap( arr.begin(), arr.end(), std::greater<>() );
 		
-		while( node != nullptr )
+		while( k > 0 )
 		{
-			if( node->random != nullptr )
-			{
-				old_new_map[ head ]->random = old_new_map[ head->random ];
-			}
-
-			node = node->next.get();
-		}
-
-		return new_head.get();
-	}
-	
-	static int tail_value;
-	
-	static std::unique_ptr<Node> make_list( const std::vector<std::pair<int, int>>& values )
-	{
-		std::map<int, Node*> map;
-
-		auto head = std::make_unique<Node>( values.front().first );
-
-		map[ 0 ] = head.get();
-
-		auto prev = head.get();
-		
-		for( auto index = 1UL; index < values.size(); ++index )
-		{
-			prev->next = std::make_unique<Node>( values[ index ].first );
-			map[ index ] = prev->next.get();
-			prev = prev->next.get();
-		}
-
-		for( auto index = 0UL; index < values.size(); ++index )
-		{
-			const auto node_link = values.at( index ).second;
+			const auto min_value = arr.front();
 			
-			if( node_link != tail_value )
-			{
-				map[ index ]->random = map[ node_link ];
-			}
+			std::pop_heap( arr.begin(), arr.end(), std::greater<>() );
+			arr.pop_back();
+			
+			arr.push_back( -min_value );
+			std::push_heap( arr.begin(), arr.end(), std::greater<>() );
+			
+			--k;
 		}
-		
-		return head;
+
+		return std::accumulate( arr.begin(), arr.end(), 0 );
 	}
 };
 
-int copy_list::tail_value = 1001;
 
 auto main() -> int
 {
-	const auto input1 = copy_list::make_list
-	({
-			{3, copy_list::tail_value},
-			{3, 0},
-			{3, copy_list::tail_value}
-		} );
+	auto input1 = std::vector<int> { 4, 2, 3 };
+	auto input2 = std::vector<int>{ 2, -3, -1, 5, -4 };
+	auto input3 = std::vector<int>{ 3, -1, 0, 2 };
+	auto input4 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4 };
+	auto input5 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4, 12, 4, 13, 1, 0, 1, 143 };
 	
-	const auto result = copy_list::copyRandomList( input1.get() );
+	const auto result = k_negations::largest_sum_after_k_negations( input3, 3 );
 
-	std::cout << result->val;
+	std::cout << result;
 	
 	return 0;
 }

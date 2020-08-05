@@ -168,6 +168,18 @@ namespace leetcode::linkedlist
 			{ }
 		};
 
+		/// <summary>
+		/// this approach makes a copy of the nodes in the original list and stores them
+		/// in a hash map by old node / new node -> k, v pairs. This ensures that all the nodes
+		/// that will be in the new deep copy list will exist when we iterate the original list
+		/// a second time to fill in the random node pointer mappings.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(n)</run-time>
+		///		<space>O(n)</space>
+		/// </complexity>
+		/// <param name="head">the list to copy</param>
+		/// <returns>deep copy of the passed in list</returns>
 		static std::unique_ptr<node> copy_random_list( node* head )
 		{
 			if( head == nullptr ) return nullptr;
@@ -204,6 +216,16 @@ namespace leetcode::linkedlist
 
 		static int tail_value;
 
+		/// <summary>
+		/// helper method for unit testing, takes a vector of value/random pairs and builds a linked
+		/// list.
+		/// </summary>
+		/// <complexity>
+		///		<run-time>O(n)</run-time>
+		///		<space>O(n)</space>
+		/// </complexity>
+		/// <param name="values">vector of val/random index values</param>
+		/// <returns>linked list with values & pointers to specified random nodes</returns>
 		static std::unique_ptr<node> make_list( const std::vector<std::pair<int, int>>& values )
 		{
 			std::map<int, node*> map;

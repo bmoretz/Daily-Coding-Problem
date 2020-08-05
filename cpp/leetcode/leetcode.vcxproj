@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="arr.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="heap.h" />
     <ClInclude Include="linkedlist.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="pch.h" />
