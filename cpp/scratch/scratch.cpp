@@ -1,81 +1,61 @@
 #include <bits/stdc++.h>
 
-/* 1005. Maximize Sum Of Array After K Negations.
+/* 53. Maximum Subarray.
 
-Given an array A of integers, we must modify the array in the following way: we choose an i and replace A[i] with -A[i], and we
-repeat this process K times in total.  (We may choose the same index i multiple times.)
+Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
 
-Return the largest possible sum of the array after modifying it in this way. 
+Example:
 
-Example 1:
-Input: A = [4,2,3], K = 1
-Output: 5
-Explanation: Choose indices (1,) and A becomes [4,-2,3].
-
-Example 2:
-Input: A = [3,-1,0,2], K = 3
+Input: [-2,1,-3,4,-1,2,1,-5,4],
 Output: 6
-Explanation: Choose indices (1, 2, 2) and A becomes [3,1,0,2].
+Explanation: [4,-1,2,1] has the largest sum = 6.
+Follow up:
 
-Example 3:
-Input: A = [2,-3,-1,5,-4], K = 2
-Output: 13
-Explanation: Choose indices (1, 4) and A becomes [2,3,-1,5,4].
- 
-
-Note:
-
-1 <= A.length <= 10000
-1 <= K <= 10000
--100 <= A[i] <= 100
+If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.
 */
 
-struct k_negations
+struct max_sub_array
 {
 	/// <summary>
-	/// max sum after k negations
+	/// max sub array
 	///
-	/// the strategy here is to us a heap to take the k minimum elements one by one,
-	/// push the negated version back into the array using heap push, then take the next
-	/// until we have negated k values.
+	/// straight forward sliding window technique using a hash map to store the max value at each previous index.
 	/// </summary>
-	/// <param name="arr">array of values</param>
-	/// <param name="k">number of negations allowed</param>
-	/// <returns>max sum</returns>
-	static int largest_sum_after_k_negations( std::vector<int>& arr, int k )
+	/// <param name="numbers">the numbers</param>
+	/// <returns>max value of any contiguous subarray</returns>
+	static int max_sub_array1( const std::vector<int>& numbers )
 	{
-		if( arr.empty() ) return 0;
-		if( k == 0 ) return std::accumulate( arr.begin(), arr.end(), 0 );
+		if( numbers.empty() ) return 0;
+		if( numbers.size() == 1 ) return numbers.at( 0 );
 		
-		std::make_heap( arr.begin(), arr.end(), std::greater<>() );
+		std::map<int, int> previous_sums = { { 0, numbers.at(0 ) } };
+
+		auto max_sum = previous_sums[ 0 ];
+		auto start = 0UL;
 		
-		while( k > 0 )
+		for( auto stop = 1UL; stop < numbers.size(); ++stop )
 		{
-			const auto min_value = arr.front();
+			auto current = numbers.at( stop );
 			
-			std::pop_heap( arr.begin(), arr.end(), std::greater<>() );
-			arr.pop_back();
-			
-			arr.push_back( -min_value );
-			std::push_heap( arr.begin(), arr.end(), std::greater<>() );
-			
-			--k;
+			previous_sums[ stop ] = std::max( previous_sums[ stop - 1 ] + current, current );
+
+			max_sum = std::max( previous_sums[ stop ], max_sum );
 		}
 
-		return std::accumulate( arr.begin(), arr.end(), 0 );
+		return max_sum;
 	}
 };
 
 
 auto main() -> int
 {
-	auto input1 = std::vector<int> { 4, 2, 3 };
-	auto input2 = std::vector<int>{ 2, -3, -1, 5, -4 };
-	auto input3 = std::vector<int>{ 3, -1, 0, 2 };
-	auto input4 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4 };
-	auto input5 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4, 12, 4, 13, 1, 0, 1, 143 };
+	const auto input1 = std::vector<int>{ -2, 1, -3, 4, -1, 2, 1, -5, 4 }; // 6
+	const auto input2 = std::vector<int>{ 1, 0, -1, 0, 0, 0, -1, 0, 1 }; // 1
+	const auto input3 = std::vector<int>{ 3, -1, 0, 2 }; // 4
+	const auto input4 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4 }; // 30
+	const auto input5 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4, 12, 4, 13, 1, 0, 1, 143 }; // 200
 	
-	const auto result = k_negations::largest_sum_after_k_negations( input3, 3 );
+	const auto result = max_sub_array::max_sub_array1( input1 );
 
 	std::cout << result;
 	

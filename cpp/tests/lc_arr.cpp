@@ -164,4 +164,67 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class max_sub_array_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( max_sub_array_tests, case1 )
+    {
+        const auto input = std::vector<int>{ -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+
+        const auto actual = max_sub_array::max_sub_array1( input );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_sub_array_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 1, 0, -1, 0, 0, 0, -1, 0, 1 };
+
+        const auto actual = max_sub_array::max_sub_array1( input );
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_sub_array_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 3, -1, 0, 2 };
+
+        const auto actual = max_sub_array::max_sub_array1( input );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_sub_array_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4 };
+
+        const auto actual = max_sub_array::max_sub_array1( input );
+        const auto expected = 30;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_sub_array_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4, 12, 4, 13, 1, 0, 1, 143 };
+
+        const auto actual = max_sub_array::max_sub_array1( input );
+        const auto expected = 200;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
