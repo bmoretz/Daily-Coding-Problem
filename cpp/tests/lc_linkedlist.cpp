@@ -144,11 +144,14 @@ namespace leetcode::linkedlist::tests
     	{
             EXPECT_EQ( orig_node->val, copy_node->val );
 
-    		if( orig_node->random )
-				EXPECT_EQ( orig_node->random->val, orig_node->random->val );
+            if( orig_node != nullptr && orig_node->random != nullptr )
+                EXPECT_EQ( orig_node->random->val, orig_node->random->val );
 
-            orig_node = orig_node->next.get();
-            copy_node = copy_node->next.get();
+            if( orig_node != nullptr )
+                orig_node = orig_node->next.get();
+
+            if( copy_node != nullptr )
+                copy_node = copy_node->next.get();
     	}
     }
 
@@ -172,11 +175,14 @@ namespace leetcode::linkedlist::tests
         {
             EXPECT_EQ( orig_node->val, copy_node->val );
 
-            if( orig_node->random )
+            if( orig_node != nullptr && orig_node->random != nullptr )
                 EXPECT_EQ( orig_node->random->val, orig_node->random->val );
 
-            orig_node = orig_node->next.get();
-            copy_node = copy_node->next.get();
+            if( orig_node != nullptr )
+                orig_node = orig_node->next.get();
+
+            if( copy_node != nullptr )
+                copy_node = copy_node->next.get();
         }
     }
 
@@ -197,11 +203,137 @@ namespace leetcode::linkedlist::tests
         {
             EXPECT_EQ( orig_node->val, copy_node->val );
 
-            if( orig_node->random )
+            if( orig_node != nullptr && orig_node->random != nullptr )
                 EXPECT_EQ( orig_node->random->val, orig_node->random->val );
 
-            orig_node = orig_node->next.get();
-            copy_node = copy_node->next.get();
+        	if( orig_node != nullptr )
+				orig_node = orig_node->next.get();
+
+        	if( copy_node != nullptr )
+				copy_node = copy_node->next.get();
         }
+    }
+
+    class merge_sorted_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( merge_sorted_test, case1 )
+    {
+        const auto list1 = merge_sorted_lists::make_list( { 1, 2, 4 } );
+        const auto list2 = merge_sorted_lists::make_list( { 1, 3, 4 } );
+
+        auto actual = merge_sorted_lists::merge_two_lists( list1, list2 );
+
+        auto prev = INT32_MIN;
+    	
+		while( actual )
+		{
+            EXPECT_GE( actual->val, prev );
+            prev = actual->val;
+			
+            actual = actual->next;
+		}
+    	
+        merge_sorted_lists::cleanup_list( actual );
+
+        EXPECT_EQ( actual, nullptr );
+    }
+
+    TEST_F( merge_sorted_test, case2 )
+    {
+        const auto list1 = merge_sorted_lists::make_list( { 1, 2, 4 } );
+        const auto list2 = merge_sorted_lists::make_list( { } );
+
+        auto actual = merge_sorted_lists::merge_two_lists( list1, list2 );
+
+        auto prev = INT32_MIN;
+
+        while( actual )
+        {
+            EXPECT_GE( actual->val, prev );
+            prev = actual->val;
+
+            actual = actual->next;
+        }
+
+        merge_sorted_lists::cleanup_list( actual );
+
+        EXPECT_EQ( actual, nullptr );
+    }
+
+    TEST_F( merge_sorted_test, case3 )
+    {
+        const auto list1 = merge_sorted_lists::make_list( { } );
+        const auto list2 = merge_sorted_lists::make_list( { 1, 3, 4 } );
+
+        auto actual = merge_sorted_lists::merge_two_lists( list1, list2 );
+
+        auto prev = INT32_MIN;
+
+        while( actual )
+        {
+            EXPECT_GE( actual->val, prev );
+            prev = actual->val;
+
+            actual = actual->next;
+        }
+
+        merge_sorted_lists::cleanup_list( actual );
+
+        EXPECT_EQ( actual, nullptr );
+    }
+
+    TEST_F( merge_sorted_test, case4 )
+    {
+        const auto list1 = merge_sorted_lists::make_list( { 1, 5, 7, 8, 10 } );
+        const auto list2 = merge_sorted_lists::make_list( { 1, 3, 4 } );
+
+        auto actual = merge_sorted_lists::merge_two_lists( list1, list2 );
+
+        auto prev = INT32_MIN;
+
+        while( actual )
+        {
+            EXPECT_GE( actual->val, prev );
+            prev = actual->val;
+
+            actual = actual->next;
+        }
+
+        merge_sorted_lists::cleanup_list( actual );
+
+        EXPECT_EQ( actual, nullptr );
+    }
+
+    TEST_F( merge_sorted_test, case5 )
+    {
+        const auto list1 = merge_sorted_lists::make_list( { 1, 5, 7, 8, 10 } );
+        const auto list2 = merge_sorted_lists::make_list( { 1, 3, 4, 9, 12, 15 } );
+
+        auto actual = merge_sorted_lists::merge_two_lists( list1, list2 );
+
+        auto prev = INT32_MIN;
+
+        while( actual )
+        {
+            EXPECT_GE( actual->val, prev );
+            prev = actual->val;
+
+            actual = actual->next;
+        }
+
+        merge_sorted_lists::cleanup_list( actual );
+
+        EXPECT_EQ( actual, nullptr );
     }
 }

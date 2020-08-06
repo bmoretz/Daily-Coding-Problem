@@ -1,62 +1,108 @@
 #include <bits/stdc++.h>
 
-/* 53. Maximum Subarray.
+/* 21. Merge Two Sorted Lists.
 
-Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
+Merge two sorted linked lists and return it as a new sorted list. The new list should be made by
+splicing together the nodes of the first two lists.
 
 Example:
 
-Input: [-2,1,-3,4,-1,2,1,-5,4],
-Output: 6
-Explanation: [4,-1,2,1] has the largest sum = 6.
-Follow up:
-
-If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.
+Input: 1->2->4, 1->3->4
+Output: 1->1->2->3->4->4
 */
 
-struct max_sub_array
+struct merge_sorted_lists
 {
-	/// <summary>
-	/// max sub array
-	///
-	/// straight forward sliding window technique using a hash map to store the max value at each previous index.
-	/// </summary>
-	/// <param name="numbers">the numbers</param>
-	/// <returns>max value of any contiguous subarray</returns>
-	static int max_sub_array1( const std::vector<int>& numbers )
+	struct list_node
 	{
-		if( numbers.empty() ) return 0;
-		if( numbers.size() == 1 ) return numbers.at( 0 );
-		
-		std::map<int, int> previous_sums = { { 0, numbers.at(0 ) } };
+		int val;
+		list_node* next;
+		list_node() : val( 0 ), next( nullptr ) {}
+		explicit list_node( const int x ) : val( x ), next( nullptr ) {}
+		list_node( const int x, list_node* next ) : val( x ), next( next ) {}		
+	};
 
-		auto max_sum = previous_sums[ 0 ];
-		auto start = 0UL;
+	/// <summary>
+	/// merge lists
+	///
+	/// uses a sentinel node as a place-holder to append the sorted list elements,
+	/// upon completion we simply store the sentinels next node which will be the
+	/// head of the new weaved list, and delete the sentinel.
+	/// </summary>
+	/// <param name="l1">list 1</param>
+	/// <param name="l2">list 2</param>
+	/// <returns>sorted l1 + l2</returns>
+	static list_node* merge_two_lists( list_node* l1, list_node* l2 )
+	{
+		const auto sentinel = new list_node( -1 );
+
+		auto prev = sentinel;
 		
-		for( auto stop = 1UL; stop < numbers.size(); ++stop )
+		while( l1 != nullptr && l2 != nullptr )
 		{
-			auto current = numbers.at( stop );
+			if( l1->val <= l2->val )
+			{
+				prev->next = l1;
+				l1 = l1->next;
+			}
+			else
+			{
+				prev->next = l2;
+				l2 = l2->next;
+			}
 			
-			previous_sums[ stop ] = std::max( previous_sums[ stop - 1 ] + current, current );
-
-			max_sum = std::max( previous_sums[ stop ], max_sum );
+			prev = prev->next;
 		}
 
-		return max_sum;
+		prev->next = l1 == nullptr ? l2 : l1;
+		
+		const auto head = sentinel->next;
+
+		delete sentinel;
+
+		return head;
+	}
+
+	static list_node* make_list( const std::vector<int>& values )
+	{
+		const auto sentinel = new list_node( -1 );
+		auto prev = sentinel;
+		
+		for( const auto value : values )
+		{
+			prev->next = new list_node( value );
+			prev = prev->next;
+		}
+
+		const auto head = sentinel->next;
+
+		delete sentinel;
+		
+		return head;
+	}
+
+	static void cleanup_list( list_node * node )
+	{
+		while( node )
+		{
+			const auto tmp = node->next;
+			delete node;
+			node = tmp;
+		}
+
+		node = nullptr;
 	}
 };
 
-
 auto main() -> int
 {
-	const auto input1 = std::vector<int>{ -2, 1, -3, 4, -1, 2, 1, -5, 4 }; // 6
-	const auto input2 = std::vector<int>{ 1, 0, -1, 0, 0, 0, -1, 0, 1 }; // 1
-	const auto input3 = std::vector<int>{ 3, -1, 0, 2 }; // 4
-	const auto input4 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4 }; // 30
-	const auto input5 = std::vector<int>{ 2,-3,-1,5,-4, -1, -3, -51, 23, 2, 5, -4, 12, 4, 13, 1, 0, 1, 143 }; // 200
+	const auto l1 = merge_sorted_lists::make_list( { 1, 2, 4 } );
+	const auto l2 = merge_sorted_lists::make_list( { 1, 3, 4 } );
 	
-	const auto result = max_sub_array::max_sub_array1( input1 );
+	const auto result = merge_sorted_lists::merge_two_lists( l1, l2 );
 
+	merge_sorted_lists::cleanup_list( result );
+	
 	std::cout << result;
 	
 	return 0;
