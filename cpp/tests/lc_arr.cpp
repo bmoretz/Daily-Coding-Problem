@@ -227,4 +227,67 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class buy_and_sell_stock_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( buy_and_sell_stock_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 7, 1, 5, 3, 6, 4 };
+
+        const auto actual = buy_and_sell_stock::max_profit( input );
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( buy_and_sell_stock_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 7, 6, 4, 3, 1 };
+
+        const auto actual = buy_and_sell_stock::max_profit( input );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( buy_and_sell_stock_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 7 };
+
+        const auto actual = buy_and_sell_stock::max_profit( input );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( buy_and_sell_stock_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 7, 1, 3, 2, 9, 4 };
+
+        const auto actual = buy_and_sell_stock::max_profit( input );
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( buy_and_sell_stock_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 7, 1, 3, 2, 9, 4, 2, 2, 1, 2, 6 };
+
+        const auto actual = buy_and_sell_stock::max_profit( input );
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

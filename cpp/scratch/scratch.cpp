@@ -1,108 +1,65 @@
 #include <bits/stdc++.h>
 
-/* 21. Merge Two Sorted Lists.
+/* 121. Best Time to Buy and Sell Stock.
 
-Merge two sorted linked lists and return it as a new sorted list. The new list should be made by
-splicing together the nodes of the first two lists.
+Say you have an array for which the ith element is the price of a given stock on day i.
 
-Example:
+If you were only permitted to complete at most one transaction (i.e., buy one and sell one share of the stock), design an algorithm to find the maximum profit.
 
-Input: 1->2->4, 1->3->4
-Output: 1->1->2->3->4->4
+Note that you cannot sell a stock before you buy one.
+
+Example 1:
+Input: [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+             Not 7-1 = 6, as selling price needs to be larger than buying price.
+
+Example 2:
+Input: [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transaction is done, i.e. max profit = 0.
 */
 
-struct merge_sorted_lists
+struct buy_and_sell_stock
 {
-	struct list_node
+	static int max_profit( const std::vector<int>& prices )
 	{
-		int val;
-		list_node* next;
-		list_node() : val( 0 ), next( nullptr ) {}
-		explicit list_node( const int x ) : val( x ), next( nullptr ) {}
-		list_node( const int x, list_node* next ) : val( x ), next( next ) {}		
-	};
-
-	/// <summary>
-	/// merge lists
-	///
-	/// uses a sentinel node as a place-holder to append the sorted list elements,
-	/// upon completion we simply store the sentinels next node which will be the
-	/// head of the new weaved list, and delete the sentinel.
-	/// </summary>
-	/// <param name="l1">list 1</param>
-	/// <param name="l2">list 2</param>
-	/// <returns>sorted l1 + l2</returns>
-	static list_node* merge_two_lists( list_node* l1, list_node* l2 )
-	{
-		const auto sentinel = new list_node( -1 );
-
-		auto prev = sentinel;
+		if( prices.empty() ) return 0;
 		
-		while( l1 != nullptr && l2 != nullptr )
+		auto max_profit = 0;
+		auto buy_price = prices.at( 0 ), sell_price = -1;
+		
+		for( auto index = 1; index < prices.size(); ++index )
 		{
-			if( l1->val <= l2->val )
+			if( prices.at( index ) < buy_price )
 			{
-				prev->next = l1;
-				l1 = l1->next;
+				buy_price = prices.at( index );
+				sell_price = -1;
 			}
-			else
+			else if( prices.at( index ) > sell_price )
 			{
-				prev->next = l2;
-				l2 = l2->next;
+				sell_price = prices.at( index );
 			}
-			
-			prev = prev->next;
+
+			max_profit = std::max( max_profit, sell_price - buy_price );
 		}
 
-		prev->next = l1 == nullptr ? l2 : l1;
-		
-		const auto head = sentinel->next;
-
-		delete sentinel;
-
-		return head;
-	}
-
-	static list_node* make_list( const std::vector<int>& values )
-	{
-		const auto sentinel = new list_node( -1 );
-		auto prev = sentinel;
-		
-		for( const auto value : values )
-		{
-			prev->next = new list_node( value );
-			prev = prev->next;
-		}
-
-		const auto head = sentinel->next;
-
-		delete sentinel;
-		
-		return head;
-	}
-
-	static void cleanup_list( list_node * node )
-	{
-		while( node )
-		{
-			const auto tmp = node->next;
-			delete node;
-			node = tmp;
-		}
-
-		node = nullptr;
+		return max_profit;
 	}
 };
 
 auto main() -> int
 {
-	const auto l1 = merge_sorted_lists::make_list( { 1, 2, 4 } );
-	const auto l2 = merge_sorted_lists::make_list( { 1, 3, 4 } );
+	auto input1 = std::vector<int>{ 7, 1, 5, 3, 6, 4 }; // 5
+	auto input2 = std::vector<int>{ 7, 6, 4, 3, 1 }; // 0
+	auto input3 = std::vector<int>{ 7 }; // 0
+	auto input4 = std::vector<int>{ 7, 1, 3 }; // 2
+	auto input5 = std::vector<int>{ 7, 1, 3, 2, 9, 4 }; // 8
+	auto input6 = std::vector<int>{ 7, 1, 3, 2, 9, 4, 2, 2, 1, 2, 6 }; // 8
+	auto input7 = std::vector<int>{ 7, 1, 3, 2, 9, 4, 2, 2, 1, 2, 6, 7, 8, 9, 10 }; // 9
 	
-	const auto result = merge_sorted_lists::merge_two_lists( l1, l2 );
+	const auto result = buy_and_sell_stock::max_profit( input2 );
 
-	merge_sorted_lists::cleanup_list( result );
-	
 	std::cout << result;
 	
 	return 0;
