@@ -57,6 +57,7 @@
     <ClCompile Include="hr_str.cpp" />
     <ClCompile Include="lang_tests.cpp" />
     <ClCompile Include="lc_arr.cpp" />
+    <ClCompile Include="lc_hashtable.cpp" />
     <ClCompile Include="lc_heap.cpp" />
     <ClCompile Include="lc_linkedlist.cpp" />
     <ClCompile Include="lc_math.cpp" />

@@ -211,7 +211,7 @@ namespace leetcode::arr
 			auto max_profit = 0;
 			auto buy_price = prices.at( 0 ), sell_price = -1;
 
-			for( auto index = 1; index < prices.size(); ++index )
+			for( auto index = 1ULL; index < prices.size(); ++index )
 			{
 				if( prices.at( index ) < buy_price )
 				{

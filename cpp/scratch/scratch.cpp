@@ -1,66 +1,94 @@
 #include <bits/stdc++.h>
 
-/* 121. Best Time to Buy and Sell Stock.
+/* 146. LRU Cache.
 
-Say you have an array for which the ith element is the price of a given stock on day i.
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and put.
 
-If you were only permitted to complete at most one transaction (i.e., buy one and sell one share of the stock), design an algorithm to find the maximum profit.
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+put(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
 
-Note that you cannot sell a stock before you buy one.
+The cache is initialized with a positive capacity.
 
-Example 1:
-Input: [7,1,5,3,6,4]
-Output: 5
-Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
-             Not 7-1 = 6, as selling price needs to be larger than buying price.
+Follow up:
+Could you do both operations in O(1) time complexity?
 
-Example 2:
-Input: [7,6,4,3,1]
-Output: 0
-Explanation: In this case, no transaction is done, i.e. max profit = 0.
+Example:
+
+LRUCache cache = new LRUCache( 2 ); // capacity 
+
+cache.put( 1, 1 );
+cache.put( 2, 2 );
+cache.get( 1 );       // returns 1
+cache.put( 3, 3 );    // evicts key 2
+cache.get( 2 );       // returns -1 (not found)
+cache.put( 4, 4 );    // evicts key 1
+cache.get( 1 );       // returns -1 (not found)
+cache.get( 3 );       // returns 3
+cache.get( 4 );       // returns 4
 */
 
-struct buy_and_sell_stock
+template<typename TKey, typename TValue>
+class LRUCache
 {
-	static int max_profit( const std::vector<int>& prices )
-	{
-		if( prices.empty() ) return 0;
-		
-		auto max_profit = 0;
-		auto buy_price = prices.at( 0 ), sell_price = -1;
-		
-		for( auto index = 1; index < prices.size(); ++index )
-		{
-			if( prices.at( index ) < buy_price )
-			{
-				buy_price = prices.at( index );
-				sell_price = -1;
-			}
-			else if( prices.at( index ) > sell_price )
-			{
-				sell_price = prices.at( index );
-			}
+	const std::size_t capacity_;
+	std::unordered_map<TKey, TValue> values_;
+	std::list<TKey> keys_;
+	
+public:
 
-			max_profit = std::max( max_profit, sell_price - buy_price );
+	explicit LRUCache( const std::size_t capacity )
+		: capacity_{ capacity }
+	{ }
+
+	void put( const TKey key, const TValue value )
+	{
+		if( values_.find( key ) != values_.end() )
+		{
+			keys_.remove( key );
+			keys_.push_front( key );
+		}
+		else
+		{
+			if( keys_.size() >= capacity_ )
+			{
+				values_.erase( keys_.back() );
+				keys_.remove( keys_.back() );
+			}
+			
+			values_.insert( std::make_pair( key, value ) );
+			keys_.push_front( key );
+		}		
+	}
+
+	TValue get( const TKey key )
+	{	
+		if( values_.find( key ) != values_.end() )
+		{
+			auto result = values_.at( key );
+
+			keys_.remove( key );
+			keys_.push_front( key );
+
+			return result;
 		}
 
-		return max_profit;
+		return -1;
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<int>{ 7, 1, 5, 3, 6, 4 }; // 5
-	auto input2 = std::vector<int>{ 7, 6, 4, 3, 1 }; // 0
-	auto input3 = std::vector<int>{ 7 }; // 0
-	auto input4 = std::vector<int>{ 7, 1, 3 }; // 2
-	auto input5 = std::vector<int>{ 7, 1, 3, 2, 9, 4 }; // 8
-	auto input6 = std::vector<int>{ 7, 1, 3, 2, 9, 4, 2, 2, 1, 2, 6 }; // 8
-	auto input7 = std::vector<int>{ 7, 1, 3, 2, 9, 4, 2, 2, 1, 2, 6, 7, 8, 9, 10 }; // 9
-	
-	const auto result = buy_and_sell_stock::max_profit( input2 );
+	auto cache = LRUCache<int, int>( 2 ); // capacity 
 
-	std::cout << result;
+	cache.put( 1, 1 );
+	cache.put( 2, 2 );
+	std::cout << cache.get( 1 ) << std::endl;     // returns 1
+	cache.put( 3, 3 );						 // evicts key 2
+	std::cout << cache.get( 2 ) << std::endl;;    // returns -1 (not found)
+	cache.put( 4, 4 );						 // evicts key 1
+	std::cout << cache.get( 1 ) << std::endl;;     // returns -1 (not found)
+	std::cout << cache.get( 3 ) << std::endl;;     // returns 3
+	std::cout << cache.get( 4 ) << std::endl;;     // returns 4
 	
 	return 0;
 }
