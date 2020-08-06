@@ -37,7 +37,7 @@ namespace leetcode::hashtable
 	*/
 
 	template<typename TKey, typename TValue>
-	class LRUCache
+	class lru_cache
 	{
 		const std::size_t capacity_;
 		std::unordered_map<TKey, TValue> values_;
@@ -45,7 +45,7 @@ namespace leetcode::hashtable
 
 	public:
 
-		explicit LRUCache( const std::size_t capacity )
+		explicit lru_cache( const std::size_t capacity )
 			: capacity_{ capacity }
 		{ }
 
@@ -62,14 +62,17 @@ namespace leetcode::hashtable
 			}
 			else
 			{
+				// if we're at capacity, remove the
+				// lru item (back of dll)
 				if( keys_.size() >= capacity_ )
 				{
 					values_.erase( keys_.back() );
 					keys_.remove( keys_.back() );
 				}
 
-				values_.insert( std::make_pair( key, value ) );
 				keys_.push_front( key );
+				
+				values_[ key ] = value;
 			}
 		}
 

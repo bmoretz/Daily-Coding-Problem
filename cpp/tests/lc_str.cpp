@@ -424,4 +424,94 @@ namespace leetcode::str::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class log_reorder_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( log_reorder_tests, case1 )
+    {
+        auto input = std::vector<std::string>{
+            "dig1 8 1 5 1",
+            "let1 art can",
+            "dig2 3 6",
+            "let2 own kit dig",
+            "let3 art zero"
+        };
+
+        const auto actual = log_reorder::reorder_log_files( input );
+        const auto expected = std::vector<std::string>
+    	{
+			"let1 art can",
+    		"let3 art zero",
+    		"let2 own kit dig",
+    		"dig1 8 1 5 1",
+    		"dig2 3 6"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( log_reorder_tests, case2 )
+    {
+        auto input = std::vector<std::string>{
+	        "dig1 8 1 5 1",
+	        "let1 art can",
+	        "dig2 3 6",
+	        "let2 own kit dig",
+	        "let3 art zero",
+        	"art0 a new type of art"
+        };
+
+        const auto actual = log_reorder::reorder_log_files( input );
+        const auto expected = std::vector<std::string>
+        {
+			"art0 a new type of art",
+        	"let1 art can",
+        	"let3 art zero",
+        	"let2 own kit dig",
+        	"dig1 8 1 5 1",
+        	"dig2 3 6"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( log_reorder_tests, case3 )
+    {
+        auto input = std::vector<std::string>{
+            "dig1 8 1 5 1",
+            "let1 art can",
+            "dig2 3 6",
+            "let2 own kit dig",
+            "let3 art zero",
+            "digit3 4 9 1 3",
+            "art1 life is a garden",
+            "dig1 it"
+        };
+
+        const auto actual = log_reorder::reorder_log_files( input );
+        const auto expected = std::vector<std::string>
+        {
+        	"let1 art can",
+        	"let3 art zero",
+        	"dig1 it",
+        	"art1 life is a garden",
+        	"let2 own kit dig",
+        	"dig1 8 1 5 1",
+        	"dig2 3 6",
+        	"digit3 4 9 1 3"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

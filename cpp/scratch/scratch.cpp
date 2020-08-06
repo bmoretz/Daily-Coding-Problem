@@ -1,94 +1,135 @@
 #include <bits/stdc++.h>
 
-/* 146. LRU Cache.
+/* 937. Reorder Data in Log Files.
 
-Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and put.
+You have an array of logs.  Each log is a space delimited string of words.
 
-get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
-put(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
+For each log, the first word in each log is an alphanumeric identifier.  Then, either:
 
-The cache is initialized with a positive capacity.
+Each word after the identifier will consist only of lowercase letters, or;
+Each word after the identifier will consist only of digits.
+We will call these two varieties of logs letter-logs and digit-logs.
+It is guaranteed that each log has at least one word after its identifier.
 
-Follow up:
-Could you do both operations in O(1) time complexity?
+Reorder the logs so that all of the letter-logs come before any digit-log.  The letter-logs are ordered
+lexicographically ignoring identifier, with the identifier used in case of ties.  The digit-logs
+should be put in their original order.
 
-Example:
+Return the final order of the logs.
 
-LRUCache cache = new LRUCache( 2 ); // capacity 
+Example 1:
 
-cache.put( 1, 1 );
-cache.put( 2, 2 );
-cache.get( 1 );       // returns 1
-cache.put( 3, 3 );    // evicts key 2
-cache.get( 2 );       // returns -1 (not found)
-cache.put( 4, 4 );    // evicts key 1
-cache.get( 1 );       // returns -1 (not found)
-cache.get( 3 );       // returns 3
-cache.get( 4 );       // returns 4
+Input: logs = ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
+Output: ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
+ 
+Constraints:
+
+0 <= logs.length <= 100
+3 <= logs[i].length <= 100
+logs[i] is guaranteed to have an identifier, and a word after the identifier.
+Accepted
 */
 
-template<typename TKey, typename TValue>
-class LRUCache
+struct log_reorder
 {
-	const std::size_t capacity_;
-	std::unordered_map<TKey, TValue> values_;
-	std::list<TKey> keys_;
-	
-public:
-
-	explicit LRUCache( const std::size_t capacity )
-		: capacity_{ capacity }
-	{ }
-
-	void put( const TKey key, const TValue value )
+	enum class log_type
 	{
-		if( values_.find( key ) != values_.end() )
-		{
-			keys_.remove( key );
-			keys_.push_front( key );
-		}
-		else
-		{
-			if( keys_.size() >= capacity_ )
-			{
-				values_.erase( keys_.back() );
-				keys_.remove( keys_.back() );
-			}
-			
-			values_.insert( std::make_pair( key, value ) );
-			keys_.push_front( key );
-		}		
+		letter = 0,
+		digit = 1
+	};
+
+	/// <summary>
+	/// parse log data
+	///
+	/// takes in a log file and returns its type and its storage key
+	/// </summary>
+	/// <param name="log"></param>
+	/// <returns></returns>
+	static std::pair<log_type, std::string> parse_log_data( const std::string& log )
+	{
+		const auto split_position = log.find_first_of( ' ' );
+
+		const auto log_id = log.substr( 0, split_position );
+		const auto log_value = log.substr( split_position + 1, log.size() );
+
+		const auto is_digit = std::isdigit( log_value.at( 0 ) );
+		const auto type = static_cast< log_type >( is_digit == 0 ? 0 : 1 );
+
+		return std::make_pair( type, log_value + ' ' + log_id );
 	}
 
-	TValue get( const TKey key )
-	{	
-		if( values_.find( key ) != values_.end() )
+	/// <summary>
+	/// separates the logs by type (digit, letter) and then stores them in the appropriate
+	/// data structure for later reconstruction.
+	/// </summary>
+	/// <param name="logs">input data set</param>
+	/// <returns>ordered log set</returns>
+	static std::vector<std::string> reorder_log_files( std::vector<std::string>& logs )
+	{
+		std::map<std::string, std::string> letters;
+		std::vector<std::string> digits;
+		
+		for( const auto& log : logs )
 		{
-			auto result = values_.at( key );
+			const auto parsed = parse_log_data( log );
 
-			keys_.remove( key );
-			keys_.push_front( key );
-
-			return result;
+			if( parsed.first == log_type::letter )
+			{
+				letters[ parsed.second ] = log;
+			}
+			else
+			{
+				digits.push_back( log );
+			}
 		}
 
-		return -1;
+		std::vector<std::string> results( letters.size() + digits.size() );
+		auto index = std::size_t();
+		
+		for( const auto& kv : letters )
+		{
+			results[ index++ ] =  kv.second;
+		}
+
+		for( auto& digit : digits )
+		{
+			results[ index++ ] = digit;
+		}
+		
+		return results;
 	}
 };
 
 auto main() -> int
 {
-	auto cache = LRUCache<int, int>( 2 ); // capacity 
+	auto input1 = std::vector<std::string>{
+		"dig1 8 1 5 1",
+		"let1 art can",
+		"dig2 3 6",
+		"let2 own kit dig",
+		"let3 art zero"
+	};
 
-	cache.put( 1, 1 );
-	cache.put( 2, 2 );
-	std::cout << cache.get( 1 ) << std::endl;     // returns 1
-	cache.put( 3, 3 );						 // evicts key 2
-	std::cout << cache.get( 2 ) << std::endl;;    // returns -1 (not found)
-	cache.put( 4, 4 );						 // evicts key 1
-	std::cout << cache.get( 1 ) << std::endl;;     // returns -1 (not found)
-	std::cout << cache.get( 3 ) << std::endl;;     // returns 3
-	std::cout << cache.get( 4 ) << std::endl;;     // returns 4
+	auto input2 = std::vector<std::string>{
+		"dig1 8 1 5 1",
+		"let1 art can",
+		"dig2 3 6",
+		"let2 own kit dig",
+		"let3 art zero"
+	};
+
+	auto input3 = std::vector<std::string>{
+		"dig1 8 1 5 1",
+		"let1 art can",
+		"dig2 3 6",
+		"let2 own kit dig",
+		"let3 art zero",
+		"digit3 4 9 1 3",
+		"art1 life is a garden",
+		"dig1 it"
+	};
 	
+	const auto result = log_reorder::reorder_log_files( input1 );
+
 	return 0;
 }

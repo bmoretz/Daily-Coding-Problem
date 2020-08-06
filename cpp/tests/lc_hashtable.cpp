@@ -20,7 +20,7 @@ namespace leetcode::hashtable::tests
 
     TEST_F( lru_cache_tests, case1 )
     {
-        auto cache = LRUCache<int, int>( 2 );
+        auto cache = lru_cache<int, int>( 2 );
 
         cache.put( 1, 1 );
         cache.put( 2, 2 );
@@ -38,7 +38,7 @@ namespace leetcode::hashtable::tests
 
     TEST_F( lru_cache_tests, case2 )
     {
-        auto cache = LRUCache<int, int>( 2 );
+        auto cache = lru_cache<int, int>( 2 );
 
         cache.put( 2, 1 );
         cache.put( 2, 2 );
@@ -53,7 +53,7 @@ namespace leetcode::hashtable::tests
 
     TEST_F( lru_cache_tests, case3 )
     {
-        auto cache = LRUCache<int, int>( 2 );
+        auto cache = lru_cache<int, int>( 2 );
 
         cache.put( 2, 1 );
 
