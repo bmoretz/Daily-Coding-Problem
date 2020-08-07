@@ -1,68 +1,137 @@
 #include <bits/stdc++.h>
 
-/* 240. Search a 2D Matrix II.
+/* 56. Merge Intervals.
 
-Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+Given a collection of intervals, merge all overlapping intervals.
 
-Integers in each row are sorted in ascending from left to right.
-Integers in each column are sorted in ascending from top to bottom.
-Example:
+Example 1:
 
-Consider the following matrix:
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
 
-[
-  [1,   4,  7, 11, 15],
-  [2,   5,  8, 12, 19],
-  [3,   6,  9, 16, 22],
-  [10, 13, 14, 17, 24],
-  [18, 21, 23, 26, 30]
-]
+Example 2:
 
-Given target = 5, return true.
-Given target = 20, return false.
+Input: intervals = [[1,4],[4,5]]
+Output: [[1,5]]
+Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+NOTE: input types have been changed on April 15, 2019. Please reset to default code definition to get new method signature.
+
+Constraints:
+
+intervals[i][0] <= intervals[i][1]
 */
 
-struct matrix_search_ii
+struct merge_intervals
 {
-	static bool search_matrix(const std::vector<std::vector<int>>& matrix, const int target)
+	static bool are_overlapping( const std::vector<int>& first, const std::vector<int>& second )
 	{
-		for (const auto& row : matrix)
+		const auto fol = first.front() <= second.front() && second.front() <= first.back();
+		const auto sol = second.front() <= first.front() && first.front() <= second.back();
+		
+		return fol || sol;
+	}
+	
+	static std::vector<std::vector<int>> merge( std::vector<std::vector<int>>& intervals )
+	{
+		if( intervals.size() <= 1 ) return intervals;
+
+		std::sort( intervals.begin(), intervals.end(),
+			[]( const auto& first, const auto& second )
 		{
-			if (row.empty() || row.at(0) > target)
-				continue;
+				return first[0] < second[0];
+		} );
 
-			if (std::binary_search(row.begin(), row.end(), target))
-				return true;
+		std::vector<std::vector<int>> merged;
+
+		merged.push_back( intervals[ 0 ] );
+		
+		auto index = 1UL;
+
+		while( index < intervals.size() )
+		{
+			auto& last = merged.back();
+			auto& cur = intervals.at( index );
+
+			if( are_overlapping( last, cur ) )
+			{
+				merged.back()[ 1 ] = std::max( merged.back()[ 1 ], cur[ 1 ] );
+			}
+			else
+			{
+				if( last.back() < cur.front() )
+				{
+					merged.push_back( cur );
+				}
+			}
+
+			++index;
 		}
-
-		return false;
+		
+		return merged;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<int>>
+	auto input1 = std::vector<std::vector<int>>
 	{
-		{
-			241, 348, 801, 822, 1204, 1438, 1917, 1954, 2030, 2253, 2547, 2723, 3147, 3259, 3635, 3963, 4251, 4440,
-			4848, 5195, 5264, 5410, 5537, 5844, 6138, 6604, 6693, 6876, 7148, 7307, 7504, 7788, 7821, 7990, 8112, 8447,
-			8588, 8988, 9104, 9532, 9742, 10148, 10391, 10828, 11296, 11699, 12059, 12245, 12741, 12754, 13119, 13178,
-			13436, 13798, 14233, 14510, 14775, 15049, 15154, 15192, 15395, 15803, 15941, 16388, 16655, 16676, 16901,
-			17220, 17686, 18077, 18239, 18666, 18973, 19323, 19356, 19464, 19743, 19933, 20030, 20183, 20228, 20515,
-			20974, 21429, 21524, 21896, 22298, 22447, 22622, 23109, 23214, 23701, 24096, 24434, 24514, 24834, 25029,
-			25303, 25336, 25747, 26012, 26455, 26844, 27226, 27291, 27566, 27885, 28343, 28412, 28625, 28806, 29107,
-			29358, 29637, 29649, 29970, 30137, 30253, 30657, 31069, 31177, 31576, 31988, 32146, 32545, 32715, 32963,
-			32971, 33096, 33530, 33603, 33721, 34091, 34449, 34630, 34886, 35129, 35211, 35659, 36136, 36429, 36734,
-			36956, 37137, 37625, 37905, 37980, 38138, 38553, 38563, 38877, 38984, 39065, 39501, 39623, 40118, 40504,
-			40782, 40860, 41168, 41508, 41833, 42278, 42757, 43127, 43206, 43399, 43450, 43725, 43884, 44155, 44457,
-			44818, 44894
-		}
+		{ 1, 3 },
+		{ 2, 6 },
+		{ 8, 10 },
+		{ 15, 18}
 	};
 
-	auto input2 = std::vector<std::vector<int>>{{}};
+	auto input2 = std::vector<std::vector<int>>
+	{
+		{ 1, 4 },
+		{ 4, 5 }
+	};
 
-	const auto result = matrix_search_ii::search_matrix(input1, 20);
+	auto input5 = std::vector<std::vector<int>>
+	{
+		{}
+	};
+	
+	auto input3 = std::vector<std::vector<int>>
+	{
+		{ 1, 3 },
+		{ 2, 6 },
+		{ 8, 10 },
+		{ 15, 18 },
+		{ 5, 10 },
+		{ 3, 8 },
+		{ 1, 10 },
+		{ 0, 0 }
+	};
 
-	std::cout << result;
+	auto input4 = std::vector<std::vector<int>>
+	{
+		{ 1, 3 },
+		{ 2, 6 },
+		{ 8, 10 },
+		{ 15, 18 },
+		{ 5, 10 },
+		{ 3, 8 },
+		{ 1, 10 },
+		{ 0, 0 },
+		{ 4, 9 },
+		{ 3, 7 }
+	};
+	
+	// [[1,3],[2,6],[8,10],[15,18],[5,10]]
+	
+	const auto result = merge_intervals::merge( input3 );
+
+	for( auto& res : result )
+	{
+		for( auto val : res )
+		{
+			std::cout << val << " ";
+		}
+
+		std::cout << std::endl;
+	}
+	
 	return 0;
 }

@@ -89,6 +89,9 @@
     <ClCompile Include="lc_matrix.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="interval.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
