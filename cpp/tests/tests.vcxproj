@@ -61,6 +61,7 @@
     <ClCompile Include="lc_heap.cpp" />
     <ClCompile Include="lc_linkedlist.cpp" />
     <ClCompile Include="lc_math.cpp" />
+    <ClCompile Include="lc_matrix.cpp" />
     <ClCompile Include="lc_stack.cpp" />
     <ClCompile Include="lc_str.cpp" />
     <ClCompile Include="lc_tree.cpp" />

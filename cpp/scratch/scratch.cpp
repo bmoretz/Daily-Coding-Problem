@@ -1,135 +1,68 @@
 #include <bits/stdc++.h>
 
-/* 937. Reorder Data in Log Files.
+/* 240. Search a 2D Matrix II.
 
-You have an array of logs.  Each log is a space delimited string of words.
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
 
-For each log, the first word in each log is an alphanumeric identifier.  Then, either:
+Integers in each row are sorted in ascending from left to right.
+Integers in each column are sorted in ascending from top to bottom.
+Example:
 
-Each word after the identifier will consist only of lowercase letters, or;
-Each word after the identifier will consist only of digits.
-We will call these two varieties of logs letter-logs and digit-logs.
-It is guaranteed that each log has at least one word after its identifier.
+Consider the following matrix:
 
-Reorder the logs so that all of the letter-logs come before any digit-log.  The letter-logs are ordered
-lexicographically ignoring identifier, with the identifier used in case of ties.  The digit-logs
-should be put in their original order.
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
 
-Return the final order of the logs.
-
-Example 1:
-
-Input: logs = ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
-Output: ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
- 
-Constraints:
-
-0 <= logs.length <= 100
-3 <= logs[i].length <= 100
-logs[i] is guaranteed to have an identifier, and a word after the identifier.
-Accepted
+Given target = 5, return true.
+Given target = 20, return false.
 */
 
-struct log_reorder
+struct matrix_search_ii
 {
-	enum class log_type
+	static bool search_matrix(const std::vector<std::vector<int>>& matrix, const int target)
 	{
-		letter = 0,
-		digit = 1
-	};
-
-	/// <summary>
-	/// parse log data
-	///
-	/// takes in a log file and returns its type and its storage key
-	/// </summary>
-	/// <param name="log"></param>
-	/// <returns></returns>
-	static std::pair<log_type, std::string> parse_log_data( const std::string& log )
-	{
-		const auto split_position = log.find_first_of( ' ' );
-
-		const auto log_id = log.substr( 0, split_position );
-		const auto log_value = log.substr( split_position + 1, log.size() );
-
-		const auto is_digit = std::isdigit( log_value.at( 0 ) );
-		const auto type = static_cast< log_type >( is_digit == 0 ? 0 : 1 );
-
-		return std::make_pair( type, log_value + ' ' + log_id );
-	}
-
-	/// <summary>
-	/// separates the logs by type (digit, letter) and then stores them in the appropriate
-	/// data structure for later reconstruction.
-	/// </summary>
-	/// <param name="logs">input data set</param>
-	/// <returns>ordered log set</returns>
-	static std::vector<std::string> reorder_log_files( std::vector<std::string>& logs )
-	{
-		std::map<std::string, std::string> letters;
-		std::vector<std::string> digits;
-		
-		for( const auto& log : logs )
+		for (const auto& row : matrix)
 		{
-			const auto parsed = parse_log_data( log );
+			if (row.empty() || row.at(0) > target)
+				continue;
 
-			if( parsed.first == log_type::letter )
-			{
-				letters[ parsed.second ] = log;
-			}
-			else
-			{
-				digits.push_back( log );
-			}
+			if (std::binary_search(row.begin(), row.end(), target))
+				return true;
 		}
 
-		std::vector<std::string> results( letters.size() + digits.size() );
-		auto index = std::size_t();
-		
-		for( const auto& kv : letters )
-		{
-			results[ index++ ] =  kv.second;
-		}
-
-		for( auto& digit : digits )
-		{
-			results[ index++ ] = digit;
-		}
-		
-		return results;
+		return false;
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<std::string>{
-		"dig1 8 1 5 1",
-		"let1 art can",
-		"dig2 3 6",
-		"let2 own kit dig",
-		"let3 art zero"
+	const auto input1 = std::vector<std::vector<int>>
+	{
+		{
+			241, 348, 801, 822, 1204, 1438, 1917, 1954, 2030, 2253, 2547, 2723, 3147, 3259, 3635, 3963, 4251, 4440,
+			4848, 5195, 5264, 5410, 5537, 5844, 6138, 6604, 6693, 6876, 7148, 7307, 7504, 7788, 7821, 7990, 8112, 8447,
+			8588, 8988, 9104, 9532, 9742, 10148, 10391, 10828, 11296, 11699, 12059, 12245, 12741, 12754, 13119, 13178,
+			13436, 13798, 14233, 14510, 14775, 15049, 15154, 15192, 15395, 15803, 15941, 16388, 16655, 16676, 16901,
+			17220, 17686, 18077, 18239, 18666, 18973, 19323, 19356, 19464, 19743, 19933, 20030, 20183, 20228, 20515,
+			20974, 21429, 21524, 21896, 22298, 22447, 22622, 23109, 23214, 23701, 24096, 24434, 24514, 24834, 25029,
+			25303, 25336, 25747, 26012, 26455, 26844, 27226, 27291, 27566, 27885, 28343, 28412, 28625, 28806, 29107,
+			29358, 29637, 29649, 29970, 30137, 30253, 30657, 31069, 31177, 31576, 31988, 32146, 32545, 32715, 32963,
+			32971, 33096, 33530, 33603, 33721, 34091, 34449, 34630, 34886, 35129, 35211, 35659, 36136, 36429, 36734,
+			36956, 37137, 37625, 37905, 37980, 38138, 38553, 38563, 38877, 38984, 39065, 39501, 39623, 40118, 40504,
+			40782, 40860, 41168, 41508, 41833, 42278, 42757, 43127, 43206, 43399, 43450, 43725, 43884, 44155, 44457,
+			44818, 44894
+		}
 	};
 
-	auto input2 = std::vector<std::string>{
-		"dig1 8 1 5 1",
-		"let1 art can",
-		"dig2 3 6",
-		"let2 own kit dig",
-		"let3 art zero"
-	};
+	auto input2 = std::vector<std::vector<int>>{{}};
 
-	auto input3 = std::vector<std::string>{
-		"dig1 8 1 5 1",
-		"let1 art can",
-		"dig2 3 6",
-		"let2 own kit dig",
-		"let3 art zero",
-		"digit3 4 9 1 3",
-		"art1 life is a garden",
-		"dig1 it"
-	};
-	
-	const auto result = log_reorder::reorder_log_files( input1 );
+	const auto result = matrix_search_ii::search_matrix(input1, 20);
 
+	std::cout << result;
 	return 0;
 }

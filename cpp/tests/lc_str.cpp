@@ -463,6 +463,7 @@ namespace leetcode::str::tests
 
     TEST_F( log_reorder_tests, case2 )
     {
+    	
         auto input = std::vector<std::string>{
 	        "dig1 8 1 5 1",
 	        "let1 art can",

@@ -160,6 +160,7 @@
     <ClInclude Include="heap.h" />
     <ClInclude Include="linkedlist.h" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="matrix.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="str.h" />
