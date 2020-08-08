@@ -95,6 +95,9 @@
     <ClCompile Include="lc_backtrack.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="lc_dynamic.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

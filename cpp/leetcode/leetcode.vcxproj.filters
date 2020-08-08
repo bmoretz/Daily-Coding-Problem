@@ -54,6 +54,9 @@
     <ClInclude Include="backtrack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dynamic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="leetcode.cpp">

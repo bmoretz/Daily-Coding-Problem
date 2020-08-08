@@ -1,95 +1,89 @@
 #include <bits/stdc++.h>
 
-/* 254. Factor Combinations.
+/* 1143. Longest Common Subsequence.
 
-Numbers can be regarded as product of its factors. For example,
+Given two strings text1 and text2, return the length of their longest common subsequence.
 
-8 = 2 x 2 x 2;
-  = 2 x 4.
+A subsequence of a string is a new string generated from the original string with some characters(can be none) deleted without
+changing the relative order of the remaining characters. (eg, "ace" is a subsequence of "abcde" while "aec" is not). A common
+subsequence of two strings is a subsequence that is common to both strings.
 
-Write a function that takes an integer n and return all possible combinations of its factors.
-
-Note:
-
-You may assume that n is always positive.
-Factors should be greater than 1 and less than n.
+If there is no common subsequence, return 0.
 
 Example 1:
-Input: 1
-Output: []
 
+Input: text1 = "abcde", text2 = "ace" 
+Output: 3  
+Explanation: The longest common subsequence is "ace" and its length is 3.
 Example 2:
-Input: 37
-Output:[]
 
+Input: text1 = "abc", text2 = "abc"
+Output: 3
+Explanation: The longest common subsequence is "abc" and its length is 3.
 Example 3:
-Input: 12
-Output:
-[
-  [2, 6],
-  [2, 2, 3],
-  [3, 4]
-]
 
-Example 4:
-Input: 32
-Output:
-[
-  [2, 16],
-  [2, 2, 8],
-  [2, 2, 2, 4],
-  [2, 2, 2, 2, 2],
-  [2, 4, 4],
-  [4, 8]
-]
+Input: text1 = "abc", text2 = "def"
+Output: 0
+Explanation: There is no such common subsequence, so the result is 0.
+ 
+
+Constraints:
+
+1 <= text1.length <= 1000
+1 <= text2.length <= 1000
+The input strings consist of lowercase English characters only.
 */
 
-struct factor_combinations
+struct longest_common_subsequence
 {
-	static std::vector<std::vector<int>> getFactors( const int n )
+	static std::vector<std::vector<int>> mem;
+	
+	static int lcs( const std::string& text1, const std::string& text2 )
 	{
-		std::vector<std::vector<int>> results;
-		auto cur = std::vector<int>{ };
-		
-		factor( results, cur, n, 2 );
+		const auto n = text1.size(), m = text2.size() + 1;
 
-		return results;
+		mem = std::vector( n + 1, std::vector<int>( m + 1, -1 ) );
+
+		return lcs( text1, text2, 0, 0 );
 	}
 
-	static void factor( std::vector<std::vector<int>>& results, std::vector<int>& cur,
-		const int n, const int start )
+	static int lcs( const std::string& text1, const std::string& text2,
+		const std::size_t pos1, const std::size_t pos2 )
 	{
-		if( n <= 1 )
-		{
-			if( cur.size() > 1 )
-			{				
-				results.emplace_back( std::vector<int>( cur ) );
-			}
-
-			return;
+		if( pos1 == text1.size() || pos2 == text2.size() ) return 0;
+		
+		if( mem[ pos1 ][ pos2 ] != -1 )
+		{	
+			return mem[ pos1 ][ pos2 ];
 		}
 
-		for( auto divisor = start; divisor <= n; ++divisor )
+		const auto option1 = lcs( text1, text2, pos1 + 1, pos2 );
+
+		const auto first_occ = text2.find_first_of( text1.at( pos1 ), pos2 );
+		auto option2 = 0;
+
+		if( first_occ != std::string::npos )
 		{
-			if( n % divisor == 0 )
-			{
-				cur.emplace_back( divisor );
-				factor( results, cur, n / divisor, divisor );
-				cur.erase( cur.end() - 1 );
-			}
+			option2 = 1 + lcs( text1, text2, pos1 + 1, first_occ + 1 );
 		}
+
+		mem[ pos1 ][ pos2 ] = std::max( option1, option2 );
+
+		return mem[ pos1 ][ pos2 ];
 	}
 };
 
+std::vector<std::vector<int>> longest_common_subsequence::mem;
+
 auto main() -> int
 {
-	const auto input1 = 1;
+	const auto input1 = std::pair<std::string, std::string>{ "abcde", "ace" };
 	const auto input2 = 37;
 	const auto input3 = 12;
 	const auto input4 = 32;
 	const auto input5 = 128;
-	
-	const auto result = factor_combinations::getFactors( input3 );
-	
+
+	const auto result = longest_common_subsequence::lcs( input1.first, input1.second );
+
 	return 0;
 }
