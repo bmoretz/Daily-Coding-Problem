@@ -1,89 +1,52 @@
 #include <bits/stdc++.h>
 
-/* 1143. Longest Common Subsequence.
+/* 1287. Element Appearing More Than 25% In Sorted Array.
 
-Given two strings text1 and text2, return the length of their longest common subsequence.
+Given an integer array sorted in non-decreasing order, there is exactly one integer in the array that occurs more than 25% of the time.
 
-A subsequence of a string is a new string generated from the original string with some characters(can be none) deleted without
-changing the relative order of the remaining characters. (eg, "ace" is a subsequence of "abcde" while "aec" is not). A common
-subsequence of two strings is a subsequence that is common to both strings.
-
-If there is no common subsequence, return 0.
+Return that integer.
 
 Example 1:
 
-Input: text1 = "abcde", text2 = "ace" 
-Output: 3  
-Explanation: The longest common subsequence is "ace" and its length is 3.
-Example 2:
-
-Input: text1 = "abc", text2 = "abc"
-Output: 3
-Explanation: The longest common subsequence is "abc" and its length is 3.
-Example 3:
-
-Input: text1 = "abc", text2 = "def"
-Output: 0
-Explanation: There is no such common subsequence, so the result is 0.
- 
+Input: arr = [1,2,2,6,6,6,6,7,10]
+Output: 6
 
 Constraints:
 
-1 <= text1.length <= 1000
-1 <= text2.length <= 1000
-The input strings consist of lowercase English characters only.
+1 <= arr.length <= 10^4
+0 <= arr[i] <= 10^5
 */
 
-struct longest_common_subsequence
+struct element_with_most_appearances
 {
-	static std::vector<std::vector<int>> mem;
-	
-	static int lcs( const std::string& text1, const std::string& text2 )
-	{
-		const auto n = text1.size(), m = text2.size() + 1;
+    static int find_special_integer( const std::vector<int>& arr )
+    {
+        std::unordered_map<int, int> counts;
+        auto max_freq = -1;
 
-		mem = std::vector( n + 1, std::vector<int>( m + 1, -1 ) );
+        for( auto cur : arr )
+        {
+	        counts[ cur ]++;
 
-		return lcs( text1, text2, 0, 0 );
-	}
+            if( max_freq == -1 || counts[ cur ] > counts[ max_freq ] )
+            {
+                max_freq = cur;
+            }
+        }
 
-	static int lcs( const std::string& text1, const std::string& text2,
-		const std::size_t pos1, const std::size_t pos2 )
-	{
-		if( pos1 == text1.size() || pos2 == text2.size() ) return 0;
-		
-		if( mem[ pos1 ][ pos2 ] != -1 )
-		{	
-			return mem[ pos1 ][ pos2 ];
-		}
-
-		const auto option1 = lcs( text1, text2, pos1 + 1, pos2 );
-
-		const auto first_occ = text2.find_first_of( text1.at( pos1 ), pos2 );
-		auto option2 = 0;
-
-		if( first_occ != std::string::npos )
-		{
-			option2 = 1 + lcs( text1, text2, pos1 + 1, first_occ + 1 );
-		}
-
-		mem[ pos1 ][ pos2 ] = std::max( option1, option2 );
-
-		return mem[ pos1 ][ pos2 ];
-	}
+        return max_freq;
+    }
 };
-
-std::vector<std::vector<int>> longest_common_subsequence::mem;
 
 auto main() -> int
 {
-	const auto input1 = std::pair<std::string, std::string>{ "abcde", "ace" };
-	const auto input2 = 37;
-	const auto input3 = 12;
-	const auto input4 = 32;
-	const auto input5 = 128;
+    const auto input1 = std::vector<int>{ 1, 1, 2, 3 };
+	const auto input2 = std::vector<int>{ 1, 2, 2, 3 };
+	const auto input3 = std::vector<int>{ 1, 2, 3, 3 };
+	const auto input4 = std::vector<int>{ 1, 1, 2, 3, 3, 3 };
+	const auto input5 = std::vector<int>{ 1, 1, 2, 2, 3, 3, 3 };
 
-	const auto result = longest_common_subsequence::lcs( input1.first, input1.second );
+    const auto result = element_with_most_appearances::find_special_integer( input1 );
 
 	return 0;
 }
