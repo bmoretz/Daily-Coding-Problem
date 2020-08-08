@@ -55,7 +55,8 @@
     <ClCompile Include="hr_oo_design.cpp" />
     <ClCompile Include="hr_stl.cpp" />
     <ClCompile Include="hr_str.cpp" />
-    <ClCompile Include="interval.cpp" />
+    <ClCompile Include="lc_backtrack.cpp" />
+    <ClCompile Include="lc_interval.cpp" />
     <ClCompile Include="lang_tests.cpp" />
     <ClCompile Include="lc_arr.cpp" />
     <ClCompile Include="lc_hashtable.cpp" />

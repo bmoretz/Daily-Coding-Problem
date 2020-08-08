@@ -89,7 +89,10 @@
     <ClCompile Include="lc_matrix.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
-    <ClCompile Include="interval.cpp">
+    <ClCompile Include="lc_interval.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
+    <ClCompile Include="lc_backtrack.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
   </ItemGroup>

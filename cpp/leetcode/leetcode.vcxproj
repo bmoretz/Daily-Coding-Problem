@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="arr.h" />
+    <ClInclude Include="backtrack.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="hashtable.h" />
     <ClInclude Include="heap.h" />

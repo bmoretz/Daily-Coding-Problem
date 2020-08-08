@@ -1,137 +1,95 @@
 #include <bits/stdc++.h>
 
-/* 56. Merge Intervals.
+/* 254. Factor Combinations.
 
-Given a collection of intervals, merge all overlapping intervals.
+Numbers can be regarded as product of its factors. For example,
+
+8 = 2 x 2 x 2;
+  = 2 x 4.
+
+Write a function that takes an integer n and return all possible combinations of its factors.
+
+Note:
+
+You may assume that n is always positive.
+Factors should be greater than 1 and less than n.
 
 Example 1:
-
-Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
-Output: [[1,6],[8,10],[15,18]]
-Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
+Input: 1
+Output: []
 
 Example 2:
+Input: 37
+Output:[]
 
-Input: intervals = [[1,4],[4,5]]
-Output: [[1,5]]
-Explanation: Intervals [1,4] and [4,5] are considered overlapping.
-NOTE: input types have been changed on April 15, 2019. Please reset to default code definition to get new method signature.
+Example 3:
+Input: 12
+Output:
+[
+  [2, 6],
+  [2, 2, 3],
+  [3, 4]
+]
 
-Constraints:
-
-intervals[i][0] <= intervals[i][1]
+Example 4:
+Input: 32
+Output:
+[
+  [2, 16],
+  [2, 2, 8],
+  [2, 2, 2, 4],
+  [2, 2, 2, 2, 2],
+  [2, 4, 4],
+  [4, 8]
+]
 */
 
-struct merge_intervals
+struct factor_combinations
 {
-	static bool are_overlapping( const std::vector<int>& first, const std::vector<int>& second )
+	static std::vector<std::vector<int>> getFactors( const int n )
 	{
-		const auto fol = first.front() <= second.front() && second.front() <= first.back();
-		const auto sol = second.front() <= first.front() && first.front() <= second.back();
+		std::vector<std::vector<int>> results;
+		auto cur = std::vector<int>{ };
 		
-		return fol || sol;
+		factor( results, cur, n, 2 );
+
+		return results;
 	}
-	
-	static std::vector<std::vector<int>> merge( std::vector<std::vector<int>>& intervals )
+
+	static void factor( std::vector<std::vector<int>>& results, std::vector<int>& cur,
+		const int n, const int start )
 	{
-		if( intervals.size() <= 1 ) return intervals;
-
-		std::sort( intervals.begin(), intervals.end(),
-			[]( const auto& first, const auto& second )
+		if( n <= 1 )
 		{
-				return first[0] < second[0];
-		} );
-
-		std::vector<std::vector<int>> merged;
-
-		merged.push_back( intervals[ 0 ] );
-		
-		auto index = 1UL;
-
-		while( index < intervals.size() )
-		{
-			auto& last = merged.back();
-			auto& cur = intervals.at( index );
-
-			if( are_overlapping( last, cur ) )
-			{
-				merged.back()[ 1 ] = std::max( merged.back()[ 1 ], cur[ 1 ] );
-			}
-			else
-			{
-				if( last.back() < cur.front() )
-				{
-					merged.push_back( cur );
-				}
+			if( cur.size() > 1 )
+			{				
+				results.emplace_back( std::vector<int>( cur ) );
 			}
 
-			++index;
+			return;
 		}
-		
-		return merged;
+
+		for( auto divisor = start; divisor <= n; ++divisor )
+		{
+			if( n % divisor == 0 )
+			{
+				cur.emplace_back( divisor );
+				factor( results, cur, n / divisor, divisor );
+				cur.erase( cur.end() - 1 );
+			}
+		}
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<std::vector<int>>
-	{
-		{ 1, 3 },
-		{ 2, 6 },
-		{ 8, 10 },
-		{ 15, 18}
-	};
-
-	auto input2 = std::vector<std::vector<int>>
-	{
-		{ 1, 4 },
-		{ 4, 5 }
-	};
-
-	auto input5 = std::vector<std::vector<int>>
-	{
-		{}
-	};
+	const auto input1 = 1;
+	const auto input2 = 37;
+	const auto input3 = 12;
+	const auto input4 = 32;
+	const auto input5 = 128;
 	
-	auto input3 = std::vector<std::vector<int>>
-	{
-		{ 1, 3 },
-		{ 2, 6 },
-		{ 8, 10 },
-		{ 15, 18 },
-		{ 5, 10 },
-		{ 3, 8 },
-		{ 1, 10 },
-		{ 0, 0 }
-	};
-
-	auto input4 = std::vector<std::vector<int>>
-	{
-		{ 1, 3 },
-		{ 2, 6 },
-		{ 8, 10 },
-		{ 15, 18 },
-		{ 5, 10 },
-		{ 3, 8 },
-		{ 1, 10 },
-		{ 0, 0 },
-		{ 4, 9 },
-		{ 3, 7 }
-	};
-	
-	// [[1,3],[2,6],[8,10],[15,18],[5,10]]
-	
-	const auto result = merge_intervals::merge( input3 );
-
-	for( auto& res : result )
-	{
-		for( auto val : res )
-		{
-			std::cout << val << " ";
-		}
-
-		std::cout << std::endl;
-	}
+	const auto result = factor_combinations::getFactors( input3 );
 	
 	return 0;
 }
