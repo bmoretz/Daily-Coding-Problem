@@ -56,6 +56,7 @@
     <ClCompile Include="hr_stl.cpp" />
     <ClCompile Include="hr_str.cpp" />
     <ClCompile Include="lc_backtrack.cpp" />
+    <ClCompile Include="lc_bitmanip.cpp" />
     <ClCompile Include="lc_dynamic.cpp" />
     <ClCompile Include="lc_interval.cpp" />
     <ClCompile Include="lang_tests.cpp" />

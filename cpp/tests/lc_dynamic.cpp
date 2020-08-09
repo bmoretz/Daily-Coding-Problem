@@ -20,7 +20,7 @@ namespace leetcode::dynamic::tests
 
 	TEST_F( longest_common_subsequence_tests, case1 )
 	{
-		const auto input = std::pair<std::string, std::string>{ "abcde", "ace" };;
+		const auto input = std::pair<std::string, std::string>{ "abcde", "ace" };
 
 		const auto actual = longest_common_subsequence::lcs( input.first, input.second );
 
@@ -31,7 +31,7 @@ namespace leetcode::dynamic::tests
 
 	TEST_F( longest_common_subsequence_tests, case2 )
 	{
-		const auto input = std::pair<std::string, std::string>{ "abc", "abc" };;
+		const auto input = std::pair<std::string, std::string>{ "abc", "abc" };
 
 		const auto actual = longest_common_subsequence::lcs( input.first, input.second );
 
@@ -42,7 +42,7 @@ namespace leetcode::dynamic::tests
 
 	TEST_F( longest_common_subsequence_tests, case3 )
 	{
-		const auto input = std::pair<std::string, std::string>{ "abc", "def" };;
+		const auto input = std::pair<std::string, std::string>{ "abc", "def" };
 
 		const auto actual = longest_common_subsequence::lcs( input.first, input.second );
 
@@ -53,7 +53,7 @@ namespace leetcode::dynamic::tests
 
 	TEST_F( longest_common_subsequence_tests, case4 )
 	{
-		const auto input = std::pair<std::string, std::string>{ "dddddeeeeefffff", "def" };;
+		const auto input = std::pair<std::string, std::string>{ "dddddeeeeefffff", "def" };
 
 		const auto actual = longest_common_subsequence::lcs( input.first, input.second );
 
@@ -64,7 +64,7 @@ namespace leetcode::dynamic::tests
 
 	TEST_F( longest_common_subsequence_tests, case5 )
 	{
-		const auto input = std::pair<std::string, std::string>{ "actgattag", "gtgtgatcg" };;
+		const auto input = std::pair<std::string, std::string>{ "actgattag", "gtgtgatcg" };
 
 		const auto actual = longest_common_subsequence::lcs( input.first, input.second );
 

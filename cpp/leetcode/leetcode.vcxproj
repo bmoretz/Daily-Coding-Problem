@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="arr.h" />
     <ClInclude Include="backtrack.h" />
+    <ClInclude Include="bitmanip.h" />
     <ClInclude Include="dynamic.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="hashtable.h" />
