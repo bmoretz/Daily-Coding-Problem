@@ -101,6 +101,9 @@
     <ClCompile Include="lc_bitmanip.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="lc_containers.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

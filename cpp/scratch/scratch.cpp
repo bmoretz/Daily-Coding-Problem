@@ -1,95 +1,135 @@
 #include <bits/stdc++.h>
+#include <random>
 
-/* 318. Maximum Product of Word Lengths.
+/* 380. Insert Delete GetRandom O(1).
 
-Given a string array words, find the maximum value of length(word[i]) * length(word[j]) where the two words
-do not share common letters. You may assume that each word will contain only lower case letters. If no such two words exist, return 0.
+Design a data structure that supports all following operations in average O(1) time.
 
-Example 1:
+insert(val): Inserts an item val to the set if not already present.
+remove(val): Removes an item val from the set if present.
+getRandom: Returns a random element from current set of elements (it's guaranteed that at least one
+element exists when this method is called). Each element must have the same probability of being returned.
+ 
+Example:
 
-Input: ["abcw","baz","foo","bar","xtfn","abcdef"]
-Output: 16 
-Explanation: The two words can be "abcw", "xtfn".
+// Init an empty set.
+RandomizedSet randomSet = new RandomizedSet();
 
-Example 2:
+// Inserts 1 to the set. Returns true as 1 was inserted successfully.
+randomSet.insert(1);
 
-Input: ["a","ab","abc","d","cd","bcd","abcd"]
-Output: 4 
-Explanation: The two words can be "ab", "cd".
-Example 3:
+// Returns false as 2 does not exist in the set.
+randomSet.remove(2);
 
-Input: ["a","aa","aaa","aaaa"]
-Output: 0 
-Explanation: No such pair of words.
+// Inserts 2 to the set, returns true. Set now contains [1,2].
+randomSet.insert(2);
 
-Constraints:
+// getRandom should return either 1 or 2 randomly.
+randomSet.getRandom();
 
-0 <= words.length <= 10^3
-0 <= words[i].length <= 10^3
-words[i] consists only of lowercase English letters.
+// Removes 1 from the set, returns true. Set now contains [2].
+randomSet.remove(1);
+
+// 2 was already in the set, so return false.
+randomSet.insert(2);
+
+// Since 2 is the only number in the set, getRandom always return 2.
+randomSet.getRandom();
 */
 
-struct max_len_unique_prod
+class randomized_set
 {
-    static std::unordered_map<std::string, std::bitset<26>> to_char_map( const std::vector<std::basic_string<char>>& unique_words )
-    {
-        std::unordered_map<std::string, std::bitset<26>> char_map;
+    class randomizer
+	{
+        // random seed by default
+        std::mt19937 gen_;
+        std::uniform_int_distribution<size_t> dist_;
 
-        for( const auto& word : unique_words )
-        {
-            auto characters = std::bitset<26>();
-
-            for( auto chr : word )
-            {
-                characters |= static_cast<long>( 1 ) << chr - 'a';
-            }
-
-            char_map[ word ] = characters;
+    public:
+        
+        randomizer( std::size_t min, const std::size_t max, 
+            const unsigned int seed = std::random_device{}( ) )
+            : gen_{ seed }, dist_{ min, max } {
         }
 
-        return char_map;
+        void set_seed( const unsigned int seed ) {
+            gen_.seed( seed );
+        }
+
+        size_t operator()()
+    	{
+            return dist_( gen_ );
+        }
+    };
+
+    std::set<int> values_;
+    randomizer rand_{ 0, INT32_MAX };
+	
+public:
+
+	randomized_set( const int seed = 0 )
+    {
+        rand_ = randomizer( 0, INT32_MAX, seed );
+    }
+	
+    /// <summary>
+    /// Inserts a value to the set.
+    /// </summary>
+    /// <param name="val">value to insert</param>
+    /// <returns>returns true if the set did not already contain the specified element.</returns>
+	bool insert( const int val )
+	{
+        if( values_.find( val ) == values_.end() )
+        {
+            values_.insert( val );
+
+            return true;
+        }
+
+        return false;
     }
 
-    static int maxProduct( const std::vector<std::string>& words )
-    {
-    	// remove any duplicates
-        //const auto unique_words = std::set( words.begin(), words.end() );
-    	
-    	// build a lookup of words -> character bit sets
-        const auto char_map = to_char_map( words );
-    	
-        auto max_len = std::size_t();
-
-        for( auto outer = std::size_t(); outer < words.size(); ++outer )
+    /// <summary>
+    /// Removes a value from the set.
+    /// </summary>
+    /// <param name="val">the value to remove.</param>
+    /// <returns>returns true if the set contained the specified element.</returns>
+	bool remove( const int val )
+	{
+        if( values_.find( val ) != values_.end() )
         {
-            const auto& left = words[ outer ];
+            values_.erase( val );
 
-            for( auto inner = outer + 1; inner < words.size(); ++inner )
-            {
-                const auto& right = words[ inner ];
-
-                if( ( char_map.at( left ) & char_map.at( right ) ) == 0 )
-                {
-                    max_len = std::max( max_len, left.size() * right.size() );
-                }
-            }
+            return true;
         }
 
-        return max_len;
+        return false;
+    }
+
+	/// <summary>
+	/// Get a random element from the set.
+	/// </summary>
+	/// <returns>random element</returns>
+    int getRandom()
+	{
+        const auto offset = rand_() % values_.size();
+
+        auto it = values_.begin();
+        std::advance( it, offset );
+    	
+        return *it;
     }
 };
 
 auto main() -> int
 {
-    auto input1 = std::vector<std::string>{ "abcw","baz","foo","bar","xtfn","abcdef" };
-    auto input2 = std::vector<std::string>{ "a","ab","abc","d","cd","bcd","abcd" };
-    auto input3 = std::vector<std::string>{ "a","aa","aaa","aaaa" };
-    auto input4 = std::vector<std::string>{ "aebacbcecdcdaffdacbac","afdffdaffacccaba","fffaafccebbacffaddcad","eefaffbddcbdabacda","fcfbeecccc","afdbeabfcedfadaddb","bfdafdfdbbdaabba","acaeabcddfaafadfcacd","bcdfbfeadfdbdcf","cebabfbadfcbc","eefddeafbadfab","fdccabcebbfeedbabdad","bdabacbeecfdffbaa","dbbc","cfcfebfdeafdaceacfb","ec","bcaafadfe","abbfecdcafecccd","ec","edededdbdcefcf","edfcecdafcfaaab","ebfbfdcacd","dada","bfeffcafdfccdcbaba","dab","ebcadee","bbcdeacdcfdabfbadd","eadcdcb","cabebee","bcdabeffafbbdd","adacbacacfef","cfe","cbbfecfefaf","ddfcfefcadfccdfffaef","ab","edadcf","eedbcabeddbaeeead","fddaddedefebaecdde","cfeb","eaeadebbf","fbdffebe","fecebacba","cccaadfdfdeafde","defbcceab","adee","caaddeaade","bbeeecae","bce","ccdcafc","aecaadaeb","cebcbacdbec","fccedeacec","cacdafefcdff","dbaebafaba","dbfafefbfef","dadeecaecdfefbd","bded","ffbeecfed","bacc","ebdeffba","fceec","badcaefccdf","aadbbccbecf","cdffafdaefdaaeebe","efbfcdbec","decaebfdddfcdfda","ccbbcee","ceceffbfab","bdbfabaafa","eaeabaefbaed","efbcdbdadbafefcfe","ab","acefcdaadccebcef","fcda","ff","eedaabecf","eecbdacaedab","ad","ebddccbcabc","dacad","fcffdecbaeefcfd","edadacdbabffbeafffdb","daef","efbfcfbbdcccaa","bbebdca","edb","febfffac","aefbdfbbdebfebfebfbd","becbacdffebfecdfdadba","fbefaf","bef","cddbacbdcff","adbfebebcddbdfccdd","abdebbc","fcfeeccecdbefcfe","acaabdcdecea","ddeb","bfedfafefaafbdacaaad","cdcddaddaabcdc","ffdccfad","fbeaeabcad","ecaaedffaaaadadd","adb","fbeeadefeabbbaaff","efbcafedadfdd","faca","ecccfae","aebddfbcdcccfcbcebbfb","acffdebffaadbcfcdcefd","becdbefaaacb","edfbd","fdfabecffdfe","dfbaaeefdebaef","ceeadafde","fcdeecddacf","add","cbcadcfebceafffcabbdc","bfccefbda","eaceedcbcaabaadadba","fbfadfbe","aedceec","dcac","fda","decfcadbcedbcaddacd","aebcabaaecefa","efdfacadbebfedfbecc","fbbc","fbfceeddcad","eacefbacdddcbdeefdfe","fea","debaffddecfaa","dc","afadba","cfaff","ebeee","bdfdddcdaedfd","abdeceafe","efedecedeeefdae","aecbbb","ececabaffdccede","eccacfeabbdceb","ea","dfabaeebeebbcafafec","cbdbefbbba","bfbdfacfebabffa","be","feabdcbffdbfddec","bbeecaba","abdfedecdcdeeafeef","dbbacb","aebbbaceaeecfccfcaeb","bffaffcadf","dfaddcaabbdddffdb","aaacfcecf","accbdfcbbdeffacf","fffabeccbcd","dbadfefdadbaffee","efbebeacebdedbeef","cdeffacc","ecfedbdccecbbaaa","dfedb","eddcfebecb","cffbbbfedcfcd","ebeeaaaabfbfdc","dbaebbbdffdeceea","efc","acaacbdffcfaccbd","bffaeeeeafaaceccd","fbefcccbcdbfbacd","ce","abbfcedefacaeade","daefbbdfeedefcade","aacef","cbc","dabcfccaceaffffaed","debfbcebebcecdf","aaefaeaffdcfbfd","cfdadec","beefcfeddeabe","bbbefcafdfcf","cda","fddbebdcae","ecdffebecdcbabd","dfa","fdaabdccb","beeec","ababfab","ecacb","daaabdbdafdffabb","daecdcecccddacbfdfadd","eeefdfbdabebadeebeefd","dbadabfcfbacdebddfbf","beceefefdfdf","dbcfcbfdcdbbcdcbddba","fbafdbfaebddcabc","deeefbcaff","deabec","bacadeaecbfadaccfefe","edadeeffbfccba","bfabdfffffcfbeaaaf","caafeacc","efaadbbbbf","cbdf","efdadddd","abbfbab","dbdbadcedbc","bfdefcaceabffdebefdba","dcadbdcdafdccbfdcacd","cfaafebcabdb","caefdafa","eafcbcaaffffd","adcfecaaaecdedee","fddcddddca" };
-    auto input5 = std::vector<std::string>{ "a","ab","abc","d","cd","bcd","abcd" };
-
-    const auto result = max_len_unique_prod::maxProduct( input4 );
-
-    std::cout << result << std::endl;
+    auto rnd = randomized_set();
+	
+    rnd.insert( 1 );
+    rnd.insert( 2 );
+    rnd.insert( 1 );
+	
+    std::cout << rnd.getRandom() << std::endl;
 	
     return 0;
 }

@@ -41,7 +41,8 @@ namespace leetcode::bitmanip
 
     struct max_len_unique_prod
     {
-        static std::unordered_map<std::string, std::bitset<26>> to_char_map( const std::vector<std::basic_string<char>>& unique_words )
+        static std::unordered_map<std::string, std::bitset<26>>
+    		to_char_map( const std::vector<std::basic_string<char>>& unique_words )
         {
             std::unordered_map<std::string, std::bitset<26>> char_map;
 
@@ -51,7 +52,7 @@ namespace leetcode::bitmanip
 
                 for( auto chr : word )
                 {
-                    characters |= 1 << ( chr - 'a' );
+                    characters |= 1ULL << ( chr - 'a' );
                 }
 
                 char_map[ word ] = characters;
