@@ -1,196 +1,99 @@
 #include <bits/stdc++.h>
 #include <random>
 
-/* 1268. Search Suggestions System.
+/* 295. Find Median from Data Stream.
 
-Given an array of strings products and a string searchWord. We want to design a system that suggests at most three product
-names from products after each character of searchWord is typed. Suggested products should have common prefix with the
-searchWord. If there are more than three products with a common prefix return the three lexicographically minimums products.
+Median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value. So the median is the mean of the two middle value.
 
-Return list of lists of the suggested products after each character of searchWord is typed. 
+For example,
+[2,3,4], the median is 3
 
-Example 1:
+[2,3], the median is (2 + 3) / 2 = 2.5
 
-Input: products = ["mobile","mouse","moneypot","monitor","mousepad"], searchWord = "mouse"
-Output: [
-	["mobile","moneypot","monitor"],
-	["mobile","moneypot","monitor"],
-	["mouse","mousepad"],
-	["mouse","mousepad"],
-	["mouse","mousepad"]
-]
+Design a data structure that supports the following two operations:
 
-Explanation: products sorted lexicographically = ["mobile","moneypot","monitor","mouse","mousepad"]
-After typing m and mo all products match and we show user ["mobile","moneypot","monitor"]
-After typing mou, mous and mouse the system suggests ["mouse","mousepad"]
-Example 2:
+void addNum(int num) - Add a integer number from the data stream to the data structure.
+double findMedian() - Return the median of all elements so far.
+ 
 
-Input: products = ["havana"], searchWord = "havana"
-Output: [["havana"],["havana"],["havana"],["havana"],["havana"],["havana"]]
-Example 3:
+Example:
 
-Input: products = ["bags","baggage","banner","box","cloths"], searchWord = "bags"
-Output: [["baggage","bags","banner"],["baggage","bags","banner"],["baggage","bags"],["bags"]]
-Example 4:
+addNum(1)
+addNum(2)
+findMedian() -> 1.5
+addNum(3) 
+findMedian() -> 2
+ 
 
-Input: products = ["havana"], searchWord = "tatiana"
-Output: [[],[],[],[],[],[],[]]
+Follow up:
 
-Constraints:
-
-1 <= products.length <= 1000
-There are no repeated elements in products.
-1 <= sum( products[i].length ) <= 2 * 10^4
-All characters of products[i] are lower-case English letters.
-1 <= searchWord.length <= 1000
-All characters of searchWord are lower-case English letters.
+If all integer numbers from the stream are between 0 and 100, how would you optimize it?
+If 99% of all integer numbers from the stream are between 0 and 100, how would you optimize it?
 */
 
-class search_system
-{	
-	class search_tri
-	{
-		struct tree_node;
+class median_finder_stream
+{
+	std::priority_queue<int, std::vector<int>, std::less<>> lower_;
+	std::priority_queue<int, std::vector<int>, std::greater<>> upper_;
 
-		std::unique_ptr<tree_node> root_;
-		
-		struct tree_node
-		{
-			char data;
-			std::map<char, std::unique_ptr<tree_node>> children;
-			
-			explicit tree_node( const char value )
-				: data{ value }
-			{ }
-
-			bool has_character( const char chr )
-			{
-				return children.find( chr ) != children.end();
-			}
-
-			tree_node* insert_child( const char chr )
-			{
-				if( children.find( chr ) == children.end() )
-				{
-					children[ chr ] = std::make_unique<tree_node>( chr );
-				}
-
-				return children[ chr ].get();
-			}
-			
-			tree_node* get_children( const char chr )
-			{
-				return children[ chr ].get();
-			}
-		};
-		
-	public:
-
-		search_tri()
-		{
-			root_ = std::make_unique<tree_node>( '\0' );
-		}
-
-		void insert_word( const std::string& word ) const
-		{
-			auto level = root_.get();
-			
-			for( const auto chr : word )
-			{
-				level = level->insert_child( chr );
-			}
-
-			level->data = '*';
-		}
-
-		static void search( const std::string& res, std::vector<std::string>& item, 
-		                    const std::string& prefix, tree_node* node,
-		                    const std::size_t max_result_size = 3 )
-		{
-			if( item.size() == max_result_size ) return;
-			if( !node ) return;
-			
-			if( node->data == '*' )
-				item.push_back( prefix + res );
-
-			for( auto iter = node->children.begin(); 
-				iter != node->children.end(); ++iter )
-			{
-				search( res + iter->first, item, prefix, node->children[ iter->first ].get() );
-			}
-		}
-		
-		std::vector<std::vector<std::string>> get_results( const std::string& term,
-			const int max_results = 3 ) const
-		{	
-			auto results = std::vector<std::vector<std::string>>( term.size() );
-			auto result_index = std::size_t();
-			
-			auto node = root_.get();
-			auto prev = true;
-			std::string prefix;
-			
-			for( auto chr : term )
-			{
-				if( node->children.find( chr ) != node->children.end() && prev )
-				{
-					prefix += chr;
-					node = node->children[ chr ].get();
-					std::vector<std::string> items;
-					search( "", items, prefix, node );
-					results[ result_index++ ] = items;
-				}
-				else
-				{
-					prev = false;
-					++result_index;
-				}
-			}
-			
-			return results;
-		}
-	};
-	
-	search_tri searcher_;
-	
 public:
 	
-	/// <summary>
-	/// suggest products
-	/// </summary>
-	/// <param name="products"></param>
-	/// <param name="search_word"></param>
-	/// <returns></returns>
-	std::vector<std::vector<std::string>> suggest_products( const std::vector<std::string>& products,
-		const std::string& search_word ) const
+	void add_number( const int number )
 	{
-		for( auto& word : products )
+		upper_.push( number );
+
+		if( lower_.empty() || upper_.size() - lower_.size() > 1 )
 		{
-			searcher_.insert_word( word );
+			const auto next = upper_.top();
+			upper_.pop();
+			lower_.push( next );
 		}
-		
-		return searcher_.get_results( search_word, 3 );
+		else if( !( lower_.empty() || upper_.empty() ) && lower_.top() > upper_.top() )
+		{
+			const auto l = lower_.top(), u = upper_.top();
+			lower_.pop(); upper_.pop();
+
+			lower_.push( u );
+			upper_.push( l );
+		}
+	}
+
+	double find_median()
+	{
+		if( upper_.empty() ) return 0;
+
+		const auto num_elements = lower_.size() + upper_.size();
+
+		if( num_elements % 2 == 0 )
+		{
+			return ( lower_.top() + upper_.top() ) / 2.0f;
+		}
+
+		return upper_.top();
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::pair<std::vector<std::string>, std::string>
-	{
-		std::vector<std::string> { "mobile", "mouse", "moneypot", "monitor", "mousepad" },
-		"mouse"
-	};
+	auto mf = median_finder_stream{ };
 
-	const auto input2 = std::pair<std::vector<std::string>, std::string>
-	{
-		std::vector<std::string> {
-		"havana" },
-		"tatiana"
-	};
+	mf.add_number( 5 );
+	std::cout << mf.find_median() << std::endl;
 	
-	auto searcher = search_system();
-	
-	const auto results = searcher.suggest_products( input2.first, input2.second );
+	mf.add_number( 3 );
+	std::cout << mf.find_median() << std::endl;
+
+	mf.add_number( 2 );
+	std::cout << mf.find_median() << std::endl;
+
+	mf.add_number( 8 );
+	std::cout << mf.find_median() << std::endl;
+
+	mf.add_number( 10 );
+	std::cout << mf.find_median() << std::endl;
+
+	mf.add_number( 1 );
+	std::cout << mf.find_median() << std::endl;
 	
     return 0;
 }

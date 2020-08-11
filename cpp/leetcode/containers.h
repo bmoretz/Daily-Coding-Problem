@@ -367,9 +367,11 @@ namespace leetcode::containers
 
         /// <summary>
         /// suggest products
+        ///
+        /// tri based approach.
         /// </summary>
-        /// <param name="products"></param>
-        /// <param name="search_word"></param>
+        /// <param name="products">list of products to search</param>
+        /// <param name="search_word">search word</param>
         /// <returns></returns>
         [[nodiscard]] std::vector<std::vector<std::string>> suggest_products( const std::vector<std::string>& products,
                                                                               const std::string& search_word ) const

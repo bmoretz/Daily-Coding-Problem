@@ -72,4 +72,93 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class median_finder_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( median_finder_tests, case1 )
+    {
+        auto mf = median_finder_stream{ };
+
+        const auto actual = mf.find_median();
+        const auto expected = 0;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( median_finder_tests, case2 )
+    {
+        auto mf = median_finder_stream{ };
+
+        mf.add_number( 5 );
+        mf.add_number( 3 );
+    	
+        const auto actual = mf.find_median();
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( median_finder_tests, case3 )
+    {
+        auto mf = median_finder_stream{ };
+
+        mf.add_number( 5 );
+        mf.add_number( 3 );
+        mf.add_number( 2 );
+        mf.add_number( 8 );
+
+        const auto actual = mf.find_median();
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( median_finder_tests, case4 )
+    {
+        auto mf = median_finder_stream{ };
+
+        mf.add_number( 5 ); 
+        mf.add_number( 3 );
+        mf.add_number( 2 );
+        mf.add_number( 8 );
+        mf.add_number( 10 );
+        mf.add_number( 1 );
+    	
+        const auto actual = mf.find_median();
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( median_finder_tests, case5 )
+    {
+        auto mf = median_finder_stream{ };
+
+        mf.add_number( 5 );
+        mf.add_number( 3 );
+        mf.add_number( 2 );
+        mf.add_number( 8 );
+        mf.add_number( 10 );
+        mf.add_number( 1 );
+        mf.add_number( 0 );
+        mf.add_number( 7 );
+        mf.add_number( 2 );
+        mf.add_number( 5 );
+    	
+        const auto actual = mf.find_median();
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
