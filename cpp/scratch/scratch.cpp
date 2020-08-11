@@ -1,99 +1,87 @@
 #include <bits/stdc++.h>
 #include <random>
 
-/* 295. Find Median from Data Stream.
+#include "../leetcode/tree.h"
 
-Median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value. So the median is the mean of the two middle value.
+using leetcode::tree::tree_node;
 
-For example,
-[2,3,4], the median is 3
+/* 1123. Lowest Common Ancestor of Deepest Leaves.
 
-[2,3], the median is (2 + 3) / 2 = 2.5
+Given a rooted binary tree, return the lowest common ancestor of its deepest leaves.
 
-Design a data structure that supports the following two operations:
+Recall that:
 
-void addNum(int num) - Add a integer number from the data stream to the data structure.
-double findMedian() - Return the median of all elements so far.
+The node of a binary tree is a leaf if and only if it has no children
+The depth of the root of the tree is 0, and if the depth of a node is d, the depth of each of its children is d+1.
+The lowest common ancestor of a set S of nodes is the node A with the largest depth such that every node in S is in the subtree with root A.
  
 
-Example:
+Example 1:
 
-addNum(1)
-addNum(2)
-findMedian() -> 1.5
-addNum(3) 
-findMedian() -> 2
+Input: root = [1,2,3]
+Output: [1,2,3]
+Explanation: 
+The deepest leaves are the nodes with values 2 and 3.
+The lowest common ancestor of these leaves is the node with value 1.
+The answer returned is a TreeNode object (not an array) with serialization "[1,2,3]".
+Example 2:
+
+Input: root = [1,2,3,4]
+Output: [4]
+Example 3:
+
+Input: root = [1,2,3,4,5]
+Output: [2,4,5]
  
 
-Follow up:
+Constraints:
 
-If all integer numbers from the stream are between 0 and 100, how would you optimize it?
-If 99% of all integer numbers from the stream are between 0 and 100, how would you optimize it?
+The given tree will have between 1 and 1000 nodes.
+Each node of the tree will have a distinct value between 1 and 1000.
 */
 
-class median_finder_stream
+class lowest_common_ancestor
 {
-	std::priority_queue<int, std::vector<int>, std::less<>> lower_;
-	std::priority_queue<int, std::vector<int>, std::greater<>> upper_;
-
 public:
-	
-	void add_number( const int number )
+
+	static const tree_node* lca_deepest_leaves( const tree_node* root )
 	{
-		upper_.push( number );
+		if( !root ) return nullptr;
 
-		if( lower_.empty() || upper_.size() - lower_.size() > 1 )
-		{
-			const auto next = upper_.top();
-			upper_.pop();
-			lower_.push( next );
-		}
-		else if( !( lower_.empty() || upper_.empty() ) && lower_.top() > upper_.top() )
-		{
-			const auto l = lower_.top(), u = upper_.top();
-			lower_.pop(); upper_.pop();
+		if( height( root->left.get() ) == height( root->right.get() ) ) return root;
 
-			lower_.push( u );
-			upper_.push( l );
-		}
+		return height( root->left.get() ) > height( root->right.get() ) ? 
+			lca_deepest_leaves( root->left.get() ) :
+			lca_deepest_leaves( root->right.get() );
 	}
 
-	double find_median()
+	static int height( const tree_node* node )
 	{
-		if( upper_.empty() ) return 0;
+		if( !node ) return 0;
 
-		const auto num_elements = lower_.size() + upper_.size();
+		const auto left = height( node->left.get() );
+		const auto right = height( node->right.get() );
 
-		if( num_elements % 2 == 0 )
-		{
-			return ( lower_.top() + upper_.top() ) / 2.0f;
-		}
-
-		return upper_.top();
+		return left > right ? left + 1 : right + 1;
 	}
 };
 
 auto main() -> int
 {
-	auto mf = median_finder_stream{ };
+	const auto root = leetcode::tree::build_tree_in_order( {
+			"1", "2", "", "3", "4", "", "6", "", "5"
+	} );
 
-	mf.add_number( 5 );
-	std::cout << mf.find_median() << std::endl;
+	const auto lca = lowest_common_ancestor::lca_deepest_leaves( root.get() );
+
+	const auto result = flatten_tree( lca );
 	
-	mf.add_number( 3 );
-	std::cout << mf.find_median() << std::endl;
-
-	mf.add_number( 2 );
-	std::cout << mf.find_median() << std::endl;
-
-	mf.add_number( 8 );
-	std::cout << mf.find_median() << std::endl;
-
-	mf.add_number( 10 );
-	std::cout << mf.find_median() << std::endl;
-
-	mf.add_number( 1 );
-	std::cout << mf.find_median() << std::endl;
+	const auto expected = std::vector<std::vector<int>>
+	{
+		{ 15, 7 },
+		{ 9, 20 },
+		{ 3 }
+	};
 	
-    return 0;
+	return 0;
 }

@@ -104,6 +104,17 @@ namespace leetcode::heap
 	If 99% of all integer numbers from the stream are between 0 and 100, how would you optimize it?
 	*/
 
+	/// <summary>
+	/// median finder
+	///
+	/// this approach uses two heaps, 1 min & 1 max, to keep the elements partitioned
+	/// into two sets, 1 lower than the median and 1 greater than or equal to the median. If
+	/// we have a total number of elements that is even, then the median is the simple avg
+	/// of the lower and upper top elements. If it's even, then the median is just the top
+	/// of the upper heap.
+	///
+	/// run-time complexity = O(log n)
+	/// </summary>
 	class median_finder_stream
 	{
 		std::priority_queue<int, std::vector<int>, std::less<>> lower_;
