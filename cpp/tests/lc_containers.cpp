@@ -133,4 +133,137 @@ namespace leetcode::containers::tests
         EXPECT_EQ( rnd.get_random(), 5 );
         EXPECT_EQ( rnd.get_random(), 1 );
     }
+
+    class search_recommendation_system_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( search_recommendation_system_tests, case1 )
+    {
+        const auto searcher = search_recommendation_system();
+
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            std::vector<std::string> { "mobile", "mouse", "moneypot", "monitor", "mousepad" },
+            "mouse"
+        };
+
+        const auto results = searcher.suggest_products( input.first, input.second );
+
+        EXPECT_EQ( results.size(), 5 );
+
+        const auto expected1 = std::vector<std::string> { "mobile", "moneypot", "monitor" };
+        EXPECT_EQ( results[ 0 ], expected1 );
+
+        const auto expected2 = std::vector<std::string>{ "mobile","moneypot","monitor" };
+        EXPECT_EQ( results[ 1 ], expected2 );
+
+        const auto expected3 = std::vector<std::string>{ "mouse","mousepad" };
+        EXPECT_EQ( results[ 2 ], expected3 );
+
+        const auto expected4 = std::vector<std::string>{ "mouse","mousepad" };
+        EXPECT_EQ( results[ 3 ], expected4 );
+
+        const auto expected5 = std::vector<std::string>{ "mouse","mousepad" };
+        EXPECT_EQ( results[ 4 ], expected5 );
+    }
+
+    TEST_F( search_recommendation_system_tests, case2 )
+    {
+        const auto searcher = search_recommendation_system();
+
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            std::vector<std::string> { "havana" },
+            "havana"
+        };
+
+        const auto results = searcher.suggest_products( input.first, input.second );
+
+        EXPECT_EQ( results.size(), 6 );
+
+        const auto expected1 = std::vector<std::string>{ "havana" };
+        EXPECT_EQ( results[ 0 ], expected1 );
+
+        const auto expected2 = std::vector<std::string>{ "havana" };
+        EXPECT_EQ( results[ 1 ], expected2 );
+
+        const auto expected3 = std::vector<std::string>{ "havana" };
+        EXPECT_EQ( results[ 2 ], expected3 );
+
+        const auto expected4 = std::vector<std::string>{ "havana" };
+        EXPECT_EQ( results[ 3 ], expected4 );
+
+        const auto expected5 = std::vector<std::string>{ "havana" };
+        EXPECT_EQ( results[ 4 ], expected5 );
+    }
+
+    TEST_F( search_recommendation_system_tests, case3 )
+    {
+        const auto searcher = search_recommendation_system();
+
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            std::vector<std::string> { "bags", "baggage", "banner", "box", "cloths" },
+            "bags"
+        };
+
+        const auto results = searcher.suggest_products( input.first, input.second );
+
+        EXPECT_EQ( results.size(), 4 );
+
+        const auto expected1 = std::vector<std::string>{ "baggage", "bags", "banner" };
+        EXPECT_EQ( results[ 0 ], expected1 );
+
+        const auto expected2 = std::vector<std::string>{ "baggage","bags","banner" };
+        EXPECT_EQ( results[ 1 ], expected2 );
+
+        const auto expected3 = std::vector<std::string>{ "baggage", "bags" };
+        EXPECT_EQ( results[ 2 ], expected3 );
+
+        const auto expected4 = std::vector<std::string>{ "bags" };
+        EXPECT_EQ( results[ 3 ], expected4 );
+    }
+
+    TEST_F( search_recommendation_system_tests, case4 )
+    {
+        const auto searcher = search_recommendation_system();
+
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            std::vector<std::string> { "havana" },
+            "tatiana"
+        };
+
+        const auto results = searcher.suggest_products( input.first, input.second );
+
+        EXPECT_EQ( results.size(), 7 );
+
+        const auto expected1 = std::vector<std::string>{ };
+        EXPECT_EQ( results[ 0 ], expected1 );
+
+        const auto expected2 = std::vector<std::string>{ };
+        EXPECT_EQ( results[ 1 ], expected2 );
+
+        const auto expected3 = std::vector<std::string>{ };
+        EXPECT_EQ( results[ 2 ], expected3 );
+
+        const auto expected4 = std::vector<std::string>{ };
+        EXPECT_EQ( results[ 3 ], expected4 );
+
+        const auto expected5 = std::vector<std::string>{ };
+        EXPECT_EQ( results[ 4 ], expected5 );
+
+        const auto expected6 = std::vector<std::string>{ };
+        EXPECT_EQ( results[ 5 ], expected5 );
+    }
 }

@@ -1,135 +1,196 @@
 #include <bits/stdc++.h>
 #include <random>
 
-/* 380. Insert Delete GetRandom O(1).
+/* 1268. Search Suggestions System.
 
-Design a data structure that supports all following operations in average O(1) time.
+Given an array of strings products and a string searchWord. We want to design a system that suggests at most three product
+names from products after each character of searchWord is typed. Suggested products should have common prefix with the
+searchWord. If there are more than three products with a common prefix return the three lexicographically minimums products.
 
-insert(val): Inserts an item val to the set if not already present.
-remove(val): Removes an item val from the set if present.
-getRandom: Returns a random element from current set of elements (it's guaranteed that at least one
-element exists when this method is called). Each element must have the same probability of being returned.
- 
-Example:
+Return list of lists of the suggested products after each character of searchWord is typed. 
 
-// Init an empty set.
-RandomizedSet randomSet = new RandomizedSet();
+Example 1:
 
-// Inserts 1 to the set. Returns true as 1 was inserted successfully.
-randomSet.insert(1);
+Input: products = ["mobile","mouse","moneypot","monitor","mousepad"], searchWord = "mouse"
+Output: [
+	["mobile","moneypot","monitor"],
+	["mobile","moneypot","monitor"],
+	["mouse","mousepad"],
+	["mouse","mousepad"],
+	["mouse","mousepad"]
+]
 
-// Returns false as 2 does not exist in the set.
-randomSet.remove(2);
+Explanation: products sorted lexicographically = ["mobile","moneypot","monitor","mouse","mousepad"]
+After typing m and mo all products match and we show user ["mobile","moneypot","monitor"]
+After typing mou, mous and mouse the system suggests ["mouse","mousepad"]
+Example 2:
 
-// Inserts 2 to the set, returns true. Set now contains [1,2].
-randomSet.insert(2);
+Input: products = ["havana"], searchWord = "havana"
+Output: [["havana"],["havana"],["havana"],["havana"],["havana"],["havana"]]
+Example 3:
 
-// getRandom should return either 1 or 2 randomly.
-randomSet.getRandom();
+Input: products = ["bags","baggage","banner","box","cloths"], searchWord = "bags"
+Output: [["baggage","bags","banner"],["baggage","bags","banner"],["baggage","bags"],["bags"]]
+Example 4:
 
-// Removes 1 from the set, returns true. Set now contains [2].
-randomSet.remove(1);
+Input: products = ["havana"], searchWord = "tatiana"
+Output: [[],[],[],[],[],[],[]]
 
-// 2 was already in the set, so return false.
-randomSet.insert(2);
+Constraints:
 
-// Since 2 is the only number in the set, getRandom always return 2.
-randomSet.getRandom();
+1 <= products.length <= 1000
+There are no repeated elements in products.
+1 <= sum( products[i].length ) <= 2 * 10^4
+All characters of products[i] are lower-case English letters.
+1 <= searchWord.length <= 1000
+All characters of searchWord are lower-case English letters.
 */
 
-class randomized_set
-{
-    class randomizer
+class search_system
+{	
+	class search_tri
 	{
-        // random seed by default
-        std::mt19937 gen_;
-        std::uniform_int_distribution<size_t> dist_;
+		struct tree_node;
 
-    public:
-        
-        randomizer( std::size_t min, const std::size_t max, 
-            const unsigned int seed = std::random_device{}( ) )
-            : gen_{ seed }, dist_{ min, max } {
-        }
+		std::unique_ptr<tree_node> root_;
+		
+		struct tree_node
+		{
+			char data;
+			std::map<char, std::unique_ptr<tree_node>> children;
+			
+			explicit tree_node( const char value )
+				: data{ value }
+			{ }
 
-        void set_seed( const unsigned int seed ) {
-            gen_.seed( seed );
-        }
+			bool has_character( const char chr )
+			{
+				return children.find( chr ) != children.end();
+			}
 
-        size_t operator()()
-    	{
-            return dist_( gen_ );
-        }
-    };
+			tree_node* insert_child( const char chr )
+			{
+				if( children.find( chr ) == children.end() )
+				{
+					children[ chr ] = std::make_unique<tree_node>( chr );
+				}
 
-    std::set<int> values_;
-    randomizer rand_{ 0, INT32_MAX };
+				return children[ chr ].get();
+			}
+			
+			tree_node* get_children( const char chr )
+			{
+				return children[ chr ].get();
+			}
+		};
+		
+	public:
+
+		search_tri()
+		{
+			root_ = std::make_unique<tree_node>( '\0' );
+		}
+
+		void insert_word( const std::string& word ) const
+		{
+			auto level = root_.get();
+			
+			for( const auto chr : word )
+			{
+				level = level->insert_child( chr );
+			}
+
+			level->data = '*';
+		}
+
+		static void search( const std::string& res, std::vector<std::string>& item, 
+		                    const std::string& prefix, tree_node* node,
+		                    const std::size_t max_result_size = 3 )
+		{
+			if( item.size() == max_result_size ) return;
+			if( !node ) return;
+			
+			if( node->data == '*' )
+				item.push_back( prefix + res );
+
+			for( auto iter = node->children.begin(); 
+				iter != node->children.end(); ++iter )
+			{
+				search( res + iter->first, item, prefix, node->children[ iter->first ].get() );
+			}
+		}
+		
+		std::vector<std::vector<std::string>> get_results( const std::string& term,
+			const int max_results = 3 ) const
+		{	
+			auto results = std::vector<std::vector<std::string>>( term.size() );
+			auto result_index = std::size_t();
+			
+			auto node = root_.get();
+			auto prev = true;
+			std::string prefix;
+			
+			for( auto chr : term )
+			{
+				if( node->children.find( chr ) != node->children.end() && prev )
+				{
+					prefix += chr;
+					node = node->children[ chr ].get();
+					std::vector<std::string> items;
+					search( "", items, prefix, node );
+					results[ result_index++ ] = items;
+				}
+				else
+				{
+					prev = false;
+					++result_index;
+				}
+			}
+			
+			return results;
+		}
+	};
+	
+	search_tri searcher_;
 	
 public:
-
-	randomized_set( const int seed = 0 )
-    {
-        rand_ = randomizer( 0, INT32_MAX, seed );
-    }
 	
-    /// <summary>
-    /// Inserts a value to the set.
-    /// </summary>
-    /// <param name="val">value to insert</param>
-    /// <returns>returns true if the set did not already contain the specified element.</returns>
-	bool insert( const int val )
-	{
-        if( values_.find( val ) == values_.end() )
-        {
-            values_.insert( val );
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Removes a value from the set.
-    /// </summary>
-    /// <param name="val">the value to remove.</param>
-    /// <returns>returns true if the set contained the specified element.</returns>
-	bool remove( const int val )
-	{
-        if( values_.find( val ) != values_.end() )
-        {
-            values_.erase( val );
-
-            return true;
-        }
-
-        return false;
-    }
-
 	/// <summary>
-	/// Get a random element from the set.
+	/// suggest products
 	/// </summary>
-	/// <returns>random element</returns>
-    int getRandom()
+	/// <param name="products"></param>
+	/// <param name="search_word"></param>
+	/// <returns></returns>
+	std::vector<std::vector<std::string>> suggest_products( const std::vector<std::string>& products,
+		const std::string& search_word ) const
 	{
-        const auto offset = rand_() % values_.size();
-
-        auto it = values_.begin();
-        std::advance( it, offset );
-    	
-        return *it;
-    }
+		for( auto& word : products )
+		{
+			searcher_.insert_word( word );
+		}
+		
+		return searcher_.get_results( search_word, 3 );
+	}
 };
 
 auto main() -> int
 {
-    auto rnd = randomized_set();
+	const auto input1 = std::pair<std::vector<std::string>, std::string>
+	{
+		std::vector<std::string> { "mobile", "mouse", "moneypot", "monitor", "mousepad" },
+		"mouse"
+	};
+
+	const auto input2 = std::pair<std::vector<std::string>, std::string>
+	{
+		std::vector<std::string> {
+		"havana" },
+		"tatiana"
+	};
 	
-    rnd.insert( 1 );
-    rnd.insert( 2 );
-    rnd.insert( 1 );
+	auto searcher = search_system();
 	
-    std::cout << rnd.getRandom() << std::endl;
+	const auto results = searcher.suggest_products( input2.first, input2.second );
 	
     return 0;
 }
