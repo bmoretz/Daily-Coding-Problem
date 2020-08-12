@@ -1,87 +1,161 @@
 #include <bits/stdc++.h>
 #include <random>
 
-#include "../leetcode/tree.h"
+/* 227. Basic Calculator II.
 
-using leetcode::tree::tree_node;
+Implement a basic calculator to evaluate a simple expression string.
 
-/* 1123. Lowest Common Ancestor of Deepest Leaves.
-
-Given a rooted binary tree, return the lowest common ancestor of its deepest leaves.
-
-Recall that:
-
-The node of a binary tree is a leaf if and only if it has no children
-The depth of the root of the tree is 0, and if the depth of a node is d, the depth of each of its children is d+1.
-The lowest common ancestor of a set S of nodes is the node A with the largest depth such that every node in S is in the subtree with root A.
- 
+The expression string contains only non-negative integers, +, -, *, / operators and empty spaces . The integer division should truncate toward zero.
 
 Example 1:
 
-Input: root = [1,2,3]
-Output: [1,2,3]
-Explanation: 
-The deepest leaves are the nodes with values 2 and 3.
-The lowest common ancestor of these leaves is the node with value 1.
-The answer returned is a TreeNode object (not an array) with serialization "[1,2,3]".
+Input: "3+2*2"
+Output: 7
 Example 2:
 
-Input: root = [1,2,3,4]
-Output: [4]
+Input: " 3/2 "
+Output: 1
 Example 3:
 
-Input: root = [1,2,3,4,5]
-Output: [2,4,5]
- 
+Input: " 3+5 / 2 "
+Output: 5
+Note:
 
-Constraints:
+You may assume that the given expression is always valid.
+Do not use the eval built-in library function.
 
-The given tree will have between 1 and 1000 nodes.
-Each node of the tree will have a distinct value between 1 and 1000.
 */
 
-class lowest_common_ancestor
+class basic_calculator_ii
 {
 public:
 
-	static const tree_node* lca_deepest_leaves( const tree_node* root )
+	/// <summary>
+	/// calculates the numeric value of the passed in mathematical string expression.
+	/// </summary>
+	/// <param name="expr">the expression to evaluate</param>
+	/// <returns>numerical value of the evaluated expression</returns>
+	static int calculate( const std::string& expr )
 	{
-		if( !root ) return nullptr;
+		if( expr.empty() ) return 0;
 
-		if( height( root->left.get() ) == height( root->right.get() ) ) return root;
+		auto ops = std::stack<int>();
+		auto pos = std::size_t();
 
-		return height( root->left.get() ) > height( root->right.get() ) ? 
-			lca_deepest_leaves( root->left.get() ) :
-			lca_deepest_leaves( root->right.get() );
+		ops.push( parse_next_operand( expr, pos ) );
+		
+		while( pos < expr.size() )
+		{
+			const auto op = parse_next_op( expr, pos );
+
+			switch( op )
+			{
+
+			case '+':
+			case '-':
+			{
+				ops.push( parse_next_operand( expr, pos ) );
+			} break;
+
+			case '*':
+			case '/':
+			{
+				const auto left = ops.top();
+				ops.pop();
+				const auto right = parse_next_operand( expr, pos );
+				
+				ops.push( op == '*' ? left * right : left / right );
+			} break;
+				
+			default:break;
+			}
+		}
+
+		auto result = 0;
+		
+		while( !ops.empty() )
+		{
+			result += ops.top();
+			ops.pop();
+		}
+		
+		return result;
 	}
 
-	static int height( const tree_node* node )
+	/// <summary>
+	/// trim spaces
+	///
+	/// advances the location pointer while we have a space.
+	/// </summary>
+	/// <param name="input">expression to evaluate</param>
+	/// <param name="pos">current location</param>
+	static void trim_space( const std::string& input, std::size_t& pos )
 	{
-		if( !node ) return 0;
+		while( std::isspace( input[ pos ] ) )
+			pos++;
+	}
 
-		const auto left = height( node->left.get() );
-		const auto right = height( node->right.get() );
+	/// <summary>
+	/// parses the next operand
+	/// </summary>
+	/// <param name="input">the expression to evaluate</param>
+	/// <param name="pos">current position</param>
+	/// <returns>operand</returns>
+	static int parse_next_operand( const std::string& input, std::size_t& pos )
+	{
+		trim_space( input, pos );
 
-		return left > right ? left + 1 : right + 1;
+		std::string result;
+
+		auto sign = 1;
+		
+		if( input.at( pos ) == '-' )
+		{
+			sign = -1;
+			++pos;
+		}
+
+		trim_space( input, pos );
+		
+		while( std::isdigit( input[ pos ] ) )
+		{
+			result += input[ pos++ ];
+		}
+		
+		return std::stoi( result ) * sign;
+	}
+
+	/// <summary>
+	/// parse the next operator
+	///
+	/// read the next operator and increments the position place holder unless it's
+	/// subtraction, then we just return the op and the current index so the number
+	/// parser routine picks up the negative in the number.
+	/// </summary>
+	/// <param name="input">the expression</param>
+	/// <param name="pos">current index to evaluate</param>
+	/// <returns>the operand to execute</returns>
+	static char parse_next_op( const std::string& input, std::size_t& pos )
+	{
+		trim_space( input, pos );
+
+		return pos == input.size() ? ' ' :
+			input.at( pos ) == '-' ? 
+				input.at( pos ) : input.at( pos++ );
 	}
 };
 
 auto main() -> int
 {
-	const auto root = leetcode::tree::build_tree_in_order( {
-			"1", "2", "", "3", "4", "", "6", "", "5"
-	} );
-
-	const auto lca = lowest_common_ancestor::lca_deepest_leaves( root.get() );
-
-	const auto result = flatten_tree( lca );
+	const auto input1 = " 3+5 / 2 ";
+	const auto input2 = "3+2*2";
+	const auto input3 = "3   +  2   * 2     *  -  5 +     120/  -56";
+	const auto input4 = " 3+5 / 2 ";
+	const auto input5 = "0-2147483647";
 	
-	const auto expected = std::vector<std::vector<int>>
-	{
-		{ 15, 7 },
-		{ 9, 20 },
-		{ 3 }
-	};
+	const auto result = basic_calculator_ii::calculate( input2 );
+
+	std::cout << result << std::endl;
 	
 	return 0;
 }
