@@ -129,4 +129,106 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class number_of_islands_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( number_of_islands_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+	        { '1', '1', '0', '0', '0' },
+	        { '1', '1', '0', '0', '0' },
+	        { '0', '0', '1', '0', '0' },
+	        { '0', '0', '0', '1', '1' }
+        };
+
+        const auto actual = number_of_islands::num_islands( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_islands_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { '1', '1', '1', '1', '0' },
+            { '1', '1', '0', '1', '0' },
+            { '1', '1', '0', '0', '0' },
+            { '0', '0', '0', '0', '0' }
+        };
+
+        const auto actual = number_of_islands::num_islands( input );
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_islands_tests, case3 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { '1', '1', '1', '1', '0' },
+            { '1', '1', '0', '1', '0' },
+            { '1', '1', '0', '0', '0' },
+            { '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '1', '0' },
+            { '0', '0', '1', '1', '0' },
+            { '0', '0', '0', '0', '0' }
+        };
+
+        const auto actual = number_of_islands::num_islands( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_islands_tests, case4 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { '1', '1', '1', '1', '0' },
+            { '1', '1', '0', '1', '0' },
+            { '1', '1', '0', '0', '0' },
+            { '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '1', '0' },
+            { '0', '0', '1', '1', '0' },
+            { '0', '0', '0', '0', '1' }
+        };
+
+        const auto actual = number_of_islands::num_islands( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( number_of_islands_tests, case5 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { '1', '1', '1', '1', '0' },
+            { '1', '1', '0', '1', '0' },
+            { '1', '1', '0', '0', '0' },
+            { '0', '0', '0', '0', '0' },
+            { '0', '0', '0', '1', '0' },
+            { '0', '0', '1', '1', '0' },
+            { '0', '0', '0', '1', '1' }
+        };
+
+        const auto actual = number_of_islands::num_islands( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

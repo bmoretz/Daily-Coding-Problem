@@ -1,159 +1,112 @@
 #include <bits/stdc++.h>
 #include <random>
 
-/* 227. Basic Calculator II.
+/* 200. Number of Islands.
 
-Implement a basic calculator to evaluate a simple expression string.
-
-The expression string contains only non-negative integers, +, -, *, / operators and empty spaces . The integer division should truncate toward zero.
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by
+connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
 
 Example 1:
 
-Input: "3+2*2"
-Output: 7
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+
 Example 2:
 
-Input: " 3/2 "
-Output: 1
-Example 3:
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
 
-Input: " 3+5 / 2 "
-Output: 5
-Note:
-
-You may assume that the given expression is always valid.
-Do not use the eval built-in library function.
-
+Output: 3
 */
 
-class basic_calculator_ii
+class number_of_islands
 {
 public:
 
 	/// <summary>
-	/// calculates the numeric value of the passed in mathematical string expression.
+	/// connected
+	///
+	/// does a dfs on the grid and visits all the nodes that are connected to the
+	/// passed in index.
 	/// </summary>
-	/// <param name="expr">the expression to evaluate</param>
-	/// <returns>numerical value of the evaluated expression</returns>
-	static int calculate( const std::string& expr )
+	/// <param name="grid">the grid</param>
+	/// <param name="visited">visited markers</param>
+	/// <param name="row">row index</param>
+	/// <param name="column">column index</param>
+	static void connected( const std::vector<std::vector<char>>& grid,
+		std::vector<std::vector<bool>>& visited,
+		const std::size_t row, const std::size_t column )
 	{
-		if( expr.empty() ) return 0;
+		const auto rows = grid.size();
+		const auto columns = grid[ 0 ].size();
 
-		auto ops = std::stack<int>();
-		auto pos = std::size_t();
+		if( row < 0 || row >= rows || column < 0 || column >= columns ||
+			visited[ row ][ column ] || grid[ row ][ column ] == '0' ) return;
 
-		ops.push( parse_next_operand( expr, pos ) );
-		
-		while( pos < expr.size() )
+		visited[ row ][ column ] = true;
+
+		connected( grid, visited, row + 1, column );
+		connected( grid, visited, row - 1, column );
+		connected( grid, visited, row, column + 1 );
+		connected( grid, visited, row, column - 1 );
+	}
+
+	static int num_islands( const std::vector<std::vector<char>>& grid )
+	{
+		if( grid.empty() ) return 0;
+		if( grid[ 0 ].empty() ) return 0;
+
+		auto visited = std::vector<std::vector<bool>>(
+			grid.size(),
+			std::vector<bool>( grid[ 0 ].size() )
+		);
+
+		auto islands = 0;
+
+		for( auto row = std::size_t(); row < grid.size(); ++row )
 		{
-			const auto op = parse_next_op( expr, pos );
-
-			switch( op )
+			for( auto column = std::size_t(); column < grid[ 0 ].size(); ++column )
 			{
-
-			case '+':
-			case '-':
-			{
-				ops.push( parse_next_operand( expr, pos ) );
-			} break;
-
-			case '*':
-			case '/':
-			{
-				const auto left = ops.top();
-				ops.pop();
-				const auto right = parse_next_operand( expr, pos );
-				
-				ops.push( op == '*' ? left * right : left / right );
-			} break;
-				
-			default:break;
+				if( grid[ row ][ column ] == '1' && !visited[ row ][ column ] )
+				{
+					islands++;
+					connected( grid, visited, row, column );
+				}
 			}
 		}
 
-		auto result = 0;
-		
-		while( !ops.empty() )
-		{
-			result += ops.top();
-			ops.pop();
-		}
-		
-		return result;
-	}
-
-	/// <summary>
-	/// trim spaces
-	///
-	/// advances the location pointer while we have a space.
-	/// </summary>
-	/// <param name="input">expression to evaluate</param>
-	/// <param name="pos">current location</param>
-	static void trim_space( const std::string& input, std::size_t& pos )
-	{
-		while( std::isspace( input[ pos ] ) )
-			pos++;
-	}
-
-	/// <summary>
-	/// parses the next operand
-	/// </summary>
-	/// <param name="input">the expression to evaluate</param>
-	/// <param name="pos">current position</param>
-	/// <returns>operand</returns>
-	static int parse_next_operand( const std::string& input, std::size_t& pos )
-	{
-		trim_space( input, pos );
-
-		std::string result;
-
-		auto sign = 1;
-		
-		if( input.at( pos ) == '-' )
-		{
-			sign = -1;
-			++pos;
-		}
-
-		trim_space( input, pos );
-		
-		while( std::isdigit( input[ pos ] ) )
-		{
-			result += input[ pos++ ];
-		}
-		
-		return std::stoi( result ) * sign;
-	}
-
-	/// <summary>
-	/// parse the next operator
-	///
-	/// read the next operator and increments the position place holder unless it's
-	/// subtraction, then we just return the op and the current index so the number
-	/// parser routine picks up the negative in the number.
-	/// </summary>
-	/// <param name="input">the expression</param>
-	/// <param name="pos">current index to evaluate</param>
-	/// <returns>the operand to execute</returns>
-	static char parse_next_op( const std::string& input, std::size_t& pos )
-	{
-		trim_space( input, pos );
-
-		return pos == input.size() ? ' ' :
-			input.at( pos ) == '-' ? 
-				input.at( pos ) : input.at( pos++ );
+		return islands;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = " 3+5 / 2 ";
-	const auto input2 = "3+2*2";
-	const auto input3 = "3   +  2   * 2     *  -  5 +     120/  -56";
-	const auto input4 = " 3+5 / 2 ";
-	const auto input5 = "0-2147483647";
+	const auto input1 = std::vector<std::vector<char>>
+	{
+		{ '1', '1', '1', '1', '0' },
+		{ '1', '1', '0', '1', '0' },
+		{ '1', '1', '0', '0', '0' },
+		{ '0', '0', '0', '0', '0' }
+	};
+
+	const auto input2 = std::vector<std::vector<char>>
+	{
+		{ '1', '1', '0', '0', '0' },
+		{ '1', '1', '0', '0', '0' },
+		{ '0', '0', '1', '0', '0' },
+		{ '0', '0', '0', '1', '1' }
+	};
 	
-	const auto result = basic_calculator_ii::calculate( input2 );
+	const auto result = number_of_islands::num_islands( input2 );
 
 	std::cout << result << std::endl;
 	
