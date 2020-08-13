@@ -167,6 +167,7 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="queue.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="str.h" />
     <ClInclude Include="tree.h" />

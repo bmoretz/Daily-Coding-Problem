@@ -1,114 +1,117 @@
 #include <bits/stdc++.h>
 #include <random>
+#include <unordered_set>
 
-/* 200. Number of Islands.
+/* 1429. First Unique Number.
 
-Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by
-connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+You have a queue of integers, you need to retrieve the first unique integer in the queue.
 
+Implement the FirstUnique class:
+
+FirstUnique(int[] nums) Initializes the object with the numbers in the queue.
+int showFirstUnique() returns the value of the first unique integer of the queue, and returns -1 if there is no such integer.
+void add(int value) insert value to the queue.
+ 
 Example 1:
 
-Input: grid = [
-  ["1","1","1","1","0"],
-  ["1","1","0","1","0"],
-  ["1","1","0","0","0"],
-  ["0","0","0","0","0"]
-]
-Output: 1
-
+Input: 
+["FirstUnique","showFirstUnique","add","showFirstUnique","add","showFirstUnique","add","showFirstUnique"]
+[[[2,3,5]],[],[5],[],[2],[],[3],[]]
+Output: 
+[null,2,null,2,null,3,null,-1]
+Explanation: 
+FirstUnique firstUnique = new FirstUnique([2,3,5]);
+firstUnique.showFirstUnique(); // return 2
+firstUnique.add(5);            // the queue is now [2,3,5,5]
+firstUnique.showFirstUnique(); // return 2
+firstUnique.add(2);            // the queue is now [2,3,5,5,2]
+firstUnique.showFirstUnique(); // return 3
+firstUnique.add(3);            // the queue is now [2,3,5,5,2,3]
+firstUnique.showFirstUnique(); // return -1
 Example 2:
 
-Input: grid = [
-  ["1","1","0","0","0"],
-  ["1","1","0","0","0"],
-  ["0","0","1","0","0"],
-  ["0","0","0","1","1"]
-]
+Input: 
+["FirstUnique","showFirstUnique","add","add","add","add","add","showFirstUnique"]
+[[[7,7,7,7,7,7]],[],[7],[3],[3],[7],[17],[]]
+Output: 
+[null,-1,null,null,null,null,null,17]
+Explanation: 
+FirstUnique firstUnique = new FirstUnique([7,7,7,7,7,7]);
+firstUnique.showFirstUnique(); // return -1
+firstUnique.add(7);            // the queue is now [7,7,7,7,7,7,7]
+firstUnique.add(3);            // the queue is now [7,7,7,7,7,7,7,3]
+firstUnique.add(3);            // the queue is now [7,7,7,7,7,7,7,3,3]
+firstUnique.add(7);            // the queue is now [7,7,7,7,7,7,7,3,3,7]
+firstUnique.add(17);           // the queue is now [7,7,7,7,7,7,7,3,3,7,17]
+firstUnique.showFirstUnique(); // return 17
+Example 3:
 
-Output: 3
+Input: 
+["FirstUnique","showFirstUnique","add","showFirstUnique"]
+[[[809]],[],[809],[]]
+Output: 
+[null,809,null,-1]
+Explanation: 
+FirstUnique firstUnique = new FirstUnique([809]);
+firstUnique.showFirstUnique(); // return 809
+firstUnique.add(809);          // the queue is now [809,809]
+firstUnique.showFirstUnique(); // return -1
+ 
+
+Constraints:
+
+1 <= nums.length <= 10^5
+1 <= nums[i] <= 10^8
+1 <= value <= 10^8
+At most 50000 calls will be made to showFirstUnique and add.
 */
 
-class number_of_islands
+class first_unique
 {
+    std::unordered_map<int, int> seen_;
+    std::queue<int> values_;
+
+    void insert_value( const int value )
+    {
+        seen_[ value ]++;
+        values_.push( value );
+    }
+
 public:
 
-	/// <summary>
-	/// connected
-	///
-	/// does a dfs on the grid and visits all the nodes that are connected to the
-	/// passed in index.
-	/// </summary>
-	/// <param name="grid">the grid</param>
-	/// <param name="visited">visited markers</param>
-	/// <param name="row">row index</param>
-	/// <param name="column">column index</param>
-	static void connected( const std::vector<std::vector<char>>& grid,
-		std::vector<std::vector<bool>>& visited,
-		const std::size_t row, const std::size_t column )
+    explicit first_unique( const std::vector<int>& numbers )
+    {
+        for( auto num : numbers )
+        {
+            insert_value( num );
+        }
+    }
+
+    int show_first_unique()
 	{
-		const auto rows = grid.size();
-		const auto columns = grid[ 0 ].size();
+        while( !values_.empty() && seen_[ values_.front() ] > 1 )
+            values_.pop();
 
-		if( row < 0 || row >= rows || column < 0 || column >= columns ||
-			visited[ row ][ column ] || grid[ row ][ column ] == '0' ) return;
+        return values_.empty() ? -1 : values_.front();
+    }
 
-		visited[ row ][ column ] = true;
-
-		connected( grid, visited, row + 1, column );
-		connected( grid, visited, row - 1, column );
-		connected( grid, visited, row, column + 1 );
-		connected( grid, visited, row, column - 1 );
-	}
-
-	static int num_islands( const std::vector<std::vector<char>>& grid )
-	{
-		if( grid.empty() ) return 0;
-		if( grid[ 0 ].empty() ) return 0;
-
-		auto visited = std::vector<std::vector<bool>>(
-			grid.size(),
-			std::vector<bool>( grid[ 0 ].size() )
-		);
-
-		auto islands = 0;
-
-		for( auto row = std::size_t(); row < grid.size(); ++row )
-		{
-			for( auto column = std::size_t(); column < grid[ 0 ].size(); ++column )
-			{
-				if( grid[ row ][ column ] == '1' && !visited[ row ][ column ] )
-				{
-					islands++;
-					connected( grid, visited, row, column );
-				}
-			}
-		}
-
-		return islands;
-	}
+    void add( const int value )
+    {
+        insert_value( value );
+    }
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<char>>
-	{
-		{ '1', '1', '1', '1', '0' },
-		{ '1', '1', '0', '1', '0' },
-		{ '1', '1', '0', '0', '0' },
-		{ '0', '0', '0', '0', '0' }
-	};
-
-	const auto input2 = std::vector<std::vector<char>>
-	{
-		{ '1', '1', '0', '0', '0' },
-		{ '1', '1', '0', '0', '0' },
-		{ '0', '0', '1', '0', '0' },
-		{ '0', '0', '0', '1', '1' }
-	};
-	
-	const auto result = number_of_islands::num_islands( input2 );
-
-	std::cout << result << std::endl;
+    auto nums = std::vector<int>{ 7, 7, 7, 7, 7, 7 };
+    first_unique firstUnique = first_unique( nums );
+    std::cout<< firstUnique.show_first_unique() << std::endl; // return -1
+    firstUnique.add( 7 );            // the queue is now [7,7,7,7,7,7,7]
+    firstUnique.add( 3 );            // the queue is now [7,7,7,7,7,7,7,3]
+    firstUnique.add( 3 );            // the queue is now [7,7,7,7,7,7,7,3,3]
+    firstUnique.add( 7 );            // the queue is now [7,7,7,7,7,7,7,3,3,7]
+    firstUnique.add( 17 );           // the queue is now [7,7,7,7,7,7,7,3,3,7,17]
+    std::cout << firstUnique.show_first_unique() << std::endl; // return 17
 	
 	return 0;
 }
