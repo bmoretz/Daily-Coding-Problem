@@ -231,4 +231,98 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class shortest_path_binary_matrix_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( shortest_path_binary_matrix_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+            {0, 0, 0},
+            {1, 1, 0},
+            {1, 1, 0}
+        };
+
+        const auto actual = shortest_path_binary_matrix::shortest_path( input );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( shortest_path_binary_matrix_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        {0, 0, 0},
+	        {1, 1, 0},
+	        {1, 1, 1}
+        };
+
+        const auto actual = shortest_path_binary_matrix::shortest_path( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( shortest_path_binary_matrix_tests, case3 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        {1, 0, 0},
+	        {1, 0, 0},
+	        {1, 1, 0}
+        };
+
+        const auto actual = shortest_path_binary_matrix::shortest_path( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( shortest_path_binary_matrix_tests, case4 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        {0, 0, 0, 0, 1, 1},
+	        {0, 1, 0, 0, 1, 0},
+	        {1, 1, 0, 1, 0, 0},
+	        {0, 1, 0, 0, 1, 1},
+	        {0, 1, 0, 0, 0, 1},
+	        {0, 0, 1, 0, 0, 0}
+        };
+
+        const auto actual = shortest_path_binary_matrix::shortest_path( input );
+        const auto expected = 7;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( shortest_path_binary_matrix_tests, case5 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+            {0, 0, 0, 0, 1, 1},
+            {0, 1, 0, 0, 1, 0},
+            {1, 1, 1, 1, 0, 0},
+            {0, 1, 0, 0, 1, 0},
+            {0, 1, 0, 0, 0, 1},
+            {0, 0, 1, 0, 0, 0}
+        };
+
+        const auto actual = shortest_path_binary_matrix::shortest_path( input );
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

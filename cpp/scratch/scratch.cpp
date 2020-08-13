@@ -2,116 +2,140 @@
 #include <random>
 #include <unordered_set>
 
-/* 1429. First Unique Number.
+/* 1091. Shortest Path in Binary Matrix.
 
-You have a queue of integers, you need to retrieve the first unique integer in the queue.
+In an N by N square grid, each cell is either empty (0) or blocked (1).
 
-Implement the FirstUnique class:
+A clear path from top-left to bottom-right has length k if and only if it is composed of cells C_1, C_2, ..., C_k such that:
 
-FirstUnique(int[] nums) Initializes the object with the numbers in the queue.
-int showFirstUnique() returns the value of the first unique integer of the queue, and returns -1 if there is no such integer.
-void add(int value) insert value to the queue.
- 
+Adjacent cells C_i and C_{i+1} are connected 8-directionally (ie., they are different and share an edge or corner)
+C_1 is at location (0, 0) (ie. has value grid[0][0])
+C_k is at location (N-1, N-1) (ie. has value grid[N-1][N-1])
+If C_i is located at (r, c), then grid[r][c] is empty (ie. grid[r][c] == 0).
+
+Return the length of the shortest such clear path from top-left to bottom-right.  If such a path does not exist, return -1.
+
 Example 1:
 
-Input: 
-["FirstUnique","showFirstUnique","add","showFirstUnique","add","showFirstUnique","add","showFirstUnique"]
-[[[2,3,5]],[],[5],[],[2],[],[3],[]]
-Output: 
-[null,2,null,2,null,3,null,-1]
-Explanation: 
-FirstUnique firstUnique = new FirstUnique([2,3,5]);
-firstUnique.showFirstUnique(); // return 2
-firstUnique.add(5);            // the queue is now [2,3,5,5]
-firstUnique.showFirstUnique(); // return 2
-firstUnique.add(2);            // the queue is now [2,3,5,5,2]
-firstUnique.showFirstUnique(); // return 3
-firstUnique.add(3);            // the queue is now [2,3,5,5,2,3]
-firstUnique.showFirstUnique(); // return -1
+Input: [[0,1],[1,0]]
+
+Output: 2
+
 Example 2:
 
-Input: 
-["FirstUnique","showFirstUnique","add","add","add","add","add","showFirstUnique"]
-[[[7,7,7,7,7,7]],[],[7],[3],[3],[7],[17],[]]
-Output: 
-[null,-1,null,null,null,null,null,17]
-Explanation: 
-FirstUnique firstUnique = new FirstUnique([7,7,7,7,7,7]);
-firstUnique.showFirstUnique(); // return -1
-firstUnique.add(7);            // the queue is now [7,7,7,7,7,7,7]
-firstUnique.add(3);            // the queue is now [7,7,7,7,7,7,7,3]
-firstUnique.add(3);            // the queue is now [7,7,7,7,7,7,7,3,3]
-firstUnique.add(7);            // the queue is now [7,7,7,7,7,7,7,3,3,7]
-firstUnique.add(17);           // the queue is now [7,7,7,7,7,7,7,3,3,7,17]
-firstUnique.showFirstUnique(); // return 17
-Example 3:
+Input: [[0,0,0],[1,1,0],[1,1,0]]
 
-Input: 
-["FirstUnique","showFirstUnique","add","showFirstUnique"]
-[[[809]],[],[809],[]]
-Output: 
-[null,809,null,-1]
-Explanation: 
-FirstUnique firstUnique = new FirstUnique([809]);
-firstUnique.showFirstUnique(); // return 809
-firstUnique.add(809);          // the queue is now [809,809]
-firstUnique.showFirstUnique(); // return -1
- 
+Output: 4
 
-Constraints:
+Note:
 
-1 <= nums.length <= 10^5
-1 <= nums[i] <= 10^8
-1 <= value <= 10^8
-At most 50000 calls will be made to showFirstUnique and add.
+1 <= grid.length == grid[0].length <= 100
+grid[r][c] is 0 or 1.
 */
 
-class first_unique
+class shortest_path_binary_matrix
 {
-    std::unordered_map<int, int> seen_;
-    std::queue<int> values_;
 
-    void insert_value( const int value )
-    {
-        seen_[ value ]++;
-        values_.push( value );
-    }
-
+	static std::vector<std::pair<int, int>> get_next_choices()
+	{
+		return std::vector<std::pair<int, int>>
+        {
+            { 1, 1 }, { 0, 1 }, { 1, 0 }, { 0, -1 },
+            { -1, 0 }, { -1, -1 }, { 1, -1 }, { -1, 1 }
+        };
+	}
+	
 public:
 
-    explicit first_unique( const std::vector<int>& numbers )
+	/// <summary>
+	/// shortest path
+	///
+	/// breath first search approach
+	/// </summary>
+	/// <param name="grid">the grid</param>
+	/// <returns></returns>
+    static int shortest_path( const std::vector<std::vector<int>>& grid )
     {
-        for( auto num : numbers )
+        if( grid.empty() ) return 0;
+
+        const auto num_rows = grid.size();
+        const auto num_cols = grid[ 0 ].size();
+
+        if( grid[ 0 ][ 0 ] != 0 && grid[ num_rows - 1 ][ num_cols - 1 ] != 1 ) return -1; // no solution is possible
+
+        auto counter = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols ) );
+
+        std::queue<std::pair<std::size_t, std::size_t>> queue;
+
+        queue.push( { 0, 0 } );
+        counter[ 0 ][ 0 ] = 1;
+
+        while( !queue.empty() )
         {
-            insert_value( num );
+            const auto [x, y] = queue.front();
+
+            queue.pop();
+
+            if( x == num_rows - 1 && y == num_cols - 1 ) return counter[ x ][ y ];
+
+            for( auto& [nx, ny] : get_next_choices() )
+            {
+                auto next_x = x + nx;
+                auto next_y = y + ny;
+
+                if( next_x >= 0 && next_x < num_rows &&
+                    next_y >= 0 && next_y < num_cols &&
+                    grid[ next_x ][ next_y ] == 0 )
+                {
+                    if( counter[ next_x ][ next_y ] ) continue;
+                	
+                    queue.push( { next_x, next_y } );
+
+                    counter[ next_x ][ next_y ] = counter[ x ][ y ] + 1;
+                }
+            }
         }
-    }
 
-    int show_first_unique()
-	{
-        while( !values_.empty() && seen_[ values_.front() ] > 1 )
-            values_.pop();
-
-        return values_.empty() ? -1 : values_.front();
-    }
-
-    void add( const int value )
-    {
-        insert_value( value );
+        return -1;
     }
 };
 
 auto main() -> int
 {
-    auto nums = std::vector<int>{ 7, 7, 7, 7, 7, 7 };
-    first_unique firstUnique = first_unique( nums );
-    std::cout<< firstUnique.show_first_unique() << std::endl; // return -1
-    firstUnique.add( 7 );            // the queue is now [7,7,7,7,7,7,7]
-    firstUnique.add( 3 );            // the queue is now [7,7,7,7,7,7,7,3]
-    firstUnique.add( 3 );            // the queue is now [7,7,7,7,7,7,7,3,3]
-    firstUnique.add( 7 );            // the queue is now [7,7,7,7,7,7,7,3,3,7]
-    firstUnique.add( 17 );           // the queue is now [7,7,7,7,7,7,7,3,3,7,17]
-    std::cout << firstUnique.show_first_unique() << std::endl; // return 17
+    const auto input1 = std::vector<std::vector<int>>
+    {
+        {0, 0, 0},
+        {1, 1, 0},
+        {1, 1, 0}
+    };
+
+    const auto input2 = std::vector<std::vector<int>>
+    {
+        {0, 0, 0},
+        {1, 1, 0},
+        {1, 1, 0}
+    };
+
+    const auto input3 = std::vector<std::vector<int>>
+    {
+        {1, 0, 0},
+        {1, 1, 0},
+        {1, 1, 0}
+    };
+
+    const auto input4 = std::vector<std::vector<int>>
+    {
+        {0, 0, 0, 0, 1, 1},
+        {0, 1, 0, 0, 1, 0},
+        {1, 1, 0, 1, 0, 0},
+        {0, 1, 0, 0, 1, 1},
+        {0, 1, 0, 0, 0, 1},
+        {0, 0, 1, 0, 0, 0}
+    };
 	
-	return 0;
+    const auto steps = shortest_path_binary_matrix::shortest_path( input4 );
+
+    std::cout << steps;
+	
+    return 0;
 }
