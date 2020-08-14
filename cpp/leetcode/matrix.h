@@ -192,6 +192,19 @@ namespace leetcode::matrix
 
 	public:
 
+		static bool is_valid( const std::vector<std::vector<int>>& grid,
+			const std::size_t next_x, const std::size_t next_y )
+		{
+			const auto num_rows = grid.size();
+			const auto num_cols = grid[ 0 ].size();
+
+			const auto valid_row = next_x >= 0 && next_x < num_rows;
+			const auto valid_column = next_y >= 0 && next_y < num_cols;
+			const auto valid_cell = grid[ next_x ][ next_y ] == 0;
+
+			return valid_row && valid_column && valid_cell;
+		}
+
 		/// <summary>
 		/// shortest path
 		///
@@ -206,7 +219,8 @@ namespace leetcode::matrix
 			const auto num_rows = grid.size();
 			const auto num_cols = grid[ 0 ].size();
 
-			if( grid[ 0 ][ 0 ] != 0 && grid[ num_rows - 1 ][ num_cols - 1 ] != 1 ) return -1; // no solution is possible
+			// no solution is possible
+			if( grid[ 0 ][ 0 ] != 0 && grid[ num_rows - 1 ][ num_cols - 1 ] != 1 ) return -1;
 
 			auto counter = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols ) );
 
@@ -219,8 +233,6 @@ namespace leetcode::matrix
 			{
 				const auto [x, y] = queue.front();
 
-				queue.pop();
-
 				if( x == num_rows - 1 && y == num_cols - 1 ) return counter[ x ][ y ];
 
 				for( auto& [nx, ny] : get_next_choices() )
@@ -228,9 +240,7 @@ namespace leetcode::matrix
 					auto next_x = x + nx;
 					auto next_y = y + ny;
 
-					if( next_x >= 0 && next_x < num_rows &&
-						next_y >= 0 && next_y < num_cols &&
-						grid[ next_x ][ next_y ] == 0 )
+					if( is_valid( grid, next_x, next_y ) )
 					{
 						if( counter[ next_x ][ next_y ] ) continue;
 
@@ -239,6 +249,8 @@ namespace leetcode::matrix
 						counter[ next_x ][ next_y ] = counter[ x ][ y ] + 1;
 					}
 				}
+
+				queue.pop();
 			}
 
 			return -1;

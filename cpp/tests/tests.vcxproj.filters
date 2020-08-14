@@ -107,6 +107,9 @@
     <ClCompile Include="lc_queue.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="lc_design.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

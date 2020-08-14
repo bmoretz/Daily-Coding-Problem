@@ -2,140 +2,146 @@
 #include <random>
 #include <unordered_set>
 
-/* 1091. Shortest Path in Binary Matrix.
+/* 348. Design Tic-Tac-Toe.
 
-In an N by N square grid, each cell is either empty (0) or blocked (1).
+Design a Tic-tac-toe game that is played between two players on a n x n grid.
 
-A clear path from top-left to bottom-right has length k if and only if it is composed of cells C_1, C_2, ..., C_k such that:
+You may assume the following rules:
 
-Adjacent cells C_i and C_{i+1} are connected 8-directionally (ie., they are different and share an edge or corner)
-C_1 is at location (0, 0) (ie. has value grid[0][0])
-C_k is at location (N-1, N-1) (ie. has value grid[N-1][N-1])
-If C_i is located at (r, c), then grid[r][c] is empty (ie. grid[r][c] == 0).
+A move is guaranteed to be valid and is placed on an empty block.
+Once a winning condition is reached, no more moves is allowed.
+A player who succeeds in placing n of their marks in a horizontal, vertical, or diagonal row wins the game.
+Example:
+Given n = 3, assume that player 1 is "X" and player 2 is "O" in the board.
 
-Return the length of the shortest such clear path from top-left to bottom-right.  If such a path does not exist, return -1.
+TicTacToe toe = new TicTacToe(3);
 
-Example 1:
+toe.move(0, 0, 1); -> Returns 0 (no one wins)
+|X| | |
+| | | |    // Player 1 makes a move at (0, 0).
+| | | |
 
-Input: [[0,1],[1,0]]
+toe.move(0, 2, 2); -> Returns 0 (no one wins)
+|X| |O|
+| | | |    // Player 2 makes a move at (0, 2).
+| | | |
 
-Output: 2
+toe.move(2, 2, 1); -> Returns 0 (no one wins)
+|X| |O|
+| | | |    // Player 1 makes a move at (2, 2).
+| | |X|
 
-Example 2:
+toe.move(1, 1, 2); -> Returns 0 (no one wins)
+|X| |O|
+| |O| |    // Player 2 makes a move at (1, 1).
+| | |X|
 
-Input: [[0,0,0],[1,1,0],[1,1,0]]
+toe.move(2, 0, 1); -> Returns 0 (no one wins)
+|X| |O|
+| |O| |    // Player 1 makes a move at (2, 0).
+|X| |X|
 
-Output: 4
+toe.move(1, 0, 2); -> Returns 0 (no one wins)
+|X| |O|
+|O|O| |    // Player 2 makes a move at (1, 0).
+|X| |X|
 
-Note:
+toe.move(2, 1, 1); -> Returns 1 (player 1 wins)
+|X| |O|
+|O|O| |    // Player 1 makes a move at (2, 1).
+|X|X|X|
 
-1 <= grid.length == grid[0].length <= 100
-grid[r][c] is 0 or 1.
+Follow up:
+Could you do better than O(n2) per move() operation?
 */
 
-class shortest_path_binary_matrix
+class tic_tac_toe
 {
+    std::vector<int> rows_, columns_;
+    int target_, diagonal_, antidiagonal_;
 
-	static std::vector<std::pair<int, int>> get_next_choices()
-	{
-		return std::vector<std::pair<int, int>>
-        {
-            { 1, 1 }, { 0, 1 }, { 1, 0 }, { 0, -1 },
-            { -1, 0 }, { -1, -1 }, { 1, -1 }, { -1, 1 }
-        };
-	}
-	
 public:
 
-	/// <summary>
-	/// shortest path
-	///
-	/// breath first search approach
-	/// </summary>
-	/// <param name="grid">the grid</param>
-	/// <returns></returns>
-    static int shortest_path( const std::vector<std::vector<int>>& grid )
+    explicit tic_tac_toe( const int n )
+        : diagonal_{}, antidiagonal_{}
     {
-        if( grid.empty() ) return 0;
+        target_ = n;
+        rows_.resize( n );
+        columns_.resize( n );
+    }
 
-        const auto num_rows = grid.size();
-        const auto num_cols = grid[ 0 ].size();
+    int move( const int row, const int col, const int player )
+    {
+        auto result = 0;
+        const auto increment = player == 1 ? 1 : -1;
 
-        if( grid[ 0 ][ 0 ] != 0 && grid[ num_rows - 1 ][ num_cols - 1 ] != 1 ) return -1; // no solution is possible
+        columns_[ col ] += increment;
+        rows_[ row ] += increment;
 
-        auto counter = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols ) );
+        diagonal_ += row == col ? increment : 0;
+        antidiagonal_ += row == target_ - 1 - col ? increment : 0;
 
-        std::queue<std::pair<std::size_t, std::size_t>> queue;
-
-        queue.push( { 0, 0 } );
-        counter[ 0 ][ 0 ] = 1;
-
-        while( !queue.empty() )
+        if( abs( rows_[ row ] ) == target_ || abs( columns_[ col ] ) == target_ ||
+            abs( diagonal_ ) == target_ || abs( antidiagonal_ ) == target_ )
         {
-            const auto [x, y] = queue.front();
-
-            queue.pop();
-
-            if( x == num_rows - 1 && y == num_cols - 1 ) return counter[ x ][ y ];
-
-            for( auto& [nx, ny] : get_next_choices() )
-            {
-                auto next_x = x + nx;
-                auto next_y = y + ny;
-
-                if( next_x >= 0 && next_x < num_rows &&
-                    next_y >= 0 && next_y < num_cols &&
-                    grid[ next_x ][ next_y ] == 0 )
-                {
-                    if( counter[ next_x ][ next_y ] ) continue;
-                	
-                    queue.push( { next_x, next_y } );
-
-                    counter[ next_x ][ next_y ] = counter[ x ][ y ] + 1;
-                }
-            }
+            result = player == 1 ? 1 : 2;
         }
 
-        return -1;
+        return result;
     }
 };
 
 auto main() -> int
 {
-    const auto input1 = std::vector<std::vector<int>>
-    {
-        {0, 0, 0},
-        {1, 1, 0},
-        {1, 1, 0}
-    };
+    auto toe = tic_tac_toe( 3 );
 
-    const auto input2 = std::vector<std::vector<int>>
-    {
-        {0, 0, 0},
-        {1, 1, 0},
-        {1, 1, 0}
-    };
+    toe.move( 0, 0, 1 ); // ->Returns 0 ( no one wins )
+    /*
+	| X| | |
+        | | | |    // Player 1 makes a move at (0, 0).
+        | | | |
+	*/
+    toe.move( 0, 2, 2 ); // ->Returns 0 ( no one wins )
+    /*
+    | X| |O|
+    | | | |    // Player 2 makes a move at (0, 2).
+    | | | |
+    */
 
-    const auto input3 = std::vector<std::vector<int>>
-    {
-        {1, 0, 0},
-        {1, 1, 0},
-        {1, 1, 0}
-    };
+    toe.move( 2, 2, 1 ); // ->Returns 0 ( no one wins )
+    /*
+	| X| |O|
+    | | | |    // Player 1 makes a move at (2, 2).
+    | | |X |
+    */
 
-    const auto input4 = std::vector<std::vector<int>>
-    {
-        {0, 0, 0, 0, 1, 1},
-        {0, 1, 0, 0, 1, 0},
-        {1, 1, 0, 1, 0, 0},
-        {0, 1, 0, 0, 1, 1},
-        {0, 1, 0, 0, 0, 1},
-        {0, 0, 1, 0, 0, 0}
-    };
-	
-    const auto steps = shortest_path_binary_matrix::shortest_path( input4 );
+    toe.move( 1, 1, 2 ); // ->Returns 0 ( no one wins )
+    /*
+	| X| |O|
+    | |O| |    // Player 2 makes a move at (1, 1).
+    | | |X |
+    */
 
-    std::cout << steps;
+    toe.move( 2, 0, 1 ); // ->Returns 0 ( no one wins )
+    /*
+	| X| |O|
+    | |O| |    // Player 1 makes a move at (2, 0).
+    |X| |X |
+    */
+
+    toe.move( 1, 0, 2 ); // ->Returns 0 ( no one wins )
+    /*
+	| X| |O|
+    |O | O| |    // Player 2 makes a move at (1, 0).
+    |X| |X |
+    */
+
+    toe.move( 2, 1, 1 ); // ->Returns 1 ( player 1 wins )
+    /*
+	| X| |O|
+    |O | O| |    // Player 1 makes a move at (2, 1).
+    |X | X | X |
+	*/
 	
     return 0;
 }

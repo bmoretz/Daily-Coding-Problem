@@ -158,6 +158,7 @@
     <ClInclude Include="backtrack.h" />
     <ClInclude Include="bitmanip.h" />
     <ClInclude Include="containers.h" />
+    <ClInclude Include="design.h" />
     <ClInclude Include="dynamic.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="hashtable.h" />
