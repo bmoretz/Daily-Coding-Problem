@@ -110,6 +110,9 @@
     <ClCompile Include="lc_design.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="lc_palindrome.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
