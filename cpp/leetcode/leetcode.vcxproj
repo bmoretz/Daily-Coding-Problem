@@ -161,6 +161,7 @@
     <ClInclude Include="design.h" />
     <ClInclude Include="dynamic.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="games.h" />
     <ClInclude Include="hashtable.h" />
     <ClInclude Include="heap.h" />
     <ClInclude Include="interval.h" />

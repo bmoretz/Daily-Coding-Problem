@@ -1,86 +1,179 @@
 #include <bits/stdc++.h>
 
-/* 918. Maximum Sum Circular Subarray.
+/* 353. Design Snake Game.
 
-Given a circular array C of integers represented by A, find the maximum possible sum of a non-empty subarray of C.
+Design a Snake game that is played on a device with screen size = width x height. Play the game online if you are not familiar with the game.
 
-Here, a circular array means the end of the array connects to the beginning of the array.  (Formally,
-C[i] = A[i] when 0 <= i < A.length, and C[i+A.length] = C[i] when i >= 0.)
+The snake is initially positioned at the top left corner (0,0) with length = 1 unit.
 
-Also, a subarray may only include each element of the fixed buffer A at most once.  (Formally,
-for a subarray C[i], C[i+1], ..., C[j], there does not exist i <= k1, k2 <= j with k1 % A.length = k2 % A.length.)
+You are given a list of food's positions in row-column order. When a snake eats the food, its length and the game's score both increase by 1.
 
-Example 1:
+Each food appears one by one on the screen. For example, the second food will not appear until the first food was eaten by the snake.
 
-Input: [1,-2,3,-2]
-Output: 3
-Explanation: Subarray [3] has maximum sum 3
-Example 2:
+When a food does appear on the screen, it is guaranteed that it will not appear on a block occupied by the snake.
 
-Input: [5,-3,5]
-Output: 10
-Explanation: Subarray [5,5] has maximum sum 5 + 5 = 10
-Example 3:
+Example:
 
-Input: [3,-1,2,-1]
-Output: 4
-Explanation: Subarray [2,-1,3] has maximum sum 2 + (-1) + 3 = 4
-Example 4:
+Given width = 3, height = 2, and food = [[1,2],[0,1]].
 
-Input: [3,-2,2,-3]
-Output: 3
-Explanation: Subarray [3] and [3,-2,2] both have maximum sum 3
-Example 5:
+Snake snake = new Snake(width, height, food);
 
-Input: [-2,-3,-1]
-Output: -1
-Explanation: Subarray [-1] has maximum sum -1
- 
+Initially the snake appears at position (0,0) and the food at (1,2).
 
-Note:
+|S| | |
+| | |F|
 
--30000 <= A[i] <= 30000
-1 <= A.length <= 30000
+snake.move("R"); -> Returns 0
+
+| |S| |
+| | |F|
+
+snake.move("D"); -> Returns 0
+
+| | | |
+| |S|F|
+
+snake.move("R"); -> Returns 1 (Snake eats the first food and right after that, the second food appears at (0,1) )
+
+| |F| |
+| |S|S|
+
+snake.move("U"); -> Returns 1
+
+| |F|S|
+| | |S|
+
+snake.move("L"); -> Returns 2 (Snake eats the second food)
+
+| |S|S|
+| | |S|
+
+snake.move("U"); -> Returns -1 (Game over because snake collides with border)
 */
 
-class maximum_circular_sum
+/**
+ * Your SnakeGame object will be instantiated and called as such:
+ * SnakeGame* obj = new SnakeGame(width, height, food);
+ * int param_1 = obj->move(direction);
+ */
+
+class SnakeGame
 {
-public:
+    int width_, height_;
+    std::vector<std::vector<int>> food_;
+    std::size_t food_index_;
+    std::deque<std::pair<int, int>> snake_;
 	
-    static int maxSubarraySumCircular( const std::vector<int>& arr )
+public:
+    /** Initialize your data structure here.
+        @param width - screen width
+        @param height - screen height
+        @param food - A list of food positions
+        E.g food = [[1,1], [1,0]] means the first food is positioned at [1,1], the second is at [1,0]. */
+    SnakeGame( const int width, const int height, std::vector<std::vector<int>>& food )
 	{
-        if( arr.empty() ) return 0;
+        width_ = width; height_ = height;
+        food_index_ = 0;
+        food_ = food;
 
-        auto len = arr.size();
+        snake_.push_front( { 0, 0 } ); // starting position
+    }
 
-        auto total = 0,
-    		maximum = arr[ 0 ], prev_max = 0,
-    		minimum = arr[ 0 ], prev_min = 0;
+    /** Moves the snake.
+        @param direction - 'U' = Up, 'L' = Left, 'R' = Right, 'D' = Down
+        @return The game's score after the move. Return -1 if game over.
+        Game over when snake crosses the screen boundary or bites its body. */
+    int move( const std::string& direction )
+	{
+        auto [row, col] = snake_.front();
 
-        for( auto current : arr )
+    	if( direction == "U" ) row--;
+        else if( direction == "D" ) row++;
+        else if( direction == "L" ) col--;
+        else if( direction == "R" ) col++;
+
+    	// board boundary
+        if( row < 0 || row >= height_ || col < 0 || col >= width_ ) 
+            return -1;
+
+        const auto tmp = std::make_pair( row, col );
+
+    	// snake collision
+        if( std::find( snake_.begin(), snake_.end(), tmp ) != snake_.end() 
+            && snake_.back() != tmp )
         {
-            total += current;
-
-            maximum = std::max( maximum,
-                prev_max = current + std::max( 0, prev_max ) );
-
-            minimum = std::min( minimum,
-                prev_min = current + std::min( 0, prev_min ) );
+            return -1;
         }
     	
-        return maximum < 0 ?
-            maximum : std::max(maximum, total - minimum );
+    	if( food_index_ < food_.size() )
+    	{
+            const auto food = food_[ food_index_ ];
+
+    		if( food[ 0 ] == row && food[ 1 ] == col )
+    		{
+	            ++food_index_;
+            }
+            else
+            {
+	            snake_.pop_back();
+            }
+    	}
+
+        snake_.push_front( tmp );
+    	
+        return food_index_;
     }
 };
 
 auto main() -> int
 {
-    const auto input1 = std::vector<int>{ 1, -2, 3, -2 };
-    const auto input2 = std::vector<int>{ 5, -3, 5 };
+    const auto width = 3, height = 2;
+	auto food = std::vector<std::vector<int>> { { 1, 2 }, { 0, 1 } };
 	
-    const auto result = maximum_circular_sum::maxSubarraySumCircular( input2 );
+    auto snake = SnakeGame( width, height, food );
 
-    std::cout << result << std::endl;
+	/*
+    Initially the snake appears at position( 0, 0 ) and the food at( 1, 2 ).
+
+    | S| | |
+    | | |F |
+     */
+    std::cout << snake.move( "R" ) << std::endl; // ->Returns 0
+
+	/*
+    | |S| |
+    | | |F |
+	*/
+	
+	std::cout << snake.move( "D" ) << std::endl; // ->Returns 0
+
+	/*
+    | | | |
+    | |S | F |
+	*/
+	
+    std::cout << snake.move( "R" ) << std::endl; // ->Returns 1 ( Snake eats the first food and right after that, the second food appears at( 0, 1 ) )
+
+	/*
+    | |F| |
+    | |S | S |
+	*/
+	
+    std::cout << snake.move( "U" ) << std::endl; // ->Returns 1
+
+	/*
+    | |F | S|
+    | | |S |
+	*/
+	
+    std::cout << snake.move( "L" ) << std::endl; // ->Returns 2 ( Snake eats the second food )
+
+	/*
+    | |S | S|
+    | | |S |
+	*/
+	
+    std::cout << snake.move( "U" ) << std::endl; // ->Returns - 1 ( Game over because snake collides with border )
 	
     return 0;
 }

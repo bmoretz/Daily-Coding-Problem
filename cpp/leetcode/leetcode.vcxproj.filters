@@ -72,6 +72,9 @@
     <ClInclude Include="palindrome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="games.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="leetcode.cpp">
