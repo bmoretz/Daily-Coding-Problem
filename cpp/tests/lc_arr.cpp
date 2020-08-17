@@ -290,4 +290,67 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class maximum_circular_sum_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( maximum_circular_sum_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 1, -2, 3, -2 };
+
+        const auto actual = maximum_circular_sum::max_subarray_sum_circular( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( maximum_circular_sum_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 5, -3, 5 };
+
+        const auto actual = maximum_circular_sum::max_subarray_sum_circular( input );
+        const auto expected = 10;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( maximum_circular_sum_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 3, -1, 2, -1 };
+
+        const auto actual = maximum_circular_sum::max_subarray_sum_circular( input );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( maximum_circular_sum_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 3, -2, 2, -3 };
+
+        const auto actual = maximum_circular_sum::max_subarray_sum_circular( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( maximum_circular_sum_tests, case5 )
+    {
+        const auto input = std::vector<int>{ -2, -3, -1 };
+
+        const auto actual = maximum_circular_sum::max_subarray_sum_circular( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

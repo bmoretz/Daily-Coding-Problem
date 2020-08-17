@@ -1,61 +1,86 @@
 #include <bits/stdc++.h>
-#include <random>
-#include <unordered_set>
-#include <unordered_map>
 
-/* 5. Longest Palindromic Substring.
+/* 918. Maximum Sum Circular Subarray.
 
-Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+Given a circular array C of integers represented by A, find the maximum possible sum of a non-empty subarray of C.
+
+Here, a circular array means the end of the array connects to the beginning of the array.  (Formally,
+C[i] = A[i] when 0 <= i < A.length, and C[i+A.length] = C[i] when i >= 0.)
+
+Also, a subarray may only include each element of the fixed buffer A at most once.  (Formally,
+for a subarray C[i], C[i+1], ..., C[j], there does not exist i <= k1, k2 <= j with k1 % A.length = k2 % A.length.)
 
 Example 1:
-Input: "babad"
-Output: "bab"
-Note: "aba" is also a valid answer.
 
+Input: [1,-2,3,-2]
+Output: 3
+Explanation: Subarray [3] has maximum sum 3
 Example 2:
-Input: "cbbd"
-Output: "bb"
+
+Input: [5,-3,5]
+Output: 10
+Explanation: Subarray [5,5] has maximum sum 5 + 5 = 10
+Example 3:
+
+Input: [3,-1,2,-1]
+Output: 4
+Explanation: Subarray [2,-1,3] has maximum sum 2 + (-1) + 3 = 4
+Example 4:
+
+Input: [3,-2,2,-3]
+Output: 3
+Explanation: Subarray [3] and [3,-2,2] both have maximum sum 3
+Example 5:
+
+Input: [-2,-3,-1]
+Output: -1
+Explanation: Subarray [-1] has maximum sum -1
+ 
+
+Note:
+
+-30000 <= A[i] <= 30000
+1 <= A.length <= 30000
 */
 
-class longest_palindrome
+class maximum_circular_sum
 {
 public:
+	
+    static int maxSubarraySumCircular( const std::vector<int>& arr )
+	{
+        if( arr.empty() ) return 0;
 
-    static std::string extract( std::string& str )
-    {
-        if( str.size() <= 1 ) return str;
+        auto len = arr.size();
 
-        auto max_index = std::size_t(),
-            max_length = 1ULL,
-            index = std::size_t();
+        auto total = 0,
+    		maximum = arr[ 0 ], prev_max = 0,
+    		minimum = arr[ 0 ], prev_min = 0;
 
-        while( index < str.size() )
+        for( auto current : arr )
         {
-            auto start = index, end = index;
+            total += current;
 
-            while( end + 1 < str.size() && str[ end ] == str[ end + 1 ] ) { end++; }
+            maximum = std::max( maximum,
+                prev_max = current + std::max( 0, prev_max ) );
 
-            index = end + 1;
-
-            while( start - 1 >= 0 && end + 1 < str.size() && str[ start - 1 ] == str[ end + 1 ] )
-            {
-                start--, end++;
-            }
-
-            const auto current = end - start + 1;
-
-            if( current >= max_length )
-            {
-                max_index = start;
-                max_length = current;
-            }
+            minimum = std::min( minimum,
+                prev_min = current + std::min( 0, prev_min ) );
         }
-
-        return str.substr( max_index, max_length );
+    	
+        return maximum < 0 ?
+            maximum : std::max(maximum, total - minimum );
     }
 };
 
 auto main() -> int
 {
+    const auto input1 = std::vector<int>{ 1, -2, 3, -2 };
+    const auto input2 = std::vector<int>{ 5, -3, 5 };
+	
+    const auto result = maximum_circular_sum::maxSubarraySumCircular( input2 );
+
+    std::cout << result << std::endl;
+	
     return 0;
 }
