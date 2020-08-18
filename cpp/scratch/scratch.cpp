@@ -1,90 +1,71 @@
 #include <bits/stdc++.h>
 
-/* 1310. XOR Queries of a Subarray.
+/* 763. Partition Labels.
 
-Given the array arr of positive integers and the array queries where queries[i] = [Li, Ri], for each query i compute the XOR
-of elements from Li to Ri (that is, arr[Li] xor arr[Li+1] xor ... xor arr[Ri] ). Return an array containing the result for the given queries.
- 
+A string S of lowercase English letters is given. We want to partition this string into as many parts as
+possible so that each letter appears in at most one part, and return a list of
+integers representing the size of these parts.
+
 Example 1:
 
-Input: arr = [1,3,4,8], queries = [[0,1],[1,2],[0,3],[3,3]]
+Input: S = "ababcbacadefegdehijhklij"
+Output: [9,7,8]
+Explanation:
+The partition is "ababcbaca", "defegde", "hijhklij".
+This is a partition so that each letter appears in at most one part.
+A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits S into less parts.
 
-Output: [2,7,14,8] 
-Explanation: 
-The binary representation of the elements in the array are:
-1 = 0001 
-3 = 0011 
-4 = 0100 
-8 = 1000 
-The XOR values for queries are:
-[0,1] = 1 xor 3 = 2 
-[1,2] = 3 xor 4 = 7 
-[0,3] = 1 xor 3 xor 4 xor 8 = 14 
-[3,3] = 8
+Note:
 
-Example 2:
-
-Input: arr = [4,8,2,10], queries = [[2,3],[1,3],[0,0],[0,3]]
-Output: [8,0,4,4]
- 
-
-Constraints:
-
-1 <= arr.length <= 3 * 10^4
-1 <= arr[i] <= 10^9
-1 <= queries.length <= 3 * 10^4
-queries[i].length == 2
-0 <= queries[i][0] <= queries[i][1] < arr.length
+S will have length in range [1, 500].
+S will consist of lowercase English letters ('a' to 'z') only.
 */
 
-class xor_sub_query
+class partition_labels
 {
 
 public:
 
 	/// <summary>
-	/// xor queries, dynamic programming approach
+	/// partition labels
+	///
+	/// greedy approach
 	/// </summary>
-    /// <param name="arr">array of integers</param>
-    /// <param name="queries">array of query indexes</param>
-    /// <returns>arr containing the results of the queries</returns>
-    static std::vector<int> xor_queries( const std::vector<int>& arr, 
-        const std::vector<std::vector<int>>& queries )
+	/// <param name="str">input string</param>
+	/// <returns>size of maximum length partitions</returns>
+    static std::vector<int> partitionLabels( const std::string& str )
     {
-        const auto n = arr.size();
+        std::map<char, std::size_t> last;
 
-        std::vector<int> lookup( n + 1, 0 );
-
-    	// precompute lookup table
-		for( auto index = std::size_t(); index < n; ++index )
-		{
-            lookup[ index + 1 ] = lookup[ index ] ^ arr[ index ];
-		}
-
-    	// calculate query results
-        std::vector<int> results( queries.size() );
-    	
-    	for( auto index = std::size_t(); index < queries.size(); ++index )
+    	for( auto index = std::size_t(); index < str.size(); ++index )
     	{
-            const std::size_t left = queries[ index ][ 0 ];
-            const std::size_t right = queries[ index ][ 1 ];
-    		
-            results[ index ] = lookup[ right + 1 ] ^ lookup[ left ];
+            last[ str[ index ] ] = index;
     	}
-    	
-        return results;
+
+        std::vector<int> result;
+        auto start = std::size_t(), stop = std::size_t();
+
+        for( auto index = std::size_t(); index < str.size(); ++index )
+        {
+            stop = std::max( stop, last[ str.at( index ) ] );
+            const auto current_len = stop - start;
+
+            if( index == stop || index == str.size() - 1 )
+            {
+                result.push_back( current_len + 1 );
+                start = stop = index + 1;
+            }
+        }
+
+        return result;
     }
 };
 
 auto main() -> int
 {
-    const auto input = std::vector<int>{ 1, 3, 4, 8 };
-    const auto queries = std::vector<std::vector<int>>
-	{
-		{ 0, 1 }, { 1, 2 }, { 0, 3 }, { 3, 3 }
-	};
+    const auto input = std::string("ab");
 
-    const auto actual = xor_sub_query::xor_queries( input, queries );
+    const auto actual = partition_labels::partitionLabels( input );
 	
     return 0;
 }
