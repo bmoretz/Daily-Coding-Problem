@@ -260,4 +260,46 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class complete_binary_tree_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( complete_binary_tree_tests, case1 )
+    {
+        const auto tree = build_tree_in_order( { "1", "", "3" } );
+        const auto cbt = complete_binary_tree( tree.get() );
+
+        const auto actual = cbt.insert( 2 );
+
+        EXPECT_EQ( actual, 1 ); // insert under 1
+    }
+
+    TEST_F( complete_binary_tree_tests, case2 )
+    {
+        const auto tree = build_tree_in_order( { "1", "2", "3", "", "", "6" } );
+        const auto cbt = complete_binary_tree( tree.get() );
+
+        EXPECT_EQ( cbt.insert( 4 ), 2 );
+        EXPECT_EQ( cbt.insert( 5 ), 2 );
+    }
+
+    TEST_F( complete_binary_tree_tests, case3 )
+    {
+        const auto tree = build_tree_in_order( { "1", "", "3" } );
+        const auto cbt = complete_binary_tree( tree.get() );
+
+        const auto actual = cbt.insert( 2 );
+
+        EXPECT_EQ( actual, 1 ); // insert under 1
+    }
 }
