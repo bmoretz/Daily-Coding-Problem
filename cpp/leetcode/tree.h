@@ -362,7 +362,7 @@ namespace leetcode::tree
 				}
 			}
 
-			return cur->val;
+			return cur ? cur->val : -1;
 		}
 
 		tree_node* get_root() const

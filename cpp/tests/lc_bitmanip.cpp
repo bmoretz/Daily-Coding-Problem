@@ -106,4 +106,91 @@ namespace leetcode::bitmanip::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class xor_sub_query_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( xor_sub_query_tests, case1 )
+	{
+		const auto input = std::vector<int>{ 1, 3, 4, 8 };
+		const auto queries = std::vector<std::vector<int>>
+		{
+			{ 0, 1 }, { 1, 2 }, { 0, 3 }, { 3, 3 }
+		};
+
+		const auto actual = xor_sub_query::xor_queries( input, queries );
+		const auto expected = std::vector<int>{ 2, 7, 14, 8 };
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( xor_sub_query_tests, case2 )
+	{
+		const auto input = std::vector<int>{ 1, 3, 4, 8, 12, 17 };
+		
+		const auto queries = std::vector<std::vector<int>>
+		{
+			{ 0, 1 }, { 1, 4 }, { 0, 3 }, { 3, 3 }
+		};
+
+		const auto actual = xor_sub_query::xor_queries( input, queries );
+		const auto expected = std::vector<int>{ 2, 3, 14, 8 };
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( xor_sub_query_tests, case3 )
+	{
+		const auto input = std::vector<int>{ 1, 3, 4, 8, 12, 17, 21 };
+
+		const auto queries = std::vector<std::vector<int>>
+		{
+			{ 1, 4 }, { 3, 5 }
+		};
+
+		const auto actual = xor_sub_query::xor_queries( input, queries );
+		const auto expected = std::vector<int>{ 3, 21 };
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( xor_sub_query_tests, case4 )
+	{
+		const auto input = std::vector<int>{ 1, 3, 4, 8, 12, 17, 21, 47, 58 };
+
+		const auto queries = std::vector<std::vector<int>>
+		{
+			{ 0, 1 }, { 1, 2 }, { 4, 5 }
+		};
+
+		const auto actual = xor_sub_query::xor_queries( input, queries );
+		const auto expected = std::vector<int>{ 2, 7, 29 };
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( xor_sub_query_tests, case5 )
+	{
+		const auto input = std::vector<int>{ 1, 3, 4, 8, 12, 17, 21, 47, 58 };
+
+		const auto queries = std::vector<std::vector<int>>
+		{
+			{ 4, 6 }
+		};
+
+		const auto actual = xor_sub_query::xor_queries( input, queries );
+		const auto expected = std::vector<int>{ 8 };
+
+		EXPECT_EQ( actual, expected );
+	}
 }
