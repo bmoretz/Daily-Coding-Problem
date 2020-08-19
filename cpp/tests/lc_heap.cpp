@@ -161,4 +161,111 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class meeting_rooms_ii_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( meeting_rooms_ii_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<int>>{ { 0, 30 }, { 5, 10 }, { 15, 20 } };
+
+        const auto actual = meeting_rooms_ii::schedule( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( meeting_rooms_ii_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<int>>{
+        	{ 490, 946 },
+        	{ 132, 833 },
+        	{ 677, 836 },
+        	{ 77, 995 },
+        	{ 499, 585 },
+        	{ 72, 883 },
+        	{ 863, 900 },
+        	{ 193, 981 }
+        };
+
+        const auto actual = meeting_rooms_ii::schedule( input );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( meeting_rooms_ii_tests, case3 )
+    {
+        const auto input = std::vector<std::vector<int>>{
+        	{ 2, 15 },
+        	{ 36, 45 },
+        	{ 9, 29 },
+        	{ 16, 23 },
+        	{ 4, 9 }
+        };
+
+        const auto actual = meeting_rooms_ii::schedule( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( meeting_rooms_ii_tests, case4 )
+    {
+        const auto input = std::vector<std::vector<int>>{
+        	{ 6, 15 },
+        	{ 13, 20 },
+        	{ 6, 17 }
+        };
+
+        const auto actual = meeting_rooms_ii::schedule( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( meeting_rooms_ii_tests, case5 )
+    {
+        const auto input = std::vector<std::vector<int>>{
+        	{ 2, 15 },
+        	{ 36, 45 },
+        	{ 9, 29 },
+        	{ 16, 23 },
+        	{ 4, 9 }
+        };
+
+        const auto actual = meeting_rooms_ii::schedule( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( meeting_rooms_ii_tests, case6 )
+    {
+        const auto input = std::vector<std::vector<int>>{
+        	{ 490, 946 },
+        	{ 132, 833 },
+        	{ 677, 836 },
+        	{ 77, 995 },
+        	{ 499, 585 },
+        	{ 72, 883 },
+        	{ 863, 900 },
+        	{ 193, 981 }
+        };
+
+        const auto actual = meeting_rooms_ii::schedule( input );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
