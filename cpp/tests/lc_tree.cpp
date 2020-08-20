@@ -302,4 +302,111 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, 1 ); // insert under 1
     }
+
+    class two_sum_bst_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( two_sum_bst_tests, case1 )
+    {
+    	/*
+			Input:
+			    5
+			   / \
+			  3   6
+			 / \   \
+			2   4   7
+
+			Target = 9
+    	 */
+    	
+        const auto input1 = build_tree_in_order( 
+            { "5", "3", "6", "2", "4", "7" } 
+        );
+
+        const auto actual = two_sum_bst::find_target( input1.get(), 9 );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( two_sum_bst_tests, case2 )
+    {
+        /*
+			Input:
+			    5
+			   / \
+			  3   6
+			 / \   \
+			2   4   7
+
+			Target = 28
+
+			Output: False
+         */
+
+        const auto input1 = build_tree_in_order(
+            { "5", "3", "6", "2", "4", "7" }
+        );
+
+        const auto actual = two_sum_bst::find_target( input1.get(), 28 );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( two_sum_bst_tests, case3 )
+    {
+        /*
+            Input:
+                1
+
+            Target = 28
+
+            Output: False
+         */
+
+        const auto input1 = build_tree_in_order(
+            { "1" }
+        );
+
+        const auto actual = two_sum_bst::find_target( input1.get(), 2 );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( two_sum_bst_tests, case4 )
+    {
+        /*
+            Input:
+                5
+               / \
+              3   6
+             / \   \
+            2   4   7
+
+            Target = 28
+
+            Output: False
+         */
+
+        const auto input1 = build_tree_in_order(
+            { "5", "3", "6", "2", "4", "7", "1", "10" }
+        );
+
+        const auto actual = two_sum_bst::find_target( input1.get(), 15 );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
