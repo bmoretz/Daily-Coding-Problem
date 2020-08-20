@@ -1,89 +1,105 @@
 #include <bits/stdc++.h>
-#include "../leetcode/tree.h"
 
-using leetcode::tree::tree_node;
-using leetcode::tree::build_tree_in_order;
+/* 754. Reach a Number.
 
-/* 653. Two Sum IV - Input is a BST.
+You are standing at position 0 on an infinite number line. There is a goal at position target.
 
-Given a Binary Search Tree and a target number, return true if there exist two elements in the BST such that their sum is equal to the given target.
+On each move, you can either go left or right. During the n-th move (starting from 1), you take n steps.
+
+Return the minimum number of steps required to reach the destination.
 
 Example 1:
-
-Input: 
-    5
-   / \
-  3   6
- / \   \
-2   4   7
-
-Target = 9
-
-Output: True
- 
-
+Input: target = 3
+Output: 2
+Explanation:
+On the first move we step from 0 to 1.
+On the second step we step from 1 to 3.
 Example 2:
-
-Input: 
-    5
-   / \
-  3   6
- / \   \
-2   4   7
-
-Target = 28
-
-Output: False
+Input: target = 2
+Output: 3
+Explanation:
+On the first move we step from 0 to 1.
+On the second move we step  from 1 to -1.
+On the third move we step from -1 to 2.
+Note:
+target will be a non-zero integer in the range [-10^9, 10^9].
 */
 
-class two_sum_bst
+#include <mutex>
+#include <condition_variable>
+
+class bounded_blocking_queue
 {
+    std::mutex queue_mutex_;
+    std::condition_variable queue_changed_;
+    std::queue<int> queue_;
+    std::size_t capacity_;
 
 public:
 
-    static std::vector<int> flatten( const tree_node* root )
-    {
-        std::vector<int> results;
-
-        flatten( root, results );
-
-        return results;
+	explicit bounded_blocking_queue( const int capacity )
+	{
+        capacity_ = capacity;
     }
 
-    static void flatten( const tree_node* root, std::vector<int>& results )
-    {
-        if( root == nullptr ) return;
-
-        flatten( root->left.get(), results );
-        results.push_back( root->val );
-        flatten( root->right.get(), results );
-    }
-
-    static bool find_target( const tree_node* root, const int k )
-    {
-        auto numbers = flatten( root );
-
-        std::set<int> targets( numbers.begin(), numbers.end() );
-
-        for( auto num : numbers )
+    void enqueue( const int element )
+	{
+		// add to the front of the queue
         {
-            const auto target = k - num;
+            std::unique_lock<std::mutex> lock( queue_mutex_ );
 
-            if( target != num && targets.find( target ) != targets.end() )
-            {
-                return true;
-            }
+        	// grab the lock with queue size < capacity
+            queue_changed_.wait( lock, [this] { return queue_.size() < capacity_; } );
+
+            queue_.push( element );
         }
 
-        return false;
+        // Avoid waiters waking up and immediately blocking by unlocking
+		// before notifying
+        queue_changed_.notify_one();
+    }
+
+    int dequeue()
+	{
+        // remove from the front of the queue
+
+        int ret;
+		
+        {
+            std::unique_lock<std::mutex> lock( queue_mutex_ );
+
+            queue_changed_.wait( lock, [this] { return queue_.size() > 0; } );
+
+            ret = queue_.front();
+            queue_.pop();
+        }
+
+        queue_changed_.notify_one();
+
+        return ret;
+    }
+
+    int size()
+	{
+        std::unique_lock<std::mutex> lock( queue_mutex_ );
+
+        return queue_.size();
     }
 };
 
 auto main() -> int
 {
-    const auto input1 = build_tree_in_order( { "5", "3", "6", "2", "4", "7" } );
-	
-    const auto actual = two_sum_bst::find_target( input1.get(), 9 );
+    auto queue = bounded_blocking_queue( 2 );   // initialize the queue with capacity = 2.
+
+    queue.enqueue( 1 );   // The producer thread enqueues 1 to the queue.
+    queue.dequeue();    // The consumer thread calls dequeue and returns 1 from the queue.
+    queue.dequeue();    // Since the queue is empty, the consumer thread is blocked.
+    queue.enqueue( 0 );   // The producer thread enqueues 0 to the queue. The consumer thread is unblocked and returns 0 from the queue.
+    queue.enqueue( 2 );   // The producer thread enqueues 2 to the queue.
+    queue.enqueue( 3 );   // The producer thread enqueues 3 to the queue.
+    queue.enqueue( 4 );   // The producer thread is blocked because the queue's capacity (2) is reached.
+    queue.dequeue();    // The consumer thread returns 2 from the queue. The producer thread is unblocked and enqueues 4 to the queue.
+    queue.size();       // 2 elements remaining in the queue. size() is always called at the end of each test case.
 	
     return 0;
 }
