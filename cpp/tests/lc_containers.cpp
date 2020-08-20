@@ -282,34 +282,5 @@ namespace leetcode::containers::tests
 
     TEST_F( bounded_blocking_queue_tests, case1 )
     {
-        // initialize the queue with capacity = 2.
-        auto queue = bounded_blocking_queue( 2 );
-
-        // The producer thread enqueues 1 to the queue.
-        queue.enqueue( 1 );
-
-        // The consumer thread calls dequeue and returns 1 from the queue.
-        queue.dequeue();
-
-        // Since the queue is empty, the consumer thread is blocked.
-        queue.dequeue();
-
-        // The producer thread enqueues 0 to the queue. The consumer thread is unblocked and returns 0 from the queue.
-        queue.enqueue( 0 );
-
-        // The producer thread enqueues 2 to the queue.
-        queue.enqueue( 2 );
-
-        // The producer thread enqueues 3 to the queue.
-        queue.enqueue( 3 );
-
-        // The producer thread is blocked because the queue's capacity (2) is reached.
-        queue.enqueue( 4 );
-
-        // The consumer thread returns 2 from the queue. The producer thread is unblocked and enqueues 4 to the queue.
-        queue.dequeue();
-
-        // 2 elements remaining in the queue. size() is always called at the end of each test case.
-        queue.size();
     }
 }
