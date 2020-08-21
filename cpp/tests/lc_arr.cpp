@@ -353,4 +353,67 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class subarray_product_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( subarray_product_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 10, 5, 2, 6 };
+    	
+        const auto actual = subarray_product::num_subarray_product_less_than_k( input, 2 );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( subarray_product_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 3 };
+
+        const auto actual = subarray_product::num_subarray_product_less_than_k( input, 2 );
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( subarray_product_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 10, 5, 2, 6 };
+
+        const auto actual = subarray_product::num_subarray_product_less_than_k( input, 100 );
+        const auto expected = 8;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( subarray_product_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 10, 5, 2, 6 };
+
+        const auto actual = subarray_product::num_subarray_product_less_than_k( input, 1000 );
+        const auto expected = 10;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( subarray_product_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 10, 5, 2, 6 };
+
+        const auto actual = subarray_product::num_subarray_product_less_than_k( input, 50 );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
