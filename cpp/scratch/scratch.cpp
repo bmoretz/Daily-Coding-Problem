@@ -1,73 +1,112 @@
 #include <bits/stdc++.h>
 
-/* 713. Subarray Product Less Than K.
+/* 139. Word Break.
 
-Your are given an array of positive integers nums.
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can
+be segmented into a space-separated sequence of one or more dictionary words.
 
-Count and print the number of (contiguous) subarrays where the product of all the elements in the subarray is less than k.
-
-Example 1:
-
-Input: nums = [10, 5, 2, 6], k = 100
-Output: 8
-Explanation: The 8 subarrays that have product less than 100 are: [10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6].
-Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.
 Note:
 
-0 < nums.length <= 50000.
-0 < nums[i] < 1000.
-0 <= k < 10^6.
+The same word in the dictionary may be reused multiple times in the segmentation.
+You may assume the dictionary does not contain duplicate words.
 
+Example 1:
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+Example 2:
+Input: s = "applepenapple", wordDict = ["apple", "pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+             Note that you are allowed to reuse a dictionary word.
+
+Example 3:
+Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+Output: false
 */
 
-class subarray_product
+class word_break
 {
+	struct tree_node
+	{
+		bool is_valid = false;
+		std::map<char, std::unique_ptr<tree_node>> children;
+	};
+	
 public:
 
-	/// <summary>
-	/// number of subarray products less than k
-	///
-	/// approach: sliding window
-	/// we need 4 variables: cumulative, left, right, result
-	///
-	/// for each right, multiply it by cumulative and then while cumulative is greater
-	/// than or equal to k (we need gte because it must be strictly less than k), divide by
-	/// the number at index left and increment left. Increment the result by the number of items
-	/// in the range right - left (inclusive +1).
-	/// </summary>
-	/// <param name="numbers">array</param>
-	/// <param name="k">upper bound</param>
-	/// <returns>number of subarrays less than k</returns>
-	static int num_subarray_product_less_than_k( const std::vector<int>& numbers, const int k )
+	static std::unique_ptr<tree_node> build_trie( const std::vector<std::string>& word_dict )
 	{
-		if( k <= 1 ) return 0;
+		auto root = std::make_unique<tree_node>();
+
+		auto node = root.get();
 		
-		auto cumulative = 1, result = 0;
-		auto left = 0ULL;
-
-		for( auto right = 0ULL; right < numbers.size(); ++right )
+		for( auto& word : word_dict )
 		{
-			cumulative *= numbers[ right ];
-			
-			while( cumulative >= k )
-			{
-				cumulative /= numbers[ left++ ];
-			}
+			auto temp = root.get();
 
-			result += right - left + 1;
+			for( auto c : word )
+			{
+				if( temp->children.find( c ) != temp->children.end() )
+				{
+					temp = temp->children[ c ].get();
+				}
+				else
+				{
+					temp->children[ c ] = std::make_unique<tree_node>();
+					temp = temp->children[ c ].get();
+				}
+
+				temp->is_valid = true;
+			}
 		}
 
-		return result;
+		return root;
 	}
+	
+    static bool wordBreak( const std::string& str, const std::vector<std::string>& word_dict )
+	{
+		const auto trie = build_trie( word_dict );
+
+		std::vector<bool> found( str.size() + 1, false );
+		found[ 0 ] = true;
+
+		for( auto index = 0ULL; index < str.size(); ++index )
+		{
+			if( found[index] )
+			{
+				auto node = trie.get();
+				
+				for( auto sub = index; sub < str.size(); ++sub )
+				{
+					const char current = str[ sub ];
+					
+					if( !node->children[ current ] ) break;
+
+					node = node->children[ current ].get();
+
+					found[ sub + 1 ] = found[ sub + 1 ] || node->is_valid;
+				}
+			}
+		}
+
+		return found[ str.size() ];
+    }
 };
 
 auto main() -> int
 {
-    const auto input1 = std::vector<int>{ 10, 5, 2, 6 };
+    const auto input1 = std::pair<std::string, std::vector<std::string>>
+	{
+		"leetcode",
+		{ "leet", "code" }
+	};
+	
 	const auto input2 = std::vector<int>{ 1, 2, 3 };
 	const auto input3 = std::vector<int>{ 1, 1, 1 };
 	
-    const auto actual = subarray_product::num_subarray_product_less_than_k( input3, 2 );
+    const auto actual = word_break::wordBreak( input1.first, input1.second );
 	
     return 0;
 }
