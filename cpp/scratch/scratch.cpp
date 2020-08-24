@@ -26,73 +26,37 @@ Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
 Output: false
 */
 
-class word_break
+class word_break_ii
 {
-	struct tree_node
-	{
-		bool is_valid = false;
-		std::map<char, std::unique_ptr<tree_node>> children;
-	};
-	
 public:
 
-	static std::unique_ptr<tree_node> build_trie( const std::vector<std::string>& word_dict )
+	static bool word_break( const std::string& str, const std::vector<std::string>& word_dict )
 	{
-		auto root = std::make_unique<tree_node>();
+		if( word_dict.empty() || str.empty() ) return false;
 
-		auto node = root.get();
-		
-		for( auto& word : word_dict )
+		const auto length = str.length();
+
+		std::vector<bool> dp( length + 1, false );
+		dp[ 0 ] = true;
+
+		for( int index = 1; index <= str.length(); ++index )
 		{
-			auto temp = root.get();
-
-			for( auto c : word )
+			for( auto& word : word_dict )
 			{
-				if( temp->children.find( c ) != temp->children.end() )
-				{
-					temp = temp->children[ c ].get();
-				}
-				else
-				{
-					temp->children[ c ] = std::make_unique<tree_node>();
-					temp = temp->children[ c ].get();
-				}
+				const int start_index = index - word.length();
 
-				temp->is_valid = true;
+				if( start_index < 0 || dp[ start_index ] == false ) continue;;
+
+				if( word == str.substr(start_index, word.size() ) )
+				{
+					dp[ index ] = true;
+					break;
+				}
 			}
 		}
 
-		return root;
+		return dp[ length ];
 	}
-	
-    static bool wordBreak( const std::string& str, const std::vector<std::string>& word_dict )
-	{
-		const auto trie = build_trie( word_dict );
-
-		std::vector<bool> found( str.size() + 1, false );
-		found[ 0 ] = true;
-
-		for( auto index = 0ULL; index < str.size(); ++index )
-		{
-			if( found[index] )
-			{
-				auto node = trie.get();
-				
-				for( auto sub = index; sub < str.size(); ++sub )
-				{
-					const char current = str[ sub ];
-					
-					if( !node->children[ current ] ) break;
-
-					node = node->children[ current ].get();
-
-					found[ sub + 1 ] = found[ sub + 1 ] || node->is_valid;
-				}
-			}
-		}
-
-		return found[ str.size() ];
-    }
 };
 
 auto main() -> int
@@ -103,10 +67,32 @@ auto main() -> int
 		{ "leet", "code" }
 	};
 	
-	const auto input2 = std::vector<int>{ 1, 2, 3 };
-	const auto input3 = std::vector<int>{ 1, 1, 1 };
-	
-    const auto actual = word_break::wordBreak( input1.first, input1.second );
+	const auto input2 = std::pair<std::string, std::vector<std::string>>
+	{
+		"catsandog",
+		{ "cats","dog","sand","and","cat" }
+	};
+
+	const auto input3 = std::pair<std::string, std::vector<std::string>>
+	{
+		"applepenapple",
+		{ "apple", "pen" }
+	};
+
+	const auto input4 = std::pair<std::string, std::vector<std::string>>
+	{
+		"catsandog",
+		{ "cats", "dog", "sand", "and", "cat" }
+	};
+
+	const auto input5 = std::pair<std::string, std::vector<std::string>>
+	{
+		"abcd",
+		{ "abcd", "a","abc","b","cd" }
+	};
+
+    // const auto actual = word_break::wordBreak( input2.first, input2.second );
+	const auto actual = word_break_ii::word_break( input4.first, input4.second );
 	
     return 0;
 }

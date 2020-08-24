@@ -193,16 +193,20 @@ namespace leetcode::matrix
 	public:
 
 		static bool is_valid( const std::vector<std::vector<int>>& grid,
-			const std::size_t next_x, const std::size_t next_y )
+			const int next_x, const int next_y )
 		{
-			const auto num_rows = grid.size();
-			const auto num_cols = grid[ 0 ].size();
+			const int num_rows = grid.size();
+			const int num_cols = grid[ 0 ].size();
 
 			const auto valid_row = next_x >= 0 && next_x < num_rows;
+			
+			if( !valid_row ) return false;
+		
 			const auto valid_column = next_y >= 0 && next_y < num_cols;
-			const auto valid_cell = grid[ next_x ][ next_y ] == 0;
-
-			return valid_row && valid_column && valid_cell;
+			
+			if( !valid_column ) return false;
+			
+			return grid[ next_x ][ next_y ] == 0;;
 		}
 
 		/// <summary>
@@ -237,8 +241,8 @@ namespace leetcode::matrix
 
 				for( auto& [nx, ny] : get_next_choices() )
 				{
-					auto next_x = x + nx;
-					auto next_y = y + ny;
+					int next_x = x + nx;
+					int next_y = y + ny;
 
 					if( is_valid( grid, next_x, next_y ) )
 					{
