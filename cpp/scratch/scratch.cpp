@@ -1,98 +1,136 @@
 #include <bits/stdc++.h>
 
-/* 139. Word Break.
+/* 694. Number of Distinct Islands.
 
-Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can
-be segmented into a space-separated sequence of one or more dictionary words.
+Given a non-empty 2D array grid of 0's and 1's, an island is a group of 1's (representing land) connected 4-directionally
+(horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
 
-Note:
-
-The same word in the dictionary may be reused multiple times in the segmentation.
-You may assume the dictionary does not contain duplicate words.
+Count the number of distinct islands. An island is considered to be the same as another if and only if one island can be
+translated (and not rotated or reflected) to equal the other.
 
 Example 1:
-Input: s = "leetcode", wordDict = ["leet", "code"]
-Output: true
-Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+	11000
+	11000
+	00011
+	00011
+
+Given the above grid map, return 1.
 
 Example 2:
-Input: s = "applepenapple", wordDict = ["apple", "pen"]
-Output: true
-Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
-             Note that you are allowed to reuse a dictionary word.
+	11011
+	10000
+	00001
+	11011
 
-Example 3:
-Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
-Output: false
+Given the above grid map, return 3.
+
+Notice that:
+	11
+	1
+	and
+	 1
+	11
+
+are considered different island shapes, because we do not consider reflection / rotation.
+Note: The length of each dimension in the given grid does not exceed 50.
 */
 
-class word_break_ii
+class distinct_islands
 {
-public:
-
-	static bool word_break( const std::string& str, const std::vector<std::string>& word_dict )
+	/// <summary>
+	/// using depth first search to explore an island and save its exploration path.
+	/// </summary>
+	/// <param name="grid">grid to search</param>
+	/// <param name="visited">visited cells</param>
+	/// <param name="row">row</param>
+	/// <param name="col">column</param>
+	/// <param name="path">current path</param>
+	/// <param name="direction">direction to explore</param>
+	static void explore(
+		const std::vector<std::vector<int>>& grid,
+		std::vector<std::vector<bool>>& visited,
+		const int row, const int col,
+		std::string& path, const char direction )
 	{
-		if( word_dict.empty() || str.empty() ) return false;
+		const auto num_rows = grid.size();
+		const auto num_cols = grid[ 0 ].size();
 
-		const auto length = str.length();
-
-		std::vector<bool> dp( length + 1, false );
-		dp[ 0 ] = true;
-
-		for( int index = 1; index <= str.length(); ++index )
+		if( row < 0 || row >= num_rows ||
+			col < 0 || col >= num_cols ||
+			visited[ row ][ col ] || grid[ row ][ col ] == 0 )
 		{
-			for( auto& word : word_dict )
+			path.push_back( 'f' );
+			return;
+		}
+
+		visited[ row ][ col ] = true;
+		path.push_back( direction );
+
+		explore( grid, visited, row - 1, col, path, 'u' );
+		explore( grid, visited, row + 1, col, path, 'd' );
+		explore( grid, visited, row, col - 1, path, 'l' );
+		explore( grid, visited, row, col + 1, path, 'r' );
+	}
+
+public:
+	/// <summary>
+	/// dfs method for counting the number of unique islands.
+	/// </summary>
+	/// <param name="grid">grid of islands</param>
+	/// <returns>number of distinct islands.</returns>
+	static int num_distinct_islands( const std::vector<std::vector<int>>& grid )
+	{
+		if( grid.empty() || grid[ 0 ].empty() ) return 0;
+
+		const auto num_rows = grid.size();
+		const auto num_cols = grid[ 0 ].size();
+		
+		auto visited = std::vector<std::vector<bool>>( num_rows, 
+			std::vector<bool>( num_cols, false ) );
+		
+		auto islands = std::set<std::string>();
+
+		for( auto row = std::size_t(); row < num_rows; ++row )
+		{
+			for( auto col = std::size_t(); col < num_cols; col++ )
 			{
-				const int start_index = index - word.length();
-
-				if( start_index < 0 || dp[ start_index ] == false ) continue;;
-
-				if( word == str.substr(start_index, word.size() ) )
+				if( grid[ row ][ col ] == 1 )
 				{
-					dp[ index ] = true;
-					break;
+					std::string path;
+
+					explore( grid, visited, row, col, path, 'o' );
+
+					if( path != "f" )
+						islands.insert( path );
 				}
 			}
 		}
 
-		return dp[ length ];
+		return islands.size();
 	}
 };
 
 auto main() -> int
 {
-    const auto input1 = std::pair<std::string, std::vector<std::string>>
+	const auto input1 = std::vector<std::vector<int>>
 	{
-		"leetcode",
-		{ "leet", "code" }
+		{ 1, 1, 0, 0, 0 },
+		{ 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 1, 1 },
+		{ 0, 0, 0, 1, 1 }
 	};
 	
-	const auto input2 = std::pair<std::string, std::vector<std::string>>
+	const auto input2 = std::vector<std::vector<int>>
 	{
-		"catsandog",
-		{ "cats","dog","sand","and","cat" }
+		{ 1, 1, 0, 1, 1 },
+		{ 1, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1 },
+		{ 1, 1, 0, 1, 1 }
 	};
-
-	const auto input3 = std::pair<std::string, std::vector<std::string>>
-	{
-		"applepenapple",
-		{ "apple", "pen" }
-	};
-
-	const auto input4 = std::pair<std::string, std::vector<std::string>>
-	{
-		"catsandog",
-		{ "cats", "dog", "sand", "and", "cat" }
-	};
-
-	const auto input5 = std::pair<std::string, std::vector<std::string>>
-	{
-		"abcd",
-		{ "abcd", "a","abc","b","cd" }
-	};
-
+	
     // const auto actual = word_break::wordBreak( input2.first, input2.second );
-	const auto actual = word_break_ii::word_break( input4.first, input4.second );
+	const auto actual = distinct_islands::num_distinct_islands( input2 );
 	
     return 0;
 }

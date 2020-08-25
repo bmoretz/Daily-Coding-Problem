@@ -325,4 +325,49 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class distinct_islands_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( distinct_islands_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+            { 1, 1, 0, 0, 0 },
+            { 1, 1, 0, 0, 0 },
+            { 0, 0, 0, 1, 1 },
+            { 0, 0, 0, 1, 1 }
+        };
+
+        const auto actual = distinct_islands::num_distinct_islands( input );
+        const auto expected = 1;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( distinct_islands_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        { 1, 1, 0, 1, 1 },
+	        { 1, 0, 0, 0, 0 },
+	        { 0, 0, 0, 0, 1 },
+	        { 1, 1, 0, 1, 1 }
+        };
+
+        const auto actual = distinct_islands::num_distinct_islands( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
