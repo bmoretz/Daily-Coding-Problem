@@ -180,7 +180,6 @@ namespace leetcode::matrix
 
 	class shortest_path_binary_matrix
 	{
-
 		static std::vector<std::pair<int, int>> get_next_choices()
 		{
 			return std::vector<std::pair<int, int>>

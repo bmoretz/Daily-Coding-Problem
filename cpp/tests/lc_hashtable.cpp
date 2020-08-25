@@ -67,4 +67,37 @@ namespace leetcode::hashtable::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class visitor_patterns_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( visitor_patterns_tests, case1 )
+    {
+        const auto input = std::tuple<std::vector<std::string>, std::vector<int>, std::vector<std::string>>
+        {
+            { "joe", "joe", "joe", "james", "james", "james", "james", "mary", "mary", "mary"},
+            { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+            { "home", "about", "career", "home", "cart", "maps", "home", "home", "about", "career" }
+        };
+
+        const auto actual = visitor_patterns::most_visited_pattern(
+            std::get<0>( input ),
+            std::get<1>( input ),
+            std::get<2>( input )
+        );
+    	
+        const auto expected = std::vector<std::string>{ "home", "about", "career" };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

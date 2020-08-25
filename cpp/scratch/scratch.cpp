@@ -1,136 +1,142 @@
 #include <bits/stdc++.h>
 
-/* 694. Number of Distinct Islands.
+/* 1152. Analyze User Website Visit Pattern.
 
-Given a non-empty 2D array grid of 0's and 1's, an island is a group of 1's (representing land) connected 4-directionally
-(horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+We are given some website visits: the user with name username[i]
+visited the website website[i] at time timestamp[i].
 
-Count the number of distinct islands. An island is considered to be the same as another if and only if one island can be
-translated (and not rotated or reflected) to equal the other.
+A 3-sequence is a list of websites of length 3 sorted in ascending order by the time of
+their visits.  (The websites in a 3-sequence are not necessarily distinct.)
+
+Find the 3-sequence visited by the largest number of users. If there is more than
+one solution, return the lexicographically smallest such 3-sequence.
 
 Example 1:
 
-	11000
-	11000
-	00011
-	00011
+Input: username = ["joe","joe","joe","james","james","james","james","mary","mary","mary"],
+timestamp = [1,2,3,4,5,6,7,8,9,10],
+website = ["home","about","career","home","cart","maps","home","home","about","career"]
 
-Given the above grid map, return 1.
+Output: ["home","about","career"]
 
-Example 2:
-	11011
-	10000
-	00001
-	11011
+Explanation: 
 
-Given the above grid map, return 3.
+The tuples in this example are:
 
-Notice that:
-	11
-	1
-	and
-	 1
-	11
+["joe", 1, "home"]
+["joe", 2, "about"]
+["joe", 3, "career"]
+["james", 4, "home"]
+["james", 5, "cart"]
+["james", 6, "maps"]
+["james", 7, "home"]
+["mary", 8, "home"]
+["mary", 9, "about"]
+["mary", 10, "career"]
+The 3-sequence ("home", "about", "career") was visited at least once by 2 users.
+The 3-sequence ("home", "cart", "maps") was visited at least once by 1 user.
+The 3-sequence ("home", "cart", "home") was visited at least once by 1 user.
+The 3-sequence ("home", "maps", "home") was visited at least once by 1 user.
+The 3-sequence ("cart", "maps", "home") was visited at least once by 1 user.
 
-are considered different island shapes, because we do not consider reflection / rotation.
-Note: The length of each dimension in the given grid does not exceed 50.
+Note:
+
+3 <= N = username.length = timestamp.length = website.length <= 50
+1 <= username[i].length <= 10
+0 <= timestamp[i] <= 10^9
+1 <= website[i].length <= 10
+Both username[i] and website[i] contain only lowercase characters.
+It is guaranteed that there is at least one user who visited at least 3 websites.
+No user visits two websites at the same time.
 */
 
-class distinct_islands
+class visitor_patterns
 {
-	/// <summary>
-	/// using depth first search to explore an island and save its exploration path.
-	/// </summary>
-	/// <param name="grid">grid to search</param>
-	/// <param name="visited">visited cells</param>
-	/// <param name="row">row</param>
-	/// <param name="col">column</param>
-	/// <param name="path">current path</param>
-	/// <param name="direction">direction to explore</param>
-	static void explore(
-		const std::vector<std::vector<int>>& grid,
-		std::vector<std::vector<bool>>& visited,
-		const int row, const int col,
-		std::string& path, const char direction )
+	static std::unordered_map<std::basic_string<char>, std::vector<std::pair<int, std::basic_string<char>>>>
+		build_user_map( const std::vector<std::string>& username, const std::vector<int>& timestamp, const std::vector<std::string>& website )
 	{
-		const auto num_rows = grid.size();
-		const auto num_cols = grid[ 0 ].size();
+		auto map = std::unordered_map<std::string, std::vector<std::pair<int, std::string>>>();
 
-		if( row < 0 || row >= num_rows ||
-			col < 0 || col >= num_cols ||
-			visited[ row ][ col ] || grid[ row ][ col ] == 0 )
+		// generate keys of users to timestamp/website
+		for( auto index = 0ULL; index < username.size(); ++index )
 		{
-			path.push_back( 'f' );
-			return;
+			const auto value = std::make_pair( timestamp[ index ], website[ index ] );
+			map[ username[ index ] ].push_back( value );
 		}
 
-		visited[ row ][ col ] = true;
-		path.push_back( direction );
-
-		explore( grid, visited, row - 1, col, path, 'u' );
-		explore( grid, visited, row + 1, col, path, 'd' );
-		explore( grid, visited, row, col - 1, path, 'l' );
-		explore( grid, visited, row, col + 1, path, 'r' );
+		return map;
 	}
-
+	
 public:
-	/// <summary>
-	/// dfs method for counting the number of unique islands.
-	/// </summary>
-	/// <param name="grid">grid of islands</param>
-	/// <returns>number of distinct islands.</returns>
-	static int num_distinct_islands( const std::vector<std::vector<int>>& grid )
+
+	static std::vector<std::string> most_visited_pattern( 
+		const std::vector<std::string>& username, 
+		const std::vector<int>& timestamp, 
+		const std::vector<std::string>& website )
 	{
-		if( grid.empty() || grid[ 0 ].empty() ) return 0;
+		auto sequences = std::set<std::vector<std::string>>();
+		auto counts = std::map<std::vector<std::string>, int>();
 
-		const auto num_rows = grid.size();
-		const auto num_cols = grid[ 0 ].size();
-		
-		auto visited = std::vector<std::vector<bool>>( num_rows, 
-			std::vector<bool>( num_cols, false ) );
-		
-		auto islands = std::set<std::string>();
+		const auto map = build_user_map( username, timestamp, website );
 
-		for( auto row = std::size_t(); row < num_rows; ++row )
+		for( const auto& iter : map )
 		{
-			for( auto col = std::size_t(); col < num_cols; col++ )
-			{
-				if( grid[ row ][ col ] == 1 )
+			auto visits = iter.second;
+
+			// order by timestamp
+			std::sort( visits.begin(), visits.end(),
+				[]( const std::pair<int, std::string>& left, const std::pair<int, std::string>& right )
 				{
-					std::string path;
+					return left.first < right.first;
+				} );
 
-					explore( grid, visited, row, col, path, 'o' );
-
-					if( path != "f" )
-						islands.insert( path );
+			sequences.clear();
+			
+			// all possible sequences of websites for each user
+			for( auto i = 0ULL; i < visits.size(); ++i )
+			{
+				for( auto j = 0ULL; j < i; j++ )
+				{
+					for( auto k = 0ULL; k < j; k++ )
+					{
+						sequences.insert( {
+							visits[ k ].second,
+							visits[ j ].second,
+							visits[ i ].second
+						} );
+					}
 				}
 			}
+
+			// increment the counter
+			for( const auto& seq : sequences )
+				counts[ seq ]++;
 		}
 
-		return islands.size();
+		return std::max_element( counts.begin(), counts.end(), []( auto& p1, auto& p2 )
+			{
+				return ( ( p1.second == p2.second ) ? 
+					( p1.first > p2.first ) : 
+					( p1.second < p2.second ) );
+			} )->first;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<int>>
+	const auto input1 = std::tuple<std::vector<std::string>, std::vector<int>, std::vector<std::string>>
 	{
-		{ 1, 1, 0, 0, 0 },
-		{ 1, 1, 0, 0, 0 },
-		{ 0, 0, 0, 1, 1 },
-		{ 0, 0, 0, 1, 1 }
+		{ "joe", "joe", "joe", "james", "james", "james", "james", "mary", "mary", "mary"},
+		{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+		{ "home", "about", "career", "home", "cart", "maps", "home", "home", "about", "career" }
 	};
-	
-	const auto input2 = std::vector<std::vector<int>>
-	{
-		{ 1, 1, 0, 1, 1 },
-		{ 1, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 1 },
-		{ 1, 1, 0, 1, 1 }
-	};
-	
-    // const auto actual = word_break::wordBreak( input2.first, input2.second );
-	const auto actual = distinct_islands::num_distinct_islands( input2 );
-	
-    return 0;
+
+	// const auto actual = word_break::wordBreak( input2.first, input2.second );
+	const auto actual = visitor_patterns::most_visited_pattern(
+		std::get<0>( input1 ),
+		std::get<1>( input1 ),
+		std::get<2>( input1 )
+	);
+
+	return 0;
 }
