@@ -1,142 +1,105 @@
 #include <bits/stdc++.h>
+#include <array>
 
-/* 1152. Analyze User Website Visit Pattern.
+/* 567. Permutation in String.
 
-We are given some website visits: the user with name username[i]
-visited the website website[i] at time timestamp[i].
-
-A 3-sequence is a list of websites of length 3 sorted in ascending order by the time of
-their visits.  (The websites in a 3-sequence are not necessarily distinct.)
-
-Find the 3-sequence visited by the largest number of users. If there is more than
-one solution, return the lexicographically smallest such 3-sequence.
+Given two strings s1 and s2, write a function to return true if s2 contains the
+permutation of s1. In other words, one of the first string's permutations is the
+substring of the second string.
 
 Example 1:
 
-Input: username = ["joe","joe","joe","james","james","james","james","mary","mary","mary"],
-timestamp = [1,2,3,4,5,6,7,8,9,10],
-website = ["home","about","career","home","cart","maps","home","home","about","career"]
+Input: s1 = "ab" s2 = "eidbaooo"
+Output: True
+Explanation: s2 contains one permutation of s1 ("ba").
 
-Output: ["home","about","career"]
+Example 2:
 
-Explanation: 
+Input:s1= "ab" s2 = "eidboaoo"
+Output: False
 
-The tuples in this example are:
+ Constraints:
 
-["joe", 1, "home"]
-["joe", 2, "about"]
-["joe", 3, "career"]
-["james", 4, "home"]
-["james", 5, "cart"]
-["james", 6, "maps"]
-["james", 7, "home"]
-["mary", 8, "home"]
-["mary", 9, "about"]
-["mary", 10, "career"]
-The 3-sequence ("home", "about", "career") was visited at least once by 2 users.
-The 3-sequence ("home", "cart", "maps") was visited at least once by 1 user.
-The 3-sequence ("home", "cart", "home") was visited at least once by 1 user.
-The 3-sequence ("home", "maps", "home") was visited at least once by 1 user.
-The 3-sequence ("cart", "maps", "home") was visited at least once by 1 user.
-
-Note:
-
-3 <= N = username.length = timestamp.length = website.length <= 50
-1 <= username[i].length <= 10
-0 <= timestamp[i] <= 10^9
-1 <= website[i].length <= 10
-Both username[i] and website[i] contain only lowercase characters.
-It is guaranteed that there is at least one user who visited at least 3 websites.
-No user visits two websites at the same time.
+The input strings only contain lower case letters.
+The length of both given strings is in range [1, 10,000].
 */
 
-class visitor_patterns
+class permutation_in_string
 {
-	static std::unordered_map<std::basic_string<char>, std::vector<std::pair<int, std::basic_string<char>>>>
-		build_user_map( const std::vector<std::string>& username, const std::vector<int>& timestamp, const std::vector<std::string>& website )
+	/// <summary>
+	/// get character frequency
+	///
+	/// gets a char frequency array where the index is the letter and the value
+	/// at that position is the number of those characters in the string.
+	/// </summary>
+	/// <param name="str">string to map</param>
+	/// <returns>char map as char array</returns>
+	static std::array<unsigned short, 26> get_char_freq( const std::string& str )
 	{
-		auto map = std::unordered_map<std::string, std::vector<std::pair<int, std::string>>>();
+		std::array<unsigned short, 26> freq{};
 
-		// generate keys of users to timestamp/website
-		for( auto index = 0ULL; index < username.size(); ++index )
+		const int offset = 'a';
+
+		for( int chr : str )
 		{
-			const auto value = std::make_pair( timestamp[ index ], website[ index ] );
-			map[ username[ index ] ].push_back( value );
+			const auto value = chr - offset;
+			freq[ value ]++;
 		}
 
-		return map;
+		return freq;
 	}
-	
+
 public:
 
-	static std::vector<std::string> most_visited_pattern( 
-		const std::vector<std::string>& username, 
-		const std::vector<int>& timestamp, 
-		const std::vector<std::string>& website )
+	/// <summary>
+	/// check inclusion
+	///
+	/// using a sliding window to determine if there is an anagram of s1 inside s2.
+	/// </summary>
+	/// <param name="s1">string 1</param>
+	/// <param name="s2">string 2</param>
+	/// <returns>true if there is a permutation (anagram) of s1 inside s2.</returns>
+	static bool checkInclusion( const std::string& s1, const std::string& s2 )
 	{
-		auto sequences = std::set<std::vector<std::string>>();
-		auto counts = std::map<std::vector<std::string>, int>();
+		// no solution possible
+		if( s1.length() > s2.length() ) return false;
 
-		const auto map = build_user_map( username, timestamp, website );
+		const std::size_t offset = 'a';
 
-		for( const auto& iter : map )
+		// create maps of s1 and the first n (len of s1) chars of s2
+		const auto s1_map = get_char_freq( s1 );
+		auto s2_map = get_char_freq( s2.substr( 0, s1.size() ) );
+
+		// if these equal we stop
+		if( s1_map == s2_map )
+			return true;
+
+		// otherwise, for each index starting at s1 size
+		for( auto index = s1.size(); index < s2.length(); ++index )
 		{
-			auto visits = iter.second;
+			// remove the previous character which is offset by the size of s1 in s2	
+			--s2_map[ s2[ index - s1.size() ] - offset ];
+			// increment the current character of s2
+			++s2_map[ s2[ index ] - offset ];
 
-			// order by timestamp
-			std::sort( visits.begin(), visits.end(),
-				[]( const std::pair<int, std::string>& left, const std::pair<int, std::string>& right )
-				{
-					return left.first < right.first;
-				} );
-
-			sequences.clear();
-			
-			// all possible sequences of websites for each user
-			for( auto i = 0ULL; i < visits.size(); ++i )
-			{
-				for( auto j = 0ULL; j < i; j++ )
-				{
-					for( auto k = 0ULL; k < j; k++ )
-					{
-						sequences.insert( {
-							visits[ k ].second,
-							visits[ j ].second,
-							visits[ i ].second
-						} );
-					}
-				}
-			}
-
-			// increment the counter
-			for( const auto& seq : sequences )
-				counts[ seq ]++;
+			// compare maps
+			if( s1_map == s2_map )
+				return true;
 		}
 
-		return std::max_element( counts.begin(), counts.end(), []( auto& p1, auto& p2 )
-			{
-				return ( ( p1.second == p2.second ) ? 
-					( p1.first > p2.first ) : 
-					( p1.second < p2.second ) );
-			} )->first;
+		// no match
+		return false;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::tuple<std::vector<std::string>, std::vector<int>, std::vector<std::string>>
-	{
-		{ "joe", "joe", "joe", "james", "james", "james", "james", "mary", "mary", "mary"},
-		{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
-		{ "home", "about", "career", "home", "cart", "maps", "home", "home", "about", "career" }
-	};
-
+	const auto input1 = std::make_pair<std::string, std::string>( "ab", "eidbaooo" );
+	const auto input2 = std::make_pair<std::string, std::string>( "ab", "eidboaoo" );
+	const auto input3 = std::make_pair<std::string, std::string>( "adc", "dcda" );
+	
 	// const auto actual = word_break::wordBreak( input2.first, input2.second );
-	const auto actual = visitor_patterns::most_visited_pattern(
-		std::get<0>( input1 ),
-		std::get<1>( input1 ),
-		std::get<2>( input1 )
-	);
+	const auto actual = permutation_in_string::checkInclusion( input3.first, input3.second );
 
 	return 0;
 }
