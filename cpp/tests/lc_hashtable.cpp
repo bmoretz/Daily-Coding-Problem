@@ -100,4 +100,67 @@ namespace leetcode::hashtable::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class unique_occurrences_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( unique_occurrences_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 2, 1, 1, 3 };
+
+        const auto actual = unique_occurrences::unique( input );
+        const auto expected = true;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( unique_occurrences_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 2, 1, 1, 3, 3 };
+
+        const auto actual = unique_occurrences::unique( input );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( unique_occurrences_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 2, 1, 1, 3, 1, 2, 2 };
+
+        const auto actual = unique_occurrences::unique( input );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( unique_occurrences_tests, case4 )
+    {
+        const auto input = std::vector<int>{ };
+
+        const auto actual = unique_occurrences::unique( input );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( unique_occurrences_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 2, 1, 1, 3 };
+
+        const auto actual = unique_occurrences::unique( input );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
