@@ -1,105 +1,81 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/* 567. Permutation in String.
+/*1167. Minimum Cost to Connect Sticks.
 
-Given two strings s1 and s2, write a function to return true if s2 contains the
-permutation of s1. In other words, one of the first string's permutations is the
-substring of the second string.
+You have some sticks with positive integer lengths.
+
+You can connect any two sticks of lengths X and Y into one stick by paying a cost of X + Y.  You perform this action until there is one stick remaining.
+
+Return the minimum cost of connecting all the given sticks into one stick in this way.
 
 Example 1:
 
-Input: s1 = "ab" s2 = "eidbaooo"
-Output: True
-Explanation: s2 contains one permutation of s1 ("ba").
+Input: sticks = [2,4,3]
+Output: 14
 
 Example 2:
 
-Input:s1= "ab" s2 = "eidboaoo"
-Output: False
+Input: sticks = [1,8,3,5]
+Output: 30
 
- Constraints:
+Constraints:
 
-The input strings only contain lower case letters.
-The length of both given strings is in range [1, 10,000].
+1 <= sticks.length <= 10^4
+1 <= sticks[i] <= 10^4
 */
 
-class permutation_in_string
+class connect_sticks
 {
-	/// <summary>
-	/// get character frequency
-	///
-	/// gets a char frequency array where the index is the letter and the value
-	/// at that position is the number of those characters in the string.
-	/// </summary>
-	/// <param name="str">string to map</param>
-	/// <returns>char map as char array</returns>
-	static std::array<unsigned short, 26> get_char_freq( const std::string& str )
-	{
-		std::array<unsigned short, 26> freq{};
-
-		const int offset = 'a';
-
-		for( int chr : str )
-		{
-			const auto value = chr - offset;
-			freq[ value ]++;
-		}
-
-		return freq;
-	}
-
 public:
 
 	/// <summary>
-	/// check inclusion
+	/// connect sticks
 	///
-	/// using a sliding window to determine if there is an anagram of s1 inside s2.
+	/// uses a min heap to take the shortest two sticks to make a new stick,
+	/// and each time a new stick is created we accumulate the result variable
+	/// with the new stick length, and then push the new stick onto the pile. We
+	/// quit accumulating the stick lengths once we have a single stick in the pile.
 	/// </summary>
-	/// <param name="s1">string 1</param>
-	/// <param name="s2">string 2</param>
-	/// <returns>true if there is a permutation (anagram) of s1 inside s2.</returns>
-	static bool checkInclusion( const std::string& s1, const std::string& s2 )
+	/// <param name="sticks">stick lengths</param>
+	/// <returns>minimum sum of their cumulative lengths.</returns>
+	static int connectSticks( const std::vector<int>& sticks )
 	{
-		// no solution possible
-		if( s1.length() > s2.length() ) return false;
+		auto heap = std::vector<int>( sticks );
+		auto result = 0;
 
-		const std::size_t offset = 'a';
-
-		// create maps of s1 and the first n (len of s1) chars of s2
-		const auto s1_map = get_char_freq( s1 );
-		auto s2_map = get_char_freq( s2.substr( 0, s1.size() ) );
-
-		// if these equal we stop
-		if( s1_map == s2_map )
-			return true;
-
-		// otherwise, for each index starting at s1 size
-		for( auto index = s1.size(); index < s2.length(); ++index )
+		std::make_heap( heap.begin(), heap.end(), std::greater<>{} );
+		
+		while( heap.size() > 1 )
 		{
-			// remove the previous character which is offset by the size of s1 in s2	
-			--s2_map[ s2[ index - s1.size() ] - offset ];
-			// increment the current character of s2
-			++s2_map[ s2[ index ] - offset ];
+			std::pop_heap( heap.begin(), heap.end(), std::greater<>{} );
+			const auto s1 = heap.back();
+			heap.pop_back();
 
-			// compare maps
-			if( s1_map == s2_map )
-				return true;
+			std::pop_heap( heap.begin(), heap.end(), std::greater<>{} );
+			const auto s2 = heap.back();
+			heap.pop_back();
+
+			const auto new_stick = s1 + s2;
+			result += new_stick;
+
+			heap.push_back( new_stick );
 		}
 
-		// no match
-		return false;
+		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::make_pair<std::string, std::string>( "ab", "eidbaooo" );
-	const auto input2 = std::make_pair<std::string, std::string>( "ab", "eidboaoo" );
-	const auto input3 = std::make_pair<std::string, std::string>( "adc", "dcda" );
+	const auto input1 = std::vector<int>{ 2, 4, 3 };
+	const auto input2 = std::vector<int>{ 1, 8, 3, 5 };
+	const auto input3 = std::vector<int>{ 3354, 4316, 3259, 4904, 4598, 474, 3166, 6322, 8080, 9009 };
+	const auto input4 = std::vector<int>{ 2, 4, 3 };
+	const auto input5 = std::vector<int>{ 2, 4, 3 };
 	
 	// const auto actual = word_break::wordBreak( input2.first, input2.second );
-	const auto actual = permutation_in_string::checkInclusion( input3.first, input3.second );
+	const auto actual = connect_sticks::connectSticks( input3 );
 
 	return 0;
 }

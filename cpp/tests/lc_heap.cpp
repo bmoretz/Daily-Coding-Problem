@@ -268,4 +268,67 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class connect_sticks_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( connect_sticks_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 2, 4, 3 };
+
+        const auto actual = connect_sticks::connect( input );
+        const auto expected = 14;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( connect_sticks_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 1, 8, 3, 5 };
+
+        const auto actual = connect_sticks::connect( input );
+        const auto expected = 30;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( connect_sticks_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 3354, 4316, 3259, 4904, 4598, 474, 3166, 6322, 8080, 9009 };
+
+        const auto actual = connect_sticks::connect( input );
+        const auto expected = 151646;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( connect_sticks_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 213, 12, 1441, 121, 45, 921 };
+
+        const auto actual = connect_sticks::connect( input );
+        const auto expected = 4691;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( connect_sticks_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 123, 41, 91, 45, 891, 99, 21, 323 };
+
+        const auto actual = connect_sticks::connect( input );
+        const auto expected = 3386;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
