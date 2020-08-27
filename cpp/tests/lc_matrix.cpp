@@ -370,4 +370,103 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class image_fill_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( image_fill_tests, case1 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            {1, 1, 1},
+            {1, 1, 0},
+            {1, 0, 1}
+        };
+
+        const auto actual = image_fill::flood_fill( input, 1, 1, 2 );
+        const auto expected = std::vector<std::vector<int>>
+        {
+			{ 2, 2, 2 },
+        	{ 2, 2, 0 },
+        	{ 2, 0, 1 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( image_fill_tests, case2 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            {1, 1, 1, 1},
+            {1, 1, 0, 0},
+            {1, 0, 1, 0}
+        };
+
+        const auto actual = image_fill::flood_fill( input, 1, 1, 2 );
+        const auto expected = std::vector<std::vector<int>>
+        {
+            {2, 2, 2, 2},
+            {2, 2, 0, 0},
+            {2, 0, 1, 0}
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( image_fill_tests, case3 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            {1, 1, 1, 1},
+            {1, 1, 0, 0},
+            {1, 0, 1, 0},
+            {1, 0, 1, 0}
+        };
+
+        const auto actual = image_fill::flood_fill( input, 1, 1, 2 );
+        const auto expected = std::vector<std::vector<int>>
+        {
+            {2, 2, 2, 2},
+            {2, 2, 0, 0},
+            {2, 0, 1, 0},
+            {2, 0, 1, 0}
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( image_fill_tests, case4 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            {1, 1, 1, 1},
+            {1, 1, 0, 0},
+            {1, 0, 1, 0},
+            {1, 0, 1, 0},
+            {1, 0, 1, 0},
+        };
+
+        const auto actual = image_fill::flood_fill( input, 1, 1, 2 );
+        const auto expected = std::vector<std::vector<int>>
+        {
+            {2, 2, 2, 2},
+            {2, 2, 0, 0},
+            {2, 0, 1, 0},
+            {2, 0, 1, 0},
+            {2, 0, 1, 0},
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
