@@ -473,4 +473,143 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class generate_subsets_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( generate_subsets_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 3 };
+
+        const auto actual = subsets::generate( input );
+        const auto expected = std::vector<std::vector<int>>
+        {
+			{},
+        	{ 1 },
+        	{ 2 },
+        	{ 1, 2 },
+        	{ 3 },
+        	{ 1, 3 },
+        	{ 2, 3 },
+        	{ 1, 2, 3 }
+        };
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( generate_subsets_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 1, 2, 3, 4 };
+
+        const auto actual = subsets::generate( input );
+        const auto expected = std::vector<std::vector<int>>
+        {
+			{},
+        	{ 1 },
+        	{ 2 },
+        	{ 1, 2 },
+        	{ 3 },
+        	{ 1, 3 },
+        	{ 2, 3 },
+        	{ 1, 2, 3 },
+        	{ 4 },
+        	{ 1, 4 },
+        	{ 2, 4 },
+        	{ 1, 2, 4 },
+        	{ 3, 4 },
+        	{ 1, 3, 4 },
+        	{ 2, 3, 4 },
+        	{ 1, 2, 3, 4 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( generate_subsets_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 5, 4, 3 };
+
+        const auto actual = subsets::generate( input );
+        const auto expected = std::vector<std::vector<int>>
+        {
+			{},
+        	{ 5 },
+        	{ 4 },
+        	{ 5, 4 },
+        	{ 3 },
+        	{ 5, 3 },
+        	{ 4, 3 },
+        	{ 5, 4, 3 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( generate_subsets_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 1 };
+
+        const auto actual = subsets::generate( input );
+        const auto expected = std::vector<std::vector<int>>
+        {
+            {},
+            { 1 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( generate_subsets_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 5, 3, 1, 2, 6 };
+
+        const auto actual = subsets::generate( input );
+        const auto expected = std::vector<std::vector<int>>
+        {
+			{},
+        	{ 5 },
+        	{ 3 },
+        	{ 5, 3 },
+        	{ 1 },
+        	{ 5, 1 },
+        	{ 3, 1 },
+        	{ 5, 3, 1 },
+        	{ 2 },
+        	{ 5, 2 },
+        	{ 3, 2 },
+        	{ 5, 3, 2 },
+        	{ 1, 2 },
+        	{ 5, 1, 2 },
+        	{ 3, 1, 2 },
+        	{ 5, 3, 1, 2 },
+        	{ 6 },
+        	{ 5, 6 },
+        	{ 3, 6 },
+        	{ 5, 3, 6 },
+        	{ 1, 6 },
+        	{ 5, 1, 6 },
+        	{ 3, 1, 6 },
+        	{ 5, 3, 1, 6 },
+        	{ 2, 6 },
+        	{ 5, 2, 6 },
+        	{ 3, 2, 6 },
+        	{ 5, 3, 2, 6 },
+        	{ 1, 2, 6 },
+        	{ 5, 1, 2, 6 },
+        	{ 3, 1, 2, 6 },
+        	{ 5, 3, 1, 2, 6 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

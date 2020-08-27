@@ -1,109 +1,64 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*1472. Design Browser History.
+/*78. Subsets.
 
-You have a browser of one tab where you start on the homepage and you can visit another
-url, get back in the history number of steps or move forward in the history number of steps.
+Given a set of distinct integers, nums, return all possible subsets (the power set).
 
-Implement the BrowserHistory class:
-
-BrowserHistory(string homepage) Initializes the object with the homepage of the browser.
-void visit(string url) visits url from the current page. It clears up all the forward history.
-
-string back(int steps) Move steps back in history. If you can only return x steps in the history and steps > x,
-you will return only x steps. Return the current url after moving back in history at most steps.
-string forward(int steps) Move steps forward in history. If you can only forward x steps in the history and steps > x,
-you will forward only x steps. Return the current url after forwarding in history at most steps.
+Note: The solution set must not contain duplicate subsets.
 
 Example:
 
-Input:
-
-["BrowserHistory","visit","visit","visit","back","back","forward","visit","forward","back","back"]
-[["leetcode.com"],["google.com"],["facebook.com"],["youtube.com"],[1],[1],[1],["linkedin.com"],[2],[2],[7]]
+Input: nums = [1,2,3]
 Output:
-[null,null,null,null,"facebook.com","google.com","facebook.com",null,"linkedin.com","google.com","leetcode.com"]
-
-Explanation:
-
-BrowserHistory browserHistory = new BrowserHistory("leetcode.com");
-browserHistory.visit("google.com");       // You are in "leetcode.com". Visit "google.com"
-browserHistory.visit("facebook.com");     // You are in "google.com". Visit "facebook.com"
-browserHistory.visit("youtube.com");      // You are in "facebook.com". Visit "youtube.com"
-browserHistory.back(1);                   // You are in "youtube.com", move back to "facebook.com" return "facebook.com"
-browserHistory.back(1);                   // You are in "facebook.com", move back to "google.com" return "google.com"
-browserHistory.forward(1);                // You are in "google.com", move forward to "facebook.com" return "facebook.com"
-browserHistory.visit("linkedin.com");     // You are in "facebook.com". Visit "linkedin.com"
-browserHistory.forward(2);                // You are in "linkedin.com", you cannot move forward any steps.
-browserHistory.back(2);                   // You are in "linkedin.com", move back two steps to "facebook.com" then to "google.com". return "google.com"
-browserHistory.back(7);                   // You are in "google.com", you can move back only one step to "leetcode.com". return "leetcode.com"
-
-Constraints:
-
-1 <= homepage.length <= 20
-1 <= url.length <= 20
-1 <= steps <= 100
-homepage and url consist of  '.' or lower case English letters.
-At most 5000 calls will be made to visit, back, and forward.
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
 */
 
-class browser_history
+class subsets
 {
-	std::stack<std::string> back_, forward_;
-
 public:
-
-	explicit browser_history( const std::string& home_page )
+	
+	static std::vector<std::vector<int>> generate( const std::vector<int>& numbers )
 	{
-		back_.push( home_page );
-	}
+		std::vector<std::vector<int>> perms;
 
-	void visit( const std::string& url )
-	{
-		back_.push( url );
-		forward_ = std::stack<std::string>{ };
-	}
+		if( numbers.empty() )
+			return perms;
 
-	std::string back( int steps )
-	{
-		while( back_.size() > 1 && steps != 0 )
+		auto temp = std::vector<int>{ };
+
+		perms.push_back( temp );
+
+		for( auto number : numbers )
 		{
-			forward_.push( back_.top() );
-			back_.pop();
-			--steps;
+			const auto len = perms.size();
+
+			for( auto inner = 0ULL; inner < len; ++inner )
+			{
+				temp = perms[ inner ];
+				temp.push_back( number );
+				perms.push_back( temp );
+			}
 		}
 
-		return back_.top();
-	}
-
-	std::string forward( int steps )
-	{
-		while( !forward_.empty() && steps != 0 )
-		{
-			back_.push( forward_.top() );
-			forward_.pop();
-			--steps;
-		}
-
-		return back_.top();
+		return perms;
 	}
 };
 
 auto main() -> int
 {
-	auto browserHistory = browser_history( "leetcode.com" );
-	
-	browserHistory.visit( "google.com" );       // You are in "leetcode.com". Visit "google.com"
-	browserHistory.visit( "facebook.com" );     // You are in "google.com". Visit "facebook.com"
-	browserHistory.visit( "youtube.com" );      // You are in "facebook.com". Visit "youtube.com"
-	browserHistory.back( 1 );                   // You are in "youtube.com", move back to "facebook.com" return "facebook.com"
-	browserHistory.back( 1 );                   // You are in "facebook.com", move back to "google.com" return "google.com"
-	browserHistory.forward( 1 );                // You are in "google.com", move forward to "facebook.com" return "facebook.com"
-	browserHistory.visit( "linkedin.com" );     // You are in "facebook.com". Visit "linkedin.com"
-	browserHistory.forward( 2 );                // You are in "linkedin.com", you cannot move forward any steps.
-	browserHistory.back( 2 );                   // You are in "linkedin.com", move back two steps to "facebook.com" then to "google.com". return "google.com"
-	browserHistory.back( 7 );                   // You are in "google.com", you can move back only one step to "leetcode.com". return "leetcode.com"
+	const auto input1 = std::vector<int>{ 1, 2, 3 };
+
+	const auto result = subsets::generate( input1 );
 	
 	return 0;
 }
