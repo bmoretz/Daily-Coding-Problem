@@ -1,72 +1,109 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*1207. Unique Number of Occurrences.
+/*1472. Design Browser History.
 
-Given an array of integers arr, write a function that returns true if and only if the number of occurrences of each value in the array is unique.
+You have a browser of one tab where you start on the homepage and you can visit another
+url, get back in the history number of steps or move forward in the history number of steps.
 
-Example 1:
+Implement the BrowserHistory class:
 
-Input: arr = [1,2,2,1,1,3]
-Output: true
-Explanation: The value 1 has 3 occurrences, 2 has 2 and 3 has 1. No two values have the same number of occurrences.
-Example 2:
+BrowserHistory(string homepage) Initializes the object with the homepage of the browser.
+void visit(string url) visits url from the current page. It clears up all the forward history.
 
-Input: arr = [1,2]
-Output: false
-Example 3:
+string back(int steps) Move steps back in history. If you can only return x steps in the history and steps > x,
+you will return only x steps. Return the current url after moving back in history at most steps.
+string forward(int steps) Move steps forward in history. If you can only forward x steps in the history and steps > x,
+you will forward only x steps. Return the current url after forwarding in history at most steps.
 
-Input: arr = [-3,0,1,-3,1,1,1,-3,10,0]
-Output: true
- 
+Example:
+
+Input:
+
+["BrowserHistory","visit","visit","visit","back","back","forward","visit","forward","back","back"]
+[["leetcode.com"],["google.com"],["facebook.com"],["youtube.com"],[1],[1],[1],["linkedin.com"],[2],[2],[7]]
+Output:
+[null,null,null,null,"facebook.com","google.com","facebook.com",null,"linkedin.com","google.com","leetcode.com"]
+
+Explanation:
+
+BrowserHistory browserHistory = new BrowserHistory("leetcode.com");
+browserHistory.visit("google.com");       // You are in "leetcode.com". Visit "google.com"
+browserHistory.visit("facebook.com");     // You are in "google.com". Visit "facebook.com"
+browserHistory.visit("youtube.com");      // You are in "facebook.com". Visit "youtube.com"
+browserHistory.back(1);                   // You are in "youtube.com", move back to "facebook.com" return "facebook.com"
+browserHistory.back(1);                   // You are in "facebook.com", move back to "google.com" return "google.com"
+browserHistory.forward(1);                // You are in "google.com", move forward to "facebook.com" return "facebook.com"
+browserHistory.visit("linkedin.com");     // You are in "facebook.com". Visit "linkedin.com"
+browserHistory.forward(2);                // You are in "linkedin.com", you cannot move forward any steps.
+browserHistory.back(2);                   // You are in "linkedin.com", move back two steps to "facebook.com" then to "google.com". return "google.com"
+browserHistory.back(7);                   // You are in "google.com", you can move back only one step to "leetcode.com". return "leetcode.com"
 
 Constraints:
 
-1 <= arr.length <= 1000
--1000 <= arr[i] <= 1000
+1 <= homepage.length <= 20
+1 <= url.length <= 20
+1 <= steps <= 100
+homepage and url consist of  '.' or lower case English letters.
+At most 5000 calls will be made to visit, back, and forward.
 */
 
-class unique_occurrences
+class browser_history
 {
-	static std::unordered_map<int, int> to_map( const std::vector<int>& values )
-	{
-		std::unordered_map<int, int> map;
+	std::stack<std::string> back_, forward_;
 
-		for( auto val : values )
-		{
-			++map[ val ];
-		}
-
-		return map;
-	}
-	
 public:
-	
-	static bool uniqueOccurrences( const std::vector<int>& values )
+
+	explicit browser_history( const std::string& home_page )
 	{
-		const auto map = to_map( values );
+		back_.push( home_page );
+	}
 
-		auto unique = std::set<int>();
+	void visit( const std::string& url )
+	{
+		back_.push( url );
+		forward_ = std::stack<std::string>{ };
+	}
 
-		for( auto& [key, value] : map )
+	std::string back( int steps )
+	{
+		while( back_.size() > 1 && steps != 0 )
 		{
-			unique.insert( value );
+			forward_.push( back_.top() );
+			back_.pop();
+			--steps;
 		}
-		
-		return unique.size() == map.size();
+
+		return back_.top();
+	}
+
+	std::string forward( int steps )
+	{
+		while( !forward_.empty() && steps != 0 )
+		{
+			back_.push( forward_.top() );
+			forward_.pop();
+			--steps;
+		}
+
+		return back_.top();
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<int>{ 1, 2, 2, 1, 1, 3 };
-	const auto input2 = std::vector<int>{ 1, 8, 3, 5 };
-	const auto input3 = std::vector<int>{ 3354, 4316, 3259, 4904, 4598, 474, 3166, 6322, 8080, 9009 };
-	const auto input4 = std::vector<int>{ 2, 4, 3 };
-	const auto input5 = std::vector<int>{ 2, 4, 3 };
+	auto browserHistory = browser_history( "leetcode.com" );
 	
-	// const auto actual = word_break::wordBreak( input2.first, input2.second );
-	const auto actual = unique_occurrences::uniqueOccurrences( input3 );
-
+	browserHistory.visit( "google.com" );       // You are in "leetcode.com". Visit "google.com"
+	browserHistory.visit( "facebook.com" );     // You are in "google.com". Visit "facebook.com"
+	browserHistory.visit( "youtube.com" );      // You are in "facebook.com". Visit "youtube.com"
+	browserHistory.back( 1 );                   // You are in "youtube.com", move back to "facebook.com" return "facebook.com"
+	browserHistory.back( 1 );                   // You are in "facebook.com", move back to "google.com" return "google.com"
+	browserHistory.forward( 1 );                // You are in "google.com", move forward to "facebook.com" return "facebook.com"
+	browserHistory.visit( "linkedin.com" );     // You are in "facebook.com". Visit "linkedin.com"
+	browserHistory.forward( 2 );                // You are in "linkedin.com", you cannot move forward any steps.
+	browserHistory.back( 2 );                   // You are in "linkedin.com", move back two steps to "facebook.com" then to "google.com". return "google.com"
+	browserHistory.back( 7 );                   // You are in "google.com", you can move back only one step to "leetcode.com". return "leetcode.com"
+	
 	return 0;
 }

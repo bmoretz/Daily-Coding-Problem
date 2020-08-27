@@ -150,4 +150,36 @@ namespace leetcode::stack::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class browser_history_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( browser_history_tests, case1 )
+    {
+        auto browserHistory = browser_history( "leetcode.com" );
+
+        browserHistory.visit( "google.com" );
+        browserHistory.visit( "facebook.com" );
+        browserHistory.visit( "youtube.com" );
+    	
+        EXPECT_EQ( browserHistory.back( 1 ), "facebook.com" );
+        EXPECT_EQ( browserHistory.back( 1 ), "google.com" );
+        EXPECT_EQ( browserHistory.forward( 1 ) , "facebook.com" );
+
+        browserHistory.visit( "linkedin.com" );
+        browserHistory.forward( 2 );
+
+        EXPECT_EQ( browserHistory.back( 2 ), "google.com" );
+        EXPECT_EQ( browserHistory.back( 7 ), "leetcode.com" );
+    }
 }
