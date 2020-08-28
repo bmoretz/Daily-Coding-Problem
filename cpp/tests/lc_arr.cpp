@@ -612,4 +612,67 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class pivot_index_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( pivot_index_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 1, 7, 3, 6, 5, 6 };
+
+        const auto actual = pivot_index::find_pivot( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pivot_index_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 1, 7, 3, 6, 5, 6, 3, 4, 11, 1, 3, 2 };
+
+        const auto actual = pivot_index::find_pivot( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pivot_index_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 1, 7, 3, 6, 5, 6, 3, 4, 11, 1, 3, 2, 3, 1, 3, 5, 7, 8, 9 };
+
+        const auto actual = pivot_index::find_pivot( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pivot_index_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 1, 2 };
+
+        const auto actual = pivot_index::find_pivot( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( pivot_index_tests, case5 )
+    {
+        const auto input = std::vector<int>{ -1, -1, -1, -1, -1, -1 };
+
+        const auto actual = pivot_index::find_pivot( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

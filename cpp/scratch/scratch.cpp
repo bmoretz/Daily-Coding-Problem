@@ -1,105 +1,74 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*758. Bold Words in String.
+/* 724. Find Pivot Index.
 
-Given a set of keywords words and a string S, make all appearances of all keywords
-in S bold. Any letters between <b> and </b> tags become bold.
+Given an array of integers nums, write a method that returns the
+"pivot" index of this array.
 
-The returned string should use the least number of tags possible, and of course
-the tags should form a valid combination.
+We define the pivot index as the index where the sum of all the numbers
+to the left of the index is equal to the sum of all the numbers to the right of the index.
 
-For example, given that words = ["ab", "bc"] and S = "aabcd", we should return
-"a<b>abc</b>d". Note that returning "a<b>a<b>b</b>c</b>d" would use more tags, so it is incorrect.
+If no such index exists, we should return -1. If there are multiple pivot
+indexes, you should return the left-most pivot index.
+
+Example 1:
+
+Input: nums = [1,7,3,6,5,6]
+Output: 3
+Explanation:
+The sum of the numbers to the left of index 3 (nums[3] = 6) is equal to the sum of numbers to the right of index 3.
+Also, 3 is the first index where this occurs.
+Example 2:
+
+Input: nums = [1,2,3]
+Output: -1
+Explanation:
+There is no index that satisfies the conditions in the problem statement.
 
 Constraints:
 
-words has length in range [0, 50].
-words[i] has length in range [1, 10].
-S has length in range [0, 500].
-All characters in words[i] and S are lowercase letters.
-Note: This question is the same as 616: https://leetcode.com/problems/add-bold-tag-in-string/
-
+The length of nums will be in the range [0, 10000].
+Each element nums[i] will be an integer in the range [-1000, 1000].
 */
 
-class bold_words
+class pivot_index
 {
-	static std::vector<bool> extract_mask( const std::vector<std::string>& words, const std::string& string )
-	{
-		auto mask = std::vector<bool>( string.size(), false );
 
-		for( const auto& str : words )
-		{
-			auto pos = 0ULL;
-
-			while( ( pos = string.find( str, pos ) ) != std::string::npos )
-			{
-				for( auto index = 0ULL; index < str.size(); ++index )
-				{
-					mask[ pos + index ] = true;
-				}
-
-				++pos;
-			}
-		}
-
-		return mask;
-	}
-
-	static std::string insert_tags( const std::string& string, std::vector<bool> mask )
-	{
-		std::string result;
-		auto status = false;
-
-		for( auto index = 0ULL; index < mask.size(); ++index )
-		{
-			if( status == 0 )
-			{
-				if( mask[ index ] )
-				{
-					result += "<b>";
-					status = true;
-				}
-			}
-			else if( status == 1 )
-			{
-				if( !mask[ index ] )
-				{
-					result += "</b>";
-					status = false;
-				}
-			}
-
-			result += string[ index ];
-		}
-
-		if( status )
-		{
-			result += "</b>";
-		}
-
-		return result;
-	}
-	
 public:
 
-	static std::string bold( const std::vector<std::string>& words, const std::string& string )
+	static int find_pivot( const std::vector<int>& numbers )
 	{
-		const auto mask = extract_mask( words, string );
+		if( numbers.empty() ) return -1;
+		if( numbers.size() == 1 ) return 0;
+		
+		auto left_sum = 0, right_sum = std::accumulate( numbers.begin(), numbers.end(), 0 );
+		
+		for( auto index = 0ULL; index < numbers.size(); ++index )
+		{
+			const auto current = numbers.at( index );
+			
+			right_sum -= current;
 
-		return insert_tags( string, mask );
+			if( left_sum == right_sum )
+				return index;
+
+			left_sum += current;
+		}
+		
+		return -1;
 	}
 };
 
 auto main() -> int
 {
-	auto input = std::pair<std::vector<std::string>, std::string>
-	{
-		{ "ab", "bc" },
-		"aabcd"
-	};
-
-	const auto result = bold_words::bold( input.first, input.second );
+	auto input1 = std::vector<int>{ 1, 7, 3, 6, 5, 6 };
+	auto input2 = std::vector<int>{ 1, 7, 3, 6, 5, 6, 3, 4, 11, 1, 3, 2 };
+	auto input3 = std::vector<int>{ 1, 7, 3, 6, 5, 6, 3, 4, 11, 1, 3, 2, 3, 1, 3, 5, 7, 8, 9 };
+	auto input4 = std::vector<int>{ 1, 2 };
+	auto input5 = std::vector<int>{ -1, -1, -1, -1, -1, -1 };
 	
+	const auto result = pivot_index::find_pivot( input4 );
+
 	return 0;
 }
