@@ -182,4 +182,30 @@ namespace leetcode::stack::tests
         EXPECT_EQ( browserHistory.back( 2 ), "google.com" );
         EXPECT_EQ( browserHistory.back( 7 ), "leetcode.com" );
     }
+
+    class stock_spanner_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( stock_spanner_tests, case1 )
+    {
+        auto spanner = stock_spanner();
+
+        EXPECT_EQ( spanner.next( 100 ), 1 );
+        EXPECT_EQ( spanner.next( 80 ), 1 );
+        EXPECT_EQ( spanner.next( 60 ), 1 );
+        EXPECT_EQ( spanner.next( 70 ), 2 );
+        EXPECT_EQ( spanner.next( 60 ), 1 );
+        EXPECT_EQ( spanner.next( 75 ), 4 );
+        EXPECT_EQ( spanner.next( 85 ), 6 );
+    }
 }
