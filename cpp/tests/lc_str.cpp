@@ -515,4 +515,87 @@ namespace leetcode::str::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class bold_words_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( bold_words_tests, case1 )
+    {
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            { "ab", "bc" },
+            "aabcd"
+        };
+
+        const auto actual = bold_words::bold( input.first, input.second );
+        const auto expected = "a<b>abc</b>d";
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( bold_words_tests, case2 )
+    {
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            { "ab", "bc", "ed" },
+            "aabcdaeed"
+        };
+
+        const auto actual = bold_words::bold( input.first, input.second );
+        const auto expected = "a<b>abc</b>dae<b>ed</b>";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( bold_words_tests, case3 )
+    {
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            { "ab", "bc", "ed" },
+            "aabcdaeed"
+        };
+
+        const auto actual = bold_words::bold( input.first, input.second );
+        const auto expected = "a<b>abc</b>dae<b>ed</b>";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( bold_words_tests, case4 )
+    {
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            { "aaa", "aab", "bc" },
+            "aaabbcciq"
+        };
+
+        const auto actual = bold_words::bold( input.first, input.second );
+        const auto expected = "<b>aaabbc</b>ciq";
+
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( bold_words_tests, case5 )
+    {
+        const auto input = std::pair<std::vector<std::string>, std::string>
+        {
+            { "aaa", "aab", "bc", "ef" },
+            "aaabbcciqjewefae"
+        };
+
+        const auto actual = bold_words::bold( input.first, input.second );
+        const auto expected = "<b>aaabbc</b>ciqjew<b>ef</b>ae";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

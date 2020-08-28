@@ -1,101 +1,105 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*733. Flood Fill.
+/*758. Bold Words in String.
 
-An image is represented by a 2-D array of integers, each integer representing the pixel value of the image (from 0 to 65535).
+Given a set of keywords words and a string S, make all appearances of all keywords
+in S bold. Any letters between <b> and </b> tags become bold.
 
-Given a coordinate (sr, sc) representing the starting pixel (row and column) of the flood fill, and a pixel value newColor, "flood fill" the image.
+The returned string should use the least number of tags possible, and of course
+the tags should form a valid combination.
 
-To perform a "flood fill", consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color as the starting pixel), and so on. Replace the color of all of the aforementioned pixels with the newColor.
+For example, given that words = ["ab", "bc"] and S = "aabcd", we should return
+"a<b>abc</b>d". Note that returning "a<b>a<b>b</b>c</b>d" would use more tags, so it is incorrect.
 
-At the end, return the modified image.
+Constraints:
 
-Example 1:
-Input: 
-image = [[1,1,1],[1,1,0],[1,0,1]]
-sr = 1, sc = 1, newColor = 2
-Output: [[2,2,2],[2,2,0],[2,0,1]]
-Explanation: 
-From the center of the image (with position (sr, sc) = (1, 1)), all pixels connected 
-by a path of the same color as the starting pixel are colored with the new color.
-Note the bottom corner is not colored 2, because it is not 4-directionally connected
-to the starting pixel.
-Note:
-
-The length of image and image[0] will be in the range [1, 50].
-The given starting pixel will satisfy 0 <= sr < image.length and 0 <= sc < image[0].length.
-The value of each color in image[i][j] and newColor will be an integer in [0, 65535].
+words has length in range [0, 50].
+words[i] has length in range [1, 10].
+S has length in range [0, 500].
+All characters in words[i] and S are lowercase letters.
+Note: This question is the same as 616: https://leetcode.com/problems/add-bold-tag-in-string/
 
 */
 
-class image_fill
+class bold_words
 {
-public:
-
-	/// <summary>
-	/// flood fill
-	///
-	/// standard dfs search procedure via recursion
-	/// 
-	/// </summary>
-	/// <param name="image">img</param>
-	/// <param name="row">row</param>
-	/// <param name="col">col</param>
-	/// <param name="new_color">old col</param>
-	/// <param name="old_color">new col</param>
-	static void fill( std::vector<std::vector<int>>& image,
-		const int row, const int col, 
-		const int new_color, const int old_color )
+	static std::vector<bool> extract_mask( const std::vector<std::string>& words, const std::string& string )
 	{
-		const int num_rows = image.size();
-		const int num_cols = image[ 0 ].size();
-		
-		if( row < 0 || row >= num_rows || 
-			col < 0 || col >= num_cols ) return;
+		auto mask = std::vector<bool>( string.size(), false );
 
-		if( image[ row ][ col ] == new_color ||
-			image[ row ][ col ] != old_color ) return;
-		
-		image[ row ][ col ] = new_color;
-		
-		fill( image, row - 1, col, new_color, old_color );
-		fill( image, row + 1, col, new_color, old_color );
-		fill( image, row, col - 1, new_color, old_color );
-		fill( image, row, col + 1, new_color, old_color );
+		for( const auto& str : words )
+		{
+			auto pos = 0ULL;
+
+			while( ( pos = string.find( str, pos ) ) != std::string::npos )
+			{
+				for( auto index = 0ULL; index < str.size(); ++index )
+				{
+					mask[ pos + index ] = true;
+				}
+
+				++pos;
+			}
+		}
+
+		return mask;
 	}
 
-	/// <summary>
-	/// flood fill implemented via dfs
-	/// </summary>
-	/// <param name="image">image to fill</param>
-	/// <param name="sr">starting row</param>
-	/// <param name="sc">starting col</param>
-	/// <param name="new_color">new col</param>
-	/// <returns>flood filled image</returns>
-	static std::vector<std::vector<int>> flood_fill( std::vector<std::vector<int>>& image, 
-		const int sr, const int sc, const int new_color )
+	static std::string insert_tags( const std::string& string, std::vector<bool> mask )
 	{
-		if( image.empty() || image[ 0 ].empty() ) return image;
+		std::string result;
+		auto status = false;
 
-		const auto old_color = image[ sr ][ sc ];
-		
-		fill( image, sr, sc, new_color, old_color );
+		for( auto index = 0ULL; index < mask.size(); ++index )
+		{
+			if( status == 0 )
+			{
+				if( mask[ index ] )
+				{
+					result += "<b>";
+					status = true;
+				}
+			}
+			else if( status == 1 )
+			{
+				if( !mask[ index ] )
+				{
+					result += "</b>";
+					status = false;
+				}
+			}
 
-		return image;
+			result += string[ index ];
+		}
+
+		if( status )
+		{
+			result += "</b>";
+		}
+
+		return result;
+	}
+	
+public:
+
+	static std::string bold( const std::vector<std::string>& words, const std::string& string )
+	{
+		const auto mask = extract_mask( words, string );
+
+		return insert_tags( string, mask );
 	}
 };
 
 auto main() -> int
 {
-	auto input = std::vector<std::vector<int>>
+	auto input = std::pair<std::vector<std::string>, std::string>
 	{
-		{1, 1, 1},
-		{1, 1, 0},
-		{1, 0, 1}
+		{ "ab", "bc" },
+		"aabcd"
 	};
 
-	const auto result = image_fill::flood_fill( input, 1, 1, 2 );
+	const auto result = bold_words::bold( input.first, input.second );
 	
 	return 0;
 }
