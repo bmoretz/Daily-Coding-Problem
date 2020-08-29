@@ -61,6 +61,7 @@
     <ClCompile Include="lc_design.cpp" />
     <ClCompile Include="lc_dynamic.cpp" />
     <ClCompile Include="lc_games.cpp" />
+    <ClCompile Include="lc_graph.cpp" />
     <ClCompile Include="lc_greedy.cpp" />
     <ClCompile Include="lc_interval.cpp" />
     <ClCompile Include="lang_tests.cpp" />

@@ -1,77 +1,123 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*901. Online Stock Span.
+/*332. Reconstruct Itinerary.
 
-Write a class StockSpanner which collects daily price quotes for some stock,
-and returns the span of that stock's price for the current day.
-
-The span of the stock's price today is defined as the maximum number of consecutive
-days (starting from today and going backwards) for which the price of the stock was less than or equal to today's price.
-
-For example, if the price of a stock over the next 7 days were [100, 80, 60, 70, 60, 75, 85],
-then the stock spans would be [1, 1, 1, 2, 1, 4, 6]. 
-
-Example 1:
-
-Input: ["StockSpanner","next","next","next","next","next","next","next"], [[],[100],[80],[60],[70],[60],[75],[85]]
-Output: [null,1,1,1,2,1,4,6]
-Explanation: 
-First, S = StockSpanner() is initialized.  Then:
-S.next(100) is called and returns 1,
-S.next(80) is called and returns 1,
-S.next(60) is called and returns 1,
-S.next(70) is called and returns 2,
-S.next(60) is called and returns 1,
-S.next(75) is called and returns 4,
-S.next(85) is called and returns 6.
-
-Note that (for example) S.next(75) returned 4, because the last 4 prices
-(including today's price of 75) were less than or equal to today's price.
+Given a list of airline tickets represented by pairs of departure and arrival airports
+[from, to], reconstruct the itinerary in order. All of the tickets belong to a man who
+departs from JFK. Thus, the itinerary must begin with JFK.
 
 Note:
 
-Calls to StockSpanner.next(int price) will have 1 <= price <= 10^5.
-There will be at most 10000 calls to StockSpanner.next per test case.
-There will be at most 150000 calls to StockSpanner.next across all test cases.
-The total time limit for this problem has been reduced by 75% for C++, and 50% for all other languages.
+If there are multiple valid itineraries, you should return the itinerary that has the smallest
+lexical order when read as a single string. For example, the itinerary ["JFK", "LGA"] has a
+smaller lexical order than ["JFK", "LGB"].
 
+All airports are represented by three capital letters (IATA code).
+You may assume all tickets form at least one valid itinerary.
+One must use all the tickets once and only once.
+
+Example 1:
+
+Input: [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
+Output: ["JFK", "MUC", "LHR", "SFO", "SJC"]
+
+Example 2:
+
+Input: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+Explanation: Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"].
+             But it is larger in lexical order.
 */
 
-class stock_spanner
+class reconstruct_itinerary
 {
-	std::stack<std::pair<int, int>> prev_;
+	using graph = std::unordered_map<std::string, std::priority_queue<std::string, std::vector<std::string>, std::greater<>>>;
+	
+	static graph build_graph( const std::vector<std::vector<std::string>>& tickets )
+	{
+		graph flights;
+
+		for( const auto& ticket : tickets )
+		{
+			flights[ ticket[ 0 ] ].emplace( ticket[ 1 ] );
+		}
+
+		return flights;
+	}
+
+	static void build_itinerary( graph& flights, const std::string& airport, std::vector<std::string>& itinerary )
+	{
+		while( !flights[ airport ].empty() )
+		{
+			auto destination = flights[ airport ].top();
+			
+			flights[ airport ].pop();
+
+			build_itinerary( flights, destination, itinerary );
+		}
+		
+		itinerary.emplace_back( airport );
+	}
 	
 public:
 
-	int next( const int price )
+	static std::vector<std::string> findItinerary( const std::vector<std::vector<std::string>>& tickets,
+		const std::string& starting_location = "JFK" )
 	{
-		auto days = 1;
+		auto flights = build_graph( tickets );
 
-		while( !prev_.empty() && price >= prev_.top().first )
-		{
-			days += prev_.top().second;
-			
-			prev_.pop();
-		}
+		std::vector<std::string> itinerary;
 
-		prev_.push( { price, days } );
+		build_itinerary( flights, starting_location, itinerary );
 
-		return days;
+		std::reverse( itinerary.begin(), itinerary.end() );
+		
+		return itinerary;
 	}
 };
 
 auto main() -> int
 {
-	auto S = stock_spanner();
+	const auto input1 = std::vector<std::vector<std::string>>
+	{
+		{ "MUC", "LHR" },
+		{ "JFK", "MUC" },
+		{ "SFO", "SJC" },
+		{ "LHR", "SFO" }
+	};
+
+	const auto input2 = std::vector<std::vector<std::string>>
+	{
+		{ "JFK", "SFO" },
+		{ "JFK", "ATL" },
+		{ "SFO", "ATL"},
+		{ "ATL","JFK" },
+		{ "ATL", "SFO" }
+	};
+
+	const auto input3 = std::vector<std::vector<std::string>>
+	{
+		{ "JFK", "KUL" },
+		{ "JFK", "NRT" },
+		{ "NRT", "JFK"}
+	};
+
+	const auto input4 = std::vector<std::vector<std::string>>
+	{
+		{ "EZE", "AXA" },
+		{ "TIA", "ANU" },
+		{ "ANU", "JFK" },
+		{ "JFK", "ANU" },
+		{ "ANU", "EZE" },
+		{ "TIA", "ANU" },
+		{ "AXA", "TIA" },
+		{ "TIA", "JFK" },
+		{ "ANU", "TIA" },
+		{ "JFK", "TIA" }
+	};
 	
-	S.next( 100 ); // is calledand returns 1,
-	S.next( 80 ); // is calledand returns 1,
-	S.next( 60 ); // is calledand returns 1,
-	S.next( 70 ); // is calledand returns 2,
-	S.next( 60 ); // is calledand returns 1,
-	S.next( 75 ); // is calledand returns 4,
-	S.next( 85 ); // is calledand returns 6.
+	const auto result = reconstruct_itinerary::findItinerary( input4 );
 	
 	return 0;
 }
