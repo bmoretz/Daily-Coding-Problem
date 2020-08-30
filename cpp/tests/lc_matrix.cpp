@@ -469,4 +469,35 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class snakes_and_ladders_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( snakes_and_ladders_tests, case1 )
+    {
+        const auto input1 = std::vector<std::vector<int>>
+        {
+            { -1, -1, -1, -1, -1, -1 },
+            { -1, -1, -1, -1, -1, -1 },
+            { -1, -1, -1, -1, -1, -1 },
+            { -1, 35, -1, -1, 13, -1 },
+            { -1, -1, -1, -1, -1, -1 },
+            { -1, 15, -1, -1, -1, -1 }
+        };
+
+        const auto actual = snakes_and_ladders::snakesAndLadders( input1 );
+        const auto expected = 4;
+    	
+        EXPECT_EQ( actual, expected );
+    }
 }

@@ -1,123 +1,168 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*332. Reconstruct Itinerary.
+/*909. Snakes and Ladders.
 
-Given a list of airline tickets represented by pairs of departure and arrival airports
-[from, to], reconstruct the itinerary in order. All of the tickets belong to a man who
-departs from JFK. Thus, the itinerary must begin with JFK.
+On an N x N board, the numbers from 1 to N*N are written boustrophedonically starting from the bottom left of the board,
+and alternating direction each row.  For example, for a 6 x 6 board, the numbers are written as follows:
 
-Note:
 
-If there are multiple valid itineraries, you should return the itinerary that has the smallest
-lexical order when read as a single string. For example, the itinerary ["JFK", "LGA"] has a
-smaller lexical order than ["JFK", "LGB"].
+You start on square 1 of the board (which is always in the last row and first column).  Each move, starting from square x, consists of the following:
 
-All airports are represented by three capital letters (IATA code).
-You may assume all tickets form at least one valid itinerary.
-One must use all the tickets once and only once.
+You choose a destination square S with number x+1, x+2, x+3, x+4, x+5, or x+6, provided this number is <= N*N.
+(This choice simulates the result of a standard 6-sided die roll: ie., there are always at most 6 destinations, regardless of the size of the board.)
+If S has a snake or ladder, you move to the destination of that snake or ladder.  Otherwise, you move to S.
+A board square on row r and column c has a "snake or ladder" if board[r][c] != -1.  The destination of that snake or ladder is board[r][c].
+
+Note that you only take a snake or ladder at most once per move: if the destination to a snake or ladder is the start of another snake or ladder, you do not continue moving.  (For example, if the board is `[[4,-1],[-1,3]]`, and on the first move your destination square is `2`, then you finish your first move at `3`, because you do not continue moving to `4`.)
+
+Return the least number of moves required to reach square N*N.  If it is not possible, return -1.
 
 Example 1:
 
-Input: [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
-Output: ["JFK", "MUC", "LHR", "SFO", "SJC"]
+Input: [
+[-1,-1,-1,-1,-1,-1],
+[-1,-1,-1,-1,-1,-1],
+[-1,-1,-1,-1,-1,-1],
+[-1,35,-1,-1,13,-1],
+[-1,-1,-1,-1,-1,-1],
+[-1,15,-1,-1,-1,-1]]
 
-Example 2:
+Output: 4
+Explanation: 
+At the beginning, you start at square 1 [at row 5, column 0].
+You decide to move to square 2, and must take the ladder to square 15.
+You then decide to move to square 17 (row 3, column 5), and must take the snake to square 13.
+You then decide to move to square 14, and must take the ladder to square 35.
+You then decide to move to square 36, ending the game.
+It can be shown that you need at least 4 moves to reach the N*N-th square, so the answer is 4.
+Note:
 
-Input: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
-Output: ["JFK","ATL","JFK","SFO","ATL","SFO"]
-Explanation: Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"].
-             But it is larger in lexical order.
+2 <= board.length = board[0].length <= 20
+board[i][j] is between 1 and N*N or is equal to -1.
+The board square with number 1 has no snake or ladder.
+The board square with number N*N has no snake or ladder.
 */
 
-class reconstruct_itinerary
+class snakes_and_ladders
 {
-	using graph = std::unordered_map<std::string, std::priority_queue<std::string, std::vector<std::string>, std::greater<>>>;
-	
-	static graph build_graph( const std::vector<std::vector<std::string>>& tickets )
+	static std::map<int, std::pair<int, int>>
+		coords_to_numbers( const std::vector<std::vector<int>>& board )
 	{
-		graph flights;
+		const int n = board.size();
+		auto flag = 0, pos = 1;
 
-		for( const auto& ticket : tickets )
+		std::map<int, std::pair<int, int>> map;
+
+		for( auto row = n - 1; row >= 0; --row )
 		{
-			flights[ ticket[ 0 ] ].emplace( ticket[ 1 ] );
+			if( flag )
+			{
+				for( auto col = n - 1; col >= 0; --col )
+				{
+					map[ pos ] = { row, col };
+					pos++;
+				}
+
+				flag = 0;
+			}
+			else
+			{
+				for( auto col = 0; col < n; ++col )
+				{
+					map[ pos ] = { row, col };
+					pos++;
+				}
+
+				flag = 1;
+			}
 		}
 
-		return flights;
+		return map;
 	}
 
-	static void build_itinerary( graph& flights, const std::string& airport, std::vector<std::string>& itinerary )
+	static std::vector<std::vector<int>> build_graph(
+		const std::vector<std::vector<int>>& board,
+		const std::map<int, std::pair<int, int>>& map )
 	{
-		while( !flights[ airport ].empty() )
-		{
-			auto destination = flights[ airport ].top();
-			
-			flights[ airport ].pop();
+		const int n = board.size();
+		int grid = n * n;
+		auto adj = std::vector<std::vector<int>>( grid + 1, std::vector<int>{ } );
 
-			build_itinerary( flights, destination, itinerary );
+		for( auto i = 1; i <= grid; i++ )
+		{
+			for( auto j = i + 1; j <= i + 6; j++ )
+			{
+				if( j <= grid )
+				{
+					const auto row = map.at( j ).first;
+					const auto col = map.at( j ).second;
+
+					if( board[ row ][ col ] == -1 )
+					{
+						adj[ i ].push_back( j );
+					}
+					else
+					{
+						adj[ i ].push_back( board[ row ][ col ] );
+					}
+				}
+			}
 		}
-		
-		itinerary.emplace_back( airport );
+
+		return adj;
 	}
 	
 public:
 
-	static std::vector<std::string> findItinerary( const std::vector<std::vector<std::string>>& tickets,
-		const std::string& starting_location = "JFK" )
+	static int snakesAndLadders( const std::vector<std::vector<int>>& board )
 	{
-		auto flights = build_graph( tickets );
+		const int n = board.size();
+		const auto grid = n * n;
+		const auto map = coords_to_numbers( board );
+		const auto graph =build_graph( board, map );
 
-		std::vector<std::string> itinerary;
+		std::vector<int> dist( grid + 1, INT_MAX );
+		std::queue<int>  queue;
 
-		build_itinerary( flights, starting_location, itinerary );
+		queue.push( 1 );
+		dist[ 1 ] = 0;
 
-		std::reverse( itinerary.begin(), itinerary.end() );
-		
-		return itinerary;
+		while( !queue.empty() )
+		{
+			auto curr = queue.front();
+			queue.pop();
+
+			for( auto next : graph[curr] )
+			{
+				if( dist[next] == INT_MAX )
+				{
+					queue.push( next );
+					dist[ next ] = dist[ curr ] + 1;
+
+					if( next == grid )
+						break;
+				}
+			}
+		}
+
+		return dist[ grid ] == INT_MAX ? -1 : dist[ grid ];
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<std::string>>
+	const auto input1 = std::vector<std::vector<int>>
 	{
-		{ "MUC", "LHR" },
-		{ "JFK", "MUC" },
-		{ "SFO", "SJC" },
-		{ "LHR", "SFO" }
-	};
-
-	const auto input2 = std::vector<std::vector<std::string>>
-	{
-		{ "JFK", "SFO" },
-		{ "JFK", "ATL" },
-		{ "SFO", "ATL"},
-		{ "ATL","JFK" },
-		{ "ATL", "SFO" }
-	};
-
-	const auto input3 = std::vector<std::vector<std::string>>
-	{
-		{ "JFK", "KUL" },
-		{ "JFK", "NRT" },
-		{ "NRT", "JFK"}
-	};
-
-	const auto input4 = std::vector<std::vector<std::string>>
-	{
-		{ "EZE", "AXA" },
-		{ "TIA", "ANU" },
-		{ "ANU", "JFK" },
-		{ "JFK", "ANU" },
-		{ "ANU", "EZE" },
-		{ "TIA", "ANU" },
-		{ "AXA", "TIA" },
-		{ "TIA", "JFK" },
-		{ "ANU", "TIA" },
-		{ "JFK", "TIA" }
+		{ -1, -1, -1, -1, -1, -1 },
+		{ -1, -1, -1, -1, -1, -1 },
+		{ -1, -1, -1, -1, -1, -1 },
+		{ -1, 35, -1, -1, 13, -1 },
+		{ -1, -1, -1, -1, -1, -1 },
+		{ -1, 15, -1, -1, -1, -1 }
 	};
 	
-	const auto result = reconstruct_itinerary::findItinerary( input4 );
+	const auto result = snakes_and_ladders::snakesAndLadders( input1 );
 	
 	return 0;
 }
