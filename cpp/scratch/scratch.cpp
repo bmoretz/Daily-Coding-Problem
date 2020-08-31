@@ -1,90 +1,99 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 #include <array>
 
-/*1002. Find Common Characters.
+/*692. Top K Frequent Words.
 
-Given an array A of strings made only from lowercase letters, return a list of all characters that
-show up in all strings within the list (including duplicates).  For example, if a character occurs 3
-times in all strings but not 4 times, you need to include that character three times in the final answer.
+Given a non-empty list of words, return the k most frequent elements.
 
-You may return the answer in any order.
+Your answer should be sorted by frequency from highest to lowest. If two words have the same frequency, then the word with the lower alphabetical order comes first.
 
 Example 1:
 
-Input: ["bella","label","roller"]
-Output: ["e","l","l"]
+Input: ["i", "love", "leetcode", "i", "love", "coding"], k = 2
+Output: ["i", "love"]
+
+Explanation: "i" and "love" are the two most frequent words.
+    Note that "i" comes before "love" due to a lower alphabetical order.
 Example 2:
 
-Input: ["cool","lock","cook"]
-Output: ["c","o"]
- 
-
+Input: ["the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"], k = 4
+Output: ["the", "is", "sunny", "day"]
+Explanation: "the", "is", "sunny" and "day" are the four most frequent words,
+    with the number of occurrence being 4, 3, 2 and 1 respectively.
 Note:
 
-1 <= A.length <= 100
-1 <= A[i].length <= 100
-A[i][j] is a lowercase letter
+You may assume k is always valid, 1 ≤ k ≤ number of unique elements.
+
+Input words contain only lowercase letters.
+Follow up:
+Try to solve it in O(n log k) time and O(n) extra space.
+
 */
 
-class common_characters
+class top_k_frequent
 {
-	static std::map<char, std::size_t> to_char_map( const std::string& str )
+	static std::unordered_map<std::string, int> to_frequency_map( const std::vector<std::string>& words )
 	{
-		std::map<char, std::size_t> map;
+		std::unordered_map<std::string, int> frequency;
 
-		for( auto chr : str )
+		for( const auto& word : words )
 		{
-			map[ chr ]++;
+			frequency[ word ]++;
 		}
 
-		return map;
+		return frequency;
+	}
+
+	static auto to_priority_queue( const std::unordered_map<std::string, int>& freq )
+	{
+		auto compare = []( const std::pair<std::size_t, std::string>& left, const std::pair<std::size_t, std::string>& right )
+		{
+			if( left.first < right.first ) return true;
+			if( left.first == right.first && left.second > right.second ) return true;
+
+			return false;
+		};
+
+		std::priority_queue<std::pair<int, std::string>,
+			std::vector<std::pair<int, std::string>>,
+			decltype( compare )> queue( compare );
+
+		for( auto& [k, v] : freq )
+		{
+			queue.push( std::make_pair( v, k ) );
+		}
+
+		return queue;
 	}
 	
 public:
 
-	static std::vector<std::string> find_common( const std::vector<std::string>& strings )
-	{
-		auto counts = std::map<char, std::size_t>();
-		std::vector<bool> required( 26, true );
+	/// <summary>
+	/// top k frequent words
+	///
+	/// the approach here is to create a freq counter in a map (str->int), then insert the key/value pairs from the freq table
+	/// into a heap with a custom comparer (first priority is the freq, then break freq ties with the lexicographical ordering of
+	/// the keys).
+	/// </summary>
+	/// <param name="words">list of words</param>
+	/// <param name="k">top k to return</param>
+	/// <returns>top k most frequent</returns>
+	static std::vector<std::string> topKFrequent( const std::vector<std::string>& words, 
+		const std::size_t k )
+	{	
+		if( words.size() < k ) return words;
 
-		for( auto index = 0; index < 26; ++index )
+		const auto freq = to_frequency_map( words );
+		auto queue = to_priority_queue( freq );
+
+		auto result = std::vector<std::string>();
+
+		for( auto index = 0; index < k; ++index )
 		{
-			counts[ index + 'a' ] = SIZE_MAX;
+			result.push_back( queue.top().second );
+			queue.pop();
 		}
-
-		for( const auto& str : strings )
-		{
-			const auto current = to_char_map( str );
-
-			for( auto& [k, v] : current )
-			{
-				counts[ k ] = std::min( counts[ k ], v );
-			}
-
-			for( auto index = 0; index < 26; ++index )
-			{
-				if( current.find( 'a' + index ) == current.end() )
-				{
-					required[ index ] = false;
-				}
-			}
-		}
-
-		std::vector<std::string> result;
-
-		for( auto& [k, v] : counts )
-		{
-			const auto current = k - 'a';
-			
-			if( required[ current ] )
-			{
-				for( auto rep = 0ULL; rep < v; ++rep )
-				{
-					result.emplace_back( 1, k );
-				}
-			}
-		}
-
+		
 		return result;
 	}
 };
@@ -93,31 +102,15 @@ auto main() -> int
 {
 	const auto input1 = std::vector<std::string>
 	{
-		"bella",
-		"label",
-		"roller"
+		"i", "love", "leetcode", "i", "love", "coding"
 	};
 
 	const auto input2 = std::vector<std::string>
 	{
-		"cool",
-		"lock",
-		"cook"
-	};
-
-	const auto input3 = std::vector<std::string>
-	{
-		"acabcddd",
-		"bcbdbcbd",
-		"baddbadb",
-		"cbdddcac",
-		"aacbcccd",
-		"ccccddda",
-		"cababaab",
-		"addcaccd"
+		"the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"
 	};
 	
-	const auto result = common_characters::find_common( input1 );
+	const auto result = top_k_frequent::topKFrequent( input2, 4 );
 	
 	return 0;
 }

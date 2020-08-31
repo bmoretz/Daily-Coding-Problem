@@ -331,4 +331,65 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class top_k_frequent_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( top_k_frequent_tests, case1 )
+    {
+        const auto input = std::vector<std::string>
+        {
+            "i", "love", "leetcode", "i", "love", "coding"
+        };
+
+        const auto actual = top_k_frequent::top_k( input, 2 );
+        const auto expected = std::vector<std::string>
+    	{
+    		"i", "love"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( top_k_frequent_tests, case2 )
+    {
+        const auto input = std::vector<std::string>
+        {
+            "the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"
+        };
+
+        const auto actual = top_k_frequent::top_k( input, 4 );
+        const auto expected = std::vector<std::string>
+        {
+            "the", "is", "sunny", "day"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( top_k_frequent_tests, case3 )
+    {
+        const auto input = std::vector<std::string>
+        {
+            "the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is", "day", "way"
+        };
+
+        const auto actual = top_k_frequent::top_k( input, 4 );
+        const auto expected = std::vector<std::string>
+        {
+			"the", "is", "day", "sunny"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
