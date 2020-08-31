@@ -163,4 +163,67 @@ namespace leetcode::hashtable::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class common_characters_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( common_characters_tests, case1 )
+    {
+        const auto input = std::vector<std::string>
+        {
+            "bella",
+            "label",
+            "roller"
+        };
+
+        const auto actual = common_characters::find_common( input );
+        const auto expected = std::vector<std::string>{ "e", "l", "l" };
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( common_characters_tests, case2 )
+    {
+        const auto input = std::vector<std::string>
+        {
+	        "cool",
+	        "lock",
+	        "cook"
+        };
+
+        const auto actual = common_characters::find_common( input );
+        const auto expected = std::vector<std::string>{ "c", "o" };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( common_characters_tests, case3 )
+    {
+        const auto input = std::vector<std::string>
+        {
+	        "acabcddd",
+	        "bcbdbcbd",
+	        "baddbadb",
+	        "cbdddcac",
+	        "aacbcccd",
+	        "ccccddda",
+	        "cababaab",
+	        "addcaccd"
+        };
+
+        const auto actual = common_characters::find_common( input );
+        const auto expected = std::vector<std::string>{ };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

@@ -577,7 +577,7 @@ namespace leetcode::matrix
 
 			while( !queue.empty() )
 			{
-				auto curr = queue.front();
+				const auto curr = queue.front();
 				queue.pop();
 
 				for( auto next : graph[ curr ] )

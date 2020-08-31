@@ -1,168 +1,123 @@
 #include <bits/stdc++.h>
 #include <array>
 
-/*909. Snakes and Ladders.
+/*1002. Find Common Characters.
 
-On an N x N board, the numbers from 1 to N*N are written boustrophedonically starting from the bottom left of the board,
-and alternating direction each row.  For example, for a 6 x 6 board, the numbers are written as follows:
+Given an array A of strings made only from lowercase letters, return a list of all characters that
+show up in all strings within the list (including duplicates).  For example, if a character occurs 3
+times in all strings but not 4 times, you need to include that character three times in the final answer.
 
-
-You start on square 1 of the board (which is always in the last row and first column).  Each move, starting from square x, consists of the following:
-
-You choose a destination square S with number x+1, x+2, x+3, x+4, x+5, or x+6, provided this number is <= N*N.
-(This choice simulates the result of a standard 6-sided die roll: ie., there are always at most 6 destinations, regardless of the size of the board.)
-If S has a snake or ladder, you move to the destination of that snake or ladder.  Otherwise, you move to S.
-A board square on row r and column c has a "snake or ladder" if board[r][c] != -1.  The destination of that snake or ladder is board[r][c].
-
-Note that you only take a snake or ladder at most once per move: if the destination to a snake or ladder is the start of another snake or ladder, you do not continue moving.  (For example, if the board is `[[4,-1],[-1,3]]`, and on the first move your destination square is `2`, then you finish your first move at `3`, because you do not continue moving to `4`.)
-
-Return the least number of moves required to reach square N*N.  If it is not possible, return -1.
+You may return the answer in any order.
 
 Example 1:
 
-Input: [
-[-1,-1,-1,-1,-1,-1],
-[-1,-1,-1,-1,-1,-1],
-[-1,-1,-1,-1,-1,-1],
-[-1,35,-1,-1,13,-1],
-[-1,-1,-1,-1,-1,-1],
-[-1,15,-1,-1,-1,-1]]
+Input: ["bella","label","roller"]
+Output: ["e","l","l"]
+Example 2:
 
-Output: 4
-Explanation: 
-At the beginning, you start at square 1 [at row 5, column 0].
-You decide to move to square 2, and must take the ladder to square 15.
-You then decide to move to square 17 (row 3, column 5), and must take the snake to square 13.
-You then decide to move to square 14, and must take the ladder to square 35.
-You then decide to move to square 36, ending the game.
-It can be shown that you need at least 4 moves to reach the N*N-th square, so the answer is 4.
+Input: ["cool","lock","cook"]
+Output: ["c","o"]
+ 
+
 Note:
 
-2 <= board.length = board[0].length <= 20
-board[i][j] is between 1 and N*N or is equal to -1.
-The board square with number 1 has no snake or ladder.
-The board square with number N*N has no snake or ladder.
+1 <= A.length <= 100
+1 <= A[i].length <= 100
+A[i][j] is a lowercase letter
 */
 
-class snakes_and_ladders
+class common_characters
 {
-	static std::map<int, std::pair<int, int>>
-		coords_to_numbers( const std::vector<std::vector<int>>& board )
+	static std::map<char, std::size_t> to_char_map( const std::string& str )
 	{
-		const int n = board.size();
-		auto flag = 0, pos = 1;
+		std::map<char, std::size_t> map;
 
-		std::map<int, std::pair<int, int>> map;
-
-		for( auto row = n - 1; row >= 0; --row )
+		for( auto chr : str )
 		{
-			if( flag )
-			{
-				for( auto col = n - 1; col >= 0; --col )
-				{
-					map[ pos ] = { row, col };
-					pos++;
-				}
-
-				flag = 0;
-			}
-			else
-			{
-				for( auto col = 0; col < n; ++col )
-				{
-					map[ pos ] = { row, col };
-					pos++;
-				}
-
-				flag = 1;
-			}
+			map[ chr ]++;
 		}
 
 		return map;
 	}
-
-	static std::vector<std::vector<int>> build_graph(
-		const std::vector<std::vector<int>>& board,
-		const std::map<int, std::pair<int, int>>& map )
-	{
-		const int n = board.size();
-		int grid = n * n;
-		auto adj = std::vector<std::vector<int>>( grid + 1, std::vector<int>{ } );
-
-		for( auto i = 1; i <= grid; i++ )
-		{
-			for( auto j = i + 1; j <= i + 6; j++ )
-			{
-				if( j <= grid )
-				{
-					const auto row = map.at( j ).first;
-					const auto col = map.at( j ).second;
-
-					if( board[ row ][ col ] == -1 )
-					{
-						adj[ i ].push_back( j );
-					}
-					else
-					{
-						adj[ i ].push_back( board[ row ][ col ] );
-					}
-				}
-			}
-		}
-
-		return adj;
-	}
 	
 public:
 
-	static int snakesAndLadders( const std::vector<std::vector<int>>& board )
+	static std::vector<std::string> find_common( const std::vector<std::string>& strings )
 	{
-		const int n = board.size();
-		const auto grid = n * n;
-		const auto map = coords_to_numbers( board );
-		const auto graph =build_graph( board, map );
+		auto counts = std::map<char, std::size_t>();
+		std::vector<bool> required( 26, true );
 
-		std::vector<int> dist( grid + 1, INT_MAX );
-		std::queue<int>  queue;
-
-		queue.push( 1 );
-		dist[ 1 ] = 0;
-
-		while( !queue.empty() )
+		for( auto index = 0; index < 26; ++index )
 		{
-			auto curr = queue.front();
-			queue.pop();
+			counts[ index + 'a' ] = SIZE_MAX;
+		}
 
-			for( auto next : graph[curr] )
+		for( const auto& str : strings )
+		{
+			const auto current = to_char_map( str );
+
+			for( auto& [k, v] : current )
 			{
-				if( dist[next] == INT_MAX )
-				{
-					queue.push( next );
-					dist[ next ] = dist[ curr ] + 1;
+				counts[ k ] = std::min( counts[ k ], v );
+			}
 
-					if( next == grid )
-						break;
+			for( auto index = 0; index < 26; ++index )
+			{
+				if( current.find( 'a' + index ) == current.end() )
+				{
+					required[ index ] = false;
 				}
 			}
 		}
 
-		return dist[ grid ] == INT_MAX ? -1 : dist[ grid ];
+		std::vector<std::string> result;
+
+		for( auto& [k, v] : counts )
+		{
+			const auto current = k - 'a';
+			
+			if( required[ current ] )
+			{
+				for( auto rep = 0ULL; rep < v; ++rep )
+				{
+					result.emplace_back( 1, k );
+				}
+			}
+		}
+
+		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<int>>
+	const auto input1 = std::vector<std::string>
 	{
-		{ -1, -1, -1, -1, -1, -1 },
-		{ -1, -1, -1, -1, -1, -1 },
-		{ -1, -1, -1, -1, -1, -1 },
-		{ -1, 35, -1, -1, 13, -1 },
-		{ -1, -1, -1, -1, -1, -1 },
-		{ -1, 15, -1, -1, -1, -1 }
+		"bella",
+		"label",
+		"roller"
+	};
+
+	const auto input2 = std::vector<std::string>
+	{
+		"cool",
+		"lock",
+		"cook"
+	};
+
+	const auto input3 = std::vector<std::string>
+	{
+		"acabcddd",
+		"bcbdbcbd",
+		"baddbadb",
+		"cbdddcac",
+		"aacbcccd",
+		"ccccddda",
+		"cababaab",
+		"addcaccd"
 	};
 	
-	const auto result = snakes_and_ladders::snakesAndLadders( input1 );
+	const auto result = common_characters::find_common( input1 );
 	
 	return 0;
 }
