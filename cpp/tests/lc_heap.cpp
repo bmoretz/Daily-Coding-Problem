@@ -392,4 +392,69 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class max_prod_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( max_prod_tests, case1 )
+    {
+        const auto input = std::vector<int>
+        {
+            1, 2, 3
+        };
+
+        const auto actual = max_prod::maximumProduct( input );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_prod_tests, case2 )
+    {
+        const auto input = std::vector<int>
+        {
+            1, 2, 3, 4
+        };
+
+        const auto actual = max_prod::maximumProduct( input );
+        const auto expected = 24;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_prod_tests, case3 )
+    {
+        const auto input = std::vector<int>
+        {
+            -4, -3, -2, -1, 60
+        };
+
+        const auto actual = max_prod::maximumProduct( input );
+        const auto expected = 720;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_prod_tests, case4 )
+    {
+        const auto input = std::vector<int>
+        {
+            -4, 2, -1, 60
+        };
+
+        const auto actual = max_prod::maximumProduct( input );
+        const auto expected = 240;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

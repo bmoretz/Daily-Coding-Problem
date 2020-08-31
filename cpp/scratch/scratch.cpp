@@ -1,116 +1,87 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/*692. Top K Frequent Words.
+/*628. Maximum Product of Three Numbers.
 
-Given a non-empty list of words, return the k most frequent elements.
-
-Your answer should be sorted by frequency from highest to lowest. If two words have the same frequency, then the word with the lower alphabetical order comes first.
+Given an integer array, find three numbers whose product is maximum and output the maximum product.
 
 Example 1:
 
-Input: ["i", "love", "leetcode", "i", "love", "coding"], k = 2
-Output: ["i", "love"]
-
-Explanation: "i" and "love" are the two most frequent words.
-    Note that "i" comes before "love" due to a lower alphabetical order.
+Input: [1,2,3]
+Output: 6
+ 
 Example 2:
 
-Input: ["the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"], k = 4
-Output: ["the", "is", "sunny", "day"]
-Explanation: "the", "is", "sunny" and "day" are the four most frequent words,
-    with the number of occurrence being 4, 3, 2 and 1 respectively.
+Input: [1,2,3,4]
+Output: 24
+
 Note:
 
-You may assume k is always valid, 1 ≤ k ≤ number of unique elements.
-
-Input words contain only lowercase letters.
-Follow up:
-Try to solve it in O(n log k) time and O(n) extra space.
-
+The length of the given array will be in range [3,104] and all elements are in the range [-1000, 1000].
+Multiplication of any three numbers in the input won't exceed the range of 32-bit signed integer.
 */
 
-class top_k_frequent
+class max_prod
 {
-	static std::unordered_map<std::string, int> to_frequency_map( const std::vector<std::string>& words )
-	{
-		std::unordered_map<std::string, int> frequency;
-
-		for( const auto& word : words )
-		{
-			frequency[ word ]++;
-		}
-
-		return frequency;
-	}
-
-	static auto to_priority_queue( const std::unordered_map<std::string, int>& freq )
-	{
-		auto compare = []( const std::pair<std::size_t, std::string>& left, const std::pair<std::size_t, std::string>& right )
-		{
-			if( left.first < right.first ) return true;
-			if( left.first == right.first && left.second > right.second ) return true;
-
-			return false;
-		};
-
-		std::priority_queue<std::pair<int, std::string>,
-			std::vector<std::pair<int, std::string>>,
-			decltype( compare )> queue( compare );
-
-		for( auto& [k, v] : freq )
-		{
-			queue.push( std::make_pair( v, k ) );
-		}
-
-		return queue;
-	}
-	
 public:
 
-	/// <summary>
-	/// top k frequent words
-	///
-	/// the approach here is to create a freq counter in a map (str->int), then insert the key/value pairs from the freq table
-	/// into a heap with a custom comparer (first priority is the freq, then break freq ties with the lexicographical ordering of
-	/// the keys).
-	/// </summary>
-	/// <param name="words">list of words</param>
-	/// <param name="k">top k to return</param>
-	/// <returns>top k most frequent</returns>
-	static std::vector<std::string> topKFrequent( const std::vector<std::string>& words, 
-		const std::size_t k )
-	{	
-		if( words.size() < k ) return words;
+	static int maximumProduct( const std::vector<int>& numbers,
+		const int k = 3)
+	{
+		if( numbers.empty() ) return 0;
 
-		const auto freq = to_frequency_map( words );
-		auto queue = to_priority_queue( freq );
+		// two heaps, one min / one max
+		auto max = std::priority_queue<int, std::vector<int>, std::less<>>();
+		auto min = std::priority_queue<int, std::vector<int>, std::greater<>>();
 
-		auto result = std::vector<std::string>();
-
-		for( auto index = 0; index < k; ++index )
+		// put all the numbers in the heap
+		for( auto num : numbers )
 		{
-			result.push_back( queue.top().second );
-			queue.pop();
+			max.push( num );
+			min.push( num );
 		}
+
+		// the solution must contain the largest number,
+		// so include it in both.
+		const auto maximum = max.top();
 		
-		return result;
+		auto max_result = maximum;
+		auto min_result = maximum;
+
+		max.pop();
+
+		// max result = largest number * the two next largest numbers.
+		for( auto index = 0; index < k - 1; ++index )
+		{
+			max_result *= max.top();
+			max.pop();
+		}
+
+		// min result = max number * the two smallest (negative) numbers.
+		for( auto index = 0; index < k - 1; ++index )
+		{
+			min_result *= min.top();
+			min.pop();
+		}
+
+		// one of these must be the solution.
+		return max_result > min_result ? max_result : min_result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::string>
+	const auto input1 = std::vector<int>
 	{
-		"i", "love", "leetcode", "i", "love", "coding"
+		1, 2, 3
 	};
 
-	const auto input2 = std::vector<std::string>
+	const auto input2 = std::vector<int>
 	{
-		"the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"
+		1, 2, 3, 4
 	};
 	
-	const auto result = top_k_frequent::topKFrequent( input2, 4 );
+	const auto result = max_prod::maximumProduct( input2, 4 );
 	
 	return 0;
 }
