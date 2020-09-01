@@ -1,133 +1,109 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 957. Prison Cells After N Days.
+/* 819. Most Common Word.
 
-There are 8 prison cells in a row, and each cell is either occupied or vacant.
+Given a paragraph and a list of banned words, return the most frequent word that is not in
+the list of banned words.  It is guaranteed there is at least one word that isn't banned,
+and that the answer is unique.
 
-Each day, whether the cell is occupied or vacant changes according to the following rules:
+Words in the list of banned words are given in lowercase, and free of punctuation.  Words in the
+paragraph are not case sensitive.  The answer is in lowercase.
 
-If a cell has two adjacent neighbors that are both occupied or both vacant, then the cell becomes occupied.
-Otherwise, it becomes vacant.
-(Note that because the prison is a row, the first and the last cells in the row can't have two adjacent neighbors.)
+Example:
 
-We describe the current state of the prison in the following way: cells[i] == 1 if the i-th cell is occupied, else cells[i] == 0.
-
-Given the initial state of the prison, return the state of the prison after N days (and N such changes described above.)
-
-Example 1:
-
-Input: cells = [0,1,0,1,1,0,0,1], N = 7
-Output: [0,0,1,1,0,0,0,0]
+Input: 
+paragraph = "Bob hit a ball, the hit BALL flew far after it was hit."
+banned = ["hit"]
+Output: "ball"
 
 Explanation: 
 
-The following table summarizes the state of the prison on each day:
-
-Day 0: [0, 1, 0, 1, 1, 0, 0, 1]
-Day 1: [0, 1, 1, 0, 0, 0, 0, 0]
-Day 2: [0, 0, 0, 0, 1, 1, 1, 0]
-Day 3: [0, 1, 1, 0, 0, 1, 0, 0]
-Day 4: [0, 0, 0, 0, 0, 1, 0, 0]
-Day 5: [0, 1, 1, 1, 0, 1, 0, 0]
-Day 6: [0, 0, 1, 0, 1, 1, 0, 0]
-Day 7: [0, 0, 1, 1, 0, 0, 0, 0]
-
-Example 2:
-
-Input: cells = [1,0,0,1,0,0,1,0], N = 1000000000
-Output: [0,0,1,1,1,1,1,0]
+"hit" occurs 3 times, but it is a banned word.
+"ball" occurs twice (and no other word does), so it is the most frequent non-banned word in the paragraph. 
+Note that words in the paragraph are not case sensitive,
+that punctuation is ignored (even if adjacent to words, such as "ball,"), 
+and that "hit" isn't the answer even though it occurs more because it is banned.
  
 Note:
 
-cells.length == 8
-cells[i] is in {0, 1}
-1 <= N <= 10^9
+1 <= paragraph.length <= 1000.
+0 <= banned.length <= 100.
+1 <= banned[i].length <= 10.
+The answer is unique, and written in lowercase (even if its occurrences in paragraph may have uppercase symbols, and even if it is a proper noun.)
+paragraph only consists of letters, spaces, or the punctuation symbols !?',;.
+There are no hyphens or hyphenated words.
+Words only consist of letters, never apostrophes or other punctuation symbols.
 
 */
 
-class prison_cells
+class most_common_word
 {
-	static int to_hashkey( const std::vector<int>& cells )
+	static std::vector<std::string> get_tokens( const std::string& data )
 	{
-		auto state_key = 0x0;
-
-		for( auto cell : cells )
-		{
-			state_key <<= 1;
-			state_key = ( state_key | cell );
-		}
-
-		return state_key;
-	}
-	
-	static std::vector<int> next_day( const std::vector<int>& cells )
-	{
-		const auto num_cells = cells.size();
-
-		auto new_cells = std::vector<int>( num_cells );
+		auto cleaned = std::string{ };
+		cleaned.resize( data.size() );
 		
-		for( auto index = 0; index < num_cells; ++index )
+		std::transform( data.begin(), data.end(), cleaned.begin(), 
+			[]( const auto chr )
 		{
-			const auto prev = index > 0 ? cells[ index - 1 ] : -1;
-			const auto next = index < num_cells - 1 ? cells[ index + 1 ] : -1;
+			if( ::ispunct( chr ) ) return ' ';
+			
+			return static_cast<char>( ::tolower( chr ) );
+		});
+		
+		std::istringstream iss( cleaned );
 
-			new_cells[ index ] = prev == 1 && next == 1 || prev == 0 && next == 0 ? 1 : 0;
-		}
+		std::vector<std::string> tokens( ( std::istream_iterator<std::string>( iss ) ),
+			std::istream_iterator<std::string>() );
 
-		return new_cells;
+		return tokens;
 	}
 	
 public:
 
-	static std::vector<int> prisonAfterNDays( const std::vector<int>& cells, 
-		const int days )
+	static std::string get_most_common( const std::string& paragraph,
+		const std::vector<std::string>& banned )
 	{
-		const auto num_cells = cells.size();
-		auto current = cells;
+		std::set<std::string> exclude( banned.begin(), banned.end() );
 
-		std::map<int, int> cell_map;
-		auto is_memory = false;
-		auto day = days;
-		
-		while( day > 0 )
-		{
-			if( !is_memory )
+		// get tokens
+		auto tokens = get_tokens( paragraph );
+
+		auto map = std::unordered_map<std::string, int>();
+
+		std::pair<int, std::string> result = { -1, "" };
+
+		for( auto& word : tokens )
+		{	
+			// skip banned
+			if( exclude.find( word ) != exclude.end() )
+				continue;
+
+			++map[ word ];
+
+			if( map[ word ] > result.first )
 			{
-				auto key = to_hashkey( current );
-
-				if( cell_map.find( key ) != cell_map.end() )
-				{
-					day %= cell_map[ key ] - day;
-					is_memory = true;
-				}
-				else
-				{
-					cell_map[ key ] = day;
-				}
-			}
-
-			if( day > 0 )
-			{
-				day -= 1;
-				current = next_day( current );
+				result = { map[ word ], word };
 			}
 		}
 
-		return current;
+		return result.second;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<int>
+	const auto input1 = std::pair<std::string, std::vector<std::string>>
 	{
-		0, 1, 0, 1, 1, 0, 0, 1
+		"Bob hit a ball, the hit BALL flew far after it was hit.",
+		std::vector<std::string>{ "hit" }
 	};
-
-	const auto input2 = std::vector<int>
+	
+	const auto input2 = std::pair<std::string, std::vector<std::string>>
 	{
-		4, 5, 6, 7, 0, 1, 2
+		"a.",
+		std::vector<std::string>{ }
 	};
 
 	const auto input3 = std::vector<int>
@@ -135,7 +111,7 @@ auto main() -> int
 		1, 2
 	};
 	
-	const auto result = prison_cells::prisonAfterNDays( input1, 7 );
+	const auto result = most_common_word::get_most_common( input2.first, input2.second );
 	
 	return 0;
 }

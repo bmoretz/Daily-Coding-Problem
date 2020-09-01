@@ -598,4 +598,45 @@ namespace leetcode::str::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class most_common_word_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( most_common_word_tests, case1 )
+    {
+        const auto input = std::pair<std::string, std::vector<std::string>>
+        {
+            "Bob hit a ball, the hit BALL flew far after it was hit.",
+            std::vector<std::string>{ "hit" }
+        };
+
+        const auto actual = most_common_word::get_most_common( input.first, input.second );
+        const auto expected = "ball";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( most_common_word_tests, case2 )
+    {
+        const auto input = std::pair<std::string, std::vector<std::string>>
+        {
+            "B.",
+            std::vector<std::string>{ "hit" }
+        };
+
+        const auto actual = most_common_word::get_most_common( input.first, input.second );
+        const auto expected = "b";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

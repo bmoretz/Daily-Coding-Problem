@@ -25,7 +25,7 @@ namespace leetcode::simulation::tests
             0, 1, 0, 1, 1, 0, 0, 1
         };
 
-        const auto actual = prison_cells::prisonAfterNDays( input, 7 );
+        const auto actual = prison_cells::prison_after_n_days( input, 7 );
         const auto expected = std::vector<int>{ 0, 0, 1, 1, 0, 0, 0, 0 };
     	
         EXPECT_EQ( actual, expected );
@@ -38,7 +38,7 @@ namespace leetcode::simulation::tests
             0, 1, 0, 1, 1, 0, 0, 1
         };
 
-        const auto actual = prison_cells::prisonAfterNDays( input, 20 );
+        const auto actual = prison_cells::prison_after_n_days( input, 20 );
         const auto expected = std::vector<int>{ 0, 0, 1, 0, 1, 1, 0, 0 };
 
         EXPECT_EQ( actual, expected );
@@ -51,7 +51,7 @@ namespace leetcode::simulation::tests
             0, 1, 0, 1, 1, 0, 0, 1
         };
 
-        const auto actual = prison_cells::prisonAfterNDays( input, 100 );
+        const auto actual = prison_cells::prison_after_n_days( input, 100 );
         const auto expected = std::vector<int>{ 0, 0, 0, 0, 1, 1, 1, 0 };
 
         EXPECT_EQ( actual, expected );
@@ -64,7 +64,7 @@ namespace leetcode::simulation::tests
             0, 1, 0, 1, 1, 0, 0, 1
         };
 
-        const auto actual = prison_cells::prisonAfterNDays( input, 10000 );
+        const auto actual = prison_cells::prison_after_n_days( input, 10000 );
         const auto expected = std::vector<int>{ 0, 0, 0, 0, 0, 1, 0, 0 };
 
         EXPECT_EQ( actual, expected );

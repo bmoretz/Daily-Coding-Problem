@@ -56,7 +56,7 @@ namespace leetcode::simulation
 
 	class prison_cells
 	{
-		static int to_hashkey( const std::vector<int>& cells )
+		static int to_hash_key( const std::vector<int>& cells )
 		{
 			auto state_key = 0x0;
 
@@ -88,7 +88,7 @@ namespace leetcode::simulation
 
 	public:
 
-		static std::vector<int> prisonAfterNDays( const std::vector<int>& cells,
+		static std::vector<int> prison_after_n_days( const std::vector<int>& cells,
 			const int days )
 		{
 			const auto num_cells = cells.size();
@@ -102,7 +102,7 @@ namespace leetcode::simulation
 			{
 				if( !is_memory )
 				{
-					auto key = to_hashkey( current );
+					auto key = to_hash_key( current );
 
 					if( cell_map.find( key ) != cell_map.end() )
 					{
