@@ -122,7 +122,10 @@
     <ClCompile Include="lc_graph.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
-    <ClCompile Include="sort_search.cpp">
+    <ClCompile Include="lc_simulation.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
+    <ClCompile Include="lc_sort_search.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
   </ItemGroup>

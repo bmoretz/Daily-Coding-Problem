@@ -1,50 +1,120 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 153. Find Minimum in Rotated Sorted Array.
+/* 957. Prison Cells After N Days.
 
-Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+There are 8 prison cells in a row, and each cell is either occupied or vacant.
 
-(i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).
+Each day, whether the cell is occupied or vacant changes according to the following rules:
 
-Find the minimum element.
+If a cell has two adjacent neighbors that are both occupied or both vacant, then the cell becomes occupied.
+Otherwise, it becomes vacant.
+(Note that because the prison is a row, the first and the last cells in the row can't have two adjacent neighbors.)
 
-You may assume no duplicate exists in the array.
+We describe the current state of the prison in the following way: cells[i] == 1 if the i-th cell is occupied, else cells[i] == 0.
+
+Given the initial state of the prison, return the state of the prison after N days (and N such changes described above.)
 
 Example 1:
-Input: [3,4,5,1,2] 
-Output: 1
+
+Input: cells = [0,1,0,1,1,0,0,1], N = 7
+Output: [0,0,1,1,0,0,0,0]
+
+Explanation: 
+
+The following table summarizes the state of the prison on each day:
+
+Day 0: [0, 1, 0, 1, 1, 0, 0, 1]
+Day 1: [0, 1, 1, 0, 0, 0, 0, 0]
+Day 2: [0, 0, 0, 0, 1, 1, 1, 0]
+Day 3: [0, 1, 1, 0, 0, 1, 0, 0]
+Day 4: [0, 0, 0, 0, 0, 1, 0, 0]
+Day 5: [0, 1, 1, 1, 0, 1, 0, 0]
+Day 6: [0, 0, 1, 0, 1, 1, 0, 0]
+Day 7: [0, 0, 1, 1, 0, 0, 0, 0]
 
 Example 2:
-Input: [4,5,6,7,0,1,2]
-Output: 0
+
+Input: cells = [1,0,0,1,0,0,1,0], N = 1000000000
+Output: [0,0,1,1,1,1,1,0]
+ 
+Note:
+
+cells.length == 8
+cells[i] is in {0, 1}
+1 <= N <= 10^9
+
 */
 
-class rotated_min
-{	
+class prison_cells
+{
+	static int to_hashkey( const std::vector<int>& cells )
+	{
+		auto state_key = 0x0;
+
+		for( auto cell : cells )
+		{
+			state_key <<= 1;
+			state_key = ( state_key | cell );
+		}
+
+		return state_key;
+	}
+	
+	static std::vector<int> next_day( const std::vector<int>& cells )
+	{
+		const auto num_cells = cells.size();
+
+		auto new_cells = std::vector<int>( num_cells );
+		
+		for( auto index = 0; index < num_cells; ++index )
+		{
+			const auto prev = index > 0 ? cells[ index - 1 ] : -1;
+			const auto next = index < num_cells - 1 ? cells[ index + 1 ] : -1;
+
+			new_cells[ index ] = prev == 1 && next == 1 || prev == 0 && next == 0 ? 1 : 0;
+		}
+
+		return new_cells;
+	}
+	
 public:
 
-	static int findMin( const std::vector<int>& numbers )
+	static std::vector<int> prisonAfterNDays( const std::vector<int>& cells, 
+		const int days )
 	{
-		if( numbers.empty() ) return 0;
+		const auto num_cells = cells.size();
+		auto current = cells;
+
+		std::map<int, int> cell_map;
+		auto is_memory = false;
+		auto day = days;
 		
-		int start = 0, stop = numbers.size() - 1;
-		
-		while( numbers.at( start ) > numbers.at( stop ) )
+		while( day > 0 )
 		{
-			const auto mid = ( start + stop ) / 2;
-			
- 			if( numbers.at( start ) > numbers.at( mid ) )
+			if( !is_memory )
 			{
-				stop = mid;
+				auto key = to_hashkey( current );
+
+				if( cell_map.find( key ) != cell_map.end() )
+				{
+					day %= cell_map[ key ] - day;
+					is_memory = true;
+				}
+				else
+				{
+					cell_map[ key ] = day;
+				}
 			}
-			else
+
+			if( day > 0 )
 			{
-				start = mid + 1;
+				day -= 1;
+				current = next_day( current );
 			}
 		}
 
-		return numbers.at( start );
+		return current;
 	}
 };
 
@@ -52,7 +122,7 @@ auto main() -> int
 {
 	const auto input1 = std::vector<int>
 	{
-		3, 4, 5, 1, 2
+		0, 1, 0, 1, 1, 0, 0, 1
 	};
 
 	const auto input2 = std::vector<int>
@@ -65,7 +135,7 @@ auto main() -> int
 		1, 2
 	};
 	
-	const auto result = rotated_min::findMin( input3 );
+	const auto result = prison_cells::prisonAfterNDays( input1, 7 );
 	
 	return 0;
 }

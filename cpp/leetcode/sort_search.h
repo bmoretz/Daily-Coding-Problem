@@ -36,7 +36,7 @@ namespace leetcode::sort_search
 		{
 			if( numbers.empty() ) return 0;
 
-			int start = 0, stop = numbers.size() - 1;
+			auto start = 0ULL, stop = numbers.size() - 1;
 
 			while( numbers.at( start ) > numbers.at( stop ) )
 			{

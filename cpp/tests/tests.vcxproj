@@ -78,7 +78,8 @@
     <ClCompile Include="lc_tree.cpp" />
     <ClCompile Include="linkedlist_tests.cpp" />
     <ClCompile Include="math_tests.cpp" />
-    <ClCompile Include="sort_search.cpp" />
+    <ClCompile Include="lc_simulation.cpp" />
+    <ClCompile Include="lc_sort_search.cpp" />
     <ClCompile Include="stack_queue_tests.cpp" />
     <ClCompile Include="str_tests.cpp" />
     <ClCompile Include="pch.cpp">
