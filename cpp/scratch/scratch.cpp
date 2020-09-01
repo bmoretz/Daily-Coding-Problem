@@ -1,71 +1,50 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/*628. Maximum Product of Three Numbers.
+/* 153. Find Minimum in Rotated Sorted Array.
 
-Given an integer array, find three numbers whose product is maximum and output the maximum product.
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+
+(i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).
+
+Find the minimum element.
+
+You may assume no duplicate exists in the array.
 
 Example 1:
+Input: [3,4,5,1,2] 
+Output: 1
 
-Input: [1,2,3]
-Output: 6
- 
 Example 2:
-
-Input: [1,2,3,4]
-Output: 24
-
-Note:
-
-The length of the given array will be in range [3,104] and all elements are in the range [-1000, 1000].
-Multiplication of any three numbers in the input won't exceed the range of 32-bit signed integer.
+Input: [4,5,6,7,0,1,2]
+Output: 0
 */
 
-class max_prod
-{
+class rotated_min
+{	
 public:
 
-	static int maximumProduct( const std::vector<int>& numbers,
-		const int k = 3)
+	static int findMin( const std::vector<int>& numbers )
 	{
 		if( numbers.empty() ) return 0;
-
-		// two heaps, one min / one max
-		auto max = std::priority_queue<int, std::vector<int>, std::less<>>();
-		auto min = std::priority_queue<int, std::vector<int>, std::greater<>>();
-
-		// put all the numbers in the heap
-		for( auto num : numbers )
-		{
-			max.push( num );
-			min.push( num );
-		}
-
-		// the solution must contain the largest number,
-		// so include it in both.
-		const auto maximum = max.top();
 		
-		auto max_result = maximum;
-		auto min_result = maximum;
-
-		max.pop();
-
-		// max result = largest number * the two next largest numbers.
-		for( auto index = 0; index < k - 1; ++index )
+		int start = 0, stop = numbers.size() - 1;
+		
+		while( numbers.at( start ) > numbers.at( stop ) )
 		{
-			max_result *= max.top();
-			max.pop();
+			const auto mid = ( start + stop ) / 2;
+			
+ 			if( numbers.at( start ) > numbers.at( mid ) )
+			{
+				stop = mid;
+			}
+			else
+			{
+				start = mid + 1;
+			}
 		}
 
-		// min result = max number * the two smallest (negative) numbers.
-		for( auto index = 0; index < k - 1; ++index )
-		{
-			min_result *= min.top();
-			min.pop();
-		}
-
-		// one of these must be the solution.
-		return max_result > min_result ? max_result : min_result;
+		return numbers.at( start );
 	}
 };
 
@@ -73,15 +52,20 @@ auto main() -> int
 {
 	const auto input1 = std::vector<int>
 	{
-		1, 2, 3
+		3, 4, 5, 1, 2
 	};
 
 	const auto input2 = std::vector<int>
 	{
-		1, 2, 3, 4
+		4, 5, 6, 7, 0, 1, 2
+	};
+
+	const auto input3 = std::vector<int>
+	{
+		1, 2
 	};
 	
-	const auto result = max_prod::maximumProduct( input2, 4 );
+	const auto result = rotated_min::findMin( input3 );
 	
 	return 0;
 }

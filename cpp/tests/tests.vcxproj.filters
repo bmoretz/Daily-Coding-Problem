@@ -122,6 +122,9 @@
     <ClCompile Include="lc_graph.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="sort_search.cpp">
+      <Filter>leetcode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
