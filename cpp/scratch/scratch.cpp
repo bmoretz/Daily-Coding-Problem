@@ -1,117 +1,63 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 819. Most Common Word.
+/* 343. Integer Break.
 
-Given a paragraph and a list of banned words, return the most frequent word that is not in
-the list of banned words.  It is guaranteed there is at least one word that isn't banned,
-and that the answer is unique.
+Given a positive integer n, break it into the sum of at least two positive integers
+and maximize the product of those integers. Return the maximum product you can get.
 
-Words in the list of banned words are given in lowercase, and free of punctuation.  Words in the
-paragraph are not case sensitive.  The answer is in lowercase.
+Example 1:
 
-Example:
+Input: 2
+Output: 1
+Explanation: 2 = 1 + 1, 1 × 1 = 1.
+Example 2:
 
-Input: 
-paragraph = "Bob hit a ball, the hit BALL flew far after it was hit."
-banned = ["hit"]
-Output: "ball"
-
-Explanation: 
-
-"hit" occurs 3 times, but it is a banned word.
-"ball" occurs twice (and no other word does), so it is the most frequent non-banned word in the paragraph. 
-Note that words in the paragraph are not case sensitive,
-that punctuation is ignored (even if adjacent to words, such as "ball,"), 
-and that "hit" isn't the answer even though it occurs more because it is banned.
- 
-Note:
-
-1 <= paragraph.length <= 1000.
-0 <= banned.length <= 100.
-1 <= banned[i].length <= 10.
-The answer is unique, and written in lowercase (even if its occurrences in paragraph may have uppercase symbols, and even if it is a proper noun.)
-paragraph only consists of letters, spaces, or the punctuation symbols !?',;.
-There are no hyphens or hyphenated words.
-Words only consist of letters, never apostrophes or other punctuation symbols.
-
+Input: 10
+Output: 36
+Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
 */
 
-class most_common_word
+class integer_break
 {
-	static std::vector<std::string> get_tokens( const std::string& data )
-	{
-		auto cleaned = std::string{ };
-		cleaned.resize( data.size() );
-		
-		std::transform( data.begin(), data.end(), cleaned.begin(), 
-			[]( const auto chr )
-		{
-			if( ::ispunct( chr ) ) return ' ';
-			
-			return static_cast<char>( ::tolower( chr ) );
-		});
-		
-		std::istringstream iss( cleaned );
-
-		std::vector<std::string> tokens( ( std::istream_iterator<std::string>( iss ) ),
-			std::istream_iterator<std::string>() );
-
-		return tokens;
-	}
-	
 public:
 
-	static std::string get_most_common( const std::string& paragraph,
-		const std::vector<std::string>& banned )
+	static int break_int( const int n )
 	{
-		std::set<std::string> exclude( banned.begin(), banned.end() );
+		if( n <= 2 ) return 1;
 
-		// get tokens
-		auto tokens = get_tokens( paragraph );
+		std::vector<int> memo( n + 1, 0 );
 
-		auto map = std::unordered_map<std::string, int>();
+		memo[ 1 ] = 0;
+		memo[ 2 ] = 1;
 
-		std::pair<int, std::string> result = { -1, "" };
-
-		for( auto& word : tokens )
-		{	
-			// skip banned
-			if( exclude.find( word ) != exclude.end() )
-				continue;
-
-			++map[ word ];
-
-			if( map[ word ] > result.first )
+		for( auto i = 3; i <= n; ++i )
+		{
+			for( auto j = 1; j < i; ++j )
 			{
-				result = { map[ word ], word };
+				const auto s1 = j * ( i - j );
+				const auto s2 = j * memo[ i - j ];
+				const auto sln = std::max( s1, s2 );
+				
+				memo[ i ] = std::max( memo[ i ], sln );
 			}
 		}
 
-		return result.second;
+		return memo[ n ];
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::pair<std::string, std::vector<std::string>>
-	{
-		"Bob hit a ball, the hit BALL flew far after it was hit.",
-		std::vector<std::string>{ "hit" }
-	};
-	
-	const auto input2 = std::pair<std::string, std::vector<std::string>>
-	{
-		"a.",
-		std::vector<std::string>{ }
-	};
+	const auto input1 = 10;
+	const auto input2 = 36;
 
 	const auto input3 = std::vector<int>
 	{
 		1, 2
 	};
 	
-	const auto result = most_common_word::get_most_common( input2.first, input2.second );
+	const auto result = integer_break::break_int( input1 );
 	
 	return 0;
 }

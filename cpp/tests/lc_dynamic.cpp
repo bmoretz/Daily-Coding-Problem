@@ -155,4 +155,57 @@ namespace leetcode::dynamic::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class break_integer_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( break_integer_tests, case1 )
+	{
+		const auto input = 10;
+
+		const auto actual = integer_break::break_int( 5 );
+		const auto expected = 6;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( break_integer_tests, case2 )
+	{
+		const auto input = 10;
+
+		const auto actual = integer_break::break_int( 10 );
+		const auto expected = 36;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( break_integer_tests, case3 )
+	{
+		const auto input = 10;
+
+		const auto actual = integer_break::break_int( 15 );
+		const auto expected = 243;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( break_integer_tests, case4 )
+	{
+		const auto input = 10;
+
+		const auto actual = integer_break::break_int( 20 );
+		const auto expected = 1458;
+
+		EXPECT_EQ( actual, expected );
+	}
 }
