@@ -1,102 +1,129 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 419. Battleships in a Board.
+/* 930. Binary Subarrays With Sum.
 
-Given an 2D board, count how many battleships are in it. The battleships are represented with 'X's, empty slots are represented
-with '.'s. You may assume the following rules:
+In an array A of 0s and 1s, how many non-empty subarrays have sum S?
 
-You receive a valid board, made of only battleships or empty slots.
+Example 1:
 
-Battleships can only be placed horizontally or vertically. In other words, they can only be made of the shape 1xN (1 row, N columns)
-or Nx1 (N rows, 1 column), where N can be of any size.
+Input: A = [1,0,1,0,1], S = 2
+Output: 4
+Explanation: 
 
-At least one horizontal or vertical cell separates between two battleships - there are no adjacent battleships.
+The 4 subarrays are bolded below:
+[1,0,1,0,1]
+[1,0,1,0,1]
+[1,0,1,0,1]
+[1,0,1,0,1]
 
-Example:
-X..X
-...X
-...X
+Note:
 
-In the above board there are 2 battleships.
-
-Invalid Example:
-...X
-XXXX
-...X
-
-This is an invalid board that you will not receive - as battleships will always have a cell separating between them.
-Follow up:
-Could you do it in one-pass, using only O(1) extra memory and without modifying the value of the board?
+A.length <= 30000
+0 <= S <= A.length
+A[i] is either 0 or 1.
 */
 
-class count_battleships
+class binary_strings_sum
 {
-	static char SHIP_MARKER;
-	
-	static bool is_battleship( const std::vector<std::vector<char>>& board,
-		const int row, const int col,
-		std::vector<std::vector<bool>>& visited )
-	{
-		const int num_rows = board.size();
-		const int num_cols = board[ 0 ].size();
-
-		if( row < 0 || row >= num_rows ) return false;
-		if( col < 0 || col >= num_cols ) return false;
-		if( visited[ row ][ col ] || board[ row ][ col ] != SHIP_MARKER ) return false;
-
-		visited[ row ][ col ] = true;
-
-		is_battleship( board, row - 1, col, visited );
-		is_battleship( board, row + 1, col, visited );
-		is_battleship( board, row, col - 1, visited );
-		is_battleship( board, row, col + 1, visited );
-
-		return true;
-	}
-	
 public:
 
-	static int countBattleships( const std::vector<std::vector<char>>& board )
+	/// <summary>
+	/// sliding window solution
+	/// </summary>
+	/// <complexity>
+	///		<runtime>O(n)</runtime>
+	///		<space>O(1)</runtime>
+	/// </complexity>
+	/// <param name="arr"></param>
+	/// <param name="target_sum"></param>
+	/// <returns></returns>
+	static int num_subarrays_with_sum2( const std::vector<int>& arr,
+		int target_sum )
 	{
-		if( board.empty() ) return 0;
-		if( board[ 0 ].empty() ) return 0;
+		auto result = 0;
 
-		const auto num_rows = board.size();
-		const auto num_cols = board[ 0 ].size();
-
-		auto visited = std::vector<std::vector<bool>>( num_rows, 
-			std::vector( num_cols, false ) );
-
-		auto num_ships = 0;
-		
-		for( auto row = 0; row < num_rows; ++row )
+		for( auto index = 0, left = 0, prefix = 0; index < arr.size(); ++index )
 		{
-			for( auto col = 0; col < num_cols; ++col )
+			if( arr[index] == 1 )
 			{
-				if( is_battleship( board, row, col, visited ) )
+				--target_sum;
+			}
+
+			while( left < index && target_sum < 0 )
+			{
+				if( arr[left++] == 1 )
 				{
-					++num_ships;
+					prefix = 0;
+					target_sum++;
 				}
+			}
+
+			while( left < index && arr[left] == 0 )
+			{
+				left++;
+				prefix++;
+			}
+
+			if( target_sum == 0 )
+			{
+				result += prefix + 1;
 			}
 		}
 
-		return num_ships;
+		return result;
+	}
+	
+	/// <summary>
+	/// prefix sum solution
+	/// </summary>
+	/// <param name="arr">array of 0/1's</param>
+	/// <param name="target_sum">the target</param>
+	/// <complexity>
+	///		<runtime>O(n)</runtime>
+	///		<space>O(N)</runtime>
+	/// </complexity>
+	/// <returns>number of ways to reach the target</returns>
+	static int num_subarrays_with_sum1( const std::vector<int>& arr, const int target_sum )
+	{
+		auto result = 0;
+
+		std::unordered_map<int, int> counts = { { 0, 1 } };
+		auto cumulative = 0; // keep a running total for all the values
+		
+		for( auto num : arr )
+		{
+			cumulative += num; // increment cumulative
+
+			// the result at each step will be the current running total - the target sum
+			result += counts[ cumulative - target_sum ];
+
+			// update the ways to reach the current total
+			++counts[ cumulative ];
+		}
+		
+		return result;
 	}
 };
 
-char count_battleships::SHIP_MARKER = 'X';
-
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<char>>
+	const auto input1 = std::vector<int>
 	{
-		{ 'X', '.', '.', 'X' },
-		{ '.', '.', '.', 'X' },
-		{ '.', '.', '.', 'X' }
+		1, 0, 1, 0, 1
+	};
+
+	const auto input2 = std::vector<int>
+	{
+		0, 0, 0, 0, 0
+	};
+
+	const auto input3 = std::vector<int>
+	{
+		1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0
 	};
 	
-	const auto result = count_battleships::countBattleships( input1 );
+	const auto result = binary_strings_sum::num_subarrays_with_sum2( input1, 2 );
 	
 	return 0;
 }

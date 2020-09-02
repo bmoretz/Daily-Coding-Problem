@@ -675,4 +675,95 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class binary_string_sum_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( binary_string_sum_tests, ps_case1 )
+    {
+        const auto input1 = std::vector<int>
+        {
+            1, 0, 1, 0, 1
+        };
+
+        const auto actual = binary_strings_sum::num_subarrays_with_sum1( input1, 2 );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( binary_string_sum_tests, ps_case2 )
+    {
+        const auto input1 = std::vector<int>
+        {
+            0, 0, 0, 0, 0
+        };
+
+        const auto actual = binary_strings_sum::num_subarrays_with_sum1( input1, 0 );
+        const auto expected = 15;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( binary_string_sum_tests, ps_case3 )
+    {
+        const auto input1 = std::vector<int>
+        {
+            1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0
+        };
+
+        const auto actual = binary_strings_sum::num_subarrays_with_sum1( input1, 2 );
+        const auto expected = 17;
+
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( binary_string_sum_tests, sw_case1 )
+    {
+        const auto input1 = std::vector<int>
+        {
+            1, 0, 1, 0, 1
+        };
+    	
+        const auto actual = binary_strings_sum::num_subarrays_with_sum2( input1, 2 );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( binary_string_sum_tests, sw_case2 )
+    {
+        const auto input1 = std::vector<int>
+        {
+            0, 0, 0, 0, 0
+        };
+
+        const auto actual = binary_strings_sum::num_subarrays_with_sum2( input1, 0 );
+        const auto expected = 15;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( binary_string_sum_tests, sw_case3 )
+    {
+        const auto input1 = std::vector<int>
+        {
+            1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0
+        };
+
+        const auto actual = binary_strings_sum::num_subarrays_with_sum2( input1, 2 );
+        const auto expected = 17;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
