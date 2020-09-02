@@ -444,4 +444,56 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class binary_tree_distance_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( binary_tree_distance_tests, case1 )
+    {
+        const auto input1 = std::vector<std::string>{ "3", "5", "1", "6", "2", "0" , "8", "", "", "7", "4" };
+
+        const auto root = build_tree_in_order( input1 );
+        const auto node = root->left.get();
+
+        const auto actual = binary_tree_distance::distanceK( root.get(), node, 2 );
+        const auto expected = std::vector<int>{ 7, 4, 1 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( binary_tree_distance_tests, case2 )
+    {
+        const auto input1 = std::vector<std::string>{ "3", "5", "1", "6", "2", "0" , "8", "", "", "7", "4" };
+
+        const auto root = build_tree_in_order( input1 );
+        const auto node = root->left.get();
+
+        const auto actual = binary_tree_distance::distanceK( root.get(), node, 1 );
+        const auto expected = std::vector<int>{ 6, 2, 3 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( binary_tree_distance_tests, case3 )
+    {
+        const auto input1 = std::vector<std::string>{ "3", "5", "1", "6", "2", "0" , "8", "", "", "7", "4" };
+
+        const auto root = build_tree_in_order( input1 );
+        const auto node = root->left.get();
+
+        const auto actual = binary_tree_distance::distanceK( root.get(), node, 3 );
+        const auto expected = std::vector<int>{ 0, 8 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

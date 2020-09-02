@@ -1,88 +1,116 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 94. Binary Tree Inorder Traversal.
+/* 863. All Nodes Distance K in Binary Tree.
 
-Given a binary tree, return the in-order traversal of its nodes' values.
+We are given a binary tree (with root node root), a target node, and an integer value K.
 
-Example:
+Return a list of the values of all nodes that have a distance K from the target node.  The answer can be returned in any order.
 
-Input: [1,null,2,3]
-   1
-    \
-     2
-    /
-   3
+Example 1:
 
-Output: [1,3,2]
-Follow up: Recursive solution is trivial, could you do it iteratively?
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, K = 2
+
+Output: [7,4,1]
+
+Explanation: 
+The nodes that are a distance 2 from the target node (with value 5)
+have values 7, 4, and 1.
+
+Note that the inputs "root" and "target" are actually TreeNodes.
+The descriptions of the inputs above are just serializations of these objects.
+
+Note:
+
+The given tree is non-empty.
+Each node in the tree has unique values 0 <= node.val <= 500.
+The target node is a node in the tree.
+0 <= K <= 1000.
 */
 
 #include "../leetcode/tree.h"
 
 using namespace leetcode::tree;
 
-class binary_tree_traversal
+class binary_tree_distance
 {
-	static void traverse_inorder( tree_node* root, std::vector<int>& result )
+	static void get_hierarchy( tree_node* root, 
+		std::unordered_map<tree_node*, tree_node*>& map,
+		int level = 0 )
 	{
 		if( !root ) return;
 
-		traverse_inorder( root->left.get(), result );
+		if( root->left )
+		{
+			map[ root->left.get() ] = root;
+			get_hierarchy( root->left.get(), map );
+		}
+		
+		if( root->right )
+		{
+			map[ root->right.get() ] = root;
+			get_hierarchy( root->right.get(), map );
+		}
+	}
 
-		result.push_back( root->val );
+	static void search( tree_node* node, const int k,
+		const std::unordered_map<tree_node*, tree_node*>& nodes,
+		std::set<tree_node*>& visited,
+		std::vector<int>& result )
+	{
+		if( !node ) return;
+		if( visited.find( node ) != visited.end() ) return;
 
-		traverse_inorder( root->right.get(), result );
+		visited.insert( node );
+
+		if( k == 0 )
+		{
+			result.push_back( node->val );
+
+			return;
+		}
+
+		if( node->left )
+			search( node->left.get(), k - 1, nodes, visited, result );
+
+		if( node->right )
+			search( node->right.get(), k - 1, nodes, visited, result );
+
+		if( nodes.find( node ) != nodes.end() )
+		{
+			const auto parent = nodes.at( node );
+
+			if( parent )
+				search( parent, k - 1, nodes, visited, result );
+		}
 	}
 	
 public:
 
-	static std::vector<int> inorder_traversal1( tree_node* root )
+	static std::vector<int> distanceK( tree_node* root,
+		tree_node* target, const int k )
 	{
-		std::vector<int> result;
-
-		traverse_inorder( root, result );
+		std::unordered_map<tree_node*, tree_node*> tree_map;
 		
-		return result;
-	}
+		get_hierarchy( root, tree_map );
 
-	static std::vector<int> inorder_traversal2( tree_node* root )
-	{
+		std::set<tree_node*> visited;
 		std::vector<int> result;
 		
-		auto stack = std::stack<tree_node*>();
-		auto node = root;
-
-		stack.push( node );
+		search( target, k, tree_map, visited, result );
 		
-		while( node || !stack.empty() )
-		{
-			while( node )
-			{
-				stack.push( node );
-				node = node->left.get();
-			}
-
-			node = stack.top();
-			
-			result.push_back( node->val );
-
-			stack.pop();
-
-			node = node->right.get();
-		}
-
 		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::string>{ "1", "", "2", "3" };
-	
-	const auto root = build_tree_in_order( input1 );
+	const auto input1 = std::vector<std::string>{ "3", "5", "1", "6", "2", "0" , "8", "", "", "7", "4" };
 
-	const auto result = binary_tree_traversal::inorder_traversal2( root.get() );
+	const auto root = build_tree_in_order( input1 );
+	const auto node = root->left.get();
+	
+	const auto result = binary_tree_distance::distanceK( root.get(), node, 2 );
 	
 	return 0;
 }
