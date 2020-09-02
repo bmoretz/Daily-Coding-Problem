@@ -409,4 +409,39 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class inorder_traversal_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( inorder_traversal_tests, case1 )
+    {
+        const auto input = std::vector<std::string>{ "1", "", "2", "3" };
+        const auto root = build_tree_in_order( input );
+    	
+        const auto actual = binary_tree_traversal::inorder_traversal1( root.get() );
+        const auto expected = std::vector<int>{ 1, 3, 2 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( inorder_traversal_tests, case2 )
+    {
+        const auto input = std::vector<std::string>{ "1", "", "2", "3" };
+        const auto root = build_tree_in_order( input );
+
+        const auto actual = binary_tree_traversal::inorder_traversal2( root.get() );
+        const auto expected = std::vector<int>{ 1, 3, 2 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

@@ -1,129 +1,88 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 930. Binary Subarrays With Sum.
+/* 94. Binary Tree Inorder Traversal.
 
-In an array A of 0s and 1s, how many non-empty subarrays have sum S?
+Given a binary tree, return the in-order traversal of its nodes' values.
 
-Example 1:
+Example:
 
-Input: A = [1,0,1,0,1], S = 2
-Output: 4
-Explanation: 
+Input: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
 
-The 4 subarrays are bolded below:
-[1,0,1,0,1]
-[1,0,1,0,1]
-[1,0,1,0,1]
-[1,0,1,0,1]
-
-Note:
-
-A.length <= 30000
-0 <= S <= A.length
-A[i] is either 0 or 1.
+Output: [1,3,2]
+Follow up: Recursive solution is trivial, could you do it iteratively?
 */
 
-class binary_strings_sum
+#include "../leetcode/tree.h"
+
+using namespace leetcode::tree;
+
+class binary_tree_traversal
 {
-public:
-
-	/// <summary>
-	/// sliding window solution
-	/// </summary>
-	/// <complexity>
-	///		<runtime>O(n)</runtime>
-	///		<space>O(1)</runtime>
-	/// </complexity>
-	/// <param name="arr"></param>
-	/// <param name="target_sum"></param>
-	/// <returns></returns>
-	static int num_subarrays_with_sum2( const std::vector<int>& arr,
-		int target_sum )
+	static void traverse_inorder( tree_node* root, std::vector<int>& result )
 	{
-		auto result = 0;
+		if( !root ) return;
 
-		for( auto index = 0, left = 0, prefix = 0; index < arr.size(); ++index )
-		{
-			if( arr[index] == 1 )
-			{
-				--target_sum;
-			}
+		traverse_inorder( root->left.get(), result );
 
-			while( left < index && target_sum < 0 )
-			{
-				if( arr[left++] == 1 )
-				{
-					prefix = 0;
-					target_sum++;
-				}
-			}
+		result.push_back( root->val );
 
-			while( left < index && arr[left] == 0 )
-			{
-				left++;
-				prefix++;
-			}
-
-			if( target_sum == 0 )
-			{
-				result += prefix + 1;
-			}
-		}
-
-		return result;
+		traverse_inorder( root->right.get(), result );
 	}
 	
-	/// <summary>
-	/// prefix sum solution
-	/// </summary>
-	/// <param name="arr">array of 0/1's</param>
-	/// <param name="target_sum">the target</param>
-	/// <complexity>
-	///		<runtime>O(n)</runtime>
-	///		<space>O(N)</runtime>
-	/// </complexity>
-	/// <returns>number of ways to reach the target</returns>
-	static int num_subarrays_with_sum1( const std::vector<int>& arr, const int target_sum )
+public:
+
+	static std::vector<int> inorder_traversal1( tree_node* root )
 	{
-		auto result = 0;
+		std::vector<int> result;
 
-		std::unordered_map<int, int> counts = { { 0, 1 } };
-		auto cumulative = 0; // keep a running total for all the values
+		traverse_inorder( root, result );
 		
-		for( auto num : arr )
+		return result;
+	}
+
+	static std::vector<int> inorder_traversal2( tree_node* root )
+	{
+		std::vector<int> result;
+		
+		auto stack = std::stack<tree_node*>();
+		auto node = root;
+
+		stack.push( node );
+		
+		while( node || !stack.empty() )
 		{
-			cumulative += num; // increment cumulative
+			while( node )
+			{
+				stack.push( node );
+				node = node->left.get();
+			}
 
-			// the result at each step will be the current running total - the target sum
-			result += counts[ cumulative - target_sum ];
+			node = stack.top();
+			
+			result.push_back( node->val );
 
-			// update the ways to reach the current total
-			++counts[ cumulative ];
+			stack.pop();
+
+			node = node->right.get();
 		}
-		
+
 		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<int>
-	{
-		1, 0, 1, 0, 1
-	};
-
-	const auto input2 = std::vector<int>
-	{
-		0, 0, 0, 0, 0
-	};
-
-	const auto input3 = std::vector<int>
-	{
-		1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0
-	};
+	const auto input1 = std::vector<std::string>{ "1", "", "2", "3" };
 	
-	const auto result = binary_strings_sum::num_subarrays_with_sum2( input1, 2 );
+	const auto root = build_tree_in_order( input1 );
+
+	const auto result = binary_tree_traversal::inorder_traversal2( root.get() );
 	
 	return 0;
 }

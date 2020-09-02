@@ -605,9 +605,9 @@ namespace leetcode::arr
 		///		<runtime>O(n)</runtime>
 		///		<space>O(1)</runtime>
 		/// </complexity>
-		/// <param name="arr"></param>
-		/// <param name="target_sum"></param>
-		/// <returns></returns>
+		/// <param name="arr">the array</param>
+		/// <param name="target_sum">target sum</param>
+		/// <returns>number of ways to reach target with subarrays</returns>
 		static int num_subarrays_with_sum2( const std::vector<int>& arr,
 			int target_sum )
 		{
