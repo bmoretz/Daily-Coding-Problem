@@ -500,4 +500,65 @@ namespace leetcode::matrix::tests
     	
         EXPECT_EQ( actual, expected );
     }
+
+    class count_battleships_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( count_battleships_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { 'X', '.', '.', 'X' },
+            { '.', '.', '.', 'X' },
+            { '.', '.', '.', 'X' }
+        };
+
+        const auto actual = count_battleships::countBattleships( input );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( count_battleships_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { 'X', '.', '.', 'X' },
+            { '.', '.', '.', 'X' },
+            { 'X', 'X', '.', 'X' },
+            { '.', '.', '.', 'X' },
+        };
+
+        const auto actual = count_battleships::countBattleships( input );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( count_battleships_tests, case3 )
+    {
+        const auto input = std::vector<std::vector<char>>
+        {
+            { 'X', '.', '.', 'X' },
+            { '.', '.', '.', 'X' },
+            { 'X', 'X', '.', '.' },
+            { '.', '.', '.', 'X' },
+            { 'X', 'X', '.', 'X' },
+        };
+
+        const auto actual = count_battleships::countBattleships( input );
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

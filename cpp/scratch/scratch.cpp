@@ -1,63 +1,102 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 343. Integer Break.
+/* 419. Battleships in a Board.
 
-Given a positive integer n, break it into the sum of at least two positive integers
-and maximize the product of those integers. Return the maximum product you can get.
+Given an 2D board, count how many battleships are in it. The battleships are represented with 'X's, empty slots are represented
+with '.'s. You may assume the following rules:
 
-Example 1:
+You receive a valid board, made of only battleships or empty slots.
 
-Input: 2
-Output: 1
-Explanation: 2 = 1 + 1, 1 × 1 = 1.
-Example 2:
+Battleships can only be placed horizontally or vertically. In other words, they can only be made of the shape 1xN (1 row, N columns)
+or Nx1 (N rows, 1 column), where N can be of any size.
 
-Input: 10
-Output: 36
-Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
+At least one horizontal or vertical cell separates between two battleships - there are no adjacent battleships.
+
+Example:
+X..X
+...X
+...X
+
+In the above board there are 2 battleships.
+
+Invalid Example:
+...X
+XXXX
+...X
+
+This is an invalid board that you will not receive - as battleships will always have a cell separating between them.
+Follow up:
+Could you do it in one-pass, using only O(1) extra memory and without modifying the value of the board?
 */
 
-class integer_break
+class count_battleships
 {
+	static char SHIP_MARKER;
+	
+	static bool is_battleship( const std::vector<std::vector<char>>& board,
+		const int row, const int col,
+		std::vector<std::vector<bool>>& visited )
+	{
+		const int num_rows = board.size();
+		const int num_cols = board[ 0 ].size();
+
+		if( row < 0 || row >= num_rows ) return false;
+		if( col < 0 || col >= num_cols ) return false;
+		if( visited[ row ][ col ] || board[ row ][ col ] != SHIP_MARKER ) return false;
+
+		visited[ row ][ col ] = true;
+
+		is_battleship( board, row - 1, col, visited );
+		is_battleship( board, row + 1, col, visited );
+		is_battleship( board, row, col - 1, visited );
+		is_battleship( board, row, col + 1, visited );
+
+		return true;
+	}
+	
 public:
 
-	static int break_int( const int n )
+	static int countBattleships( const std::vector<std::vector<char>>& board )
 	{
-		if( n <= 2 ) return 1;
+		if( board.empty() ) return 0;
+		if( board[ 0 ].empty() ) return 0;
 
-		std::vector<int> memo( n + 1, 0 );
+		const auto num_rows = board.size();
+		const auto num_cols = board[ 0 ].size();
 
-		memo[ 1 ] = 0;
-		memo[ 2 ] = 1;
+		auto visited = std::vector<std::vector<bool>>( num_rows, 
+			std::vector( num_cols, false ) );
 
-		for( auto i = 3; i <= n; ++i )
+		auto num_ships = 0;
+		
+		for( auto row = 0; row < num_rows; ++row )
 		{
-			for( auto j = 1; j < i; ++j )
+			for( auto col = 0; col < num_cols; ++col )
 			{
-				const auto s1 = j * ( i - j );
-				const auto s2 = j * memo[ i - j ];
-				const auto sln = std::max( s1, s2 );
-				
-				memo[ i ] = std::max( memo[ i ], sln );
+				if( is_battleship( board, row, col, visited ) )
+				{
+					++num_ships;
+				}
 			}
 		}
 
-		return memo[ n ];
+		return num_ships;
 	}
 };
 
+char count_battleships::SHIP_MARKER = 'X';
+
 auto main() -> int
 {
-	const auto input1 = 10;
-	const auto input2 = 36;
-
-	const auto input3 = std::vector<int>
+	const auto input1 = std::vector<std::vector<char>>
 	{
-		1, 2
+		{ 'X', '.', '.', 'X' },
+		{ '.', '.', '.', 'X' },
+		{ '.', '.', '.', 'X' }
 	};
 	
-	const auto result = integer_break::break_int( input1 );
+	const auto result = count_battleships::countBattleships( input1 );
 	
 	return 0;
 }
