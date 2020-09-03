@@ -479,7 +479,7 @@ namespace leetcode::heap::tests
             { -2, 2 }
         };
     	
-        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto actual = closest_to_origin::k_closest( input, 1 );
         const auto expected = std::vector<std::vector<int>>
     	{
             { -2, 2 }
@@ -497,7 +497,7 @@ namespace leetcode::heap::tests
 	        { -2, 4 }
         };
 
-        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto actual = closest_to_origin::k_closest( input, 1 );
         const auto expected = std::vector<std::vector<int>>
     	{
             { 3, 3 }
@@ -515,7 +515,7 @@ namespace leetcode::heap::tests
 	        { 4, 6 }
         };
 
-        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto actual = closest_to_origin::k_closest( input, 1 );
         const auto expected = std::vector<std::vector<int>>
     	{
             { -5, 4 }
@@ -535,7 +535,7 @@ namespace leetcode::heap::tests
 	        { -5, 2 }
         };
 
-        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto actual = closest_to_origin::k_closest( input, 1 );
         const auto expected = std::vector<std::vector<int>>
     	{
             { -5, 2 }

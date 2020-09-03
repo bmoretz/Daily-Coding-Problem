@@ -1,94 +1,73 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 973. K Closest Points to Origin.
+/* 915. Partition Array into Disjoint Intervals.
 
-We have a list of points on the plane.  Find the K closest points to the origin (0, 0).
+Given an array A, partition it into two (contiguous) subarrays left and right so that:
 
-(Here, the distance between two points on a plane is the Euclidean distance.)
-
-You may return the answer in any order.  The answer is guaranteed to be unique (except for the order that it is in.)
+Every element in left is less than or equal to every element in right.
+left and right are non-empty.
+left has the smallest possible size.
+Return the length of left after such a partitioning.  It is guaranteed that such a partitioning exists.
 
 Example 1:
 
-Input: points = [[1,3],[-2,2]], K = 1
-Output: [[-2,2]]
-Explanation: 
-The distance between (1, 3) and the origin is sqrt(10).
-The distance between (-2, 2) and the origin is sqrt(8).
-Since sqrt(8) < sqrt(10), (-2, 2) is closer to the origin.
-We only want the closest K = 1 points from the origin, so the answer is just [[-2,2]].
-
+Input: [5,0,3,8,6]
+Output: 3
+Explanation: left = [5,0,3], right = [8,6]
 Example 2:
 
-Input: points = [[3,3],[5,-1],[-2,4]], K = 2
-Output: [[3,3],[-2,4]]
-(The answer [[-2,4],[3,3]] would also be accepted.)
- 
+Input: [1,1,1,0,6,12]
+Output: 4
+Explanation: left = [1,1,1,0], right = [6,12] 
 
 Note:
 
-1 <= K <= points.length <= 10000
--10000 < points[i][0] < 10000
--10000 < points[i][1] < 10000
+2 <= A.length <= 30000
+0 <= A[i] <= 10^6
+It is guaranteed there is at least one way to partition A as described.
 */
 
-class closest_to_origin
+class disjoint_intervals
 {
-	static auto to_min_distance_heap( const std::vector<std::vector<int>>& points )
-	{
-		std::priority_queue<
-			std::pair<double, std::vector<int>>,
-			std::vector<std::pair<double, std::vector<int>>>,
-			std::greater<>> heap;
-
-		for( auto& point : points )
-		{
-			const auto x = -point[ 0 ], y = -point[ 1 ];
-
-			const auto distance = std::sqrt( y * y + x * x );
-
-			heap.push( { distance, point } );
-		}
-
-		return heap;
-	}
 	
 public:
 
-	static std::vector<std::vector<int>> kClosest( const std::vector<std::vector<int>>& points, const int K )
+	static int partition_disjoint( const std::vector<int>& arr )
 	{
-		auto heap = to_min_distance_heap( points );
+		const int n = arr.size();
 
-		std::vector<std::vector<int>> result;
+		std::vector<int> max_left( n ), min_right( n );
 
-		for( auto index = 0; index < K; ++index )
+		auto max = arr[ 0 ];
+		for( auto index = 0ULL; index < n; ++index )
 		{
-			const auto& [d, point] = heap.top();
-
-			result.push_back( point );
-
-			heap.pop();
+			max = std::max( max, arr[ index ] );
+			
+			max_left[ index ] = max;
 		}
 
-		return result;
+		auto min = arr[ n - 1 ];
+		for( auto index = n - 1; index >= 0; --index )
+		{
+			min = std::min( min, arr[ index ] );
+			min_right[ index ] = min;
+		}
+
+		for( auto index = 1; index < n; ++index )
+		{
+			if( max_left[ index - 1 ] <= min_right[ index ] )
+				return index;
+		}
+
+		return 0;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::vector<int>>
-	{
-		{ 1, 3 },
-		{ -2, 2 }
-	};
-
-	const auto input2 = std::vector<std::vector<int>>
-	{
-		{ 3, 3 },
-		{ 5, -1 },
-		{ -2, 4 }
-	};
+	const auto input1 = std::vector<int>{ 5, 0, 3, 8, 6 };
+	const auto input2 = std::vector<int>{ 1, 1, 1, 0, 6, 12 };
 
 	const auto input3 = std::vector<std::vector<int>>
 	{
@@ -106,7 +85,7 @@ auto main() -> int
 		{ -5, 2 }
 	};
 	
-	const auto result = closest_to_origin::kClosest( input3, 2 );
+	const auto result = disjoint_intervals::partition_disjoint( input3, 2 );
 	
 	return 0;
 }

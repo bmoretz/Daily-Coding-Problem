@@ -518,7 +518,8 @@ namespace leetcode::heap
 
 	public:
 
-		static std::vector<std::vector<int>> kClosest( const std::vector<std::vector<int>>& points, const int K )
+		static std::vector<std::vector<int>> k_closest( const std::vector<std::vector<int>>& points, 
+			const int K )
 		{
 			auto heap = to_min_distance_heap( points );
 
