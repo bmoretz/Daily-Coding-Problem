@@ -1,125 +1,112 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 127. Word Ladder.
+/* 973. K Closest Points to Origin.
 
-Given two words (beginWord and endWord), and a dictionary's word list, find the
-length of shortest transformation sequence from beginWord to endWord, such that:
+We have a list of points on the plane.  Find the K closest points to the origin (0, 0).
 
-Only one letter can be changed at a time.
-Each transformed word must exist in the word list.
-Note:
+(Here, the distance between two points on a plane is the Euclidean distance.)
 
-Return 0 if there is no such transformation sequence.
-All words have the same length.
-All words contain only lowercase alphabetic characters.
-You may assume no duplicates in the word list.
-You may assume beginWord and endWord are non-empty and are not the same.
+You may return the answer in any order.  The answer is guaranteed to be unique (except for the order that it is in.)
+
 Example 1:
 
-Input:
-beginWord = "hit",
-endWord = "cog",
-wordList = ["hot","dot","dog","lot","log","cog"]
+Input: points = [[1,3],[-2,2]], K = 1
+Output: [[-2,2]]
+Explanation: 
+The distance between (1, 3) and the origin is sqrt(10).
+The distance between (-2, 2) and the origin is sqrt(8).
+Since sqrt(8) < sqrt(10), (-2, 2) is closer to the origin.
+We only want the closest K = 1 points from the origin, so the answer is just [[-2,2]].
 
-Output: 5
-
-Explanation: As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
-return its length 5.
 Example 2:
 
-Input:
-beginWord = "hit"
-endWord = "cog"
-wordList = ["hot","dot","dog","lot","log"]
+Input: points = [[3,3],[5,-1],[-2,4]], K = 2
+Output: [[3,3],[-2,4]]
+(The answer [[-2,4],[3,3]] would also be accepted.)
+ 
 
-Output: 0
+Note:
 
-Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
+1 <= K <= points.length <= 10000
+-10000 < points[i][0] < 10000
+-10000 < points[i][1] < 10000
 */
 
-class word_ladder
+class closest_to_origin
 {
-	static std::string to_wildcard( const std::string& str, const std::size_t index )
+	static auto to_min_distance_heap( const std::vector<std::vector<int>>& points )
 	{
-		return str.substr( 0, index ) + '*' + str.substr( index + 1, str.size() );
-	}
-	
-	static std::unordered_map<std::string, std::vector<std::string>> to_word_graph( const std::vector<std::string>& word_list )
-	{
-		std::unordered_map<std::string, std::vector<std::string>> graph;
+		std::priority_queue<
+			std::pair<double, std::vector<int>>,
+			std::vector<std::pair<double, std::vector<int>>>,
+			std::greater<>> heap;
 
-		for( auto& word : word_list )
-		{	
-			for( auto char_index = 0ULL; char_index < word.size(); ++char_index )
-			{
-				const auto new_word = to_wildcard( word, char_index );
-
-				graph[ new_word ].push_back( word );
-			}
-		}
-		
-		return graph;
-	}
-
-	static int find_word_path( const std::string& begin_word, const std::string& end_word,
-		std::unordered_map<std::string, std::vector<std::string>> word_graph )
-	{
-		auto queue = std::queue<std::pair<std::string, int>>();
-		auto visited = std::set<std::string>();
-
-		queue.push( std::make_pair( begin_word, 1 ) );
-		visited.insert( begin_word );
-
-		while( !queue.empty() )
+		for( auto& point : points )
 		{
-			const auto& [word, level] = queue.front();
+			const auto x = -point[ 0 ], y = -point[ 1 ];
 
-			for( auto char_index = 0ULL; char_index < word.size(); ++char_index )
-			{
-				const auto wildcard = to_wildcard( word, char_index );
+			const auto distance = std::sqrt( y * y + x * x );
 
-				for( auto& adj_word : word_graph[ wildcard ] )
-				{
-					if( adj_word == end_word )
-					{
-						return level + 1;
-					}
-
-					if( visited.find( adj_word ) == visited.end() )
-					{
-						visited.insert( adj_word );
-						queue.push( { adj_word, level + 1 } );
-					}
-				}
-			}
-
-			queue.pop();
+			heap.push( { distance, point } );
 		}
 
-		return 0;
+		return heap;
 	}
 	
 public:
 
-	static int ladderLength( const std::string& begin_word, const std::string& end_word,
-		const std::vector<std::string>& word_list )
+	static std::vector<std::vector<int>> kClosest( const std::vector<std::vector<int>>& points, const int K )
 	{
-		const auto word_graph = to_word_graph( word_list );
+		auto heap = to_min_distance_heap( points );
 
-		return find_word_path( begin_word, end_word, word_graph );
+		std::vector<std::vector<int>> result;
+
+		for( auto index = 0; index < K; ++index )
+		{
+			const auto& [d, point] = heap.top();
+
+			result.push_back( point );
+
+			heap.pop();
+		}
+
+		return result;
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::tuple<std::string, std::string, std::vector<std::string>>
+	const auto input1 = std::vector<std::vector<int>>
 	{
-		"hit", "cog",
-		{ "hot", "dot", "dog", "lot", "log", "cog" }
+		{ 1, 3 },
+		{ -2, 2 }
 	};
 
-	const auto result = word_ladder::ladderLength( std::get<0>( input1 ), std::get<1>( input1 ), std::get<2>( input1 ) );
+	const auto input2 = std::vector<std::vector<int>>
+	{
+		{ 3, 3 },
+		{ 5, -1 },
+		{ -2, 4 }
+	};
+
+	const auto input3 = std::vector<std::vector<int>>
+	{
+		{ -5, 4 },
+		{ -6, -5 },
+		{ 4, 6 }
+	};
+
+	const auto input4 = std::vector<std::vector<int>>
+	{
+		{ -5, 4 },
+		{ -6, -5 },
+		{ 4, 6 },
+		{ 4, 6 },
+		{ -5, 2 }
+	};
+	
+	const auto result = closest_to_origin::kClosest( input3, 2 );
 	
 	return 0;
 }

@@ -457,4 +457,90 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class closest_to_origin_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( closest_to_origin_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+            { 1, 3 },
+            { -2, 2 }
+        };
+    	
+        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto expected = std::vector<std::vector<int>>
+    	{
+            { -2, 2 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( closest_to_origin_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        { 3, 3 },
+	        { 5, -1 },
+	        { -2, 4 }
+        };
+
+        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto expected = std::vector<std::vector<int>>
+    	{
+            { 3, 3 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( closest_to_origin_tests, case3 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        { -5, 4 },
+	        { -6, -5 },
+	        { 4, 6 }
+        };
+
+        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto expected = std::vector<std::vector<int>>
+    	{
+            { -5, 4 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( closest_to_origin_tests, case4 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        { -5, 4 },
+	        { -6, -5 },
+	        { 4, 6 },
+	        { 4, 6 },
+	        { -5, 2 }
+        };
+
+        const auto actual = closest_to_origin::kClosest( input, 1 );
+        const auto expected = std::vector<std::vector<int>>
+    	{
+            { -5, 2 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
