@@ -123,4 +123,74 @@ namespace leetcode::graph::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class word_ladder_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( word_ladder_tests, case1 )
+    {
+        const auto input = std::tuple<std::string, std::string, std::vector<std::string>>
+        {
+            "hit", "cog",
+            { "hot", "dot", "dog", "lot", "log", "cog" }
+        };
+
+        const auto actual = word_ladder::ladder_length( std::get<0>( input ), std::get<1>( input ), std::get<2>( input ) );
+        const auto expected = 5;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( word_ladder_tests, case2 )
+    {
+        const auto input = std::tuple<std::string, std::string, std::vector<std::string>>
+        {
+            "hit", "pog",
+            { "hot", "dot", "dog", "lot", "log", "cog", "pog" }
+        };
+
+        const auto actual = word_ladder::ladder_length( std::get<0>( input ), std::get<1>( input ), std::get<2>( input ) );
+        const auto expected = 5;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( word_ladder_tests, case3 )
+    {
+        const auto input = std::tuple<std::string, std::string, std::vector<std::string>>
+        {
+            "hit", "zog",
+            { "hot", "dot", "dog", "lot", "log", "cog", "pog", "poz" }
+        };
+
+        const auto actual = word_ladder::ladder_length( std::get<0>( input ), std::get<1>( input ), std::get<2>( input ) );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+
+    TEST_F( word_ladder_tests, case4 )
+    {
+        const auto input = std::tuple<std::string, std::string, std::vector<std::string>>
+        {
+            "hit", "poz",
+            { "hot", "dot", "dog", "lot", "log", "cog", "pog", "poz" }
+        };
+
+        const auto actual = word_ladder::ladder_length( std::get<0>( input ), std::get<1>( input ), std::get<2>( input ) );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

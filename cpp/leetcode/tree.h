@@ -543,10 +543,6 @@ namespace leetcode::tree
 	0 <= K <= 1000.
 	*/
 
-#include "../leetcode/tree.h"
-
-	using namespace leetcode::tree;
-
 	class binary_tree_distance
 	{
 		static void get_hierarchy( tree_node* root,

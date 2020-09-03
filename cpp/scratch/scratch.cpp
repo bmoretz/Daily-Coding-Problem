@@ -1,116 +1,125 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 863. All Nodes Distance K in Binary Tree.
+/* 127. Word Ladder.
 
-We are given a binary tree (with root node root), a target node, and an integer value K.
+Given two words (beginWord and endWord), and a dictionary's word list, find the
+length of shortest transformation sequence from beginWord to endWord, such that:
 
-Return a list of the values of all nodes that have a distance K from the target node.  The answer can be returned in any order.
-
-Example 1:
-
-Input: root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, K = 2
-
-Output: [7,4,1]
-
-Explanation: 
-The nodes that are a distance 2 from the target node (with value 5)
-have values 7, 4, and 1.
-
-Note that the inputs "root" and "target" are actually TreeNodes.
-The descriptions of the inputs above are just serializations of these objects.
-
+Only one letter can be changed at a time.
+Each transformed word must exist in the word list.
 Note:
 
-The given tree is non-empty.
-Each node in the tree has unique values 0 <= node.val <= 500.
-The target node is a node in the tree.
-0 <= K <= 1000.
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+Example 1:
+
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output: 5
+
+Explanation: As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+Example 2:
+
+Input:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: 0
+
+Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
 */
 
-#include "../leetcode/tree.h"
-
-using namespace leetcode::tree;
-
-class binary_tree_distance
+class word_ladder
 {
-	static void get_hierarchy( tree_node* root, 
-		std::unordered_map<tree_node*, tree_node*>& map,
-		int level = 0 )
+	static std::string to_wildcard( const std::string& str, const std::size_t index )
 	{
-		if( !root ) return;
+		return str.substr( 0, index ) + '*' + str.substr( index + 1, str.size() );
+	}
+	
+	static std::unordered_map<std::string, std::vector<std::string>> to_word_graph( const std::vector<std::string>& word_list )
+	{
+		std::unordered_map<std::string, std::vector<std::string>> graph;
 
-		if( root->left )
-		{
-			map[ root->left.get() ] = root;
-			get_hierarchy( root->left.get(), map );
+		for( auto& word : word_list )
+		{	
+			for( auto char_index = 0ULL; char_index < word.size(); ++char_index )
+			{
+				const auto new_word = to_wildcard( word, char_index );
+
+				graph[ new_word ].push_back( word );
+			}
 		}
 		
-		if( root->right )
-		{
-			map[ root->right.get() ] = root;
-			get_hierarchy( root->right.get(), map );
-		}
+		return graph;
 	}
 
-	static void search( tree_node* node, const int k,
-		const std::unordered_map<tree_node*, tree_node*>& nodes,
-		std::set<tree_node*>& visited,
-		std::vector<int>& result )
+	static int find_word_path( const std::string& begin_word, const std::string& end_word,
+		std::unordered_map<std::string, std::vector<std::string>> word_graph )
 	{
-		if( !node ) return;
-		if( visited.find( node ) != visited.end() ) return;
+		auto queue = std::queue<std::pair<std::string, int>>();
+		auto visited = std::set<std::string>();
 
-		visited.insert( node );
+		queue.push( std::make_pair( begin_word, 1 ) );
+		visited.insert( begin_word );
 
-		if( k == 0 )
+		while( !queue.empty() )
 		{
-			result.push_back( node->val );
+			const auto& [word, level] = queue.front();
 
-			return;
+			for( auto char_index = 0ULL; char_index < word.size(); ++char_index )
+			{
+				const auto wildcard = to_wildcard( word, char_index );
+
+				for( auto& adj_word : word_graph[ wildcard ] )
+				{
+					if( adj_word == end_word )
+					{
+						return level + 1;
+					}
+
+					if( visited.find( adj_word ) == visited.end() )
+					{
+						visited.insert( adj_word );
+						queue.push( { adj_word, level + 1 } );
+					}
+				}
+			}
+
+			queue.pop();
 		}
 
-		if( node->left )
-			search( node->left.get(), k - 1, nodes, visited, result );
-
-		if( node->right )
-			search( node->right.get(), k - 1, nodes, visited, result );
-
-		if( nodes.find( node ) != nodes.end() )
-		{
-			const auto parent = nodes.at( node );
-
-			if( parent )
-				search( parent, k - 1, nodes, visited, result );
-		}
+		return 0;
 	}
 	
 public:
 
-	static std::vector<int> distanceK( tree_node* root,
-		tree_node* target, const int k )
+	static int ladderLength( const std::string& begin_word, const std::string& end_word,
+		const std::vector<std::string>& word_list )
 	{
-		std::unordered_map<tree_node*, tree_node*> tree_map;
-		
-		get_hierarchy( root, tree_map );
+		const auto word_graph = to_word_graph( word_list );
 
-		std::set<tree_node*> visited;
-		std::vector<int> result;
-		
-		search( target, k, tree_map, visited, result );
-		
-		return result;
+		return find_word_path( begin_word, end_word, word_graph );
 	}
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<std::string>{ "3", "5", "1", "6", "2", "0" , "8", "", "", "7", "4" };
+	const auto input1 = std::tuple<std::string, std::string, std::vector<std::string>>
+	{
+		"hit", "cog",
+		{ "hot", "dot", "dog", "lot", "log", "cog" }
+	};
 
-	const auto root = build_tree_in_order( input1 );
-	const auto node = root->left.get();
-	
-	const auto result = binary_tree_distance::distanceK( root.get(), node, 2 );
+	const auto result = word_ladder::ladderLength( std::get<0>( input1 ), std::get<1>( input1 ), std::get<2>( input1 ) );
 	
 	return 0;
 }
