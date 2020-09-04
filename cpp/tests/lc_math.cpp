@@ -309,4 +309,27 @@ namespace leetcode::math::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class no_zero_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( no_zero_tests, case1 )
+    {
+        const auto input = "#09f166";
+
+        const auto actual = similar_color::similar_rgb( input );
+        const auto expected = "#11ee66";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

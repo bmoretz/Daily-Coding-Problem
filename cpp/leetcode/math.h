@@ -331,4 +331,86 @@ namespace leetcode::math
 			return to_hex_color( value_map, similar_pieces );
 		}
 	};
+
+	/* 1317. Convert Integer to the Sum of Two No-Zero Integers.
+
+	Given an integer n. No-Zero integer is a positive integer which doesn't contain any 0 in its decimal representation.
+
+	Return a list of two integers [A, B] where:
+
+	A and B are No-Zero integers.
+	A + B = n
+	It's guarateed that there is at least one valid solution. If there are many valid solutions you can return any of them.
+
+
+
+	Example 1:
+
+	Input: n = 2
+	Output: [1,1]
+	Explanation: A = 1, B = 1. A + B = n and both A and B don't contain any 0 in their decimal representation.
+	Example 2:
+
+	Input: n = 11
+	Output: [2,9]
+	Example 3:
+
+	Input: n = 10000
+	Output: [1,9999]
+	Example 4:
+
+	Input: n = 69
+	Output: [1,68]
+	Example 5:
+
+	Input: n = 1010
+	Output: [11,999]
+
+	Constraints:
+
+	2 <= n <= 10^4
+	*/
+
+	class no_zero_integers
+	{
+		static bool contains_zero( int num )
+		{
+			while( num )
+			{
+				if( num & 0x1 )  // odd?
+					num /= 10;
+
+				else  // even
+				{
+					// just do integer divide, and calculate modulo in next line
+					const auto n_next = num / 10;
+
+					// replaces "more expensive" modulo operation with integer multiply and subtraction
+					if( ( num - ( 10 * n_next ) ) == 0 )
+						return true;
+
+					num = n_next;
+				}
+			}
+
+			return false;
+		}
+
+	public:
+
+		static std::vector<int> getNoZeroIntegers( const int n )
+		{
+			for( auto i = 1; i < n; ++i )
+			{
+				const auto left = n - i;
+
+				if( contains_zero( left ) || contains_zero( i ) )
+					continue;
+
+				return { i, left };
+			}
+
+			return {};
+		}
+	};
 }
