@@ -208,4 +208,57 @@ namespace leetcode::dynamic::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class largest_divisible_subset_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( largest_divisible_subset_tests, case1 )
+	{
+		auto input = std::vector<int>{ 1, 2, 3 };
+
+		const auto actual = largest_divisible_subset::largestDivisibleSubset( input );
+		const auto expected = std::vector<int>{ 2, 1 };
+		
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( largest_divisible_subset_tests, case2 )
+	{
+		auto input = std::vector<int>{ 1, 2, 4, 8 };
+
+		const auto actual = largest_divisible_subset::largestDivisibleSubset( input );
+		const auto expected = std::vector<int>{ 8, 4, 2, 1 };
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( largest_divisible_subset_tests, case3 )
+	{
+		auto input = std::vector<int>{ 1, 2, 4, 8, 12, 15, 7 };
+
+		const auto actual = largest_divisible_subset::largestDivisibleSubset( input );
+		const auto expected = std::vector<int>{ 8, 4, 2, 1 };
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( largest_divisible_subset_tests, case4 )
+	{
+		auto input = std::vector<int>{ 1, 2, 4, 8, 12, 15, 18, 20, 3, 7 };
+
+		const auto actual = largest_divisible_subset::largestDivisibleSubset( input );
+		const auto expected = std::vector<int>{ 8, 4, 2, 1 };
+
+		EXPECT_EQ( actual, expected );
+	}
 }
