@@ -1,72 +1,112 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 915. Partition Array into Disjoint Intervals.
+/* 800. Similar RGB Color.
 
-Given an array A, partition it into two (contiguous) subarrays left and right so that:
+In the following, every capital letter represents some hexadecimal digit from 0 to f.
 
-Every element in left is less than or equal to every element in right.
-left and right are non-empty.
-left has the smallest possible size.
-Return the length of left after such a partitioning.  It is guaranteed that such a partitioning exists.
+The red-green-blue color "#AABBCC" can be written as "#ABC" in shorthand.  For example, "#15c" is shorthand for the color "#1155cc".
+
+Now, say the similarity between two colors "#ABCDEF" and "#UVWXYZ" is -(AB - UV)^2 - (CD - WX)^2 - (EF - YZ)^2.
+
+Given the color "#ABCDEF", return a 7 character color that is most similar to #ABCDEF, and has a shorthand (that is, it can be represented as some "#XYZ"
 
 Example 1:
-
-Input: [5,0,3,8,6]
-Output: 3
-Explanation: left = [5,0,3], right = [8,6]
-Example 2:
-
-Input: [1,1,1,0,6,12]
-Output: 4
-Explanation: left = [1,1,1,0], right = [6,12] 
-
+Input: color = "#09f166"
+Output: "#11ee66"
+Explanation:  
+The similarity is -(0x09 - 0x11)^2 -(0xf1 - 0xee)^2 - (0x66 - 0x66)^2 = -64 -9 -0 = -73.
+This is the highest among any shorthand color.
 Note:
 
-2 <= A.length <= 30000
-0 <= A[i] <= 10^6
-It is guaranteed there is at least one way to partition A as described.
+color is a string of length 7.
+color is a valid RGB color: for i > 0, color[i] is a hexadecimal digit from 0 to f
+Any answer which has the same (highest) similarity as the best answer will be accepted.
+All inputs and outputs should use lowercase letters, and the output is 7 characters.
 */
 
-class disjoint_intervals
+class similar_color
 {
+    static double parse_hex_value( const std::string& color,
+        const int offset )
+    {
+        const auto part = color.substr( offset, 2 );
+
+        return static_cast< double >( std::stoi( "0x" + part, nullptr, 16 ) );
+    }
+
+	static std::map<int, std::pair<int, std::string>> build_conversion_map()
+    {
+        std::map<int, std::pair<int, std::string>> map;
+
+        for( size_t index = 0, step = 0; index < 16; index++, step += 17 )
+        {
+            const auto offset = index < 10 ? '0' : 'a';
+            const auto chr = static_cast< char >( offset ) + ( index > 9 ? index - 10 : index );
+
+            map[ index ] = { step, std::string( 2, chr ) };
+        }
+
+        return map;
+    }
+
+	static std::string to_hex_color( const std::map<int, std::pair<int, std::string>>& map, 
+        std::vector<int>& pieces )
+    {
+        std::string hex_color = "#";
+    	
+    	for( auto piece : pieces )
+    	{
+            hex_color += map.at( piece ).second;
+    	}
+
+        return hex_color;
+    }
 	
 public:
 
-	static int partition_disjoint( const std::vector<int>& arr )
-	{
-		const int n = arr.size();
+    static std::string similarRGB( const std::string& color )
+    {
+        const auto r_part = parse_hex_value( color, 1 );
+        const auto g_part = parse_hex_value( color, 3 );
+        const auto b_part = parse_hex_value( color, 5 );
 
-		std::vector<int> max_left( n ), min_right( n );
+        const auto value_map = build_conversion_map();
 
-		auto max = arr[ 0 ];
-		for( auto index = 0ULL; index < n; ++index )
-		{
-			max = std::max( max, arr[ index ] );
-			
-			max_left[ index ] = max;
-		}
+        std::vector<int> similar_pieces( 3 );
+        auto min_val = std::numeric_limits<int>::max();
+        const auto iters = value_map.size();
 
-		auto min = arr[ n - 1 ];
-		for( auto index = n - 1; index >= 0; --index )
-		{
-			min = std::min( min, arr[ index ] );
-			min_right[ index ] = min;
-		}
+        for( size_t i = 0; i < iters; i++ )
+        {
+            for( size_t j = 0; j < iters; j++ )
+            {
+                for( size_t k = 0; k < iters; k++ )
+                {
+                    const int val =
+                        -std::pow( r_part - value_map.at( i ).first, 2.0 ) -
+                        std::pow( g_part - value_map.at( j ).first, 2.0 ) -
+                        std::pow( b_part - value_map.at( k ).first, 2.0 );
 
-		for( auto index = 1; index < n; ++index )
-		{
-			if( max_left[ index - 1 ] <= min_right[ index ] )
-				return index;
-		}
+                    if( std::abs( val ) < min_val )
+                    {
+                        min_val = std::abs( val );
 
-		return 0;
-	}
+                        similar_pieces[ 0 ] = i;
+                        similar_pieces[ 1 ] = j;
+                        similar_pieces[ 2 ] = k;
+                    }
+                }
+            }
+        }
+
+        return to_hex_color( value_map, similar_pieces );
+    }
 };
 
 auto main() -> int
 {
-	const auto input1 = std::vector<int>{ 5, 0, 3, 8, 6 };
+	const auto input1 = "#09f166";
 	const auto input2 = std::vector<int>{ 1, 1, 1, 0, 6, 12 };
 
 	const auto input3 = std::vector<std::vector<int>>
@@ -85,7 +125,7 @@ auto main() -> int
 		{ -5, 2 }
 	};
 	
-	const auto result = disjoint_intervals::partition_disjoint( input3, 2 );
+	const auto result = similar_color::similarRGB( input1 );
 	
 	return 0;
 }

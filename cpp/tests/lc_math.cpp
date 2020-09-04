@@ -246,4 +246,67 @@ namespace leetcode::math::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class similar_color_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( similar_color_tests, case1 )
+    {
+        const auto input = "#09f166";
+
+        const auto actual = similar_color::similar_rgb( input );
+        const auto expected = "#11ee66";
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( similar_color_tests, case2 )
+    {
+        const auto input = "#09a191";
+
+        const auto actual = similar_color::similar_rgb( input );
+        const auto expected = "#119999";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( similar_color_tests, case3 )
+    {
+        const auto input = "#ffa31";
+
+        const auto actual = similar_color::similar_rgb( input );
+        const auto expected = "#ffaa00";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( similar_color_tests, case4 )
+    {
+        const auto input = "#ca1d3d";
+
+        const auto actual = similar_color::similar_rgb( input );
+        const auto expected = "#cc2244";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( similar_color_tests, case5 )
+    {
+        const auto input = "#09f166";
+
+        const auto actual = similar_color::similar_rgb( input );
+        const auto expected = "#11ee66";
+
+        EXPECT_EQ( actual, expected );
+    }
 }
