@@ -561,4 +561,73 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class rotten_oranges_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( rotten_oranges_tests, case1 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            { 2, 1, 1 },
+            { 1, 1, 0 },
+            { 0, 1, 1 }
+        };
+
+        const auto actual = rotting_oranges::orangesRotting( input );
+        const auto expected = 4;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+	
+    TEST_F( rotten_oranges_tests, case2 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            { 2, 1, 1 },
+            { 0, 1, 1 },
+            { 1, 0, 1 }
+        };
+
+        const auto actual = rotting_oranges::orangesRotting( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( rotten_oranges_tests, case3 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+			{ 0, 1 }
+        };
+
+        const auto actual = rotting_oranges::orangesRotting( input );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( rotten_oranges_tests, case4 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            { { 1 }, { 2 } }
+        };
+
+        const auto actual = rotting_oranges::orangesRotting( input );
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

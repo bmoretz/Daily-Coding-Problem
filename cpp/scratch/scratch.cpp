@@ -1,79 +1,142 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 368. Largest Divisible Subset.
+/* 994. Rotting Oranges.
 
-Given a set of distinct positive integers, find the largest subset such that every pair (Si, Sj) of elements in this subset satisfies:
+In a given grid, each cell can have one of three values:
 
-Si % Sj = 0 or Sj % Si = 0.
+the value 0 representing an empty cell;
+the value 1 representing a fresh orange;
+the value 2 representing a rotten orange.
 
-If there are multiple solutions, return any subset is fine.
+Every minute, any fresh orange that is adjacent (4-directionally) to a rotten orange becomes rotten.
+
+Return the minimum number of minutes that must elapse until no cell has a fresh orange.  If this is impossible, return -1 instead.
 
 Example 1:
 
-Input: [1,2,3]
-Output: [1,2] (of course, [1,3] will also be ok)
+Input: [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
 Example 2:
 
-Input: [1,2,4,8]
-Output: [1,2,4,8]
+Input: [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
+Explanation:  The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+Example 3:
+
+Input: [[0,2]]
+Output: 0
+Explanation:  Since there are already no fresh oranges at minute 0, the answer is just 0.
+
+Note:
+
+1 <= grid.length <= 10
+1 <= grid[0].length <= 10
+grid[i][j] is only 0, 1, or 2.
 */
 
-class no_zero_integers
+class rotting_oranges
 {
-	
-public:
-
-	static std::vector<int> largestDivisibleSubset( std::vector<int>& numbers )
+	static std::pair<std::queue<std::pair<int, int>>, int> take_inventory( const std::vector<std::vector<int>>& grid )
 	{
-		if( numbers.empty() ) return { };
+		const auto num_rows = grid.size();
+		const auto num_cols = grid[ 0 ].size();
 
-		std::sort( numbers.begin(), numbers.end() );
+		std::queue<std::pair<int, int>> rotten;
+		auto num_fresh = 0;
 
-		auto dp = std::vector<int>( numbers.size(), 1 );
-		auto prev = std::vector<int>( numbers.size(), -1 );
-
-		auto max_index = 0;
-
-		for( auto index = 1; index < numbers.size(); ++index )
+		for( auto row = 0; row < num_rows; ++row )
 		{
-			for( auto sub = 0; sub < index; ++sub )
+			for( auto col = 0; col < num_cols; ++col )
 			{
-				if( numbers.at( index ) % numbers.at( sub ) == 0
-					&& dp[ index ] < dp[ sub ] + 1 )
+				if( grid[ row ][ col ] == 2 )
 				{
-					dp[ index ] = dp[ sub ] + 1;
-					prev[ index ] = sub;
+					rotten.push( { row, col } );
+				}
+				else if( grid[ row ][ col ] == 1 )
+				{
+					++num_fresh;
 				}
 			}
+		}
 
-			if( dp[ index ] > dp[ max_index ] )
+		return { rotten, num_fresh };
+	}
+
+public:
+
+	static int orangesRotting( std::vector<std::vector<int>>& grid )
+	{
+		if( grid.empty() || grid[ 0 ].empty() ) return 0;
+
+		const auto num_rows = grid.size();
+		const auto num_cols = grid[ 0 ].size();
+
+		auto [rotten, fresh] = take_inventory( grid );
+
+		const auto directions = std::vector<std::pair<int, int>>{
+			{ 0, -1 }, { 0, 1 },
+			{ -1, 0 }, { 1, 0 }
+		};
+
+		auto num_minutes = 0;
+
+		while( !rotten.empty() && fresh > 0 )
+		{
+			num_minutes++;
+
+			auto iter = rotten.size();
+
+			while( iter-- > 0 )
 			{
-				max_index = index;
+				const auto& [row, col] = rotten.front();
+
+				for( auto& direction : directions )
+				{
+					const auto [next_row, next_col] = std::pair<int, int>{
+						row + direction.first,
+						col + direction.second
+					};
+
+					if( next_row >= 0 && next_row < num_rows &&
+						next_col >= 0 && next_col < num_cols &&
+						grid[ next_row ][ next_col ] == 1 )
+					{
+						grid[ next_row ][ next_col ] = 2;
+						--fresh;
+
+						rotten.push( { next_row, next_col } );
+					}
+				}
+
+				rotten.pop();
 			}
 		}
 
-		auto result = std::vector<int>();
-
-		auto index = max_index;
-		while( index >= 0 )
-		{
-			result.push_back( numbers.at( index ) );
-			index = prev[ index ];
-		}
-
-		return result;
+		return fresh == 0 ? num_minutes : -1;
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<int>{ 1, 2, 3 };
-	const auto input2 = 11;
-	const auto input3 = 10000;
-	const auto input4 = 69;
+	auto input1 = std::vector<std::vector<int>>
+	{
+		{ 2, 1, 1 },
+		{ 1, 1, 0 },
+		{ 0, 1, 1 }
+	};
+
+	auto input3 = std::vector<std::vector<int>>
+	{
+		{ 0, 1 }
+	};
+
+	auto input4 = std::vector<std::vector<int>>
+	{
+		{ { 1 }, { 2 } }
+	};
 	
-	const auto result = no_zero_integers::largestDivisibleSubset( input1 );
+	const auto result = rotting_oranges::orangesRotting( input4 );
 	
 	return 0;
 }
