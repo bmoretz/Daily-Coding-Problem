@@ -496,4 +496,65 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class is_univalued_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( is_univalued_tests, case1 )
+    {
+        const auto input1 = std::vector<std::string>{ "1", "1", "1", "1", "1", "", "1" };
+
+        const auto root = build_tree_in_order( input1 );
+
+        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_univalued_tests, case2 )
+    {
+        const auto input1 = std::vector<std::string>{ "2", "2", "2", "5", "2" };
+
+        const auto root = build_tree_in_order( input1 );
+
+        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_univalued_tests, case3 )
+    {
+        const auto input1 = std::vector<std::string>{ "2", "2", "2", "2", "2", "", "1" };
+
+        const auto root = build_tree_in_order( input1 );
+
+        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( is_univalued_tests, case4 )
+    {
+        const auto input1 = std::vector<std::string>{ "2", "2", "2", "2", "2", "", "2", "2", "", "" };
+
+        const auto root = build_tree_in_order( input1 );
+
+        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

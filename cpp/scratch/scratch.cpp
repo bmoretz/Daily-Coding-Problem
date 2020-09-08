@@ -1,49 +1,78 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 739. Daily Temperatures.
+/* 965. Univalued Binary Tree.
 
-Given a list of daily temperatures T, return a list such that, for each day in the input, tells you how many days you would have to wait
-until a warmer temperature. If there is no future day for which this is possible, put 0 instead.
+A binary tree is univalued if every node in the tree has the same value.
 
-For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73], your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+Return true if and only if the given tree is univalued.
 
-Note: The length of temperatures will be in the range [1, 30000]. Each temperature will be an integer in the range [30, 100].
+Example 1:
+
+Input: [1,1,1,1,1,null,1]
+Output: true
+Example 2:
+
+Input: [2,2,2,5,2]
+Output: false
+
+Note:
+
+The number of nodes in the given tree will be in the range [1, 100].
+Each node's value will be an integer in the range [0, 99].
 */
 
-class daily_temperatures
+#include "../leetcode/tree.h"
+
+using namespace leetcode::tree;
+
+class is_univalued
 {
-public:
-
-	static std::vector<int> dailyTemperatures( std::vector<int>& temps )
+	static bool is_unival( tree_node* node )
 	{
-		auto result = std::vector<int>( temps.size() );
+		if( !node ) return false;
 
-		auto stack = std::stack<int>();
+		auto left_sub = true;
 		
-		for( int index = temps.size() - 1; index >= 0; --index )
+		if( node->left )
 		{
-			const auto current = temps.at( index );
+			if( node->val != node->left->val )
+				return false;
 
-			while( !stack.empty() && current >= temps[ stack.top() ] )
-				stack.pop();
+			left_sub = is_unival( node->left.get() );
+		}
+		
+		auto right_sub = true;
 
-			result[ index ] = stack.empty() ? 0 : stack.top() - index;
-
-			stack.push( index );
+		if( node->right )
+		{
+			if( node->val != node->right->val )
+				return false;
+			
+			right_sub = is_unival( node->right.get() );
 		}
 
-		return result;
+		return left_sub && right_sub;
+	}
+	
+public:
+
+	static bool isUnivalTree( tree_node* root )
+	{
+		if( !root ) return false;
+
+		return is_unival( root );
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<int>{ 73, 74, 75, 71, 69, 72, 76, 73 };
-	auto input2 = std::vector<int>{ 73, 74, 75, 71, 69, 72, 76, 73 };
-	auto input3 = std::vector<int>{ 73, 74, 75, 71, 69, 72, 76, 73 };
+	auto input1 = std::vector<std::string>{ "1", "1", "1", "1", "1", "", "1" };
+	auto input2 = std::vector<std::string>{ "2", "2", "2", "5", "2" };
 	
-	const auto result = daily_temperatures::dailyTemperatures( input1 );
+	auto root = build_tree_in_order( input2 );
+	
+	const auto result = is_univalued::isUnivalTree( root.get() );
 	
 	return 0;
 }
