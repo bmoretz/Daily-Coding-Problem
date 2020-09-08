@@ -208,4 +208,57 @@ namespace leetcode::stack::tests
         EXPECT_EQ( spanner.next( 75 ), 4 );
         EXPECT_EQ( spanner.next( 85 ), 6 );
     }
+
+    class daily_temperatures_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( daily_temperatures_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 73, 74, 75, 71, 69, 72, 76, 73 };
+
+        const auto actual = next_hottest_temperature::daily_temperatures( input );
+        const auto expected = std::vector<int>{ 1, 1, 4, 2, 1, 1, 0, 0 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( daily_temperatures_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 73, 74, 75, 66, 69, 72, 81, 73 };
+
+        const auto actual = next_hottest_temperature::daily_temperatures( input );
+        const auto expected = std::vector<int>{ 1, 1, 4, 1, 1, 1, 0, 0 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( daily_temperatures_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 73, 74, 75, 71, 69, 72, 76, 73, 83, 91, 84 };
+
+        const auto actual = next_hottest_temperature::daily_temperatures( input );
+        const auto expected = std::vector<int>{ 1, 1, 4, 2, 1, 1, 2, 1, 1, 0, 0 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( daily_temperatures_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 73, 74, 75, 71, 69, 72, 76, 73 };
+
+        const auto actual = next_hottest_temperature::daily_temperatures( input );
+        const auto expected = std::vector<int>{ 1, 1, 4, 2, 1, 1, 0, 0 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
