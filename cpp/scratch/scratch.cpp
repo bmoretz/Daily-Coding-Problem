@@ -1,142 +1,94 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 994. Rotting Oranges.
+/* 826. Most Profit Assigning Work.
 
-In a given grid, each cell can have one of three values:
+We have jobs: difficulty[i] is the difficulty of the ith job, and profit[i] is the profit of the ith job. 
 
-the value 0 representing an empty cell;
-the value 1 representing a fresh orange;
-the value 2 representing a rotten orange.
+Now we have some workers. worker[i] is the ability of the ith worker, which means that this worker can only complete a job with difficulty at most worker[i]. 
 
-Every minute, any fresh orange that is adjacent (4-directionally) to a rotten orange becomes rotten.
+Every worker can be assigned at most one job, but one job can be completed multiple times.
 
-Return the minimum number of minutes that must elapse until no cell has a fresh orange.  If this is impossible, return -1 instead.
+For example, if 3 people attempt the same job that pays $1, then the total profit will be $3.  If a worker cannot complete any job, his profit is $0.
+
+What is the most profit we can make?
 
 Example 1:
 
-Input: [[2,1,1],[1,1,0],[0,1,1]]
-Output: 4
-Example 2:
+Input: difficulty = [2,4,6,8,10], profit = [10,20,30,40,50], worker = [4,5,6,7]
+Output: 100 
+Explanation: Workers are assigned jobs of difficulty [4,4,6,6] and they get profit of [20,20,30,30] separately.
+Notes:
 
-Input: [[2,1,1],[0,1,1],[1,0,1]]
-Output: -1
-Explanation:  The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
-Example 3:
-
-Input: [[0,2]]
-Output: 0
-Explanation:  Since there are already no fresh oranges at minute 0, the answer is just 0.
-
-Note:
-
-1 <= grid.length <= 10
-1 <= grid[0].length <= 10
-grid[i][j] is only 0, 1, or 2.
+1 <= difficulty.length = profit.length <= 10000
+1 <= worker.length <= 10000
+difficulty[i], profit[i], worker[i]  are in range [1, 10^5]
 */
 
-class rotting_oranges
+class assign_work
 {
-	static std::pair<std::queue<std::pair<int, int>>, int> take_inventory( const std::vector<std::vector<int>>& grid )
-	{
-		const auto num_rows = grid.size();
-		const auto num_cols = grid[ 0 ].size();
-
-		std::queue<std::pair<int, int>> rotten;
-		auto num_fresh = 0;
-
-		for( auto row = 0; row < num_rows; ++row )
-		{
-			for( auto col = 0; col < num_cols; ++col )
-			{
-				if( grid[ row ][ col ] == 2 )
-				{
-					rotten.push( { row, col } );
-				}
-				else if( grid[ row ][ col ] == 1 )
-				{
-					++num_fresh;
-				}
-			}
-		}
-
-		return { rotten, num_fresh };
-	}
 
 public:
 
-	static int orangesRotting( std::vector<std::vector<int>>& grid )
+	static int maxProfitAssignment( const std::vector<int>& difficulty,
+		const std::vector<int>& profit, std::vector<int>& workers )
 	{
-		if( grid.empty() || grid[ 0 ].empty() ) return 0;
+		std::priority_queue<std::pair<int, int>> pq;
 
-		const auto num_rows = grid.size();
-		const auto num_cols = grid[ 0 ].size();
-
-		auto [rotten, fresh] = take_inventory( grid );
-
-		const auto directions = std::vector<std::pair<int, int>>{
-			{ 0, -1 }, { 0, 1 },
-			{ -1, 0 }, { 1, 0 }
-		};
-
-		auto num_minutes = 0;
-
-		while( !rotten.empty() && fresh > 0 )
+		for( auto index = 0; index < profit.size(); index++ )
 		{
-			num_minutes++;
+			pq.push( { profit[ index ], difficulty[ index ] } );
+		}
 
-			auto iter = rotten.size();
+		std::sort( workers.begin(), workers.end() );
 
-			while( iter-- > 0 )
+		auto result = 0;
+
+		for( int index = workers.size() - 1; index >= 0; index-- )
+		{
+			while( index < workers.size() && !pq.empty() && pq.top().second > workers[ index ] )
 			{
-				const auto& [row, col] = rotten.front();
+				pq.pop();
+			}
 
-				for( auto& direction : directions )
-				{
-					const auto [next_row, next_col] = std::pair<int, int>{
-						row + direction.first,
-						col + direction.second
-					};
-
-					if( next_row >= 0 && next_row < num_rows &&
-						next_col >= 0 && next_col < num_cols &&
-						grid[ next_row ][ next_col ] == 1 )
-					{
-						grid[ next_row ][ next_col ] = 2;
-						--fresh;
-
-						rotten.push( { next_row, next_col } );
-					}
-				}
-
-				rotten.pop();
+			if( !pq.empty() ) 
+			{
+				result += pq.top().first;
 			}
 		}
 
-		return fresh == 0 ? num_minutes : -1;
+		return result;
 	}
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<std::vector<int>>
+	auto input1 = std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>
 	{
-		{ 2, 1, 1 },
-		{ 1, 1, 0 },
-		{ 0, 1, 1 }
+		{ 2, 4, 6, 8, 10 },
+		{ 10, 20, 30, 40, 50 },
+		{ 4, 5, 6, 7 }
 	};
 
-	auto input3 = std::vector<std::vector<int>>
+	auto input2 = std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>
 	{
-		{ 0, 1 }
+		{ 85, 47, 57 },
+		{ 24, 66, 99 },
+		{ 40, 25, 25 }
 	};
 
-	auto input4 = std::vector<std::vector<int>>
+	auto input3 = std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>
 	{
-		{ { 1 }, { 2 } }
+		{ 13, 37, 58 },
+		{ 4, 90, 96 },
+		{ 34, 73, 45 }
 	};
 	
-	const auto result = rotting_oranges::orangesRotting( input4 );
+	const auto result = assign_work::maxProfitAssignment(
+		std::get<0>(input1 ), 
+		std::get<1>( input1 ), 
+		std::get<2>( input1 ) 
+	);
 	
 	return 0;
 }

@@ -543,4 +543,77 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class max_profit_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( max_profit_tests, case1 )
+    {
+        auto input = std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>
+        {
+            { 2, 4, 6, 8, 10 },
+            { 10, 20, 30, 40, 50 },
+            { 4, 5, 6, 7 }
+        };
+
+        const auto actual = assign_work::maxProfitAssignment(
+            std::get<0>( input ),
+            std::get<1>( input ),
+            std::get<2>( input )
+        );
+
+        const auto expected = 100;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_profit_tests, case2 )
+    {
+        auto input = std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>
+        {
+	        { 85, 47, 57 },
+	        { 24, 66, 99 },
+			{ 40, 25, 25 }
+        };
+
+        const auto actual = assign_work::maxProfitAssignment(
+            std::get<0>( input ),
+            std::get<1>( input ),
+            std::get<2>( input )
+        );
+
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( max_profit_tests, case3 )
+    {
+        auto input = std::tuple<std::vector<int>, std::vector<int>, std::vector<int>>
+        {
+	        { 13, 37, 58 },
+	        { 4, 90, 96 },
+	        { 34, 73, 45 }
+        };
+
+        const auto actual = assign_work::maxProfitAssignment(
+            std::get<0>( input ),
+            std::get<1>( input ),
+            std::get<2>( input )
+        );
+
+        const auto expected = 190;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
