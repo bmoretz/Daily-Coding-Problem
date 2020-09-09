@@ -516,7 +516,7 @@ namespace leetcode::tree::tests
 
         const auto root = build_tree_in_order( input1 );
 
-        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto actual = is_univalued::is_unival_tree( root.get() );
         const auto expected = true;
 
         EXPECT_EQ( actual, expected );
@@ -528,7 +528,7 @@ namespace leetcode::tree::tests
 
         const auto root = build_tree_in_order( input1 );
 
-        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto actual = is_univalued::is_unival_tree( root.get() );
         const auto expected = false;
 
         EXPECT_EQ( actual, expected );
@@ -540,7 +540,7 @@ namespace leetcode::tree::tests
 
         const auto root = build_tree_in_order( input1 );
 
-        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto actual = is_univalued::is_unival_tree( root.get() );
         const auto expected = false;
 
         EXPECT_EQ( actual, expected );
@@ -552,9 +552,48 @@ namespace leetcode::tree::tests
 
         const auto root = build_tree_in_order( input1 );
 
-        const auto actual = is_univalued::isUnivalTree( root.get() );
+        const auto actual = is_univalued::is_unival_tree( root.get() );
         const auto expected = true;
 
         EXPECT_EQ( actual, expected );
+    }
+
+    class in_order_successor_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( in_order_successor_tests, case1 )
+    {
+        const auto input1 = std::vector<std::string>{ "2", "1", "3" };
+
+        const auto root = build_tree_in_order( input1 );
+
+        const auto actual = in_order_successor::inorderSuccessor( root.get(), root->left.get() );
+    	
+        const auto expected = 2;
+
+        EXPECT_EQ( actual->val, expected );
+    }
+
+    TEST_F( in_order_successor_tests, case2 )
+    {
+        const auto input1 = std::vector<std::string>{ "5", "3", "6", "2", "1", "4" };
+
+        const auto root = build_tree_in_order( input1 );
+
+        const auto actual = in_order_successor::inorderSuccessor( root.get(), root->left.get() );
+
+        const auto expected = 4;
+
+        EXPECT_EQ( actual->val, expected );
     }
 }

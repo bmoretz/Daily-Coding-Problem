@@ -1,67 +1,74 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 965. Univalued Binary Tree.
+/* 285. Inorder Successor in BST.
 
-A binary tree is univalued if every node in the tree has the same value.
+Given a binary search tree and a node in it, find the in-order successor of that node in the BST.
 
-Return true if and only if the given tree is univalued.
+The successor of a node p is the node with the smallest key greater than p.val.
+
+ 
 
 Example 1:
 
-Input: [1,1,1,1,1,null,1]
-Output: true
+
+Input: root = [2,1,3], p = 1
+Output: 2
+Explanation: 1's in-order successor node is 2. Note that both p and the return value is of TreeNode type.
 Example 2:
 
-Input: [2,2,2,5,2]
-Output: false
+
+Input: root = [5,3,6,2,4,null,null,1], p = 6
+Output: null
+Explanation: There is no in-order successor of the current node, so the answer is null.
+ 
 
 Note:
 
-The number of nodes in the given tree will be in the range [1, 100].
-Each node's value will be an integer in the range [0, 99].
+If the given node has no in-order successor in the tree, return null.+
+It's guaranteed that the values of the tree are unique.
 */
 
 #include "../leetcode/tree.h"
 
 using namespace leetcode::tree;
 
-class is_univalued
+class in_order_successor
 {
-	static bool is_unival( tree_node* node )
-	{
-		if( !node ) return false;
-
-		auto left_sub = true;
-		
-		if( node->left )
-		{
-			if( node->val != node->left->val )
-				return false;
-
-			left_sub = is_unival( node->left.get() );
-		}
-		
-		auto right_sub = true;
-
-		if( node->right )
-		{
-			if( node->val != node->right->val )
-				return false;
-			
-			right_sub = is_unival( node->right.get() );
-		}
-
-		return left_sub && right_sub;
-	}
-	
 public:
 
-	static bool isUnivalTree( tree_node* root )
+	static tree_node* inorderSuccessor( tree_node* root, tree_node* p )
 	{
-		if( !root ) return false;
+		if( !root || !p ) return nullptr;
 
-		return is_unival( root );
+		auto queue = std::queue<tree_node*>();;
+
+		queue.push( root );
+
+		auto diff = INT_MAX;
+		tree_node* result = nullptr;
+		
+		while( !queue.empty() )
+		{
+			const auto node = queue.front();
+			queue.pop();
+
+			const auto delta = node->val - p->val;
+
+			if( delta > 0 && node != p && delta < diff )
+			{
+				diff = delta;
+				result = node;
+			}
+
+			if( node->left )
+				queue.push( node->left.get() );
+
+			if( node->right )
+				queue.push( node->right.get() );
+		}
+
+		return result;
 	}
 };
 
