@@ -1,85 +1,87 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 285. Inorder Successor in BST.
+/* 547. Friend Circles.
 
-Given a binary search tree and a node in it, find the in-order successor of that node in the BST.
+There are N students in a class. Some of them are friends, while some are not. Their friendship is transitive in nature. For example,
+if A is a direct friend of B, and B is a direct friend of C, then A is an indirect friend of C. And we defined a friend circle is a group of students who are direct or indirect friends.
 
-The successor of a node p is the node with the smallest key greater than p.val.
-
- 
+Given a N*N matrix M representing the friend relationship between students in the class. If M[i][j] = 1, then the ith and jth students are direct friends with each other, otherwise not. And you have to output the total number of friend circles among all the students.
 
 Example 1:
 
-
-Input: root = [2,1,3], p = 1
+Input: 
+[[1,1,0],
+ [1,1,0],
+ [0,0,1]]
 Output: 2
-Explanation: 1's in-order successor node is 2. Note that both p and the return value is of TreeNode type.
-Example 2:
-
-
-Input: root = [5,3,6,2,4,null,null,1], p = 6
-Output: null
-Explanation: There is no in-order successor of the current node, so the answer is null.
+Explanation:The 0th and 1st students are direct friends, so they are in a friend circle. 
+The 2nd student himself is in a friend circle. So return 2.
  
 
-Note:
+Example 2:
 
-If the given node has no in-order successor in the tree, return null.+
-It's guaranteed that the values of the tree are unique.
+Input: 
+[[1,1,0],
+ [1,1,1],
+ [0,1,1]]
+Output: 1
+Explanation:The 0th and 1st students are direct friends, the 1st and 2nd students are direct friends, 
+so the 0th and 2nd students are indirect friends. All of them are in the same friend circle, so return 1.
+
+ 
+
+Constraints:
+
+1 <= N <= 200
+M[i][i] == 1
+M[i][j] == M[j][i]
 */
 
-#include "../leetcode/tree.h"
-
-using namespace leetcode::tree;
-
-class in_order_successor
+class friend_circles
 {
+	static void dfs( const std::vector<std::vector<int>>& grid,
+	                 std::vector<bool>& visited,
+	                 const int row )
+    {
+        for( auto col = 0; col < grid.size(); ++col )
+        {
+            if( grid[ row ][ col ] == 1 && visited[ col ] == 0 )
+            {
+                visited[ col ] = 1;
+                dfs( grid, visited, col );
+            }
+        }
+    }
+
 public:
 
-	static tree_node* inorderSuccessor( tree_node* root, tree_node* p )
-	{
-		if( !root || !p ) return nullptr;
+    int find_circle_num( const std::vector<std::vector<int>>& grid )
+    {
+        const int num_rows = grid.size();
+        const int num_cols = grid[ 0 ].size();
 
-		auto queue = std::queue<tree_node*>();;
+        if( num_rows <= 0 || num_cols <= 0 ) return 0;
 
-		queue.push( root );
+        auto visited = std::vector<bool>( num_rows, false );
+        auto num_groups = 0;
 
-		auto diff = INT_MAX;
-		tree_node* result = nullptr;
-		
-		while( !queue.empty() )
-		{
-			const auto node = queue.front();
-			queue.pop();
+        for( auto row = 0; row < num_rows; ++row )
+        {
+            if( !visited[ row ] )
+            {
+                dfs( grid, visited, row );
+                num_groups++;
+            }
+        }
 
-			const auto delta = node->val - p->val;
-
-			if( delta > 0 && node != p && delta < diff )
-			{
-				diff = delta;
-				result = node;
-			}
-
-			if( node->left )
-				queue.push( node->left.get() );
-
-			if( node->right )
-				queue.push( node->right.get() );
-		}
-
-		return result;
-	}
+        return num_groups;
+    }
 };
 
 auto main() -> int
 {
-	auto input1 = std::vector<std::string>{ "1", "1", "1", "1", "1", "", "1" };
-	auto input2 = std::vector<std::string>{ "2", "2", "2", "5", "2" };
-	
-	auto root = build_tree_in_order( input2 );
-	
-	const auto result = is_univalued::isUnivalTree( root.get() );
+	auto input1 = std::vector<std::string>{ };
 	
 	return 0;
 }

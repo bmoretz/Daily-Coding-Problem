@@ -332,4 +332,28 @@ namespace leetcode::math::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class maximum_abs_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( maximum_abs_tests, case1 )
+    {
+        const auto arr1 = std::vector<int>{ 1, 2, 3, 4 };
+        const auto arr2 = std::vector<int>{ -1,4, 5, 6 };
+
+        const auto actual = maximum_abs::maxAbsValExpr( arr1, arr2 );
+        const auto expected = 0;
+    	
+        EXPECT_EQ( actual, expected );
+    }
 }
