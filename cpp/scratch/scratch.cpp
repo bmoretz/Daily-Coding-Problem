@@ -1,81 +1,66 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 547. Friend Circles.
+/* 541. Reverse String II.
 
-There are N students in a class. Some of them are friends, while some are not. Their friendship is transitive in nature. For example,
-if A is a direct friend of B, and B is a direct friend of C, then A is an indirect friend of C. And we defined a friend circle is a group of students who are direct or indirect friends.
+Given a string and an integer k, you need to reverse the first k characters for every 2k characters counting from the
+start of the string. If there are less than k characters left, reverse all of them. If there are less than 2k but greater
+than or equal to k characters, then reverse the first k characters and left the other as original.
 
-Given a N*N matrix M representing the friend relationship between students in the class. If M[i][j] = 1, then the ith and jth students are direct friends with each other, otherwise not. And you have to output the total number of friend circles among all the students.
+Example:
+Input: s = "abcdefg", k = 2
+Output: "bacdfeg"
 
-Example 1:
-
-Input: 
-[[1,1,0],
- [1,1,0],
- [0,0,1]]
-Output: 2
-Explanation:The 0th and 1st students are direct friends, so they are in a friend circle. 
-The 2nd student himself is in a friend circle. So return 2.
- 
-
-Example 2:
-
-Input: 
-[[1,1,0],
- [1,1,1],
- [0,1,1]]
-Output: 1
-Explanation:The 0th and 1st students are direct friends, the 1st and 2nd students are direct friends, 
-so the 0th and 2nd students are indirect friends. All of them are in the same friend circle, so return 1.
-
- 
-
-Constraints:
-
-1 <= N <= 200
-M[i][i] == 1
-M[i][j] == M[j][i]
+Restrictions:
+	The string consists of lower English letters only.
+	Length of the given string and k will in the range [1, 10000]
 */
 
-class friend_circles
-{
-	static void dfs( const std::vector<std::vector<int>>& grid,
-	                 std::vector<bool>& visited,
-	                 const int row )
-    {
-        for( auto col = 0; col < grid.size(); ++col )
-        {
-            if( grid[ row ][ col ] == 1 && visited[ col ] == 0 )
-            {
-                visited[ col ] = 1;
-                dfs( grid, visited, col );
-            }
-        }
-    }
-
+class Solution {
 public:
 
-    int find_circle_num( const std::vector<std::vector<int>>& grid )
+    std::string reverseStr( const std::string& input, const int k ) const
     {
-        const int num_rows = grid.size();
-        const int num_cols = grid[ 0 ].size();
+        auto result = std::string();
+        auto stack = std::stack<char>();
 
-        if( num_rows <= 0 || num_cols <= 0 ) return 0;
+        auto is_rev = true;
 
-        auto visited = std::vector<bool>( num_rows, false );
-        auto num_groups = 0;
-
-        for( auto row = 0; row < num_rows; ++row )
+        for( auto index = std::size_t(); index < input.size(); index += k )
         {
-            if( !visited[ row ] )
+            const auto stop = std::min( index + k, input.size() );
+
+            if( is_rev )
             {
-                dfs( grid, visited, row );
-                num_groups++;
+                for( auto sub = index; sub < stop; ++sub )
+                {
+                    stack.push( input.at( sub ) );
+                }
+
+                while( !stack.empty() )
+                {
+                    result.push_back( stack.top() );
+                    stack.pop();
+                }
             }
+            else
+            {
+                for( auto sub = index; sub < stop; ++sub )
+                {
+                    result.push_back( input.at( sub ) );
+                }
+            }
+
+            is_rev = !is_rev;
         }
 
-        return num_groups;
+        while( !stack.empty() )
+        {
+            result.push_back( stack.top() );
+            stack.pop();
+        }
+
+        return result;
     }
 };
 

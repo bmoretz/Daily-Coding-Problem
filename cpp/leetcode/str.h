@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <map>
 #include <set>
+#include <stack>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -588,6 +589,70 @@ namespace leetcode::str
 			}
 
 			return result.second;
+		}
+	};
+
+	/* 541. Reverse String II.
+
+	Given a string and an integer k, you need to reverse the first k characters for every 2k characters counting from the
+	start of the string. If there are less than k characters left, reverse all of them. If there are less than 2k but greater
+	than or equal to k characters, then reverse the first k characters and left the other as original.
+
+	Example:
+	Input: s = "abcdefg", k = 2
+	Output: "bacdfeg"
+
+	Restrictions:
+		The string consists of lower English letters only.
+		Length of the given string and k will in the range [1, 10000]
+	*/
+
+	class rev_string_ii
+	{
+	public:
+
+		static std::string reverse_str( const std::string& input, const int k )
+		{
+			auto result = std::string();
+			auto stack = std::stack<char>();
+
+			auto is_rev = true;
+
+			for( auto index = std::size_t(); index < input.size(); index += k )
+			{
+				const auto stop = std::min( index + k, input.size() );
+
+				if( is_rev )
+				{
+					for( auto sub = index; sub < stop; ++sub )
+					{
+						stack.push( input.at( sub ) );
+					}
+
+					while( !stack.empty() )
+					{
+						result.push_back( stack.top() );
+						stack.pop();
+					}
+				}
+				else
+				{
+					for( auto sub = index; sub < stop; ++sub )
+					{
+						result.push_back( input.at( sub ) );
+					}
+				}
+
+				is_rev = !is_rev;
+			}
+
+			while( !stack.empty() )
+			{
+				result.push_back( stack.top() );
+				stack.pop();
+			}
+
+			return result;
 		}
 	};
 }
