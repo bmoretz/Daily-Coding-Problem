@@ -1,108 +1,113 @@
 ﻿#include <bits/stdc++.h>
 #include <array>
 
-/* 785. Is Graph Bipartite?
+/* 721. Accounts Merge.
 
-Given an undirected graph, return true if and only if it is bipartite.
+Given a list accounts, each element accounts[i] is a list of strings, where the first element accounts[i][0] is a name,
+and the rest of the elements are emails representing emails of the account.
 
-Recall that a graph is bipartite if we can split it's set of nodes into two independent subsets A and B such that every edge in the graph has one node in A and another node in B.
+Now, we would like to merge these accounts. Two accounts definitely belong to the same person if there is some email that
+is common to both accounts. Note that even if two accounts have the same name, they may belong to different people as people
+could have the same name. A person can have any number of accounts initially, but all of their accounts definitely have the same name.
 
-The graph is given in the following form: graph[i] is a list of indexes j for which the edge between nodes i and j exists.  Each node is an integer between 0 and graph.length - 1.  There are no self edges or parallel edges: graph[i] does not contain i, and it doesn't contain any element twice.
+After merging the accounts, return the accounts in the following format: the first element of each account is the name, and the rest
+of the elements are emails in sorted order. The accounts themselves can be returned in any order.
 
 Example 1:
 
-Input: [[1,3], [0,2], [1,3], [0,2]]
-Output: true
+Input: 
+accounts = [["John", "johnsmith@mail.com", "john00@mail.com"], ["John", "johnnybravo@mail.com"], ["John", "johnsmith@mail.com", "john_newyork@mail.com"],["Mary", "mary@mail.com"]]
+Output: [["John", 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com'],  ["John", "johnnybravo@mail.com"], ["Mary", "mary@mail.com"]]
+
 Explanation: 
 
-\The graph looks like this:
-0----1
-|    |
-|    |
-3----2
-
-We can divide the vertices into two groups: {0, 2} and {1, 3}.
-
-Example 2:
-Input: [[1,2,3], [0,2], [0,1,3], [0,2]]
-Output: false
-Explanation: 
-The graph looks like this:
-0----1
-| \  |
-|  \ |
-3----2
-We cannot find a way to divide the set of nodes into two independent subsets.
+The first and third John's are the same person as they have the common email "johnsmith@mail.com".
+The second John and Mary are different people as none of their email addresses are used by other accounts.
+We could return these lists in any order, for example the answer [['Mary', 'mary@mail.com'], ['John', 'johnnybravo@mail.com'], 
+['John', 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com']] would still be accepted.
 
 Note:
 
-graph will have length in range [1, 100].
-graph[i] will contain integers in range [0, graph.length - 1].
-graph[i] will not contain i or duplicate values.
-The graph is undirected: if any element j is in graph[i], then i will be in graph[j].
+The length of accounts will be in the range [1, 1000].
+The length of accounts[i] will be in the range [1, 10].
+The length of accounts[i][j] will be in the range [1, 30].
+
 */
 
-class is_graph_bipartite
+class account_merger
 {
-    static int RED_NODE;
-    static int BLUE_NODE;
-
-    static bool color_graph( std::vector<std::vector<int>>& graph,
-        std::unordered_map<int, int>& colors,
-        int start )
+    static std::unordered_map<std::string, std::vector<std::string>> to_graph( 
+        const std::vector<std::vector<std::string>>& accounts,
+        std::unordered_map<std::string, std::string>& email_to_name )
     {
-        auto stack = std::stack<int>();
+        auto graph = std::unordered_map<std::string, std::vector<std::string>>();
 
-        colors[ start ] = BLUE_NODE;
-        stack.push( start );
-
-        while( !stack.empty() )
+        for( auto& record : accounts )
         {
-            const auto node = stack.top();
-            stack.pop();
+            const auto name = record[ 0 ];
 
-            for( auto edge : graph[ node ] )
+            for( auto index = 1ULL; index < record.size(); ++index )
             {
-                if( colors.find( edge ) == colors.end() )
-                {
-                    colors[ edge ] = !colors[ node ];
-                    stack.push( edge );
-                }
-                else if( colors[ edge ] == colors[ node ] )
-                {
-                    return false;
-                }
+                const auto email = record[ index ];
+
+                email_to_name[ email ] = name;
+
+                graph[ record[ 1 ] ].push_back( email );
+                graph[ email ].push_back( record[ 1 ] );
             }
         }
 
-        return true;
+        return graph;
     }
 
 public:
 
-    static bool is_bipartite( std::vector<std::vector<int>>& graph )
+    std::vector<std::vector<std::string>> accounts_merge( std::vector<std::vector<std::string>>& accounts ) const
     {
-        if( graph.size() < 2 ) return false;
+        std::unordered_map<std::string, std::string> email_to_name;
+        auto graph = to_graph( accounts, email_to_name );
 
-        std::unordered_map<int, int> colors;
+        auto visited = std::unordered_map<std::string, bool>();
 
-        for( auto node = std::size_t(); node < graph.size(); ++node )
+        std::vector<std::vector<std::string>> result;
+
+        for( auto& node : graph )
         {
-            if( colors.find( node ) != colors.end() )
-                continue;
-
-            if( !color_graph( graph, colors, node ) )
+            const auto email = node.first;
+        	
+            if( !visited[ email ] )
             {
-                return false;
+                std::vector<std::string> group{ email_to_name[ email ] };
+
+                auto process = std::stack<std::string>();
+                process.push( email );
+                visited[ email ] = true;
+
+                while( !process.empty() )
+                {
+                    auto cur = process.top();
+
+                    group.push_back( cur );
+                    process.pop();
+
+                    for( auto& neighbor : node.second )
+                    {
+                        if( !visited[ neighbor ] )
+                        {
+                            process.push( neighbor );
+                            visited[ neighbor ] = true;
+                        }
+                    }
+                }
+
+                std::sort( group.begin(), group.end() );
+                result.push_back( group );
             }
         }
 
-        return true;
+        return result;
     }
 };
-
-int is_graph_bipartite::BLUE_NODE = 0;
-int is_graph_bipartite::RED_NODE = 1;
 
 auto main() -> int
 {
