@@ -1,59 +1,61 @@
 ﻿#include <bits/stdc++.h>
-#include <array>
 
-/* 721. Accounts Merge.
+/* 126. Word Ladder II.
 
-Given a list accounts, each element accounts[i] is a list of strings, where the first element accounts[i][0] is a name,
-and the rest of the elements are emails representing emails of the account.
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s)
+from beginWord to endWord, such that:
 
-Now, we would like to merge these accounts. Two accounts definitely belong to the same person if there is some email that
-is common to both accounts. Note that even if two accounts have the same name, they may belong to different people as people
-could have the same name. A person can have any number of accounts initially, but all of their accounts definitely have the same name.
-
-After merging the accounts, return the accounts in the following format: the first element of each account is the name, and the rest
-of the elements are emails in sorted order. The accounts themselves can be returned in any order.
-
-Example 1:
-
-Input: 
-accounts = [["John", "johnsmith@mail.com", "john00@mail.com"], ["John", "johnnybravo@mail.com"], ["John", "johnsmith@mail.com", "john_newyork@mail.com"],["Mary", "mary@mail.com"]]
-Output: [["John", 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com'],  ["John", "johnnybravo@mail.com"], ["Mary", "mary@mail.com"]]
-
-Explanation: 
-
-The first and third John's are the same person as they have the common email "johnsmith@mail.com".
-The second John and Mary are different people as none of their email addresses are used by other accounts.
-We could return these lists in any order, for example the answer [['Mary', 'mary@mail.com'], ['John', 'johnnybravo@mail.com'], 
-['John', 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com']] would still be accepted.
-
+Only one letter can be changed at a time
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
 Note:
 
-The length of accounts will be in the range [1, 1000].
-The length of accounts[i] will be in the range [1, 10].
-The length of accounts[i][j] will be in the range [1, 30].
+Return an empty list if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+Example 1:
 
+Input:
+
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output:
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+
+Example 2:
+
+Input:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: []
+
+Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
 */
 
-class account_merger
-{
-    static std::unordered_map<std::string, std::vector<std::string>> to_graph( 
-        const std::vector<std::vector<std::string>>& accounts,
-        std::unordered_map<std::string, std::string>& email_to_name )
+class word_ladder_ii {
+
+    static std::string to_wildcard( const std::string& word, const int index )
     {
-        auto graph = std::unordered_map<std::string, std::vector<std::string>>();
+        return word.substr( 0, index ) + "*" + word.substr( index + 1, word.length() );
+    }
 
-        for( auto& record : accounts )
+    static std::unordered_map<std::string, std::vector<std::string>> to_graph( const std::vector<std::string>& word_list )
+    {
+        std::unordered_map<std::string, std::vector<std::string>> graph;
+
+        for( auto& word : word_list )
         {
-            const auto name = record[ 0 ];
-
-            for( auto index = 1ULL; index < record.size(); ++index )
+            for( auto index = std::size_t(); index < word.length(); ++index )
             {
-                const auto email = record[ index ];
-
-                email_to_name[ email ] = name;
-
-                graph[ record[ 1 ] ].push_back( email );
-                graph[ email ].push_back( record[ 1 ] );
+                graph[ to_wildcard( word, index ) ].push_back( word );
             }
         }
 
@@ -62,47 +64,64 @@ class account_merger
 
 public:
 
-    std::vector<std::vector<std::string>> accounts_merge( std::vector<std::vector<std::string>>& accounts ) const
+    static std::vector<std::vector<std::string>> findLadders( const std::string& begin_word,
+        const std::string& end_word, 
+        const std::vector<std::string>& word_list )
     {
-        std::unordered_map<std::string, std::string> email_to_name;
-        auto graph = to_graph( accounts, email_to_name );
+        auto graph = to_graph( word_list );
 
-        auto visited = std::unordered_map<std::string, bool>();
+        auto queue = std::queue<std::vector<std::string>>();
+        queue.push( { begin_word } );
+        std::set<std::string> seen;
 
-        std::vector<std::vector<std::string>> result;
+        auto result = std::vector<std::vector<std::string>>();
 
-        for( auto& node : graph )
+        auto found = false;
+
+        while( !queue.empty() )
         {
-            const auto email = node.first;
-        	
-            if( !visited[ email ] )
+            auto len = queue.size();
+            std::vector<std::string> seen_cur_level;
+
+            for( auto level = 0; level < len; ++level )
             {
-                std::vector<std::string> group{ email_to_name[ email ] };
+                std::vector<std::string> current_level = queue.front();
+                queue.pop();
 
-                auto process = std::stack<std::string>();
-                process.push( email );
-                visited[ email ] = true;
+                auto prev = current_level.back();
 
-                while( !process.empty() )
+                for( auto index = 0; index < prev.size(); ++index )
                 {
-                    auto cur = process.top();
+                    const auto wc = to_wildcard( prev, index );
 
-                    group.push_back( cur );
-                    process.pop();
-
-                    for( auto& neighbor : node.second )
+                    for( auto& adj_word : graph[ wc ] )
                     {
-                        if( !visited[ neighbor ] )
+                        if( seen.find( adj_word ) != seen.end() )
+                            continue;
+
+                        std::vector<std::string> cur = current_level;
+
+                        cur.push_back( adj_word );
+                        seen_cur_level.push_back( adj_word );
+
+                        if( adj_word == end_word )
                         {
-                            process.push( neighbor );
-                            visited[ neighbor ] = true;
+                            found = true;
+                            result.push_back( cur );
+                        }
+                        else
+                        {
+                            queue.push( cur );
                         }
                     }
                 }
-
-                std::sort( group.begin(), group.end() );
-                result.push_back( group );
             }
+
+            if( found )
+                break;
+
+            for( auto w : seen_cur_level )
+                seen.insert( w );
         }
 
         return result;
@@ -111,7 +130,9 @@ public:
 
 auto main() -> int
 {
-	auto input1 = std::vector<std::string>{ };
+
+    const auto result = word_ladder_ii::findLadders( "hit", "cog", { "hot","dot","dog","lot","log","cog" } );
+	
 	
 	return 0;
 }

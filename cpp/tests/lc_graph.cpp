@@ -193,4 +193,36 @@ namespace leetcode::graph::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class word_ladder_ii_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( word_ladder_ii_tests, case1 )
+    {
+        const auto input = std::tuple<std::string, std::string, std::vector<std::string>>
+        {
+            "hit", "cog",
+            { "hot", "dot", "dog", "lot", "log", "cog" }
+        };
+
+        const auto actual = word_ladder_ii::find_ladders( std::get<0>( input ), std::get<1>( input ), std::get<2>( input ) );
+
+    	const auto expected = std::vector<std::vector<std::string>>
+    	{
+            { "hit","hot","dot","dog","cog" },
+            { "hit","hot","lot","log","cog" }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
