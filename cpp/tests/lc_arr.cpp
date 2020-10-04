@@ -766,4 +766,49 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class compare_version_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( compare_version_tests, case1 )
+    {
+        const auto actual = compare_versions::compare_version( "1.01", "1.001" );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( compare_version_tests, case2 )
+    {
+        const auto actual = compare_versions::compare_version( "1.0", "1.0.0" );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( compare_version_tests, case3 )
+    {
+        const auto actual = compare_versions::compare_version( "0.1", "1.1" );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( compare_version_tests, case4 )
+    {
+        const auto actual = compare_versions::compare_version( "1.0.1", "1" );
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

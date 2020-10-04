@@ -1,109 +1,109 @@
 ﻿#include <bits/stdc++.h>
 
-/* 79. Word Search.
+/* 165. Compare Version Numbers.
 
-Given a 2D board and a word, find if the word exists in the grid.
+Given two version numbers, version1 and version2, compare them.
 
-The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or
-vertically neighboring. The same letter cell may not be used more than once.
+Version numbers consist of one or more revisions joined by a dot '.'. Each revision consists of digits
+and may contain leading zeros. Every revision contains at least one character. Revisions are 0-indexed from
+left to right, with the leftmost revision being revision 0, the next revision being revision 1, and so on. For
+example 2.5.33 and 0.1 are valid version numbers.
 
-Example:
+To compare version numbers, compare their revisions in left-to-right order. Revisions are compared using their integer value
+ignoring any leading zeros. This means that revisions 1 and 001 are considered equal. If a version number does not specify a
+revision at an index, then treat the revision as 0. For example, version 1.0 is less than version 1.1 because their revision
+0s are the same, but their revision 1s are 0 and 1 respectively, and 0 < 1.
 
-board =
-[
-  ['A','B','C','E'],
-  ['S','F','C','S'],
-  ['A','D','E','E']
-]
+Return the following:
 
-Given word = "ABCCED", return true.
-Given word = "SEE", return true.
-Given word = "ABCB", return false.
+If version1 < version2, return -1.
+If version1 > version2, return 1.
+
+Otherwise, return 0.
+
+Example 1:
+
+Input: version1 = "1.01", version2 = "1.001"
+Output: 0
+Explanation: Ignoring leading zeroes, both "01" and "001" represent the same integer "1".
+
+Example 2:
+
+Input: version1 = "1.0", version2 = "1.0.0"
+Output: 0
+Explanation: version1 does not specify revision 2, which means it is treated as "0".
+
+Example 3:
+
+Input: version1 = "0.1", version2 = "1.1"
+Output: -1
+Explanation: version1's revision 0 is "0", while version2's revision 0 is "1". 0 < 1, so version1 < version2.
+
+Example 4:
+
+Input: version1 = "1.0.1", version2 = "1"
+Output: 1
+
+Example 5:
+
+Input: version1 = "7.5.2.4", version2 = "7.5.3"
+Output: -1
  
 
 Constraints:
 
-board and word consists only of lowercase and uppercase English letters.
-1 <= board.length <= 200
-1 <= board[i].length <= 200
-1 <= word.length <= 10^3
+1 <= version1.length, version2.length <= 500
+version1 and version2 only contain digits and '.'.
+version1 and version2 are valid version numbers.
+All the given revisions in version1 and version2 can be stored in a 32-bit integer.
 */
 
-class word_search
+class compare_versions
 {
-    static bool solve( std::vector<std::vector<char>>& board,
-        const int row, const int col, int pos,
-        const std::string& word )
+    static std::vector<int> to_vector( const std::string& input )
     {
-        const int num_rows = board.size();
-        const int num_cols = board[ 0 ].size();
+        std::istringstream iss( input );
+        std::string token;
+        std::vector<int> result;
 
-        if( pos == word.size() ) return true;
-
-        if( row < 0 || row >= num_rows ) return false;
-        if( col < 0 || col >= num_cols ) return false;
-        if( board[ row ][ col ] != word[ pos ] ) return false;
-
-        const auto chr = board[ row ][ col ];
-        board[ row ][ col ] = ' ';
-
-        ++pos;
-
-        const auto up = solve( board, row + 1, col, pos, word );
-        const auto down = solve( board, row - 1, col, pos, word );
-        const auto left = solve( board, row, col - 1, pos, word );
-        const auto right = solve( board, row, col + 1, pos, word );
-
-        const auto found = up || down || left || right;
-
-        if( found )
+        while( std::getline( iss, token, '.' ) )
         {
-            return true;
+            if( !token.empty() )
+                result.push_back( std::stoi( token ) );
         }
 
-    	// back track
-        board[ row ][ col ] = chr;
-    	
-        return false;
+        return result;
     }
 
 public:
-
-    static bool exist( std::vector<std::vector<char>>& board,
-        const std::string& word )
+	
+    static int compare_version( const std::string& version1, const std::string& version2 )
     {
-        const int num_rows = board.size();
-        if( num_rows == 0 ) return false;
+        auto left = to_vector( version1 ), right = to_vector( version2 );
 
-        const int num_cols = board[ 0 ].size();
-        if( num_cols == 0 ) return false;
-
-        for( auto row = 0; row < num_rows; ++row )
+        for( auto index = 0; index < std::max( left.size(), right.size() ); ++index )
         {
-            for( auto col = 0; col < num_cols; ++col )
+            const auto l_val = index < left.size() ? left[ index ] : 0;
+            const auto r_val = index < right.size() ? right[ index ] : 0;
+
+            if( l_val > r_val )
             {
-                if( board[ row ][ col ] == word[ 0 ] &&
-                    solve( board, row, col, 0, word ) )
-                {
-                    return true;
-                }
+                return 1;
+            }
+
+        	if( r_val > l_val )
+            {
+                return -1;
             }
         }
 
-        return false;
+        return 0;
     }
 };
 
 auto main() -> int
 {
-    auto input1 = std::vector<std::vector<char>>
-    {
-        { 'A','B','C','E' },
-        { 'S','F','C','S' },
-        { 'A','D','E','E' }
-    };
-
-    const auto actual = word_search::exist( input1, "ABCCED" );
-	
+    const auto actual = compare_versions::compare_version( "1.01", "1.001" );
+		
 	return 0;
 }
