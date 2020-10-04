@@ -811,4 +811,25 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class prod_except_self_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( prod_except_self_tests, case1 )
+    {
+        const auto actual = prod_except_self::product_except_self( { 1, 2, 3, 4 } );
+        const auto expected = std::vector<int>{ 24, 12, 8, 6 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
