@@ -1,138 +1,109 @@
 ﻿#include <bits/stdc++.h>
 
-/* 126. Word Ladder II.
+/* 79. Word Search.
 
-Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s)
-from beginWord to endWord, such that:
+Given a 2D board and a word, find if the word exists in the grid.
 
-Only one letter can be changed at a time
-Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
-Note:
+The word can be constructed from letters of sequentially adjacent cell, where "adjacent" cells are those horizontally or
+vertically neighboring. The same letter cell may not be used more than once.
 
-Return an empty list if there is no such transformation sequence.
-All words have the same length.
-All words contain only lowercase alphabetic characters.
-You may assume no duplicates in the word list.
-You may assume beginWord and endWord are non-empty and are not the same.
-Example 1:
+Example:
 
-Input:
-
-beginWord = "hit",
-endWord = "cog",
-wordList = ["hot","dot","dog","lot","log","cog"]
-
-Output:
+board =
 [
-  ["hit","hot","dot","dog","cog"],
-  ["hit","hot","lot","log","cog"]
+  ['A','B','C','E'],
+  ['S','F','C','S'],
+  ['A','D','E','E']
 ]
 
-Example 2:
+Given word = "ABCCED", return true.
+Given word = "SEE", return true.
+Given word = "ABCB", return false.
+ 
 
-Input:
-beginWord = "hit"
-endWord = "cog"
-wordList = ["hot","dot","dog","lot","log"]
+Constraints:
 
-Output: []
-
-Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
+board and word consists only of lowercase and uppercase English letters.
+1 <= board.length <= 200
+1 <= board[i].length <= 200
+1 <= word.length <= 10^3
 */
 
-class word_ladder_ii {
-
-    static std::string to_wildcard( const std::string& word, const int index )
+class word_search
+{
+    static bool solve( std::vector<std::vector<char>>& board,
+        const int row, const int col, int pos,
+        const std::string& word )
     {
-        return word.substr( 0, index ) + "*" + word.substr( index + 1, word.length() );
-    }
+        const int num_rows = board.size();
+        const int num_cols = board[ 0 ].size();
 
-    static std::unordered_map<std::string, std::vector<std::string>> to_graph( const std::vector<std::string>& word_list )
-    {
-        std::unordered_map<std::string, std::vector<std::string>> graph;
+        if( pos == word.size() ) return true;
 
-        for( auto& word : word_list )
+        if( row < 0 || row >= num_rows ) return false;
+        if( col < 0 || col >= num_cols ) return false;
+        if( board[ row ][ col ] != word[ pos ] ) return false;
+
+        const auto chr = board[ row ][ col ];
+        board[ row ][ col ] = ' ';
+
+        ++pos;
+
+        const auto up = solve( board, row + 1, col, pos, word );
+        const auto down = solve( board, row - 1, col, pos, word );
+        const auto left = solve( board, row, col - 1, pos, word );
+        const auto right = solve( board, row, col + 1, pos, word );
+
+        const auto found = up || down || left || right;
+
+        if( found )
         {
-            for( auto index = std::size_t(); index < word.length(); ++index )
-            {
-                graph[ to_wildcard( word, index ) ].push_back( word );
-            }
+            return true;
         }
 
-        return graph;
+    	// back track
+        board[ row ][ col ] = chr;
+    	
+        return false;
     }
 
 public:
 
-    static std::vector<std::vector<std::string>> findLadders( const std::string& begin_word,
-        const std::string& end_word, 
-        const std::vector<std::string>& word_list )
+    static bool exist( std::vector<std::vector<char>>& board,
+        const std::string& word )
     {
-        auto graph = to_graph( word_list );
+        const int num_rows = board.size();
+        if( num_rows == 0 ) return false;
 
-        auto queue = std::queue<std::vector<std::string>>();
-        queue.push( { begin_word } );
-        std::set<std::string> seen;
+        const int num_cols = board[ 0 ].size();
+        if( num_cols == 0 ) return false;
 
-        auto result = std::vector<std::vector<std::string>>();
-
-        auto found = false;
-
-        while( !queue.empty() )
+        for( auto row = 0; row < num_rows; ++row )
         {
-            auto len = queue.size();
-            std::vector<std::string> seen_cur_level;
-
-            for( auto level = 0; level < len; ++level )
+            for( auto col = 0; col < num_cols; ++col )
             {
-                std::vector<std::string> current_level = queue.front();
-                queue.pop();
-
-                auto prev = current_level.back();
-
-                for( auto index = 0; index < prev.size(); ++index )
+                if( board[ row ][ col ] == word[ 0 ] &&
+                    solve( board, row, col, 0, word ) )
                 {
-                    const auto wc = to_wildcard( prev, index );
-
-                    for( auto& adj_word : graph[ wc ] )
-                    {
-                        if( seen.find( adj_word ) != seen.end() )
-                            continue;
-
-                        std::vector<std::string> cur = current_level;
-
-                        cur.push_back( adj_word );
-                        seen_cur_level.push_back( adj_word );
-
-                        if( adj_word == end_word )
-                        {
-                            found = true;
-                            result.push_back( cur );
-                        }
-                        else
-                        {
-                            queue.push( cur );
-                        }
-                    }
+                    return true;
                 }
             }
-
-            if( found )
-                break;
-
-            for( auto w : seen_cur_level )
-                seen.insert( w );
         }
 
-        return result;
+        return false;
     }
 };
 
 auto main() -> int
 {
+    auto input1 = std::vector<std::vector<char>>
+    {
+        { 'A','B','C','E' },
+        { 'S','F','C','S' },
+        { 'A','D','E','E' }
+    };
 
-    const auto result = word_ladder_ii::findLadders( "hit", "cog", { "hot","dot","dog","lot","log","cog" } );
-	
+    const auto actual = word_search::exist( input1, "ABCCED" );
 	
 	return 0;
 }

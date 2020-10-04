@@ -97,4 +97,65 @@ namespace leetcode::backtrack::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class word_search_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( word_search_tests, case1 )
+	{
+		auto input1 = std::vector<std::vector<char>>
+		{
+			{ 'A','B','C','E' },
+			{ 'S','F','C','S' },
+			{ 'A','D','E','E' }
+		};
+
+		const auto actual = word_search::exist( input1, "ABCCED" );
+
+		const auto expected = true;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( word_search_tests, case2 )
+	{
+		auto input1 = std::vector<std::vector<char>>
+		{
+			{ 'A','B','C','E' },
+			{ 'S','F','C','S' },
+			{ 'A','D','E','E' }
+		};
+
+		const auto actual = word_search::exist( input1, "SEE" );
+
+		const auto expected = true;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( word_search_tests, case3 )
+	{
+		auto input1 = std::vector<std::vector<char>>
+		{
+			{ 'A','B','C','E' },
+			{ 'S','F','C','S' },
+			{ 'A','D','E','E' }
+		};
+
+		const auto actual = word_search::exist( input1, "ABCB" );
+
+		const auto expected = false;
+
+		EXPECT_EQ( actual, expected );
+	}
 }
