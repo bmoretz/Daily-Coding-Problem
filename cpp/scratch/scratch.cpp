@@ -1,61 +1,113 @@
 ﻿#include <bits/stdc++.h>
 
-/* 238. Product of Array Except Self.
+/* 13. Roman to Integer.
 
-Given an array nums of n integers where n > 1,  return an array output such
-that output[i] is equal to the product of all the elements of nums except nums[i].
+Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
 
-Example:
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
 
-Input:  [1,2,3,4]
-Output: [24,12,8,6]
-Constraint: It's guaranteed that the product of the elements of any prefix or suffix of the array (including the whole array) fits in a 32 bit integer.
+For example, 2 is written as II in Roman numeral, just two one's added together. 12 is written as XII,
+which is simply X + II. The number 27 is written as XXVII, which is XX + V + II.
 
-Note: Please solve it without division and in O(n).
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII.
+Instead, the number four is written as IV. Because the one is before the five we subtract it making four. The same principle applies to the
+number nine, which is written as IX. There are six instances where subtraction is used:
 
-Follow up:
-Could you solve it with constant space complexity? (The output array does not count as extra space for the purpose of space complexity analysis.)
+I can be placed before V (5) and X (10) to make 4 and 9. 
+X can be placed before L (50) and C (100) to make 40 and 90. 
+C can be placed before D (500) and M (1000) to make 400 and 900.
+Given a roman numeral, convert it to an integer.
+
+Example 1:
+
+Input: s = "III"
+Output: 3
+Example 2:
+
+Input: s = "IV"
+Output: 4
+Example 3:
+
+Input: s = "IX"
+Output: 9
+Example 4:
+
+Input: s = "LVIII"
+Output: 58
+Explanation: L = 50, V= 5, III = 3.
+Example 5:
+
+Input: s = "MCMXCIV"
+Output: 1994
+Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
+ 
+Constraints:
+
+1 <= s.length <= 15
+s contains only the characters ('I', 'V', 'X', 'L', 'C', 'D', 'M').
+It is guaranteed that s is a valid roman numeral in the range [1, 3999].
 */
 
-class prod_except_self
+class roman_to_integer
 {
-public:
+	static std::unordered_map<char, int> roman_;
 	
-    static std::vector<int> product_except_self( const std::vector<int>& nums )
-    {
-        int N = nums.size();
+ 	[[nodiscard]] static int get_value_at( const std::string& input, 
+		const int index )
+	{
+		if( index < 0 || index >= input.size() ) return 0;
 
-        auto left = std::vector<int>( N );
-        left[ 0 ] = 1;
+		return roman_.at( input[ index ] );
+	}
+	
+public:
 
-        for( auto index = 1; index < N; ++index )
-        {
-            left[ index ] = nums[ index - 1 ] * left[ index - 1 ];
-        }
+	static int roman_to_int( const std::string& input )
+	{
+		auto sum = 0, index = 0;
 
-        auto right = std::vector<int>( N );
-        right[ N - 1 ] = 1;
+		while( index < input.length() )
+		{
+			const auto current = get_value_at( input, index );
+			const auto next = get_value_at( input, index + 1 );
 
-        for( auto index = N - 2; index >= 0; --index )
-        {
-            right[ index ] = nums[ index + 1 ] * right[ index + 1 ];
-        }
+			if( current < next )
+			{
+				sum += next - current;
+				index += 2;
+			}
+			else
+			{
+				sum += current;
+				++index;
+			}
+		}
+		
+		return sum;
+	}
+};
 
-        auto result = std::vector<int>( N );
-
-        for( auto index = 0; index < N; ++index )
-        {
-            result[ index ] = left[ index ] * right[ index ];
-        }
-
-        return result;
-    }
+std::unordered_map<char, int> roman_to_integer::roman_ = {
+	{'M', 1000},
+	{'D', 500},
+	{'C', 100},
+	{'L', 50},
+	{'X', 10},
+	{'V', 5},
+	{'I', 1}
 };
 
 auto main() -> int
 {
-    const auto actual = prod_except_self::product_except_self( { 1, 2, 3, 4 } );
-    const auto expected = std::vector<int>{ 24, 12, 8, 6 };
+    const auto actual = roman_to_integer::roman_to_int( "III" );
+    const auto expected = 3;
 	
 	return 0;
 }

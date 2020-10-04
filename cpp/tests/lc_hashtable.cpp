@@ -226,4 +226,41 @@ namespace leetcode::hashtable::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class roman_to_integer_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( roman_to_integer_tests, case1 )
+    {
+        const auto actual = roman_to_integer::roman_to_int( "III" );
+        const auto expected = 3;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( roman_to_integer_tests, case2 )
+    {
+        const auto actual = roman_to_integer::roman_to_int( "IV" );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( roman_to_integer_tests, case3 )
+    {
+        const auto actual = roman_to_integer::roman_to_int( "LXV" );
+        const auto expected = 65;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
