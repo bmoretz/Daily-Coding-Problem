@@ -639,4 +639,47 @@ namespace leetcode::str::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class minimum_window_substring_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( minimum_window_substring_tests, case1 )
+    {
+        const auto input1 = std::pair<std::string, std::string>( "ADOBECODEBANC", "ABC" );
+        const auto actual = minimum_window_substring::min_window( input1.first, input1.second );
+
+        const auto expected = "BANC";
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( minimum_window_substring_tests, case2 )
+    {
+        const auto input1 = std::pair<std::string, std::string>( "abc", "b" );
+        const auto actual = minimum_window_substring::min_window( input1.first, input1.second );
+
+        const auto expected = "b";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( minimum_window_substring_tests, case3 )
+    {
+        const auto input1 = std::pair<std::string, std::string>( "a", "a" );
+        const auto actual = minimum_window_substring::min_window( input1.first, input1.second );
+
+        const auto expected = "a";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

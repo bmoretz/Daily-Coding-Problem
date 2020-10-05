@@ -1,102 +1,92 @@
 ﻿#include <bits/stdc++.h>
 
-/* 3. Longest Substring Without Repeating Characters.
+/* 76. Minimum Window Substring.
 
-Given a string s, find the length of the longest substring without repeating characters.
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
 
-Example 1:
+Example:
 
-Input: s = "abcabcbb"
-Output: 3
-Explanation: The answer is "abc", with the length of 3.
+Input: S = "ADOBECODEBANC", T = "ABC"
+Output: "BANC"
 
-Example 2:
-
-Input: s = "bbbbb"
-Output: 1
-Explanation: The answer is "b", with the length of 1.
-Example 3:
-
-Input: s = "pwwkew"
-
-Output: 3
-Explanation: The answer is "wke", with the length of 3.
-Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
-Example 4:
-
-Input: s = ""
-Output: 0
- 
-
-Constraints:
-
-0 <= s.length <= 5 * 104
-s consists of English letters, digits, symbols and spaces.
+Note:
+If there is no such window in S that covers all characters in T, return the empty string "".
+If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
 */
 
-class longest_without_repeats
+class minimum_window_substring
 {
-	static auto longest_forward_substring( const std::string& str )
-	{
-		std::set<char> seen;
-		auto longest = 0UL, current = 0UL;
+    static std::unordered_map<char, int> to_freq( const std::string& str )
+    {
+        auto freq = std::unordered_map<char, int>();
 
-		for( auto it = str.begin(); it != str.end(); ++it )
-		{
-			if( seen.find( *it ) == std::end( seen ) )
-			{
-				seen.insert( *it );
-				++current;
-			}
-			else
-			{
-				longest = std::max( longest, current );
-				current = 1UL;
-			}
-		}
+        for( auto chr : str )
+        {
+            freq[ chr ]++;
+        }
 
-		return std::max( longest, current );
-	}
-
-	static auto longest_reverse_substring( const std::string& str )
-	{
-		std::set<char> seen;
-		auto longest = 0UL, current = 0UL;
-
-		for( auto it = str.rbegin(); it != str.rend(); ++it )
-		{
-			if( seen.find( *it ) == std::end( seen ) )
-			{
-				seen.insert( *it );
-				++current;
-			}
-			else
-			{
-				longest = std::max( longest, current );
-				current = 1UL;
-			}
-		}
-
-		return std::max( longest, current );
-	}
+        return freq;
+    }
 
 public:
-	
-	static int length_of_longest_substring( const std::string& str )
-	{
-		const auto fwd = longest_forward_substring( str );
-		const auto rev = longest_reverse_substring( str );
 
-		return std::max( fwd, rev );
-	}
+    static std::string min_window( const std::string& input, 
+        const std::string& to_find )
+    {
+        auto counts = to_freq( to_find );
+
+        auto left = 0, right = 0;
+        auto remain = to_find.length();
+        auto min_len = std::numeric_limits<int>::max();
+        auto min_loc = -1;
+
+        while( right < input.length() )
+        {
+            if( remain != 0 )
+            {
+                auto chr = input[ right ];
+
+                if( counts.find( chr ) != counts.end() &&
+                    --counts[ chr ] >= 0 )
+                {
+                    --remain;
+                }
+
+                right++;
+            }
+
+            while( left < right && remain == 0 )
+            {
+                if( right - left < min_len )
+                {
+                    min_len = right - left;
+                    min_loc = left;
+                }
+
+                auto chr = input[ left ];
+
+                if( counts.find( chr ) != counts.end() &&
+                    ++counts[ chr ] > 0 )
+                {
+                    ++remain;
+                }
+
+                left++;
+            }
+        }
+    	
+        return min_loc == -1 ? 
+            "" :
+    		input.substr( min_loc, min_len );
+    }
 };
 
 auto main() -> int
 {
-	const auto input1 = "abcabcbb";
-    const auto actual = longest_without_repeats::length_of_longest_substring( input1 );
+	const auto input1 = std::pair<std::string, std::string>( "ADOBECODEBANC", "ABC" );
+    const auto actual = minimum_window_substring::min_window( input1.first, input1.second );
 	
-    const auto expected = 3;
+    const auto expected = "BANC";
 	
 	return 0;
 }
