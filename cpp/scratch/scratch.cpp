@@ -1,96 +1,100 @@
 ﻿#include <bits/stdc++.h>
 
-/* 207. Course Schedule.
+/* 3. Longest Substring Without Repeating Characters.
 
-There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
-
-Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
-
-Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+Given a string s, find the length of the longest substring without repeating characters.
 
 Example 1:
 
-Input: numCourses = 2, prerequisites = [[1,0]]
-Output: true
-Explanation: There are a total of 2 courses to take. 
-             To take course 1 you should have finished course 0. So it is possible.
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+
 Example 2:
 
-Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
-Output: false
-Explanation: There are a total of 2 courses to take. 
-             To take course 1 you should have finished course 0, and to take course 0 you should
-             also have finished course 1. So it is impossible.
+Input: s = "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+Example 3:
+
+Input: s = "pwwkew"
+
+Output: 3
+Explanation: The answer is "wke", with the length of 3.
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+Example 4:
+
+Input: s = ""
+Output: 0
+ 
 
 Constraints:
 
-The input prerequisites is a graph represented by a list of edges, not adjacency matrices. Read more about how a graph is represented.
-You may assume that there are no duplicate edges in the input prerequisites.
-1 <= numCourses <= 10^5
+0 <= s.length <= 5 * 104
+s consists of English letters, digits, symbols and spaces.
 */
 
-class course_schedule
+class longest_without_repeats
 {
-    static bool is_cyclic( int course, const std::map<int, std::vector<int>>& courses,
-        std::vector<bool>& checked, std::vector<bool>& path )
-    {
-        if( checked[ course ] ) return false;
-        if( path[ course ] ) return true;
+	static auto longest_forward_substring( const std::string& str )
+	{
+		std::set<char> seen;
+		auto longest = 0UL, current = 0UL;
 
-        if( courses.find( course ) == courses.end() ) return false;
+		for( auto it = str.begin(); it != str.end(); ++it )
+		{
+			if( seen.find( *it ) == std::end( seen ) )
+			{
+				seen.insert( *it );
+				++current;
+			}
+			else
+			{
+				longest = std::max( longest, current );
+				current = 1UL;
+			}
+		}
 
-        path[ course ] = true;
+		return std::max( longest, current );
+	}
 
-        auto result = false;
+	static auto longest_reverse_substring( const std::string& str )
+	{
+		std::set<char> seen;
+		auto longest = 0UL, current = 0UL;
 
-        for( auto child : courses.at( course ) )
-        {
-            result = is_cyclic( child, courses, checked, path );
+		for( auto it = str.rbegin(); it != str.rend(); ++it )
+		{
+			if( seen.find( *it ) == std::end( seen ) )
+			{
+				seen.insert( *it );
+				++current;
+			}
+			else
+			{
+				longest = std::max( longest, current );
+				current = 1UL;
+			}
+		}
 
-            if( result )
-                break;
-        }
-
-        path[ course ] = false;
-        checked[ course ] = true;
-
-        return result;
-    }
+		return std::max( longest, current );
+	}
 
 public:
+	
+	static int length_of_longest_substring( const std::string& str )
+	{
+		const auto fwd = longest_forward_substring( str );
+		const auto rev = longest_reverse_substring( str );
 
-    static bool can_finish( const int num_courses, 
-        const std::vector<std::vector<int>>& prerequisites )
-    {
-        std::map<int, std::vector<int>> courses;
-
-        for( auto& pre : prerequisites )
-        {
-            const auto c = pre.at( 0 );
-            const auto p = pre.at( 1 );
-
-            courses[ c ].push_back( p );
-        }
-
-        auto checked = std::vector<bool>( num_courses );
-        auto path = std::vector<bool>( num_courses );
-
-        for( auto course = 0; course < num_courses; ++course )
-        {
-            if( is_cyclic( course, courses, checked, path ) )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
+		return std::max( fwd, rev );
+	}
 };
 
 auto main() -> int
 {
-    const auto prereqs = std::vector<std::vector<int>>{ {0, 1} };
-    const auto actual = course_schedule::can_finish( 2, prereqs );
+	const auto input1 = "abcabcbb";
+    const auto actual = longest_without_repeats::length_of_longest_substring( input1 );
 	
     const auto expected = 3;
 	

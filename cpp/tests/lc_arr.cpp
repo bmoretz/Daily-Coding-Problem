@@ -832,4 +832,44 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class longest_without_repeats_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( longest_without_repeats_tests, case1 )
+    {
+        const auto input1 = "abcabcbb";
+        const auto actual = longest_without_repeats::length_of_longest_substring( input1 );
+        const auto expected = 3;
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( longest_without_repeats_tests, case2 )
+    {
+        const auto input1 = "bbbbb";
+        const auto actual = longest_without_repeats::length_of_longest_substring( input1 );
+        const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( longest_without_repeats_tests, case3 )
+    {
+        const auto input1 = "pwwkew";
+        const auto actual = longest_without_repeats::length_of_longest_substring( input1 );
+        const auto expected = 3;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
