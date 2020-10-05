@@ -1,112 +1,97 @@
 ﻿#include <bits/stdc++.h>
 
-/* 13. Roman to Integer.
+/* 207. Course Schedule.
 
-Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
 
-Symbol       Value
-I             1
-V             5
-X             10
-L             50
-C             100
-D             500
-M             1000
+Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
 
-For example, 2 is written as II in Roman numeral, just two one's added together. 12 is written as XII,
-which is simply X + II. The number 27 is written as XXVII, which is XX + V + II.
-
-Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII.
-Instead, the number four is written as IV. Because the one is before the five we subtract it making four. The same principle applies to the
-number nine, which is written as IX. There are six instances where subtraction is used:
-
-I can be placed before V (5) and X (10) to make 4 and 9. 
-X can be placed before L (50) and C (100) to make 40 and 90. 
-C can be placed before D (500) and M (1000) to make 400 and 900.
-Given a roman numeral, convert it to an integer.
+Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
 
 Example 1:
 
-Input: s = "III"
-Output: 3
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true
+Explanation: There are a total of 2 courses to take. 
+             To take course 1 you should have finished course 0. So it is possible.
 Example 2:
 
-Input: s = "IV"
-Output: 4
-Example 3:
+Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: There are a total of 2 courses to take. 
+             To take course 1 you should have finished course 0, and to take course 0 you should
+             also have finished course 1. So it is impossible.
 
-Input: s = "IX"
-Output: 9
-Example 4:
-
-Input: s = "LVIII"
-Output: 58
-Explanation: L = 50, V= 5, III = 3.
-Example 5:
-
-Input: s = "MCMXCIV"
-Output: 1994
-Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
- 
 Constraints:
 
-1 <= s.length <= 15
-s contains only the characters ('I', 'V', 'X', 'L', 'C', 'D', 'M').
-It is guaranteed that s is a valid roman numeral in the range [1, 3999].
+The input prerequisites is a graph represented by a list of edges, not adjacency matrices. Read more about how a graph is represented.
+You may assume that there are no duplicate edges in the input prerequisites.
+1 <= numCourses <= 10^5
 */
 
-class roman_to_integer
+class course_schedule
 {
-	static std::unordered_map<char, int> roman_;
-	
- 	[[nodiscard]] static int get_value_at( const std::string& input, 
-		const int index )
-	{
-		if( index < 0 || index >= input.size() ) return 0;
+    static bool is_cyclic( int course, const std::map<int, std::vector<int>>& courses,
+        std::vector<bool>& checked, std::vector<bool>& path )
+    {
+        if( checked[ course ] ) return false;
+        if( path[ course ] ) return true;
 
-		return roman_.at( input[ index ] );
-	}
-	
+        if( courses.find( course ) == courses.end() ) return false;
+
+        path[ course ] = true;
+
+        auto result = false;
+
+        for( auto child : courses.at( course ) )
+        {
+            result = is_cyclic( child, courses, checked, path );
+
+            if( result )
+                break;
+        }
+
+        path[ course ] = false;
+        checked[ course ] = true;
+
+        return result;
+    }
+
 public:
 
-	static int roman_to_int( const std::string& input )
-	{
-		auto sum = 0, index = 0;
+    static bool can_finish( const int num_courses, 
+        const std::vector<std::vector<int>>& prerequisites )
+    {
+        std::map<int, std::vector<int>> courses;
 
-		while( index < input.length() )
-		{
-			const auto current = get_value_at( input, index );
-			const auto next = get_value_at( input, index + 1 );
+        for( auto& pre : prerequisites )
+        {
+            const auto c = pre.at( 0 );
+            const auto p = pre.at( 1 );
 
-			if( current < next )
-			{
-				sum += next - current;
-				index += 2;
-			}
-			else
-			{
-				sum += current;
-				++index;
-			}
-		}
-		
-		return sum;
-	}
-};
+            courses[ c ].push_back( p );
+        }
 
-std::unordered_map<char, int> roman_to_integer::roman_ = {
-	{'M', 1000},
-	{'D', 500},
-	{'C', 100},
-	{'L', 50},
-	{'X', 10},
-	{'V', 5},
-	{'I', 1}
+        auto checked = std::vector<bool>( num_courses );
+        auto path = std::vector<bool>( num_courses );
+
+        for( auto course = 0; course < num_courses; ++course )
+        {
+            if( is_cyclic( course, courses, checked, path ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 };
 
 auto main() -> int
 {
-    const auto actual = roman_to_integer::roman_to_int( "III" );
+    const auto prereqs = std::vector<std::vector<int>>{ {0, 1} };
+    const auto actual = course_schedule::can_finish( 2, prereqs );
+	
     const auto expected = 3;
 	
 	return 0;
