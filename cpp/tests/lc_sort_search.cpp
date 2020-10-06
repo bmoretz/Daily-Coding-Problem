@@ -5,7 +5,7 @@
 
 namespace leetcode::sort_search::tests
 {
-    class sort_search_tests :
+    class rotated_min_tests :
         public ::testing::Test {
 
     protected:
@@ -18,7 +18,7 @@ namespace leetcode::sort_search::tests
         }
     };
 
-    TEST_F( sort_search_tests, case1 )
+    TEST_F( rotated_min_tests, case1 )
     {
         const auto input = std::vector<int>
         {
@@ -31,7 +31,7 @@ namespace leetcode::sort_search::tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( sort_search_tests, case2 )
+    TEST_F( rotated_min_tests, case2 )
     {
         const auto input = std::vector<int>
         {
@@ -44,7 +44,7 @@ namespace leetcode::sort_search::tests
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( sort_search_tests, case3 )
+    TEST_F( rotated_min_tests, case3 )
     {
         const auto input = std::vector<int>
         {
@@ -53,6 +53,41 @@ namespace leetcode::sort_search::tests
 
         const auto actual = rotated_min::findMin( input );
         const auto expected = 1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    class median_of_two_sorted_arr_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( median_of_two_sorted_arr_tests, case1 )
+    {
+        const auto input = std::pair<std::vector<int>, std::vector<int>>( { 1, 3 }, { 2 } );
+
+        const auto actual = median_of_two_sorted_arr::find_median_sorted_arrays( input.first, input.second );
+    	
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( median_of_two_sorted_arr_tests, case2 )
+    {
+        const auto input = std::pair<std::vector<int>, std::vector<int>>( { 1, 3 }, { 2, 4 } );
+
+        const auto actual = median_of_two_sorted_arr::find_median_sorted_arrays( input.first, input.second );
+
+        const auto expected = 2.5;
 
         EXPECT_EQ( actual, expected );
     }
