@@ -872,4 +872,27 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class trapping_rain_water_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( trapping_rain_water_tests, case1 )
+    {
+        const auto input1 = std::vector<int>{ 0,1,0,2,1,0,1,3,2,1,2,1 };
+        const auto actual = trapping_rain_water::trap( input1 );
+
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

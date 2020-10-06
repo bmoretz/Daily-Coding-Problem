@@ -1,92 +1,73 @@
 ﻿#include <bits/stdc++.h>
 
-/* 76. Minimum Window Substring.
+/* 42. Trapping Rain Water.
 
-Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+Given n non-negative integers representing an elevation map where the width of each bar is 1,
+compute how much water it is able to trap after raining.
+
+The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water
+(blue section) are being trapped. Thanks Marcos for contributing this image!
 
 Example:
 
-Input: S = "ADOBECODEBANC", T = "ABC"
-Output: "BANC"
-
-Note:
-If there is no such window in S that covers all characters in T, return the empty string "".
-If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
+Input: [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
 */
 
-class minimum_window_substring
-{
-    static std::unordered_map<char, int> to_freq( const std::string& str )
-    {
-        auto freq = std::unordered_map<char, int>();
+class trapping_rain_water {
 
-        for( auto chr : str )
+    static std::vector<int> get_left_max( const std::vector<int>& numbers )
+    {
+        auto vec = std::vector<int>( numbers.size() );
+        vec[ 0 ] = numbers[ 0 ];
+
+        for( auto index = 1; index < numbers.size(); ++index )
         {
-            freq[ chr ]++;
+            vec[ index ] = std::max( numbers[ index ], vec[ index - 1 ] );
         }
 
-        return freq;
+        return vec;
+    }
+
+    static std::vector<int> get_right_max( const std::vector<int>& numbers )
+    {
+        auto vec = std::vector<int>( numbers.size() );
+        vec[ numbers.size() - 1 ] = numbers[ numbers.size() - 1 ];
+
+        for( int index = numbers.size() - 2; index >= 0; --index )
+        {
+            vec[ index ] = std::max( numbers[ index ], vec[ index + 1 ] );
+        }
+
+        return vec;
     }
 
 public:
 
-    static std::string min_window( const std::string& input, 
-        const std::string& to_find )
+    static int trap( const std::vector<int>& height )
     {
-        auto counts = to_freq( to_find );
+        if( height.empty() ) return 0;
 
-        auto left = 0, right = 0;
-        auto remain = to_find.length();
-        auto min_len = std::numeric_limits<int>::max();
-        auto min_loc = -1;
+        auto left = get_left_max( height );
+        auto right = get_right_max( height );
 
-        while( right < input.length() )
+        auto result = 0;
+
+        for( auto index = 1; index < height.size() - 1; ++index )
         {
-            if( remain != 0 )
-            {
-                auto chr = input[ right ];
-
-                if( counts.find( chr ) != counts.end() &&
-                    --counts[ chr ] >= 0 )
-                {
-                    --remain;
-                }
-
-                right++;
-            }
-
-            while( left < right && remain == 0 )
-            {
-                if( right - left < min_len )
-                {
-                    min_len = right - left;
-                    min_loc = left;
-                }
-
-                auto chr = input[ left ];
-
-                if( counts.find( chr ) != counts.end() &&
-                    ++counts[ chr ] > 0 )
-                {
-                    ++remain;
-                }
-
-                left++;
-            }
+            result += std::min( left[ index ], right[ index ] ) - height[ index ];
         }
-    	
-        return min_loc == -1 ? 
-            "" :
-    		input.substr( min_loc, min_len );
+
+        return result;
     }
 };
 
 auto main() -> int
 {
-	const auto input1 = std::pair<std::string, std::string>( "ADOBECODEBANC", "ABC" );
-    const auto actual = minimum_window_substring::min_window( input1.first, input1.second );
+    const auto input1 = std::vector<int>{ 0,1,0,2,1,0,1,3,2,1,2,1 };
+    const auto actual = trapping_rain_water::trap( input1 );
 	
-    const auto expected = "BANC";
+    const auto expected = 6;
 	
 	return 0;
 }
