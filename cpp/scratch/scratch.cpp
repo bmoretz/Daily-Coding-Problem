@@ -1,109 +1,77 @@
 ﻿#include <bits/stdc++.h>
 
-/* 895. Maximum Frequency Stack.
+#include "../leetcode/tree.h"
 
-Implement FreqStack, a class which simulates the operation of a stack-like data structure.
+using namespace leetcode::tree;
 
-FreqStack has two functions:
+/* 543. Diameter of Binary Tree.
 
-push(int x), which pushes an integer x onto the stack.
-pop(), which removes and returns the most frequent element in the stack.
-If there is a tie for most frequent element, the element closest to the top of the stack is removed and returned. 
+Given a binary tree, you need to compute the length of the diameter of the tree. The diameter of a binary tree
+is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
 
-Example 1:
+Example:
+Given a binary tree
+          1
+         / \
+        2   3
+       / \     
+      4   5
+      
+Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
 
-Input: 
-["FreqStack","push","push","push","push","push","push","pop","pop","pop","pop"],
-[[],[5],[7],[5],[7],[4],[5],[],[],[],[]]
-Output: [null,null,null,null,null,null,null,5,7,5,4]
-Explanation:
-After making six .push operations, the stack is [5,7,5,7,4,5] from bottom to top.  Then:
-
-pop() -> returns 5, as 5 is the most frequent.
-The stack becomes [5,7,5,7,4].
-
-pop() -> returns 7, as 5 and 7 is the most frequent, but 7 is closest to the top.
-The stack becomes [5,7,5,4].
-
-pop() -> returns 5.
-The stack becomes [5,7,4].
-
-pop() -> returns 4.
-The stack becomes [5,7].
- 
-Note:
-
-Calls to FreqStack.push(int x) will be such that 0 <= x <= 10^9.
-It is guaranteed that FreqStack.pop() won't be called if the stack has zero elements.
-The total number of FreqStack.push calls will not exceed 10000 in a single test case.
-The total number of FreqStack.pop calls will not exceed 10000 in a single test case.
-The total number of FreqStack.push and FreqStack.pop calls will not exceed 150000 across all test cases.
- 
+Note: The length of path between two nodes is represented by the number of edges between them.
 */
 
-class frequency_stack
+class tree_diameter
 {
-    std::unordered_map<int, std::stack<int>> group_;
-    std::unordered_map<int, int> freq_;
-    int max_freq_;
-
 public:
-
-    frequency_stack()
-        : max_freq_{ 0 }
-    { }
-
-    void push( const int value )
+    static int diameter_of_binary_tree( tree_node* root )
     {
-        freq_[ value ]++;
-        group_[ freq_[ value ] ].push( value );
-        max_freq_ = std::max( max_freq_, freq_[ value ] );
-    }
+        if( root == nullptr ) return 0;
 
-    int pop()
-    {
-        const auto val = group_[ max_freq_ ].top();
+        auto depths = std::unordered_map<tree_node*, int>();
+        auto stack = std::stack<tree_node*>();
 
-        group_[ max_freq_ ].pop();
-        freq_[ val ]--;
+        stack.push( root );
 
-        if( group_[ max_freq_ ].empty() )
-            --max_freq_;
+        auto max_width = 0;
 
-        return val;
+        while( !stack.empty() )
+        {
+            auto node = stack.top();
+
+            if( node->left && 
+                depths.find( node->left.get() ) == depths.end() )
+            {
+                stack.push( node->left.get() );
+            }
+            else if( node->right.get() && 
+                depths.find( node->right.get() ) == depths.end() )
+            {
+                stack.push( node->right.get() );
+            }
+            else
+            {
+                stack.pop();
+            	
+                auto left = depths[ node->left.get() ],
+            		right = depths[ node->right.get() ];
+
+                depths[ node ] = std::max( left, right ) + 1;
+                max_width = std::max( max_width, left + right );
+            }
+        }
+
+        return max_width;
     }
 };
 
 auto main() -> int
 {
-    auto fs = frequency_stack();
+    const auto root = build_tree_in_order( { "4", "2","", "1", "3" } );
 
-    fs.push( 5 );
-	fs.push( 7 );
-    fs.push( 5 );
-    fs.push( 7 );
-    fs.push( 4 );
-    fs.push( 5 );
-
-    {
-        const auto actual = fs.pop();
-        const auto expected = 5;
-    }
-
-    {
-        const auto actual = fs.pop();
-        const auto expected = 7;
-    }
-
-    {
-        const auto actual = fs.pop();
-        const auto expected = 5;
-    }
-
-    {
-        const auto actual = fs.pop();
-        const auto expected = 4;
-    }
+    const auto actual = tree_diameter::diameter_of_binary_tree( root.get() );
+    const auto expected = 3;
 	
 	return 0;
 }

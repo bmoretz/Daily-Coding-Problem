@@ -596,4 +596,37 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual->val, expected );
     }
+
+    class tree_diameter_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( tree_diameter_tests, case1 )
+    {
+        const auto root = build_tree_in_order( { "4", "2","", "1", "3" } );
+
+        const auto actual = tree_diameter::diameter_of_binary_tree( root.get() );
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( tree_diameter_tests, case2 )
+    {
+        const auto root = build_tree_in_order( { "1" } );
+
+        const auto actual = tree_diameter::diameter_of_binary_tree( root.get() );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
