@@ -895,4 +895,32 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class tree_sum_closest_sw_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( tree_sum_closest_sw_tests, case1 )
+    {
+        auto input1 = std::pair<std::vector<int>, int>
+    	(
+            { -1, 2, 1, -4 },
+            1
+        );
+
+        const auto actual = tree_sum_closest_sw::three_sum_closest( input1.first, input1.second );
+
+        const auto expected = 2;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
