@@ -283,4 +283,57 @@ namespace leetcode::containers::tests
     TEST_F( bounded_blocking_queue_tests, case1 )
     {
     }
+
+    class frequency_stack_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( frequency_stack_tests, case1 )
+    {
+        auto fs = frequency_stack();
+
+        fs.push( 5 );
+        fs.push( 7 );
+        fs.push( 5 );
+        fs.push( 7 );
+        fs.push( 4 );
+        fs.push( 5 );
+
+        {
+            const auto actual = fs.pop();
+            const auto expected = 5;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = fs.pop();
+            const auto expected = 7;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = fs.pop();
+            const auto expected = 5;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = fs.pop();
+            const auto expected = 4;
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
 }

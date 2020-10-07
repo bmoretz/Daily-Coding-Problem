@@ -1,74 +1,109 @@
 ﻿#include <bits/stdc++.h>
 
-/* 16. 3Sum Closest.
+/* 895. Maximum Frequency Stack.
 
-Given an array nums of n integers and an integer target, find three integers in nums such that the sum
-is closest to target. Return the sum of the three integers. You may assume
-that each input would have exactly one solution.
+Implement FreqStack, a class which simulates the operation of a stack-like data structure.
+
+FreqStack has two functions:
+
+push(int x), which pushes an integer x onto the stack.
+pop(), which removes and returns the most frequent element in the stack.
+If there is a tie for most frequent element, the element closest to the top of the stack is removed and returned. 
 
 Example 1:
 
-Input: nums = [-1,2,1,-4], target = 1
-Output: 2
-Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
- 
-Constraints:
+Input: 
+["FreqStack","push","push","push","push","push","push","pop","pop","pop","pop"],
+[[],[5],[7],[5],[7],[4],[5],[],[],[],[]]
+Output: [null,null,null,null,null,null,null,5,7,5,4]
+Explanation:
+After making six .push operations, the stack is [5,7,5,7,4,5] from bottom to top.  Then:
 
-3 <= nums.length <= 10^3
--10^3 <= nums[i] <= 10^3
--10^4 <= target <= 10^4
+pop() -> returns 5, as 5 is the most frequent.
+The stack becomes [5,7,5,7,4].
+
+pop() -> returns 7, as 5 and 7 is the most frequent, but 7 is closest to the top.
+The stack becomes [5,7,5,4].
+
+pop() -> returns 5.
+The stack becomes [5,7,4].
+
+pop() -> returns 4.
+The stack becomes [5,7].
+ 
+Note:
+
+Calls to FreqStack.push(int x) will be such that 0 <= x <= 10^9.
+It is guaranteed that FreqStack.pop() won't be called if the stack has zero elements.
+The total number of FreqStack.push calls will not exceed 10000 in a single test case.
+The total number of FreqStack.pop calls will not exceed 10000 in a single test case.
+The total number of FreqStack.push and FreqStack.pop calls will not exceed 150000 across all test cases.
+ 
 */
 
-class tree_sum_closest_sw
+class frequency_stack
 {
+    std::unordered_map<int, std::stack<int>> group_;
+    std::unordered_map<int, int> freq_;
+    int max_freq_;
 
 public:
 
-    static int three_sum_closest( std::vector<int>& numbers, 
-        const int target )
+    frequency_stack()
+        : max_freq_{ 0 }
+    { }
+
+    void push( const int value )
     {
-        int diff = std::numeric_limits<int>::max(), N = numbers.size();
+        freq_[ value ]++;
+        group_[ freq_[ value ] ].push( value );
+        max_freq_ = std::max( max_freq_, freq_[ value ] );
+    }
 
-        std::sort( numbers.begin(), numbers.end() );
+    int pop()
+    {
+        const auto val = group_[ max_freq_ ].top();
 
-        for( auto index = 0; index < N && diff != 0; ++index )
-        {
-	        auto low = index + 1, high = N - 1;
+        group_[ max_freq_ ].pop();
+        freq_[ val ]--;
 
-            while( low < high )
-            {
-                const auto sum = numbers[ index ] + numbers[ low ] + numbers[ high ];
+        if( group_[ max_freq_ ].empty() )
+            --max_freq_;
 
-                if( abs( target - sum ) < abs( diff ) )
-                {
-                    diff = target - sum;
-                }
-
-                if( sum < target )
-                {
-                    ++low;
-                }
-                else
-                {
-                    --high;
-                }
-            }
-        }
-
-        return target - diff;
+        return val;
     }
 };
 
 auto main() -> int
 {
-    auto input1 = std::pair<std::vector<int>, int> ( 
-        { -1, 2, 1, -4 },
-        1
-    );
-	
-    const auto actual = tree_sum_closest_sw::three_sum_closest( input1.first, input1.second );
-	
-    const auto expected = 2;
+    auto fs = frequency_stack();
+
+    fs.push( 5 );
+	fs.push( 7 );
+    fs.push( 5 );
+    fs.push( 7 );
+    fs.push( 4 );
+    fs.push( 5 );
+
+    {
+        const auto actual = fs.pop();
+        const auto expected = 5;
+    }
+
+    {
+        const auto actual = fs.pop();
+        const auto expected = 7;
+    }
+
+    {
+        const auto actual = fs.pop();
+        const auto expected = 5;
+    }
+
+    {
+        const auto actual = fs.pop();
+        const auto expected = 4;
+    }
 	
 	return 0;
 }
