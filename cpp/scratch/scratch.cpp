@@ -22,56 +22,92 @@ Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
 Note: The length of path between two nodes is represented by the number of edges between them.
 */
 
-class tree_diameter
+class Solution
 {
-public:
-    static int diameter_of_binary_tree( tree_node* root )
+    static inline int CYCLE = -1;
+    static inline int TO_VISIT = 0;
+    static inline int SAFE = 1;
+
+    static auto to_graph( const std::vector<std::vector<int>>& prerequisites )
     {
-        if( root == nullptr ) return 0;
+        auto graph = std::unordered_map<int, std::vector<int>>();
 
-        auto depths = std::unordered_map<tree_node*, int>();
-        auto stack = std::stack<tree_node*>();
-
-        stack.push( root );
-
-        auto max_width = 0;
-
-        while( !stack.empty() )
+        for( auto& prerequsite : prerequisites )
         {
-            auto node = stack.top();
+            const auto course = prerequsite[ 0 ];
+            const auto req = prerequsite[ 1 ];
 
-            if( node->left && 
-                depths.find( node->left.get() ) == depths.end() )
-            {
-                stack.push( node->left.get() );
-            }
-            else if( node->right.get() && 
-                depths.find( node->right.get() ) == depths.end() )
-            {
-                stack.push( node->right.get() );
-            }
-            else
-            {
-                stack.pop();
-            	
-                auto left = depths[ node->left.get() ],
-            		right = depths[ node->right.get() ];
+            graph[ course ].push_back( req );
+        }
 
-                depths[ node ] = std::max( left, right ) + 1;
-                max_width = std::max( max_width, left + right );
+        return graph;
+    }
+
+    static bool is_safe( const int course, 
+        std::unordered_map<int, std::vector<int>>& graph,
+        std::vector<int>& states )
+    {
+    	// if we have already seen this course and determined
+    	// it is safe, then we can safely exit.
+        if( states[ course ] == SAFE )
+            return true;
+
+    	// otherwise, mark the course as HAVING a cycle
+        states[ course ] = CYCLE;
+
+    	// check all the prereqs for this courses
+        for( auto adj : graph[ course ] )
+        {
+        	// if any adj course has a cycle, then we can't finish
+            if( states[ adj ] == CYCLE || !is_safe( adj, graph, states ) )
+                return false;
+        }
+
+		// otherwise, mark this course safe and return
+        states[ course ] = SAFE;
+        return true;
+    }
+
+public:
+
+	/// <summary>
+	/// can finish
+	/// </summary>
+	/// <param name="numCourses">number of courses</param>
+	/// <param name="prerequisites">list of prerequsites</param>
+	/// <returns>if we can take all the courses safely</returns>
+    static bool can_finish( const int numCourses, 
+        const std::vector<std::vector<int>>& prerequisites )
+    {
+    	// convert the course prerequsites to a graph.
+        auto graph = to_graph( prerequisites );
+    	// keep track of the states of each course, all initially set
+    	// to 0 / to visit
+        auto states = std::vector<int>( numCourses, TO_VISIT );
+
+        for( auto course = 0; course < numCourses; ++course )
+        {
+        	// if any course has a cycle, then we cannot finish.
+            if( !is_safe( course, graph, states ) )
+            {
+                return false;
             }
         }
 
-        return max_width;
+        return true;
     }
 };
 
 auto main() -> int
 {
-    const auto root = build_tree_in_order( { "4", "2","", "1", "3" } );
+    const auto prereqs = std::vector<std::vector<int>>
+    {
+        {0, 1}
+    };
 
-    const auto actual = tree_diameter::diameter_of_binary_tree( root.get() );
-    const auto expected = 3;
+    const auto actual = Solution::can_finish( 2, prereqs );
+
+    const auto expected = true;
 	
 	return 0;
 }

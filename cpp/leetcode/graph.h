@@ -383,7 +383,7 @@ namespace leetcode::graph
 
 				for( auto level = 0; level < len; ++level )
 				{
-					std::vector<std::string> current_level = queue.front();
+					auto current_level = queue.front();
 					queue.pop();
 
 					auto prev = current_level.back();
@@ -397,7 +397,7 @@ namespace leetcode::graph
 							if( seen.find( adj_word ) != seen.end() )
 								continue;
 
-							std::vector<std::string> cur = current_level;
+							auto cur = current_level;
 
 							cur.push_back( adj_word );
 							seen_cur_level.push_back( adj_word );
@@ -418,11 +418,116 @@ namespace leetcode::graph
 				if( found )
 					break;
 
-				for( auto w : seen_cur_level )
+				for( const auto& w : seen_cur_level )
 					seen.insert( w );
 			}
 
 			return result;
+		}
+	};
+
+	/* 207. Course Schedule.
+
+	There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
+
+	Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+
+	Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+
+	Example 1:
+
+	Input: numCourses = 2, prerequisites = [[1,0]]
+	Output: true
+	Explanation: There are a total of 2 courses to take.
+				 To take course 1 you should have finished course 0. So it is possible.
+	Example 2:
+
+	Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+	Output: false
+	Explanation: There are a total of 2 courses to take.
+				 To take course 1 you should have finished course 0, and to take course 0 you should
+				 also have finished course 1. So it is impossible.
+
+	Constraints:
+
+	The input prerequisites is a graph represented by a list of edges, not adjacency matrices. Read more about how a graph is represented.
+	You may assume that there are no duplicate edges in the input prerequisites.
+	1 <= numCourses <= 10^5
+	*/
+
+	class course_schedule
+	{
+		static inline int CYCLE = -1;
+		static inline int TO_VISIT = 0;
+		static inline int SAFE = 1;
+
+		static auto to_graph( const std::vector<std::vector<int>>& prerequisites )
+		{
+			auto graph = std::unordered_map<int, std::vector<int>>();
+
+			for( auto& prerequisite : prerequisites )
+			{
+				const auto course = prerequisite[ 0 ];
+				const auto req = prerequisite[ 1 ];
+
+				graph[ course ].push_back( req );
+			}
+
+			return graph;
+		}
+
+		static bool is_safe( const int course,
+			std::unordered_map<int, std::vector<int>>& graph,
+			std::vector<int>& states )
+		{
+			// if we have already seen this course and determined
+			// it is safe, then we can safely exit.
+			if( states[ course ] == SAFE )
+				return true;
+
+			// otherwise, mark the course as HAVING a cycle
+			states[ course ] = CYCLE;
+
+			// check all the prerequisites for this courses
+			for( auto adj : graph[ course ] )
+			{
+				// if any adj course has a cycle, then we can't finish
+				if( states[ adj ] == CYCLE || !is_safe( adj, graph, states ) )
+					return false;
+			}
+
+			// otherwise, mark this course safe and return
+			states[ course ] = SAFE;
+			return true;
+		}
+
+	public:
+
+		/// <summary>
+		/// can finish
+		/// </summary>
+		/// <param name="num_courses">number of courses</param>
+		/// <param name="prerequisites">list of prerequisites</param>
+		/// <returns>if we can take all the courses safely</returns>
+		static bool can_finish( const int num_courses,
+			const std::vector<std::vector<int>>& prerequisites )
+		{
+			// convert the course prerequisites to a graph.
+			auto graph = to_graph( prerequisites );
+			// keep track of the states of each course, all initially set
+			// to 0 / to visit
+			auto states = std::vector<int>( num_courses, TO_VISIT );
+
+			for( auto course = 0; course < num_courses; ++course )
+			{
+				// if any course has a cycle, then we cannot finish.
+				if( !is_safe( course, graph, states ) )
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 	};
 }

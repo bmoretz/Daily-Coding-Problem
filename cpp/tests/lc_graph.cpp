@@ -225,4 +225,46 @@ namespace leetcode::graph::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class course_schedule_tests :
+        public testing::Test
+    {
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( course_schedule_tests, case1 )
+    {
+        const auto prereqs = std::vector<std::vector<int>>
+        {
+            {0, 1}
+        };
+
+        const auto actual = course_schedule::can_finish( 2, prereqs );
+
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( course_schedule_tests, case2 )
+    {
+        const auto prereqs = std::vector<std::vector<int>>
+        {
+            {1, 0},
+            {0, 1}
+        };
+
+        const auto actual = course_schedule::can_finish( 2, prereqs );
+
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
