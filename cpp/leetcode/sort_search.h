@@ -32,7 +32,7 @@ namespace leetcode::sort_search
 	{
 	public:
 
-		static int findMin( const std::vector<int>& numbers )
+		static int find_min( const std::vector<int>& numbers )
 		{
 			if( numbers.empty() ) return 0;
 

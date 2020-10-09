@@ -443,7 +443,7 @@ namespace leetcode::math
 	{
 
 	public:
-		static int maxAbsValExpr( const std::vector<int>& arr1, const std::vector<int>& arr2 )
+		static int max_abs_val_expr( const std::vector<int>& arr1, const std::vector<int>& arr2 )
 		{
 			auto maximum_distance = 0;
 

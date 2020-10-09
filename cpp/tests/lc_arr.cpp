@@ -923,5 +923,28 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
-	
+
+    class container_with_most_water_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( container_with_most_water_tests, case1 )
+    {
+        const auto input1 = std::vector<int>{ 1, 8, 6, 2, 5, 4, 8, 3, 7 };
+
+        const auto actual = container_with_most_water::max_area( input1 );
+
+        const auto expected = 49;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

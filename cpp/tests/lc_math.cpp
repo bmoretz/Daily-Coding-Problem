@@ -351,7 +351,7 @@ namespace leetcode::math::tests
         const auto arr1 = std::vector<int>{ 1, 2, 3, 4 };
         const auto arr2 = std::vector<int>{ -1,4, 5, 6 };
 
-        const auto actual = maximum_abs::maxAbsValExpr( arr1, arr2 );
+        const auto actual = maximum_abs::max_abs_val_expr( arr1, arr2 );
         const auto expected = 0;
     	
         EXPECT_EQ( actual, expected );

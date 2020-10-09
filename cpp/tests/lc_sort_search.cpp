@@ -25,7 +25,7 @@ namespace leetcode::sort_search::tests
             3, 4, 5, 1, 2
         };
 
-        const auto actual = rotated_min::findMin( input );
+        const auto actual = rotated_min::find_min( input );
         const auto expected = 1;
 
         EXPECT_EQ( actual, expected );
@@ -38,7 +38,7 @@ namespace leetcode::sort_search::tests
             4, 5, 6, 7, 0, 1, 2
         };
 
-        const auto actual = rotated_min::findMin( input );
+        const auto actual = rotated_min::find_min( input );
         const auto expected = 0;
 
         EXPECT_EQ( actual, expected );
@@ -51,7 +51,7 @@ namespace leetcode::sort_search::tests
             1, 2
         };
 
-        const auto actual = rotated_min::findMin( input );
+        const auto actual = rotated_min::find_min( input );
         const auto expected = 1;
 
         EXPECT_EQ( actual, expected );
