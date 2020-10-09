@@ -261,4 +261,104 @@ namespace leetcode::dynamic::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class longest_palindromic_string_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( longest_palindromic_string_tests, case1 )
+	{
+		const auto input1 = "babad";
+
+		const auto actual = longest_palindromic_string::longestPalindrome( input1 );
+
+		const auto expected = "aba";
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( longest_palindromic_string_tests, case2 )
+	{
+		const auto input1 = "babad";
+
+		const auto actual = longest_palindromic_string::longestPalindrome( input1 );
+
+		const auto expected = "aba";
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	class coin_changer_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( coin_changer_tests, case1 )
+	{
+		const auto input1 = std::vector<int>{ 1, 2, 5};
+
+		const auto actual = coin_changer::coin_change( input1, 11 );
+
+		const auto expected = 3;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	class word_break_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( word_break_tests, case1 )
+	{
+		const auto input = std::pair<std::string, std::vector<std::string>>(
+			"aaaaaaa",
+			{ "aaa", "aaaa" }
+		);
+
+		const auto actual = word_breaks::word_break( input.first, input.second );
+
+		const auto expected = true;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( word_break_tests, case2 )
+	{
+		const auto input = std::pair<std::string, std::vector<std::string>>(
+			"leetcode",
+			{ "leet", "code" }
+		);
+
+		const auto actual = word_breaks::word_break( input.first, input.second );
+
+		const auto expected = true;
+
+		EXPECT_EQ( actual, expected );
+	}
 }

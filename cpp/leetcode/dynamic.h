@@ -270,4 +270,221 @@ namespace leetcode::dynamic
 			return result;
 		}
 	};
+
+	/* 5. Longest Palindromic Substring.
+
+	Given a string s, return the longest palindromic substring in s.
+
+	Example 1:
+
+	Input: s = "babad"
+	Output: "bab"
+	Note: "aba" is also a valid answer.
+	Example 2:
+
+	Input: s = "cbbd"
+	Output: "bb"
+	Example 3:
+
+	Input: s = "a"
+	Output: "a"
+	Example 4:
+
+	Input: s = "ac"
+	Output: "a"
+
+
+	Constraints:
+
+	1 <= s.length <= 1000
+	s consist of only digits and English letters (lower-case and/or upper-case),
+	*/
+
+	class longest_palindromic_string
+	{
+
+	public:
+
+		static std::string longestPalindrome( const std::string& input )
+		{
+			const auto n = input.length();
+
+			if( n < 2 ) return input;
+
+			auto dp = std::vector<std::vector<bool>>( n,
+				std::vector<bool>( n, false ) );
+
+			auto idx = -1, max_len = 0;
+
+			for( auto index = 0; index < n; ++index )
+			{
+				dp[ index ][ index ] = true;
+				idx = 1;
+				max_len = 1;
+			}
+
+			for( auto index = 0; index < n - 1; ++index )
+			{
+				if( input[ index ] == input[ index + 1 ] )
+				{
+					dp[ index ][ index + 1 ] = true;
+					idx = index;
+					max_len = 2;
+				}
+			}
+
+			for( auto len = 3; len <= n; ++len )
+			{
+				for( auto start = 0; start < n - len + 1; ++start )
+				{
+					const auto stop = start + len - 1;
+
+					if( input[ start ] == input[ stop ] && dp[ start + 1 ][ stop - 1 ] )
+					{
+						dp[ start ][ stop ] = true;
+						idx = start;
+						max_len = stop - start + 1;
+					}
+				}
+			}
+
+			return input.substr( idx, max_len );
+		}
+	};
+
+	/* 322. Coin Change.
+
+	You are given coins of different denominations and a total amount of money amount. Write a function to
+	compute the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up
+	by any combination of the coins, return -1.
+
+	You may assume that you have an infinite number of each kind of coin.
+
+	Example 1:
+
+	Input: coins = [1,2,5], amount = 11
+	Output: 3
+	Explanation: 11 = 5 + 5 + 1
+
+	Example 2:
+
+	Input: coins = [2], amount = 3
+	Output: -1
+	Example 3:
+
+	Input: coins = [1], amount = 0
+	Output: 0
+
+	Example 4:
+
+	Input: coins = [1], amount = 1
+	Output: 1
+
+	Example 5:
+
+	Input: coins = [1], amount = 2
+	Output: 2
+
+	Constraints:
+
+	1 <= coins.length <= 12
+	1 <= coins[i] <= 231 - 1
+	0 <= amount <= 104
+	*/
+
+	class coin_changer
+	{
+
+	public:
+
+		static int coin_change( const std::vector<int>& coins, const int amount )
+		{
+			auto memo = std::vector<int>( amount + 1, amount + 1 );
+
+			memo[ 0 ] = 0;
+
+			for( auto amt = 1; amt <= amount; ++amt )
+			{
+				for( auto coin : coins )
+				{
+					if( coin <= amt )
+					{
+						memo[ amt ] = std::min(
+							memo[ amt ],
+							memo[ amt - coin ] + 1 
+						);
+					}
+				}
+			}
+
+			return memo[ amount ] > amount ? -1 : memo[ amount ];
+		}
+	};
+
+	/* 139. Word Break.
+
+	Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented
+	into a space-separated sequence of one or more dictionary words.
+
+	Note:
+
+	The same word in the dictionary may be reused multiple times in the segmentation.
+	You may assume the dictionary does not contain duplicate words.
+	Example 1:
+
+	Input: s = "leetcode", wordDict = ["leet", "code"]
+	Output: true
+	Explanation: Return true because "leetcode" can be segmented as "leet code".
+	Example 2:
+
+	Input: s = "applepenapple", wordDict = ["apple", "pen"]
+	Output: true
+	Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+				 Note that you are allowed to reuse a dictionary word.
+	Example 3:
+
+	Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+	Output: false
+	*/
+
+	class word_breaks
+	{
+		static auto to_set( const std::vector<std::string>& words )
+		{
+			auto set = std::set<std::string>();
+
+			for( auto& word : words )
+			{
+				set.insert( word );
+			}
+
+			return set;
+		}
+
+	public:
+
+		static bool word_break( const std::string& input,
+			const std::vector<std::string>& word_dict )
+		{
+			auto word_set = to_set( word_dict );
+
+			auto dp = std::vector<bool>( input.length() + 1 );
+			dp[ 0 ] = true;
+
+			for( auto stop = 1; stop <= input.length(); ++stop )
+			{
+				for( auto start = 0; start < stop; ++start )
+				{
+					const auto sub = input.substr( start, stop - start );
+
+					if( dp[ start ] && word_set.find( sub ) != word_set.end() )
+					{
+						dp[ stop ] = true;
+					}
+				}
+			}
+
+			return dp[ input.length() ];
+		}
+	};
 }

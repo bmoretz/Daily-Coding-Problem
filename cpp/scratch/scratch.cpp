@@ -4,110 +4,83 @@
 
 using namespace leetcode::tree;
 
-/* 543. Diameter of Binary Tree.
+/* 139. Word Break.
 
-Given a binary tree, you need to compute the length of the diameter of the tree. The diameter of a binary tree
-is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented
+into a space-separated sequence of one or more dictionary words.
 
-Example:
-Given a binary tree
-          1
-         / \
-        2   3
-       / \     
-      4   5
-      
-Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
+Note:
 
-Note: The length of path between two nodes is represented by the number of edges between them.
+The same word in the dictionary may be reused multiple times in the segmentation.
+You may assume the dictionary does not contain duplicate words.
+Example 1:
+
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+Example 2:
+
+Input: s = "applepenapple", wordDict = ["apple", "pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+             Note that you are allowed to reuse a dictionary word.
+Example 3:
+
+Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+Output: false
 */
 
-class Solution
+class word_breaks
 {
-    static inline int CYCLE = -1;
-    static inline int TO_VISIT = 0;
-    static inline int SAFE = 1;
-
-    static auto to_graph( const std::vector<std::vector<int>>& prerequisites )
+	static auto to_set( const std::vector<std::string>& words )
     {
-        auto graph = std::unordered_map<int, std::vector<int>>();
+        auto set = std::set<std::string>();
 
-        for( auto& prerequsite : prerequisites )
+        for( auto& word : words )
         {
-            const auto course = prerequsite[ 0 ];
-            const auto req = prerequsite[ 1 ];
-
-            graph[ course ].push_back( req );
+            set.insert( word );
         }
 
-        return graph;
-    }
-
-    static bool is_safe( const int course, 
-        std::unordered_map<int, std::vector<int>>& graph,
-        std::vector<int>& states )
-    {
-    	// if we have already seen this course and determined
-    	// it is safe, then we can safely exit.
-        if( states[ course ] == SAFE )
-            return true;
-
-    	// otherwise, mark the course as HAVING a cycle
-        states[ course ] = CYCLE;
-
-    	// check all the prereqs for this courses
-        for( auto adj : graph[ course ] )
-        {
-        	// if any adj course has a cycle, then we can't finish
-            if( states[ adj ] == CYCLE || !is_safe( adj, graph, states ) )
-                return false;
-        }
-
-		// otherwise, mark this course safe and return
-        states[ course ] = SAFE;
-        return true;
+        return set;
     }
 
 public:
 
-	/// <summary>
-	/// can finish
-	/// </summary>
-	/// <param name="numCourses">number of courses</param>
-	/// <param name="prerequisites">list of prerequsites</param>
-	/// <returns>if we can take all the courses safely</returns>
-    static bool can_finish( const int numCourses, 
-        const std::vector<std::vector<int>>& prerequisites )
+	static bool word_break( const std::string& input, 
+        const std::vector<std::string>& word_dict )
     {
-    	// convert the course prerequsites to a graph.
-        auto graph = to_graph( prerequisites );
-    	// keep track of the states of each course, all initially set
-    	// to 0 / to visit
-        auto states = std::vector<int>( numCourses, TO_VISIT );
+        auto word_set = to_set( word_dict );
 
-        for( auto course = 0; course < numCourses; ++course )
+        auto dp = std::vector<bool>( input.length() + 1 );
+        dp[ 0 ] = true;
+
+        for( auto stop = 1; stop <= input.length(); ++stop )
         {
-        	// if any course has a cycle, then we cannot finish.
-            if( !is_safe( course, graph, states ) )
+            for( auto start = 0; start < stop; ++start )
             {
-                return false;
+                const auto sub = input.substr( start, stop - start );
+
+                if( dp[ start ] && word_set.find( sub ) != word_set.end() )
+                {
+                    dp[ stop ] = true;
+                }
             }
         }
 
-        return true;
+        return dp[ input.length() ];
     }
 };
 
 auto main() -> int
 {
-    const auto prereqs = std::vector<std::vector<int>>
-    {
-        {0, 1}
-    };
+    const auto input1 = std::pair<std::string, std::vector<std::string>>(
+        "aaaaaaa",
+        { "aaa", "aaaa" }
+	);
 
-    const auto actual = Solution::can_finish( 2, prereqs );
+    const auto actual = word_breaks::word_break( input1.first, input1.second );
 
-    const auto expected = true;
+    const auto expected = 20;
 	
 	return 0;
 }
