@@ -114,29 +114,27 @@ namespace leetcode::linkedlist
 
 	/* 138. Copy List with Random Pointer.
 
-	A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+	A linked list is given such that each node contains an additional random pointer which could
+	point to any node in the list or null.
 
 	Return a deep copy of the list.
 
-	The Linked List is represented in the input/output as a list of n nodes. Each node is represented as a pair of [val, random_index] where:
+	The Linked List is represented in the input/output as a list of n nodes. Each node is represented
+	as a pair of [val, random_index] where:
 
 	val: an integer representing Node.val
-	random_index: the index of the node (range from 0 to n-1) where random pointer points to, or null if it does not point to any node.
-
+	random_index: the index of the node (range from 0 to n-1) where random pointer points to,
+	or null if it does not point to any node.
 
 	Example 1:
-
 
 	Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
 	Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
 	Example 2:
 
-
 	Input: head = [[1,1],[2,1]]
 	Output: [[1,1],[2,1]]
 	Example 3:
-
-
 
 	Input: head = [[3,null],[3,0],[3,null]]
 	Output: [[3,null],[3,0],[3,null]]
@@ -146,10 +144,10 @@ namespace leetcode::linkedlist
 	Output: []
 	Explanation: Given linked list is empty (null pointer), so return null.
 
-
 	Constraints:
 
 	-10000 <= Node.val <= 10000
+	
 	Node.random is null or pointing to a node in the linked list.
 	Number of Nodes will not exceed 1000.
 	*/
@@ -353,4 +351,180 @@ namespace leetcode::linkedlist
 		}
 	};
 
+	/*25. Reverse Nodes in k-Group
+	Hard
+
+	2730
+
+	373
+
+	Add to List
+
+	Share
+	Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
+
+	k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+
+	Follow up:
+
+	Could you solve the problem in O(1) extra memory space?
+	You may not alter the values in the list's nodes, only nodes itself may be changed.
+
+
+	Example 1:
+
+
+	Input: head = [1,2,3,4,5], k = 2
+	Output: [2,1,4,3,5]
+	Example 2:
+
+
+	Input: head = [1,2,3,4,5], k = 3
+	Output: [3,2,1,4,5]
+	Example 3:
+
+	Input: head = [1,2,3,4,5], k = 1
+	Output: [1,2,3,4,5]
+	Example 4:
+
+	Input: head = [1], k = 1
+	Output: [1]
+
+
+	Constraints:
+
+	The number of nodes in the list is in the range sz.
+	1 <= sz <= 5000
+	0 <= Node.val <= 1000
+	1 <= k <= sz
+	*/
+
+	class reverse_k_groups
+	{
+	public:
+
+		struct list_node
+		{
+			int val;
+			list_node* next;
+
+			list_node() : val( 0 ), next( nullptr ) {}
+			explicit list_node( const int x ) : val( x ), next( nullptr ) {}
+			list_node( const int x, list_node* next ) : val( x ), next( next ) {}
+		};
+
+		static auto build_list( const std::initializer_list<int>& values )
+		{
+			using node = list_node;
+
+			node* head = nullptr, * prev = nullptr;
+
+			for( auto value : values )
+			{
+				const auto current = new node( value );
+
+				if( head == nullptr )
+				{
+					head = current;
+				}
+				else
+				{
+					prev->next = current;
+				}
+
+				prev = current;
+			}
+
+			return head;
+		}
+
+		static auto to_vector( list_node* node )
+		{
+			std::vector<int> result;
+
+			while( node )
+			{
+				result.push_back( node->val );
+				node = node->next;
+			}
+
+			return result;
+		}
+
+		static void clean_up( list_node* node )
+		{
+			while( node )
+			{
+				const auto temp = node->next;
+				delete node;
+				node = temp;
+			}
+		}
+
+		// utility to get the length of the list
+		static int get_length( list_node* head )
+		{
+			auto length = 0;
+			auto node = head;
+
+			while( node )
+			{
+				++length;
+				node = node->next;
+			}
+
+			return length;
+		}
+
+		static list_node* reverse_k_group( list_node* head, const int k )
+		{
+			// the resulting reversed list
+			const auto sentinel = std::make_unique<list_node>( 0 );
+			auto new_node = sentinel.get();
+
+			// get the length of the list so
+			// we can keep track of when to stop
+			// the reversal process
+			auto index = 0, length = get_length( head );
+
+			auto node = head;
+
+			// while we have a reversal group remaining
+			while( index + k <= length )
+			{
+				// save the current node as the new tail
+				// so we can move the sentinel's pointer
+				// up to the current location (this node
+				// will be the last node in the reversed list)
+
+				// ex 1 -> 2 > 3 --> 3 -> 2 -> 1
+				list_node* prev = nullptr, * new_tail = node;
+				// standard list reversal process
+
+				// save next, next = prev, prev = node
+				for( auto pos = 0; pos < k; ++pos )
+				{
+					const auto next = node->next;
+					node->next = prev;
+
+					prev = node;
+					node = next;
+				}
+
+				// add the reversed group to the new list
+				new_node->next = prev;
+				// now the current sentinel node is pointing at the last
+				// element in the list
+				new_node = new_tail;
+				index += k;
+			}
+
+			// no more groups left, so the tail will
+			// just be the remaining elements of the original list
+			if( node != nullptr )
+				new_node->next = node;
+
+			return sentinel->next;
+		}
+	};
 }

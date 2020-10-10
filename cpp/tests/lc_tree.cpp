@@ -629,4 +629,31 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class zig_zag_level_order_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( zig_zag_level_order_tests, case1 )
+    {
+        const auto input1 = build_tree_in_order( { "3", "9", "20", "", "", "15", "7" } );
+        const auto actual = zig_zag_level_order::zigzag_level_order( input1.get() );
+
+        const auto expected = std::vector<std::vector<int>>{
+            { 3 },
+            { 20, 9 },
+            { 15, 7 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

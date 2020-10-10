@@ -336,4 +336,56 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_EQ( actual, nullptr );
     }
+
+    class reverse_k_groups_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( reverse_k_groups_test, case1 )
+    {
+        const auto input1 = reverse_k_groups::build_list( { 1, 2, 3, 4, 5 } );
+        const auto result = reverse_k_groups::reverse_k_group( input1, 3 );
+        const auto actual = reverse_k_groups::to_vector( result );
+
+        reverse_k_groups::clean_up( result );
+
+        const auto expected = std::vector<int>{ 3, 2, 1, 4, 5 };
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_k_groups_test, case2 )
+    {
+        const auto input1 = reverse_k_groups::build_list( { 1, 2, 3, 4, 5 } );
+        const auto result = reverse_k_groups::reverse_k_group( input1, 3 );
+        const auto actual = reverse_k_groups::to_vector( result );
+
+        reverse_k_groups::clean_up( result );
+
+        const auto expected = std::vector<int>{ 3, 2, 1, 4, 5 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_k_groups_test, case3 )
+    {
+        const auto input1 = reverse_k_groups::build_list( { 1, 2, 3, 4, 5 } );
+        const auto result = reverse_k_groups::reverse_k_group( input1, 3 );
+        const auto actual = reverse_k_groups::to_vector( result );
+
+        reverse_k_groups::clean_up( result );
+
+        const auto expected = std::vector<int>{ 3, 2, 1, 4, 5 };
+
+        EXPECT_EQ( expected, expected );
+    }
 }

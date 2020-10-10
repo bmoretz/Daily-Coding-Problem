@@ -4,84 +4,91 @@
 
 using namespace leetcode::tree;
 
-/* 11. Container With Most Water.
+/*103. Binary Tree Zigzag Level Order Traversal.
 
-Given n non-negative integers a1, a2, ..., an , where each represents a point at coordinate (i, ai). n vertical lines
-are drawn such that the two endpoints of the line i is at (i, ai) and (i, 0). Find two lines, which, together with the x-axis
-forms a container, such that the container contains the most water.
+Given a binary tree, return the zigzag level order traversal of its nodes' values. (ie, from left to right,
+then right to left for the next level and alternate between).
 
-Notice that you may not slant the container.
+For example:
 
-Example 1:
-
-Input: height = [1,8,6,2,5,4,8,3,7]
-Output: 49
-Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
-Example 2:
-
-Input: height = [1,1]
-Output: 1
-Example 3:
-
-Input: height = [4,3,2,1,4]
-Output: 16
-Example 4:
-
-Input: height = [1,2,1]
-Output: 2 
-
-Constraints:
-
-2 <= height.length <= 3 * 104
-0 <= height[i] <= 3 * 104
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+   
+return its zigzag level order traversal as:
+[
+  [3],
+  [20,9],
+  [15,7]
+]
 */
 
-class container_with_most_water
+class zig_zag_level_order
 {
 public:
-
-    static int max_area( const std::vector<int>& height )
+	
+    static std::vector<std::vector<int>> zigzag_level_order( tree_node* root )
     {
-        auto max_area = std::numeric_limits<int>::min();
+        // process nodes in level order with a queue, the
+        // key -> level, value -> node
+        auto queue = std::queue<std::pair<int, tree_node*>>();
 
-        // initialize the two pointers
-        int left = 0, right = height.size() - 1;
+        if( root != nullptr )
+            queue.push( std::make_pair( 0, root ) );
 
-        while( left != right )
+        auto result = std::vector<std::vector<int>>();
+
+        while( !queue.empty() )
         {
-            const auto l_val = height[ left ];
-            const auto r_val = height[ right ];
+            const auto& [level, node] = queue.front();
 
-            // the area is always going to be the smallest of
-            // the two towers * the number bucket
-            const auto area = std::min( l_val, r_val ) * ( right - left );
-
-            // if this is bigger than the max area, update it
-            max_area = std::max( max_area, area );
-
-            // move past the smaller of the two
-            // towers 
-            if( l_val < r_val )
+            if( node->left != nullptr )
             {
-                ++left;
+                queue.push( std::make_pair( level + 1, node->left.get() ) );
+            }
+
+            if( node->right != nullptr )
+            {
+                queue.push( std::make_pair( level + 1, node->right.get() ) );
+            }
+
+            // ensure the result vector has storage space
+            if( result.size() <= level )
+            {
+                result.push_back( {} );
+            }
+
+            // if its an odd row, put the value at the front
+            if( level % 2 == 1 )
+            {
+                result[ level ].insert( result[ level ].begin(), node->val );
             }
             else
             {
-                --right;
+                // normal ordering
+                result[ level ].push_back( node->val );
             }
+
+            queue.pop();
         }
 
-        return max_area;
+        return result;
     }
 };
 
 auto main() -> int
 {
-    const auto input1 = std::vector<int>{ 1, 8, 6, 2, 5, 4, 8, 3, 7 };
+    const auto input1 = build_tree_in_order( { "3", "9", "20", "", "", "15", "7" } );
+    const auto actual = zig_zag_level_order::zigzag_level_order( input1.get() );
 
-    const auto actual = container_with_most_water::max_area( input1 );
-
-    const auto expected = 49;
+    const auto expected = std::vector<std::vector<int>>{
+    	{ 3 },
+        { 20, 9 },
+        { 15, 7 }
+    };
 	
 	return 0;
 }
