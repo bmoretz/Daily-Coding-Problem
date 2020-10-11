@@ -1,93 +1,83 @@
 ﻿#include <bits/stdc++.h>
 
-#include "../leetcode/tree.h"
+/*17. Letter Combinations of a Phone Number.
 
-using namespace leetcode::tree;
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number
+could represent. Return the answer in any order.
 
-/*103. Binary Tree Zigzag Level Order Traversal.
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
 
-Given a binary tree, return the zigzag level order traversal of its nodes' values. (ie, from left to right,
-then right to left for the next level and alternate between).
+Example 1:
 
-For example:
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+Example 2:
 
-Given binary tree [3,9,20,null,null,15,7],
-    3
-   / \
-  9  20
-    /  \
-   15   7
-   
-return its zigzag level order traversal as:
-[
-  [3],
-  [20,9],
-  [15,7]
-]
+Input: digits = ""
+Output: []
+Example 3:
+
+Input: digits = "2"
+Output: ["a","b","c"]
+ 
+
+Constraints:
+
+0 <= digits.length <= 4
+digits[i] is a digit in the range ['2', '9'].
 */
 
-class zig_zag_level_order
+class phone_book_combinations
 {
-public:
-	
-    static std::vector<std::vector<int>> zigzag_level_order( tree_node* root )
+    static inline std::map<int, std::vector<char>> digit_map = std::map<int, std::vector<char>>{
+        {2, {'a', 'b', 'c'}},
+        {3, {'d', 'e', 'f'}},
+        {4, {'g', 'h', 'i'}},
+        {5, {'j', 'k', 'l'}},
+        {6, {'m', 'n', 'o'}},
+        {7, {'p', 'q', 'r', 's'}},
+        {8, {'t', 'u', 'v'}},
+        {9, {'w', 'x', 'y', 'z'}}
+    };
+
+    static void gen_perms( std::vector<std::string> & results, 
+        const std::string& digits, const std::string& cur,
+        const int index )
     {
-        // process nodes in level order with a queue, the
-        // key -> level, value -> node
-        auto queue = std::queue<std::pair<int, tree_node*>>();
-
-        if( root != nullptr )
-            queue.push( std::make_pair( 0, root ) );
-
-        auto result = std::vector<std::vector<int>>();
-
-        while( !queue.empty() )
+        if( cur.length() == digits.length() )
         {
-            const auto& [level, node] = queue.front();
-
-            if( node->left != nullptr )
-            {
-                queue.push( std::make_pair( level + 1, node->left.get() ) );
-            }
-
-            if( node->right != nullptr )
-            {
-                queue.push( std::make_pair( level + 1, node->right.get() ) );
-            }
-
-            // ensure the result vector has storage space
-            if( result.size() <= level )
-            {
-                result.push_back( {} );
-            }
-
-            // if its an odd row, put the value at the front
-            if( level % 2 == 1 )
-            {
-                result[ level ].insert( result[ level ].begin(), node->val );
-            }
-            else
-            {
-                // normal ordering
-                result[ level ].push_back( node->val );
-            }
-
-            queue.pop();
+            results.push_back( cur );
+            return;
         }
 
-        return result;
+        const auto cur_digit = digits[ index ] - '0';
+
+        for( auto chr : digit_map[ cur_digit ] )
+        {
+            gen_perms( results, digits, cur + chr, index + 1 );
+        }
+    }
+
+public:
+
+    static std::vector<std::string> letter_combinations( const std::string& digits )
+    {
+        std::vector<std::string> results;
+
+        if( digits.empty() ) return results;
+
+        gen_perms( results, digits, "", 0 );
+
+        return results;
     }
 };
 
 auto main() -> int
 {
-    const auto input1 = build_tree_in_order( { "3", "9", "20", "", "", "15", "7" } );
-    const auto actual = zig_zag_level_order::zigzag_level_order( input1.get() );
+    const auto actual = phone_book_combinations::letter_combinations( "23" );
 
-    const auto expected = std::vector<std::vector<int>>{
-    	{ 3 },
-        { 20, 9 },
-        { 15, 7 }
+    const auto expected = std::vector<std::string>{
+        "ad","ae","af","bd","be","bf","cd","ce","cf"
     };
 	
 	return 0;

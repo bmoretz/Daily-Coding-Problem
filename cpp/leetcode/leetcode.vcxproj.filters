@@ -87,6 +87,9 @@
     <ClInclude Include="simulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="recursion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

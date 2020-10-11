@@ -173,6 +173,7 @@
     <ClInclude Include="palindrome.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="queue.h" />
+    <ClInclude Include="recursion.h" />
     <ClInclude Include="simulation.h" />
     <ClInclude Include="sort_search.h" />
     <ClInclude Include="stack.h" />
