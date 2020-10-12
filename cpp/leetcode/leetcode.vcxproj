@@ -179,6 +179,7 @@
     <ClInclude Include="stack.h" />
     <ClInclude Include="str.h" />
     <ClInclude Include="tree.h" />
+    <ClInclude Include="trie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

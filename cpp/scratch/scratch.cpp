@@ -1,84 +1,111 @@
 ﻿#include <bits/stdc++.h>
 
-/*17. Letter Combinations of a Phone Number.
+/*208. Implement Trie (Prefix Tree).
 
-Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number
-could represent. Return the answer in any order.
+Implement a trie with insert, search, and startsWith methods.
 
-A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+Example:
 
-Example 1:
+Trie trie = new Trie();
 
-Input: digits = "23"
-Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
-Example 2:
+trie.insert("apple");
+trie.search("apple");   // returns true
+trie.search("app");     // returns false
+trie.startsWith("app"); // returns true
+trie.insert("app");   
+trie.search("app");     // returns true
 
-Input: digits = ""
-Output: []
-Example 3:
+Note:
 
-Input: digits = "2"
-Output: ["a","b","c"]
- 
-
-Constraints:
-
-0 <= digits.length <= 4
-digits[i] is a digit in the range ['2', '9'].
+You may assume that all inputs are consist of lowercase letters a-z.
+All inputs are guaranteed to be non-empty strings.
 */
 
-class phone_book_combinations
+class trie
 {
-    static inline std::map<int, std::vector<char>> digit_map = std::map<int, std::vector<char>>{
-        {2, {'a', 'b', 'c'}},
-        {3, {'d', 'e', 'f'}},
-        {4, {'g', 'h', 'i'}},
-        {5, {'j', 'k', 'l'}},
-        {6, {'m', 'n', 'o'}},
-        {7, {'p', 'q', 'r', 's'}},
-        {8, {'t', 'u', 'v'}},
-        {9, {'w', 'x', 'y', 'z'}}
+	/// <summary>
+	/// trie node definition
+	/// </summary>
+    class trie_node
+    {
+    public:
+    	
+        char val{};
+        std::unordered_map<char, std::unique_ptr<trie_node>> children;
+        bool is_word = false;
+    	
+        explicit trie_node( const char value )
+            : val{ value }
+        {}
     };
 
-    static void gen_perms( std::vector<std::string> & results, 
-        const std::string& digits, const std::string& cur,
-        const int index )
+    std::unique_ptr<trie_node> root_;
+
+    trie_node* find_child( const std::string& to_find ) const
     {
-        if( cur.length() == digits.length() )
+        auto current = root_.get();
+
+        for( auto chr : to_find )
         {
-            results.push_back( cur );
-            return;
+            if( current->children.find( chr ) ==
+                current->children.end() )
+            {
+                return nullptr;
+            }
+
+            current = current->children[ chr ].get();
         }
 
-        const auto cur_digit = digits[ index ] - '0';
-
-        for( auto chr : digit_map[ cur_digit ] )
-        {
-            gen_perms( results, digits, cur + chr, index + 1 );
-        }
+        return current;
     }
 
 public:
 
-    static std::vector<std::string> letter_combinations( const std::string& digits )
+    trie()
     {
-        std::vector<std::string> results;
+        root_ = std::make_unique<trie_node>( 0 );
+    }
 
-        if( digits.empty() ) return results;
+    void insert( const std::string& word ) const
+    {
+        auto current = root_.get();
 
-        gen_perms( results, digits, "", 0 );
+        for( auto chr : word )
+        {
+            if( current->children.find( chr ) == current->children.end() )
+            {
+                current->children[ chr ] = std::make_unique<trie_node>( chr );
+            }
 
-        return results;
+            current = current->children[ chr ].get();
+        }
+
+        current->is_word = true;
+    }
+
+    bool search( const std::string& word ) const
+    {
+        const auto child = find_child( word );
+
+        return child && child->is_word;
+    }
+
+    bool starts_with( std::string& prefix ) const
+    {
+        return find_child( prefix );
     }
 };
 
 auto main() -> int
 {
-    const auto actual = phone_book_combinations::letter_combinations( "23" );
+    auto searcher = trie();
 
-    const auto expected = std::vector<std::string>{
-        "ad","ae","af","bd","be","bf","cd","ce","cf"
-    };
+    searcher.insert( "apple" );
+    searcher.search( "apple" );   // returns true
+    searcher.search( "app" );     // returns false
+    searcher.starts_with( "app" ); // returns true
+    searcher.insert( "app" );
+    searcher.search( "app" );     // returns true
 	
 	return 0;
 }

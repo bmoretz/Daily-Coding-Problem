@@ -39,7 +39,7 @@ namespace leetcode::recursion
 
     class phone_book_combinations
     {
-        static inline std::map<int, std::vector<char>> digit_map = std::map<int, std::vector<char>>{
+        static inline std::map<int, std::vector<char>> digit_map_ = std::map<int, std::vector<char>>{
             {2, {'a', 'b', 'c'}},
             {3, {'d', 'e', 'f'}},
             {4, {'g', 'h', 'i'}},
@@ -62,7 +62,7 @@ namespace leetcode::recursion
 
             const auto cur_digit = digits[ index ] - '0';
 
-            for( auto chr : digit_map[ cur_digit ] )
+            for( auto chr : digit_map_[ cur_digit ] )
             {
                 gen_perms( results, digits, cur + chr, index + 1 );
             }
