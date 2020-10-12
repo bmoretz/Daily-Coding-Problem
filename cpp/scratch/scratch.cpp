@@ -1,88 +1,124 @@
 ﻿#include <bits/stdc++.h>
 
-/*22. Generate Parentheses.
+#include "../leetcode/tree.h"
+using namespace leetcode::tree;
 
-Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+/*236. Lowest Common Ancestor of a Binary Tree.
+
+Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes
+p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
 
 Example 1:
 
-Input: n = 3
-Output: ["((()))","(()())","(())()","()(())","()()()"]
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
 Example 2:
 
-Input: n = 1
-Output: ["()"]
- 
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+Output: 5
+Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+Example 3:
+
+Input: root = [1,2], p = 1, q = 2
+Output: 1
+
 Constraints:
 
-1 <= n <= 8
+The number of nodes in the tree is in the range [2, 105].
+-109 <= Node.val <= 109
+All Node.val are unique.
+p != q
+p and q will exist in the tree.
 */
 
-class gen_parenthesis
+class lowest_common_ancestor_bfs
 {
-    static bool is_valid( const std::string& str )
+    static std::unordered_map<tree_node*, tree_node*> get_hierarchy( tree_node* root )
     {
-        auto balance = 0;
+        auto map = std::unordered_map<tree_node*, tree_node*>();
+        auto queue = std::queue<std::pair<tree_node*, tree_node*>>();
 
-        for( auto c : str )
+    	// push the root node into the queue
+        queue.push( std::make_pair( nullptr, root ) );
+
+        while( !queue.empty() )
         {
-            if( c == '(' )
-                ++balance;
-            else
-                --balance;
+        	// current node
+            const auto& [parent, node] = queue.front();
 
-            if( balance < 0 )
-                return false;
+        	// if we haven't seen this node before
+            if( map.find( node ) == map.end() )
+            {
+            	// store it's parent
+                map[ node ] = parent;
+
+            	// process children
+            	
+                if( node->left )
+                {
+                    queue.push( std::make_pair( node, node->left.get() ) );
+                }
+
+                if( node->right )
+                {
+                    queue.push( std::make_pair( node, node->right.get() ) );
+                }
+            }
+
+            queue.pop();
         }
 
-        return balance == 0;
-    }
-
-    static void generate( std::vector<std::string>& results,
-        std::string& current, const int pos )
-    {
-        if( pos == current.length() )
-        {
-            if( is_valid( current ) )
-                results.push_back( current );
-        }
-        else
-        {
-            current[ pos ] = '(';
-            generate( results, current, pos + 1 );
-            current[ pos ] = ')';
-            generate( results, current, pos + 1 );
-        }
+        return map;
     }
 
 public:
 
-    static std::vector<std::string> generate_parenthesis( const int n )
+    static tree_node* lowest_common_ancestor( tree_node* root, tree_node* p, tree_node* q )
     {
-        auto combinations = std::vector<std::string>();
+    	// get the hierarchy of the tree [node->parent] form
+        auto hierarchy = get_hierarchy( root );
 
-    	// create a buffer string of 2*n length (2 chars for each pair)
-        auto buff = std::string( n * 2, ' ' );
+        auto seen = std::set<tree_node*>();
 
-    	// gen recursively
-        generate( combinations, buff, 0 );
+        auto node = p;
+        // start at p, process
+    	// all of its parent nodes from lowest
+    	// to the root
+        while( node != nullptr )
+        {
+            seen.insert( node );
 
-        return combinations;
+            node = hierarchy[ node ];
+        }
+
+        node = q;
+        // now process q
+    	// the first result that we find
+    	// will be the solution
+        while( node != nullptr )
+        {
+            if( seen.find( node ) != seen.end() )
+                return node;
+
+            node = hierarchy[ node ];
+        }
+
+    	// no common ancestors
+        return nullptr;
     }
 };
 
 auto main() -> int
 {
-    const auto actual = gen_parenthesis::generate_parenthesis( 3 );
+    auto root = build_tree_in_order( 
+        std::vector<std::string>{ "3", "5", "1", "6", "2", "0", "8", "", "", "7", "4" } );
 
-    const auto expected = std::vector<std::string>
-    {
-        "((()))",
-    	"(()())",
-    	"(())()",
-    	"()(())",
-    	"()()()"
-    };
+    const auto actual = lowest_common_ancestor_bfs::lowest_common_ancestor( root.get(), root->left.get(), root->right.get() );
+	
+    const auto expected = root.get();
 	
 	return 0;
 }

@@ -656,4 +656,29 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class lowest_common_ancestor_bfs_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( lowest_common_ancestor_bfs_tests, case1 )
+    {
+        auto root = build_tree_in_order(
+            std::vector<std::string>{ "3", "5", "1", "6", "2", "0", "8", "", "", "7", "4" } );
+
+        const auto actual = lowest_common_ancestor_bfs::lowest_common_ancestor( root.get(), root->left.get(), root->right.get() );
+
+        const auto expected = root.get();
+
+        EXPECT_EQ( actual, expected );
+    }
 }
