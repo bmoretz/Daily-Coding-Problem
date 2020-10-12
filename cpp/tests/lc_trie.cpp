@@ -32,4 +32,42 @@ namespace leetcode::trie::tests
         searcher.insert( "app" );
         EXPECT_EQ( searcher.search( "app" ), true );
     }
+
+    class word_search_ii_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( word_search_ii_tests, case1 )
+    {
+        const auto board = std::vector<std::vector<char>>
+        {
+            { 'o', 'a', 'a', 'n' },
+            { 'e', 't', 'a', 'e' },
+            { 'i', 'h', 'k', 'r' },
+            { 'i', 'f', 'l', 'v' }
+        };
+
+        const auto to_find = std::vector<std::string>
+        {
+            "oath", "pea", "eat", "rain"
+        };
+
+        const auto actual = word_search_ii::find_words( board, to_find );
+
+        const auto expected = std::vector<std::string>
+    	{
+            "oath", "eat"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
