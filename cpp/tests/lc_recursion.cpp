@@ -28,4 +28,33 @@ namespace leetcode::recursion::tests
     	
         EXPECT_EQ( actual, expected );
     }
+
+    class gen_parenthesis_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( gen_parenthesis_tests, case1 )
+    {
+        const auto actual = gen_parenthesis::generate_parenthesis( 3 );
+
+        const auto expected = std::vector<std::string>
+        {
+            "((()))",
+            "(()())",
+            "(())()",
+            "()(())",
+            "()()()"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
