@@ -681,4 +681,33 @@ namespace leetcode::tree::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class serialize_tree_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( serialize_tree_tests, case1 )
+    {
+        const auto root = build_tree_in_order( { "1", "2", "3", "", "", "4", "5" } );
+
+        const auto actual = serialize_tree::serialize( root.get() );
+
+        const auto expected_str = "1,2,3,#,#,4,5";
+
+        const auto actual_tree = serialize_tree::deserialize( actual );
+    	
+        EXPECT_EQ( actual_tree->val, 1 );
+
+        EXPECT_EQ( actual_tree->left->val, 2 );
+        EXPECT_EQ( actual_tree->right->val, 3 );
+    }
 }

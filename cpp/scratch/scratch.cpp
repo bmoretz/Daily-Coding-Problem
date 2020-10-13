@@ -3,181 +3,167 @@
 #include "../leetcode/tree.h"
 using namespace leetcode::tree;
 
-/* 675. Cut Off Trees for Golf Event.
+/* 297. Serialize and Deserialize Binary Tree.
 
-You are asked to cut off trees in a forest for a golf event. The forest is represented as a non-negative 2D map, in this map:
+Serialization is the process of converting a data structure or object into a sequence of bits so that it can be
+stored in a file or memory buffer, or transmitted across a network connection link to be
+reconstructed later in the same or another computer environment.
 
-0 represents the obstacle can't be reached.
-1 represents the ground can be walked through.
+Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your
+serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be
+serialized to a string and this string can be deserialized to the original tree structure.
 
-The place with number bigger than 1 represents a tree can be walked through, and this positive number represents the tree's height.
-In one step you can walk in any of the four directions top, bottom, left and right also when standing in a point which is a tree you
-can decide whether or not to cut off the tree.
-
-You are asked to cut off all the trees in this forest in the order of tree's height - always cut off the tree with lowest height first. And
-after cutting, the original place has the tree will become a grass (value 1).
-
-You will start from the point (0, 0) and you should output the minimum steps you need to walk to cut off all the trees. If you can't
-cut off all the trees, output -1 in that situation.
-
-You are guaranteed that no two trees have the same height and there is at least one tree needs to be cut off.
+Clarification: The input/output format is the same as how LeetCode serializes a binary tree. You do not necessarily need
+to follow this format, so please be creative and come up with different approaches yourself.
 
 Example 1:
 
-Input: 
-[
- [1,2,3],
- [0,0,4],
- [7,6,5]
-]
-Output: 6
- 
-
+Input: root = [1,2,3,null,null,4,5]
+Output: [1,2,3,null,null,4,5]
 Example 2:
 
-Input: 
-[
- [1,2,3],
- [0,0,0],
- [7,6,5]
-]
-Output: -1
- 
-
+Input: root = []
+Output: []
 Example 3:
 
-Input: 
-[
- [2,3,4],
- [0,0,5],
- [8,7,6]
-]
-Output: 6
-Explanation: You started from the point (0,0) and you can cut off the tree in (0,0) directly without walking.
+Input: root = [1]
+Output: [1]
+Example 4:
+
+Input: root = [1,2]
+Output: [1,2]
  
 
 Constraints:
 
-1 <= forest.length <= 50
-1 <= forest[i].length <= 50
-0 <= forest[i][j] <= 10^9
+The number of nodes in the tree is in the range [0, 104].
+-1000 <= Node.val <= 1000
 */
 
-class trim_forest {
-
-    static inline std::vector<int> all_dirs = { -1, 0, 1, 0, -1 };
-
-    static int next_step( const std::vector<std::vector<int>>& forest,
-        const int row, const int col,
-        const int prev_row, const int prev_col )
-    {
-        if( row == prev_row && col == prev_col ) return 0;
-
-        const auto num_rows = forest.size();
-        const auto num_cols = forest[ 0 ].size();
-
-        auto queue = std::queue<std::pair<int, int>>();
-
-        queue.push( { row, col } );
-
-        auto visited = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols, 0 ) );
-
-        visited[ row ][ col ] = 1;
-
-        auto step = 0;
-
-        while( !queue.empty() )
-        {
-            ++step;
-
-            const auto sz = queue.size();
-
-            for( auto index = 0; index < sz; ++index )
-            {
-                const auto [cur_row, cur_col] = queue.front();
-                queue.pop();
-
-                for( auto dir = 0; dir < 4; ++dir )
-                {
-                    auto next_row = cur_row + all_dirs[ dir ],
-                        next_col = cur_col + all_dirs[ dir + 1 ];
-
-                    if( next_row < 0 || next_row >= num_rows ) continue;
-                    if( next_col < 0 || next_col >= num_cols ) continue;
-                    if( visited[ next_row ][ next_col ] == 1 || forest[ next_row ][ next_col ] == 0 ) continue;
-
-                    if( next_row == prev_row && next_col == prev_col )
-                        return step;
-
-                    visited[ next_row ][ next_col ] = 1;
-                    queue.push( { next_row, next_col } );
-                }
-
-            }
-        }
-
-        return -1;
-    }
+class serialize_tree
+{
+    static inline std::string delimiter = ",";
+    static inline std::string null_node = "#";
 
 public:
 
-    static int cut_off_trees( const std::vector<std::vector<int>>& forest )
+    // Encodes a tree to a single string.
+    static std::string serialize( tree_node* root )
     {
-        if( forest.empty() || forest[ 0 ].empty() ) return 0;
+        std::string result;
 
-        const auto num_rows = forest.size();
-        const auto num_cols = forest[ 0 ].size();
+        if( root == nullptr ) return result;
 
-        auto trees = std::vector<std::vector<int>>();
+        // enqueue the root node
+        auto queue = std::queue<tree_node*>();
+        queue.push( root );
 
-        for( auto row = 0; row < num_rows; ++row )
+        while( !queue.empty() )
         {
-            for( auto col = 0; col < num_cols; ++col )
-            {
-                const auto tree_size = forest[ row ][ col ];
+            // process the front of the queue
+            const auto node = queue.front();
 
-                if( tree_size > 1 )
+            // if the node is null, insert a null delimiter
+            if( node == nullptr )
+            {
+                result += null_node + delimiter;
+            }
+            else
+            {
+                // otherwise push both left/right nodes (even if null)
+                // we will pick them up later in the above null processing
+                // logic
+                queue.push( node->left.get() );
+                queue.push( node->right.get() );
+
+                // update result set
+                result += std::to_string( node->val ) + delimiter;
+            }
+
+            queue.pop();
+        }
+
+        // remove the empty nodes & trailing delim from the end, ex, "#,#,#,#,"
+        if( !result.empty() )
+            result.erase( result.find_last_not_of( null_node + delimiter ) + 1 );
+
+        std::cout << result << std::endl;
+
+        return result;
+    }
+
+    // Decodes your encoded data to tree.
+    static tree_node* deserialize( const std::string& data )
+    {
+        if( data.empty() )
+            return nullptr;
+
+        auto queue = std::queue<std::string>();
+
+        // process the values as strings
+        // so we lose the null delimiters
+        std::string token;
+        std::stringstream ss( data );
+
+        while( getline( ss, token, ',' ) )
+        {
+            std::cout << token;
+
+            queue.push( token );
+        }
+
+        // new root
+        auto nodes = std::queue<tree_node*>();
+
+        // this can't be null_node
+        const auto root = std::make_unique<tree_node>( std::stoi( queue.front() ) );
+        nodes.push( root.get() );
+
+        queue.pop();
+
+        // we basically use two queues
+        // synchronized to put the correct
+        // values from the data into
+        // the tree at the same position
+        // as it was entered in the serialization process
+        while( !queue.empty() )
+        {
+            const auto node = nodes.front();
+
+            const auto left = queue.front();
+            queue.pop();
+
+            if( left != null_node )
+            {
+                node->left = std::make_unique<tree_node>( stoi( left ) );
+                nodes.push( node->left.get() );
+            }
+
+            if( !queue.empty() )
+            {
+                auto right = queue.front();
+                queue.pop();
+
+                if( right != null_node )
                 {
-                    trees.push_back( { tree_size, row, col } );
+                    node->right = std::make_unique<tree_node>( stoi( right ) );
+                    nodes.push( node->right.get() );
                 }
             }
+
+            nodes.pop();
         }
 
-        std::sort( trees.begin(), trees.end() );
-
-        auto answer = 0;
-
-        for( auto index = 0, cur_row = 0, cur_col = 0;
-            index < trees.size(); ++index )
-        {
-            const auto cur_tree = trees[ index ];
-            const auto step = next_step( forest,
-                cur_row, cur_col, 
-                cur_tree[ 1 ], cur_tree[ 2 ] );
-
-            if( step == -1 )
-                return -1;
-
-            answer += step;
-
-            cur_row = cur_tree[ 1 ];
-            cur_col = cur_tree[ 2 ];
-        }
-
-        return answer;
+        return root.get();
     }
 };
 
 auto main() -> int
 {
-    const auto input = std::vector<std::vector<int>>
-    {
-        {1, 2, 3},
-        {0, 0, 4},
-        {7, 6, 5}
-    };
+    const auto root = build_tree_in_order( { "1", "2", "3", "", "", "4", "5" } );
 	
-    const auto actual = trim_forest::cut_off_trees( input );
+    const auto actual = serialize_tree::serialize( root.get() );
+
 	
     const auto expected = 6;
 	
