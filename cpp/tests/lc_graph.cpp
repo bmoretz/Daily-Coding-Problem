@@ -267,4 +267,55 @@ namespace leetcode::graph::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class trim_forest_tests :
+        public testing::Test
+    {
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( trim_forest_tests, case1 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+            {1, 2, 3},
+            {0, 0, 4},
+            {7, 6, 5}
+        };
+
+        const auto actual = trim_forest::cut_off_trees( input );
+
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( trim_forest_tests, case2 )
+    {
+        const auto input = std::vector<std::vector<int>>
+        {
+	        {65373036,2456655,62996182,77165169,11057485,52535331,63698310,27129253,84289874},
+	        {18570009,29409292,57221123,27322139,5967050,25641409,59807085,41287955,67002016},
+	        {59925393,84342153,95847740,96720219,95877289,6633239,96769252,68980562,99717888},
+	        {38092644,69430191,46393504,75242757,38524238,92687163,72390599,86031769,97616262},
+	        {63895259,13582559,38270398,10833444,47844868,78209342,89000764,505213,82251326},
+	        {99638437,70547733,81264676,80087375,33825268,19488243,21385757,13931827,81384999},
+	        {78687499,27054031,82935633,59857240,16454994,14764718,15186553,54119613,24432831},
+	        {66192618,83872603,19246010,82241107,14604727,65304619,98680361,48033577,56249633},
+	        {82869596,12875294,85175067,6220745,31624067,97537659,73504597,90040176,90033521}
+        };
+
+        const auto actual = trim_forest::cut_off_trees( input );
+
+        const auto expected = 496;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

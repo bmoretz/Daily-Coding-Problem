@@ -3,122 +3,183 @@
 #include "../leetcode/tree.h"
 using namespace leetcode::tree;
 
-/*236. Lowest Common Ancestor of a Binary Tree.
+/* 675. Cut Off Trees for Golf Event.
 
-Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+You are asked to cut off trees in a forest for a golf event. The forest is represented as a non-negative 2D map, in this map:
 
-According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes
-p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+0 represents the obstacle can't be reached.
+1 represents the ground can be walked through.
+
+The place with number bigger than 1 represents a tree can be walked through, and this positive number represents the tree's height.
+In one step you can walk in any of the four directions top, bottom, left and right also when standing in a point which is a tree you
+can decide whether or not to cut off the tree.
+
+You are asked to cut off all the trees in this forest in the order of tree's height - always cut off the tree with lowest height first. And
+after cutting, the original place has the tree will become a grass (value 1).
+
+You will start from the point (0, 0) and you should output the minimum steps you need to walk to cut off all the trees. If you can't
+cut off all the trees, output -1 in that situation.
+
+You are guaranteed that no two trees have the same height and there is at least one tree needs to be cut off.
 
 Example 1:
 
-Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
-Output: 3
-Explanation: The LCA of nodes 5 and 1 is 3.
+Input: 
+[
+ [1,2,3],
+ [0,0,4],
+ [7,6,5]
+]
+Output: 6
+ 
+
 Example 2:
 
-Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
-Output: 5
-Explanation: The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.
+Input: 
+[
+ [1,2,3],
+ [0,0,0],
+ [7,6,5]
+]
+Output: -1
+ 
+
 Example 3:
 
-Input: root = [1,2], p = 1, q = 2
-Output: 1
+Input: 
+[
+ [2,3,4],
+ [0,0,5],
+ [8,7,6]
+]
+Output: 6
+Explanation: You started from the point (0,0) and you can cut off the tree in (0,0) directly without walking.
+ 
 
 Constraints:
 
-The number of nodes in the tree is in the range [2, 105].
--109 <= Node.val <= 109
-All Node.val are unique.
-p != q
-p and q will exist in the tree.
+1 <= forest.length <= 50
+1 <= forest[i].length <= 50
+0 <= forest[i][j] <= 10^9
 */
 
-class lowest_common_ancestor_bfs
-{
-    static std::unordered_map<tree_node*, tree_node*> get_hierarchy( tree_node* root )
-    {
-        auto map = std::unordered_map<tree_node*, tree_node*>();
-        auto queue = std::queue<std::pair<tree_node*, tree_node*>>();
+class trim_forest {
 
-    	// push the root node into the queue
-        queue.push( std::make_pair( nullptr, root ) );
+    static inline std::vector<int> all_dirs = { -1, 0, 1, 0, -1 };
+
+    static int next_step( const std::vector<std::vector<int>>& forest,
+        const int row, const int col,
+        const int prev_row, const int prev_col )
+    {
+        if( row == prev_row && col == prev_col ) return 0;
+
+        const auto num_rows = forest.size();
+        const auto num_cols = forest[ 0 ].size();
+
+        auto queue = std::queue<std::pair<int, int>>();
+
+        queue.push( { row, col } );
+
+        auto visited = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols, 0 ) );
+
+        visited[ row ][ col ] = 1;
+
+        auto step = 0;
 
         while( !queue.empty() )
         {
-        	// current node
-            const auto& [parent, node] = queue.front();
+            ++step;
 
-        	// if we haven't seen this node before
-            if( map.find( node ) == map.end() )
+            const auto sz = queue.size();
+
+            for( auto index = 0; index < sz; ++index )
             {
-            	// store it's parent
-                map[ node ] = parent;
+                const auto [cur_row, cur_col] = queue.front();
+                queue.pop();
 
-            	// process children
-            	
-                if( node->left )
+                for( auto dir = 0; dir < 4; ++dir )
                 {
-                    queue.push( std::make_pair( node, node->left.get() ) );
+                    auto next_row = cur_row + all_dirs[ dir ],
+                        next_col = cur_col + all_dirs[ dir + 1 ];
+
+                    if( next_row < 0 || next_row >= num_rows ) continue;
+                    if( next_col < 0 || next_col >= num_cols ) continue;
+                    if( visited[ next_row ][ next_col ] == 1 || forest[ next_row ][ next_col ] == 0 ) continue;
+
+                    if( next_row == prev_row && next_col == prev_col )
+                        return step;
+
+                    visited[ next_row ][ next_col ] = 1;
+                    queue.push( { next_row, next_col } );
                 }
 
-                if( node->right )
-                {
-                    queue.push( std::make_pair( node, node->right.get() ) );
-                }
             }
-
-            queue.pop();
         }
 
-        return map;
+        return -1;
     }
 
 public:
 
-    static tree_node* lowest_common_ancestor( tree_node* root, tree_node* p, tree_node* q )
+    static int cut_off_trees( const std::vector<std::vector<int>>& forest )
     {
-    	// get the hierarchy of the tree [node->parent] form
-        auto hierarchy = get_hierarchy( root );
+        if( forest.empty() || forest[ 0 ].empty() ) return 0;
 
-        auto seen = std::set<tree_node*>();
+        const auto num_rows = forest.size();
+        const auto num_cols = forest[ 0 ].size();
 
-        auto node = p;
-        // start at p, process
-    	// all of its parent nodes from lowest
-    	// to the root
-        while( node != nullptr )
+        auto trees = std::vector<std::vector<int>>();
+
+        for( auto row = 0; row < num_rows; ++row )
         {
-            seen.insert( node );
+            for( auto col = 0; col < num_cols; ++col )
+            {
+                const auto tree_size = forest[ row ][ col ];
 
-            node = hierarchy[ node ];
+                if( tree_size > 1 )
+                {
+                    trees.push_back( { tree_size, row, col } );
+                }
+            }
         }
 
-        node = q;
-        // now process q
-    	// the first result that we find
-    	// will be the solution
-        while( node != nullptr )
-        {
-            if( seen.find( node ) != seen.end() )
-                return node;
+        std::sort( trees.begin(), trees.end() );
 
-            node = hierarchy[ node ];
+        auto answer = 0;
+
+        for( auto index = 0, cur_row = 0, cur_col = 0;
+            index < trees.size(); ++index )
+        {
+            const auto cur_tree = trees[ index ];
+            const auto step = next_step( forest,
+                cur_row, cur_col, 
+                cur_tree[ 1 ], cur_tree[ 2 ] );
+
+            if( step == -1 )
+                return -1;
+
+            answer += step;
+
+            cur_row = cur_tree[ 1 ];
+            cur_col = cur_tree[ 2 ];
         }
 
-    	// no common ancestors
-        return nullptr;
+        return answer;
     }
 };
 
 auto main() -> int
 {
-    auto root = build_tree_in_order( 
-        std::vector<std::string>{ "3", "5", "1", "6", "2", "0", "8", "", "", "7", "4" } );
-
-    const auto actual = lowest_common_ancestor_bfs::lowest_common_ancestor( root.get(), root->left.get(), root->right.get() );
+    const auto input = std::vector<std::vector<int>>
+    {
+        {1, 2, 3},
+        {0, 0, 4},
+        {7, 6, 5}
+    };
 	
-    const auto expected = root.get();
+    const auto actual = trim_forest::cut_off_trees( input );
+	
+    const auto expected = 6;
 	
 	return 0;
 }
