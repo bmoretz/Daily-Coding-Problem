@@ -336,4 +336,46 @@ namespace leetcode::containers::tests
             EXPECT_EQ( actual, expected );
         }
     }
+
+    class autocomplete_system_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( autocomplete_system_tests, case1 )
+    {
+        auto word_list = std::vector<std::string>{ "i love you","island","iroman","i love leetcode" };
+        auto word_freq = std::vector<int>{ 5, 3, 2, 2 };
+
+        auto ac = autocomplete_system( word_list, word_freq );
+
+        {
+            const auto actual = ac.input( 'i' );
+            const auto expected = std::vector<std::string>{ "i love you", "island", "i love leetcode" };
+        	
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = ac.input( ' ' );
+            const auto expected = std::vector<std::string>{ "i love you", "i love leetcode" };
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = ac.input( 'a' );
+            const auto expected = std::vector<std::string>{ };
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
 }
