@@ -57,4 +57,27 @@ namespace leetcode::recursion::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class number_to_english_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( number_to_english_tests, case1 )
+    {
+        const auto input = 1234567891;
+        auto actual = number_to_english::number_to_words( input );
+
+        const auto expected = "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One";
+
+        EXPECT_EQ( actual, expected );
+    }
 }
