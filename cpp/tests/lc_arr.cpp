@@ -947,4 +947,60 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class merge_sorted_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( merge_sorted_tests, case1 )
+    {
+        auto nums1 = std::vector{ 1, 2, 3, 0, 0, 0 }, nums2 = std::vector<int>{ 4, 5, 6 };
+        merge_sorted::merge( nums1, 3, nums2, 3 );
+
+        const auto expected = std::vector<int>{ 1, 2, 3, 4, 5, 6 };
+
+        EXPECT_EQ( nums1, expected );
+    }
+
+    class valid_palindrome_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( valid_palindrome_tests, case1 )
+    {
+        const auto input = "A man, a plan, a canal: Panama";
+
+        const auto actual = valid_palindrome::is_palindrome( input );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( valid_palindrome_tests, case2 )
+    {
+        const auto input = ",.";
+
+        const auto actual = valid_palindrome::is_palindrome( input );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

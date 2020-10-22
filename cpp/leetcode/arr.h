@@ -1123,4 +1123,111 @@ namespace leetcode::arr
 			return max_area;
 		}
 	};
+
+	/*88. Merge Sorted Array.
+
+	Given two sorted integer arrays nums1 and nums2, merge nums2 into nums1 as one sorted array.
+
+	Note:
+
+	The number of elements initialized in nums1 and nums2 are m and n respectively.
+	You may assume that nums1 has enough space (size that is equal to m + n) to hold additional elements from nums2.
+	Example:
+
+	Input:
+	nums1 = [1,2,3,0,0,0], m = 3
+	nums2 = [2,5,6],       n = 3
+
+	Output: [1,2,2,3,5,6]
+
+
+	Constraints:
+
+	-10^9 <= nums1[i], nums2[i] <= 10^9
+	nums1.length == m + n
+	nums2.length == n
+	*/
+
+	class merge_sorted
+	{
+	public:
+
+		static void merge( std::vector<int>& nums1, int m,
+			std::vector<int>& nums2, int n )
+		{
+			for( int index = nums1.size() - 1;
+				index >= 0; --index )
+			{
+				if( m > 0 && n > 0 )
+				{
+					if( nums1[ m - 1 ] >= nums2[ n - 1 ] )
+					{
+						nums1[ index ] = nums1[ --m ];
+					}
+					else
+					{
+						nums1[ index ] = nums2[ --n ];
+					}
+				}
+				else if( n > 0 )
+				{
+					nums1[ index ] = nums2[ --n ];
+				}
+			}
+		}
+	};
+
+	/*125. Valid Palindrome.
+	 *
+	Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+
+	Note: For the purpose of this problem, we define empty string as valid palindrome.
+
+	Example 1:
+
+	Input: "A man, a plan, a canal: Panama"
+	Output: true
+	Example 2:
+
+	Input: "race a car"
+	Output: false
+
+
+	Constraints:
+
+	s consists only of printable ASCII characters.
+	*/
+
+	class valid_palindrome
+	{
+		static bool is_valid( const std::string& input,
+			const int index )
+		{
+			return std::isalpha( input[ index ] ) || std::isdigit( input[ index ] );
+		}
+
+	public:
+
+		static bool is_palindrome( const std::string& input )
+		{
+			const auto n = input.length();
+			int left = 0, right = input.length() - 1;
+
+			while( left < right )
+			{
+				while( left < right && !is_valid( input, left ) )
+					++left;
+
+				while( right < n && !is_valid( input, right ) )
+					--right;
+
+				if( left < right && std::tolower( input[ left ] ) != std::tolower( input[ right ] ) )
+					return false;
+
+				++left; --right;
+			}
+
+			return true;
+		}
+	};
 }

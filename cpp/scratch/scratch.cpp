@@ -1,211 +1,65 @@
 ﻿#include <bits/stdc++.h>
 
-/* 273. Integer to English Words.
+/*125. Valid Palindrome.
+ *
+Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
 
-Convert a non-negative integer num to its English words representation.
+Note: For the purpose of this problem, we define empty string as valid palindrome.
 
 Example 1:
 
-Input: num = 123
-Output: "One Hundred Twenty Three"
+Input: "A man, a plan, a canal: Panama"
+Output: true
 Example 2:
 
-Input: num = 12345
-Output: "Twelve Thousand Three Hundred Forty Five"
-Example 3:
-
-Input: num = 1234567
-Output: "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
-Example 4:
-
-Input: num = 1234567891
-Output: "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One"
+Input: "race a car"
+Output: false
  
+
 Constraints:
 
-0 <= num <= 231 - 1
+s consists only of printable ASCII characters.
 */
 
-class number_to_english
+class valid_palindrome
 {
-    static inline std::unordered_map<int, std::string> under_twenty_ = 
+    static bool is_valid( const std::string& input, 
+        const int index )
     {
-        { 0, "Zero" },
-        { 1, "One" },
-        { 2, "Two" },
-        { 3, "Three" },
-        { 4, "Four" },
-        { 5, "Five" },
-        { 6, "Six" },
-        { 7, "Seven" },
-        { 8, "Eight" },
-        { 9, "Nine" },
-        { 10, "Ten" },
-        { 11, "Eleven" },
-        { 12, "Twelve" },
-        { 13, "Thirteen" },
-        { 14, "Fourteen" },
-        { 15, "Fifteen" },
-        { 16, "Sixteen" },
-        { 17, "Seventeen" },
-        { 18, "Eighteen" },
-        { 19, "Nineteen" }
-    };
-
-    static inline std::unordered_map<int, std::string> tens_ = 
-    {
-        {10, "Ten"},
-        {20, "Twenty"},
-        {30, "Thirty"},
-        {40, "Forty"},
-        {50, "Fifty"},
-        {60, "Sixty"},
-        {70, "Seventy"},
-        {80, "Eighty"},
-        {90, "Ninety"}
-    };
-
-    static inline std::unordered_map<int, std::string> places_ = 
-    {
-        { 1e2, "Hundred" },
-        { 1e3, "Thousand" },
-        { 1e4, "Ten Thousand" },
-        { 1e5, "Hundred Thousand" },
-        { 1e6, "Million" },
-        { 1e7, "Ten Million" },
-        { 1e8, "Hundred Million" },
-        { 1e9, "Billion" }
-    };
+        return std::isalpha( input[ index ] ) || std::isdigit( input[ index ] );
+    }
 
 public:
 
-    static inline int billion = 1e9;
-    static inline int hundred_million = 1e8;
-    static inline int ten_million = 1e7;
-    static inline int million = 1e6;
-    static inline int hundred_thousand = 1e5;
-    static inline int ten_thousand = 1e4;
-    static inline int thousand = 1e3;
-    static inline int hundred = 1e2;
-    static inline int ten = 1e1;
-
-    static std::string get_english( int num )
+    static bool is_palindrome( const std::string& input )
     {
-        if( num >= billion )
+        const auto n = input.length();
+        int left = 0, right = input.length() - 1;
+
+        while( left < right )
         {
-            std::cout << num;
+            while( left < right && !is_valid( input, left ) )
+                ++left;
 
-            const auto digit = num / billion;
+            while( right < n && !is_valid( input, right ) )
+                --right;
 
-            const auto current = get_english( digit ) + ' ' + places_[ billion ];
+            if( left < right && std::tolower( input[ left ] ) != std::tolower( input[ right ] ) )
+                return false;
 
-            const auto rem = num % billion;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( rem ) );
+            ++left; --right;
         }
 
-    	if( num >= hundred_million )
-        {
-            const auto digit = num / million;
-
-            const auto current = get_english( digit ) + ' ' + places_[ million ];
-
-            const auto rem = num % million;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( rem ) );
-        }
-
-    	if( num >= ten_million )
-        {
-            const auto digit = num / million;
-
-            const auto current = get_english( digit ) + ' ' + places_[ million ];
-
-            const auto rem = num % million;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( rem ) );
-        }
-
-    	if( num >= million )
-        {
-            const auto digit = num / million;
-
-            const auto current = under_twenty_[ digit ] + ' ' + places_[ million ];
-
-            const auto rem = num % million;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( rem ) );
-        }
-
-    	if( num >= hundred_thousand )
-        {
-            auto digit = num / thousand;
-            const auto current = get_english( digit ) + ' ' + places_[ thousand ];
-
-            const auto rem = num % thousand;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( num % thousand ) );
-        }
-
-    	if( num >= ten_thousand )
-        {
-            auto digit = num / thousand;
-            const auto current = get_english( digit ) + ' ' + places_[ thousand ];
-
-            const auto rem = num % thousand;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( num % thousand ) );
-        }
-
-    	if( num >= thousand )
-        {
-            auto digit = num / thousand;
-            const auto current = under_twenty_[ digit ] + ' ' + places_[ thousand ];
-
-            const auto rem = num % thousand;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( num % thousand ) );
-        }
-    	
-        if( num >= 100 )
-        {
-            auto digit = num / hundred;
-
-            const auto current = get_english( digit ) + ' ' + places_[ hundred ];
-
-            auto rem = num % hundred;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( rem ) );
-        }
-
-    	if( num >= 20 )
-        {
-            auto digit = num / ten;
-
-            const auto current = tens_[ digit * 10 ];
-
-            auto rem = num % ten;
-
-            return current + ( rem == 0 ? "" : ' ' + get_english( rem ) );
-        }
-
-        return under_twenty_[ num ];
-    }
-
-    static std::string number_to_words( const int num )
-    {
-        if( num == 0 ) return "Zero";
-
-        return get_english( num );
+        return true;
     }
 };
 
 auto main() -> int
 {
-	const auto input = 1234567891;
-    auto actual = number_to_english::number_to_words( input );
+    const auto input = "A man, a plan, a canal: Panama";
 
-    const auto expected = "One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety One";
+    const auto actual = valid_palindrome::is_palindrome( input );
+    const auto expected = true;
 	
 	return 0;
 }
