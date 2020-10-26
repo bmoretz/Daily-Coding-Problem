@@ -1,65 +1,122 @@
 ﻿#include <bits/stdc++.h>
 
-/*125. Valid Palindrome.
- *
-Given a string, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+/*658. Find K Closest Elements.
 
-Note: For the purpose of this problem, we define empty string as valid palindrome.
+Given a sorted array arr, two integers k and x, find the k closest elements to x in the array. The result should also be
+sorted in ascending order. If there is a tie, the smaller elements are always preferred.
 
 Example 1:
 
-Input: "A man, a plan, a canal: Panama"
-Output: true
+Input: arr = [1,2,3,4,5], k = 4, x = 3
+Output: [1,2,3,4]
 Example 2:
 
-Input: "race a car"
-Output: false
+Input: arr = [1,2,3,4,5], k = 4, x = -1
+Output: [1,2,3,4]
  
 
 Constraints:
 
-s consists only of printable ASCII characters.
+1 <= k <= arr.length
+1 <= arr.length <= 10^4
+Absolute value of elements in the array and x will not exceed 104
 */
 
-class valid_palindrome
+class find_k_closest_elements
 {
-    static bool is_valid( const std::string& input, 
-        const int index )
+    static int find_closest( const std::vector<int>& arr,
+        const int target )
     {
-        return std::isalpha( input[ index ] ) || std::isdigit( input[ index ] );
+        if( arr.size() == 1 ) return 0;
+
+        const int N = arr.size();
+        auto left = 0, right = N - 1;
+
+        // binary search
+        while( left < right )
+        {
+            const auto mid = left + ( right - left ) / 2;
+
+            // if we find the target, return
+            // its index.
+            if( arr[ mid ] == target )
+                return mid;
+
+        	if( arr[ mid ] < target )
+            {
+	            left = mid + 1;
+            }
+            else
+            {
+	            right = mid;
+            }
+        }
+
+        // we haven't found the exact target, so look at the
+        // neighbor elements of the closest match, and look at the
+        // deltas of the lower & upper elements to the target
+        const auto lower_delta = left > 0 ? 
+            std::abs( target - arr[ left - 1 ] ) : INT_MAX;
+        const auto upper_delta = right < N - 1 ? 
+            std::abs( target - arr[ right ] ) : INT_MAX;
+
+        // return the index of the number closest to the target
+        return lower_delta <= upper_delta ? left - 1 : left;
     }
 
 public:
-
-    static bool is_palindrome( const std::string& input )
+	
+    static std::vector<int> findClosestElements( const std::vector<int>& arr,
+        const int k,
+        const int target )
     {
-        const auto n = input.length();
-        int left = 0, right = input.length() - 1;
+        const auto start = find_closest( arr, target );
 
-        while( left < right )
+        // we already have 1 match that is guaranteed to be in the result
+        // set at the index returned by the search, so we only need to find
+        // k - 1 closest matches
+        auto left = start, right = start, remain = k - 1;
+
+        // find the remaining matches using
+        // a two-pointer approach for the elements
+        // above and below the closest match
+        while( remain > 0 )
         {
-            while( left < right && !is_valid( input, left ) )
-                ++left;
+            const auto lower_delta = left > 0 ? 
+                std::abs( target - arr[ left - 1 ] ) : INT_MAX;
 
-            while( right < n && !is_valid( input, right ) )
-                --right;
+        	const auto upper_delta = right < arr.size() - 1 ? 
+                std::abs( target - arr[ right + 1 ] ) : INT_MAX;
 
-            if( left < right && std::tolower( input[ left ] ) != std::tolower( input[ right ] ) )
-                return false;
+            // move our pointers up/down based on
+            // proximity to the target (<= because ties go to the smaller number)
+            if( lower_delta <= upper_delta )
+            {
+                --left;
+            }
+            else
+            {
+                ++right;
+            }
 
-            ++left; --right;
+            --remain;
         }
 
-        return true;
+        // increment right because the ending pointer
+        // position must be inclusive of the last element
+        // of our subset.
+        right++;
+
+        return std::vector<int>( arr.begin() + left, arr.begin() + right );
     }
 };
 
 auto main() -> int
 {
-    const auto input = "A man, a plan, a canal: Panama";
+    const auto input = std::vector<int>{ 1 };
 
-    const auto actual = valid_palindrome::is_palindrome( input );
-    const auto expected = true;
+    const auto actual = find_k_closest_elements::findClosestElements( input, 1, 1 );
+    const auto expected = std::vector<int>{ 1 };
 	
 	return 0;
 }
