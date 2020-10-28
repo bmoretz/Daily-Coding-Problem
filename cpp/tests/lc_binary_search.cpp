@@ -77,4 +77,67 @@ namespace leetcode::binary_search::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class search_rotated_array_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( search_rotated_array_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 4, 5, 6, 7, 0, 1, 2 };
+
+        const auto actual = search_rotated_array::search( input, 0 );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( search_rotated_array_tests, case2 )
+    {
+        const auto input = std::vector<int>{ 4, 5, 6, 7, 0, 1, 2 };
+
+        const auto actual = search_rotated_array::search( input, 3 );
+        const auto expected = -1;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( search_rotated_array_tests, case3 )
+    {
+        const auto input = std::vector<int>{ 4, 5, 6, 7, 0, 1, 2 };
+
+        const auto actual = search_rotated_array::search( input, 2 );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( search_rotated_array_tests, case4 )
+    {
+        const auto input = std::vector<int>{ 1, 3 };
+
+        const auto actual = search_rotated_array::search( input, 1 );
+        const auto expected = 0;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( search_rotated_array_tests, case5 )
+    {
+        const auto input = std::vector<int>{ 4, 5, 6, 7, 0, 1, 2 };
+
+        const auto actual = search_rotated_array::search( input, 0 );
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
