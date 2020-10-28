@@ -32,24 +32,25 @@ namespace leetcode::binary_search
 
     class find_k_closest_elements
     {
-        static int find_closest( const std::vector<int>& arr,
+        static int find_closest( const std::vector<int>& arr, 
             const int target )
         {
-            if( arr.size() == 1 ) return 0;
-
             const int N = arr.size();
             auto left = 0, right = N - 1;
 
-            // binary search
+            // binary search for the target
+            // returns early if we find an exact match
+            // otherwise, the left index will be pointing
+            // to the closest element
             while( left < right )
             {
                 const auto mid = left + ( right - left ) / 2;
 
-                // if we find the target, return
-                // its index.
+                // if we find an exact match, return it
                 if( arr[ mid ] == target )
                     return mid;
 
+                // otherwise reduce search space
                 if( arr[ mid ] < target )
                 {
                     left = mid + 1;
@@ -60,45 +61,41 @@ namespace leetcode::binary_search
                 }
             }
 
-            // we haven't found the exact target, so look at the
-            // neighbor elements of the closest match, and look at the
-            // deltas of the lower & upper elements to the target
-            const auto lower_delta = left > 0 ?
-                std::abs( target - arr[ left - 1 ] ) : INT_MAX;
-            const auto upper_delta = right < N - 1 ?
-                std::abs( target - arr[ right ] ) : INT_MAX;
+            // if left is > 0 and the element below the left pointer
+            // is closer to the target, return it
+            if( left != 0 && std::abs( target - arr[ left - 1 ] ) <=
+                std::abs( target - arr[ left ] ) )
+            {
+                return left - 1;
+            }
 
-            // return the index of the number closest to the target
-            return lower_delta <= upper_delta ? left - 1 : left;
+            // otherwise this is the closest element
+            return left;
         }
 
     public:
 
         static std::vector<int> findClosestElements( const std::vector<int>& arr,
-            const int k,
-            const int target )
+            const int k, const int x )
         {
-            const auto start = find_closest( arr, target );
+            const auto closest = find_closest( arr, x );
 
-            // we already have 1 match that is guaranteed to be in the result
-            // set at the index returned by the search, so we only need to find
-            // k - 1 closest matches
-            auto left = start, right = start, remain = k - 1;
+            // two pointers, both pointing to the closest match
+            // remain = k-1 since we already have 1 match from the search result
+            auto left = closest, right = closest, remain = k - 1;
 
-            // find the remaining matches using
-            // a two-pointer approach for the elements
-            // above and below the closest match
-            while( remain > 0 )
+            while( remain )
             {
-                const auto lower_delta = left > 0 ?
-                    std::abs( target - arr[ left - 1 ] ) : INT_MAX;
+                // look at both elements 1 below left
+                const auto left_delta = left == 0 ? INT_MAX :
+                    std::abs( x - arr[ left - 1 ] );
 
-                const auto upper_delta = right < arr.size() - 1 ?
-                    std::abs( target - arr[ right + 1 ] ) : INT_MAX;
+                // and the one above right
+                const auto right_delta = right == arr.size() - 1 ? INT_MAX :
+                    std::abs( x - arr[ right + 1 ] );
 
-                // move our pointers up/down based on
-                // proximity to the target (<= because ties go to the smaller number)
-                if( lower_delta <= upper_delta )
+                // ties go to the lower number
+                if( left_delta <= right_delta )
                 {
                     --left;
                 }
@@ -110,12 +107,15 @@ namespace leetcode::binary_search
                 --remain;
             }
 
-            // increment right because the ending pointer
-            // position must be inclusive of the last element
-            // of our subset.
-            right++;
+            // k size linear scan through the array to extract
+            // the result set
+            auto results = std::vector<int>();
+            for( auto index = left; index <= right; ++index )
+            {
+                results.push_back( arr[ index ] );
+            }
 
-            return std::vector<int>( arr.begin() + left, arr.begin() + right );
+            return results;
         }
     };
 
