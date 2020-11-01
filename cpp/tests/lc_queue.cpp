@@ -121,4 +121,43 @@ namespace leetcode::queue::tests
     	
         EXPECT_EQ( firstUnique.show_first_unique(), 8 );
     }
+
+    class moving_average_stream_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( moving_average_stream_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 4, 5, 6, 7, 0, 1, 2 };
+
+        auto ma = moving_average_stream( 3 );
+
+        auto actual = std::vector<double>();
+    	
+        for( const auto num : input )
+        {
+            const auto result = ma.next( num );
+            actual.push_back( result );
+        }
+
+        const auto expected = std::vector<double>{ 4, 4.5, 5, 6, 4.33333, 2.66667, 1 };
+
+        const auto threshold = 0.00001;
+
+    	for( auto index = 0; index < actual.size(); ++index )
+    	{
+            const auto delta = std::abs( actual[ index ] - expected[ index ] );
+
+            EXPECT_LE( delta, threshold );
+    	}
+    }
 }
