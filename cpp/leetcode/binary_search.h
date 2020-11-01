@@ -32,28 +32,26 @@ namespace leetcode::binary_search
 
     class find_k_closest_elements
     {
-        static int find_closest( const std::vector<int>& arr, 
-            const int target )
+        static int find_closest( const std::vector<int>& arr, const int target )
         {
             const int N = arr.size();
             auto left = 0, right = N - 1;
 
-            // binary search for the target
-            // returns early if we find an exact match
-            // otherwise, the left index will be pointing
-            // to the closest element
-            while( left < right )
+            // binary search that will return
+            // the exact element if found,
+            // otherwies left and right will
+            // point to the two closest elements
+            // to the target
+            while( left + 1 < right )
             {
                 const auto mid = left + ( right - left ) / 2;
 
-                // if we find an exact match, return it
                 if( arr[ mid ] == target )
                     return mid;
 
-                // otherwise reduce search space
                 if( arr[ mid ] < target )
                 {
-                    left = mid + 1;
+                    left = mid;
                 }
                 else
                 {
@@ -61,40 +59,48 @@ namespace leetcode::binary_search
                 }
             }
 
-            // if left is > 0 and the element below the left pointer
-            // is closer to the target, return it
-            if( left != 0 && std::abs( target - arr[ left - 1 ] ) <=
-                std::abs( target - arr[ left ] ) )
-            {
-                return left - 1;
-            }
-
-            // otherwise this is the closest element
-            return left;
+            // there is no exact match, so look at the delta 
+            // between the two remaining elements pointed to
+            // by left/right pointers, and return the index
+            // of the element of the closer one (ties going)
+            // to the smaller number
+            return std::abs( target - arr[ left ] ) <=
+                std::abs( target - arr[ right ] ) ?
+                left : right;
         }
 
     public:
 
+        // Log(N) + K
         static std::vector<int> findClosestElements( const std::vector<int>& arr,
             const int k, const int x )
         {
+            // start with the index of the cloest element
+            // Log(N)
             const auto closest = find_closest( arr, x );
 
-            // two pointers, both pointing to the closest match
-            // remain = k-1 since we already have 1 match from the search result
+            // left and right both point to the closest element,
+            // and we have 1 result (the closest), so we need
+            // an additional k-1 elements.
             auto left = closest, right = closest, remain = k - 1;
 
+            // here, we preprocess the indexes of the elements in the
+            // result space so that if we move right to take an element
+            // we dont have to use push_back/insert in the result vector
+            // because the insert for the smaller elements would be O(K)
+            // where K is the number of elements smaller than the target
+            // that would be in our result set.
+
+            // use two-pointers approach to expand the search space
             while( remain )
             {
-                // look at both elements 1 below left
                 const auto left_delta = left == 0 ? INT_MAX :
                     std::abs( x - arr[ left - 1 ] );
 
-                // and the one above right
                 const auto right_delta = right == arr.size() - 1 ? INT_MAX :
                     std::abs( x - arr[ right + 1 ] );
 
-                // ties go to the lower number
+                // with ties going to the smaller number
                 if( left_delta <= right_delta )
                 {
                     --left;
@@ -107,8 +113,7 @@ namespace leetcode::binary_search
                 --remain;
             }
 
-            // k size linear scan through the array to extract
-            // the result set
+            // build the result vector O(K)
             auto results = std::vector<int>();
             for( auto index = left; index <= right; ++index )
             {
@@ -225,9 +230,10 @@ namespace leetcode::binary_search
 
     public:
 
-        static int search( const std::vector<int>& nums, const int target )
+        static int search( const std::vector<int>& numbers, 
+            const int target )
         {
-            const auto N = nums.size();
+            const auto N = numbers.size();
 
             // for an input of <= 3 we just use a simple
             // linear search to cut out the edge cases
@@ -236,7 +242,7 @@ namespace leetcode::binary_search
             {
                 for( auto index = 0; index < N; ++index )
                 {
-                    if( nums[ index ] == target )
+                    if( numbers[ index ] == target )
                         return index;
                 }
 
@@ -244,19 +250,19 @@ namespace leetcode::binary_search
             }
 
             // for N > 3, find the pivot index
-            const auto pivot = find_rotated_index( nums );
+            const auto pivot = find_rotated_index( numbers );
 
             // then partition the search space according to the 
             // two remaining conditions:
 
             // #1 target is between [0, pivot], where pivot != 0
-            if( pivot > 0 && target >= nums[ 0 ] && target <= nums[ pivot - 1 ] )
+            if( pivot > 0 && target >= numbers[ 0 ] && target <= numbers[ pivot - 1 ] )
             {
-                return bin_search( nums, 0, pivot - 1, target );
+                return bin_search( numbers, 0, pivot - 1, target );
             }
 
             // #2 target is in [pivot, N-1] (0 inclusive, which also handles the base case of the input being sorted)
-            return bin_search( nums, pivot, N - 1, target );
+            return bin_search( numbers, pivot, N - 1, target );
         }
     };
 }

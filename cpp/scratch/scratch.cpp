@@ -110,6 +110,10 @@ public:
     {
         const auto N = nums.size();
 
+        auto map = std::map<int, int>();
+
+        auto val = ( map.rend() - 3 )->first;
+    	
         // for an input of <= 3 we just use a simple
         // linear search to cut out the edge cases
         // for n = 1, n = 2, n = 3;

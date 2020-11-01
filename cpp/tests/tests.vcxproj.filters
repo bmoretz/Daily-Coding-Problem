@@ -137,6 +137,9 @@
     <ClCompile Include="lc_binary_search.cpp">
       <Filter>leetcode</Filter>
     </ClCompile>
+    <ClCompile Include="ds_arr_queue.cpp">
+      <Filter>data-structures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

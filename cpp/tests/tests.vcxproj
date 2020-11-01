@@ -43,6 +43,7 @@
   <ItemGroup>
     <ClCompile Include="arr_tests.cpp" />
     <ClCompile Include="bitmanip_tests.cpp" />
+    <ClCompile Include="ds_arr_queue.cpp" />
     <ClCompile Include="ds_heap.cpp" />
     <ClCompile Include="ds_arr_stack.cpp" />
     <ClCompile Include="ds_linkedlist_tests.cpp" />
