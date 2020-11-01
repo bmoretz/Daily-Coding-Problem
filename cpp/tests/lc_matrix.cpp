@@ -630,4 +630,39 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class walls_and_gates_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( walls_and_gates_tests, case1 )
+    {
+        auto input = std::vector<std::vector<int>>{
+            { 2147483647, -1, 0, 2147483647 },
+            { 2147483647, 2147483647, 2147483647, -1 },
+            { 2147483647, -1, 2147483647,-1 },
+            { 0, -1, 2147483647, 2147483647 }
+        };
+
+        walls_and_gates::mark_map( input );
+
+        const auto expected = std::vector<std::vector<int>>
+        {
+            { 3,-1,0,1 },
+            { 2,2,1,-1 },
+            { 1,-1,2,-1 },
+            { 0,-1,3,4 }
+        };
+
+        EXPECT_EQ( input, expected );
+    }
 }
