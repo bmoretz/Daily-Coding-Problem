@@ -330,7 +330,7 @@ namespace leetcode::tree
 			root_ = root;
 		}
 
-		int insert( int v ) const
+		[[nodiscard]] int insert( int v ) const
 		{
 			auto q = std::queue<tree_node*>();
 			q.push( root_ );
@@ -366,7 +366,7 @@ namespace leetcode::tree
 			return cur ? cur->val : -1;
 		}
 
-		tree_node* get_root() const
+		[[nodiscard]] tree_node* get_root() const
 		{
 			return root_;
 		}

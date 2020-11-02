@@ -261,4 +261,33 @@ namespace leetcode::stack::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class evaluate_rpn_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( evaluate_rpn_tests, case1 )
+    {
+        const auto actual = evaluate_rpn::eval_rpn( { "2", "1", "+", "3", "*" } );
+        const auto expected = 9;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( evaluate_rpn_tests, case2 )
+    {
+        const auto actual = evaluate_rpn::eval_rpn( { "4", "13", "5", "/", "+" } );
+        const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
+    }
 }

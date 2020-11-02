@@ -1,59 +1,86 @@
 ﻿#include <bits/stdc++.h>
 
-/*279. Perfect Squares.
+/*150. Evaluate Reverse Polish Notation.
 
-Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
+Evaluate the value of an arithmetic expression in Reverse Polish Notation.
 
+Valid operators are +, -, *, /. Each operand may be an integer or another expression.
+
+Note:
+
+Division between two integers should truncate toward zero.
+The given RPN expression is always valid. That means the expression would always evaluate to a result and there won't be any divide by zero operation.
 Example 1:
 
-Input: n = 12
-Output: 3 
-Explanation: 12 = 4 + 4 + 4.
+Input: ["2", "1", "+", "3", "*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
 Example 2:
 
-Input: n = 13
-Output: 2
-Explanation: 13 = 4 + 9.
+Input: ["4", "13", "5", "/", "+"]
+Output: 6
+Explanation: (4 + (13 / 5)) = 6
+Example 3:
+
+Input: ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]
+Output: 22
+Explanation: 
+  ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
 */
 
-class perfect_squares
+class evaluate_rpn
 {
+    static inline std::unordered_map<std::string, std::function<int( int, int )>> operators = {
+        { "+", []( const int left, const int right ) { return left + right; } },
+        { "-", []( const int left, const int right ) { return left - right; } },
+        { "*", []( const int left, const int right ) { return left * right; } },
+        { "/", []( const int left, const int right ) { return left / right; } }
+    };
+
+    static bool is_operator( const std::string& chr )
+    {
+        return operators.find( chr ) != operators.end();
+    }
+
 public:
 
-    static int num_squares( const int num )
+    static int eval_rpn( const std::initializer_list<std::string>& tokens )
     {
-        auto squares = std::vector<int>();
+        auto stack = std::stack<int>();
 
-        for( auto index = 1; index * index <= num; ++index )
-            squares.push_back( index * index );
-
-        auto dp = std::vector<int>( num + 1 );
-        dp[ 0 ] = 0;
-
-        for( auto index = 1; index <= num; ++index )
+        for( auto& token : tokens )
         {
-            auto min = INT_MAX;
-
-            for( auto square : squares)
+            if( is_operator( token ) )
             {
-                if(square <= index )
-                {
-                    min = std::min( dp[ index - square] + 1, min );
-                }
+                const auto right = stack.top();
+                stack.pop();
+                const auto left = stack.top();
+                stack.pop();
 
-                dp[ index ] = min;
+                auto result = operators[ token ]( left, right );
+
+                stack.push( result );
+            }
+            else
+            {
+                stack.push( std::stoi( token ) );
             }
         }
 
-        return dp[ num ];
+        return stack.top();
     }
 };
 
 auto main() -> int
 {
-    auto actual = perfect_squares::num_squares( 12 );
-	
-    const auto expected = 3;
-	
+    auto actual = evaluate_rpn::eval_rpn( { "2","1","+","3","*" } );
+    auto expected = 6;
+		
 	return 0;
 }

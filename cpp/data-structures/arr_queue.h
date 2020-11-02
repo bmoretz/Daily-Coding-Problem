@@ -11,7 +11,7 @@ namespace data_structures::arr_queue
     class queue
     {
         // array to hold the elements
-        std::vector<int> data_;
+        std::vector<Ty> data_;
 
 		// pointer to the head of the queue + size for
 		// indexing, and then save the initial capacity.
@@ -24,10 +24,10 @@ namespace data_structures::arr_queue
 				length_{ 0 },
 				capacity_{ k }
         {
-            data_ = std::vector<int>( capacity_ );
+            data_ = std::vector<Ty>( capacity_ );
         }
 		
-        bool en_queue( const int value )
+        bool en_queue( const Ty value )
         {
             if( is_full() )
                 return false;
@@ -53,12 +53,12 @@ namespace data_structures::arr_queue
             return true;
         }
 
-        [[nodiscard]] int front() const
+        [[nodiscard]] Ty front() const
         {
             return is_empty() ? -1 : data_[ head_ ];
         }
 
-        [[nodiscard]] int rear() const
+        [[nodiscard]] Ty rear() const
         {
             const auto tail_index = ( head_ + length_ - 1 ) % capacity_;
         	
