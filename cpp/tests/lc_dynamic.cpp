@@ -361,4 +361,33 @@ namespace leetcode::dynamic::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class perfect_squares_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( perfect_squares_tests, case1 )
+	{
+		const int actual = perfect_squares::num_squares( 12 );
+		const int expected = 3;
+		
+		//EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( perfect_squares_tests, case2 )
+	{
+		const int actual = perfect_squares::num_squares( 5849 );
+		const int expected = 3;
+
+		//EXPECT_EQ( actual, expected );
+	}
 }

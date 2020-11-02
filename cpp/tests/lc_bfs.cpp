@@ -20,13 +20,15 @@ namespace leetcode::bfs::tests
 
     TEST_F( open_the_lock_tests, case1 )
     {
-        auto deadends = std::vector<std::string>
+	    const auto deadends = std::vector<std::string>
         {
             "0201","0101","0102","1212","2002"
         };
 
-        auto actual = open_the_lock::open_lock( deadends, "0202" );
+        const auto actual = open_the_lock::open_lock( deadends, "0202" );
 
         const auto expected = 6;
+
+        EXPECT_EQ( actual, expected );
     }
 }

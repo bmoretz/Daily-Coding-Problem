@@ -681,7 +681,7 @@ namespace leetcode::matrix::tests
 
     TEST_F( num_islands_tests, case1 )
     {
-        auto input = std::vector<std::vector<std::string>>
+        const auto input = std::vector<std::vector<std::string>>
         {
             {"1","1","1","1","1","0","1","1","1","1","1","1","1","1","1","0","1","0","1","1"},
             {"0","1","1","1","1","1","1","1","1","1","1","1","1","0","1","1","1","1","1","0"},
@@ -697,9 +697,10 @@ namespace leetcode::matrix::tests
             {"0","1","1","1","1","1","1","1","0","1","1","1","1","1","1","1","1","1","1","1"}
         };
 
-        num_islands_queue::num_islands( input );
+        const auto actual = num_islands_queue::num_islands( input );
 
         const auto expected = 1;
-        EXPECT_EQ( input, expected );
+    	
+        EXPECT_EQ( actual, expected );
     }
 }
