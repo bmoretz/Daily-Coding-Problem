@@ -1,131 +1,129 @@
 ﻿#include <bits/stdc++.h>
 
-/*286. Walls and Gates.
+/*200. Number of Islands.
 
-You are given a m x n 2D grid initialized with these three possible values.
+Given an m x n 2d grid map of '1's (land) and '0's (water), return the number of islands.
 
--1 - A wall or an obstacle.
-0 - A gate.
-INF - Infinity means an empty room. We use the value 231 - 1 = 2147483647 to represent INF as you may assume that the distance to a gate is less than 2147483647.
-Fill each empty room with the distance to its nearest gate. If it is impossible to reach a gate, it should be filled with INF.
+An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
 
-Example: 
 
-Given the 2D grid:
+Example 1:4
 
-INF  -1  0  INF
-INF INF INF  -1
-INF  -1 INF  -1
-  0  -1 INF INF
-After running your function, the 2D grid should be:
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+Example 2:
 
-  3  -1   0   1
-  2   2   1  -1
-  1  -1   2  -1
-  0  -1   3   4
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+ 
+
+Constraints:
+
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 300
+grid[i][j] is '0' or '1'.
+
 */
 
-class walls_and_gates
+class num_islands_queue
 {
     static inline std::vector<std::pair<int, int>> dirs = std::vector<std::pair<int, int>>
     {
-        {0, 1}, {0, -1}, {1, 0}, {-1, 0}
+        { 0, -1 }, { 0, 1}, {1, 0}, {-1, 0}
     };
 
-    static int mark_distances( std::vector<std::vector<int>>& rooms,
-        std::vector<std::pair<int, int>>& gates )
+    static void map_connected( std::vector<std::vector<std::string>>& grid,
+        const int row, const int col )
     {
-        const int num_rows = rooms.size();
-        const int num_cols = rooms[ 0 ].size();
+        const auto num_rows = grid.size();
+        const auto num_cols = grid[ 0 ].size();
 
         auto queue = std::queue<std::pair<int, int>>();
 
-    	// push all the locations that are gates on the map
-        for( auto& gate : gates )
-        {
-            queue.push( gate );
-        }
+        grid[ row ][ col ] = "0";
+        queue.push( std::make_pair( row, col ) );
 
-    	// now traverse the grid in a breath first
-    	// order, so that each empty cell we encounter
-    	// will get updated to its distance from the starting
-    	// gate
         while( !queue.empty() )
         {
             const auto loc = queue.front();
-            const auto current = rooms[ loc.first ][ loc.second ];
+            queue.pop();
 
-            for( const auto dir : dirs )
+            for( const auto& dir : dirs )
             {
-                const std::pair<int, int> next = 
-                {
-                	loc.first + dir.first,
+                const auto next = std::make_pair(
+                    loc.first + dir.first,
                     loc.second + dir.second
-                };
+                );
 
-                if( next.first < 0 || next.first >= num_rows )
+                if( next.first < 0 || next.first >= num_rows ||
+                    next.second < 0 || next.second >= num_cols )
                     continue;
 
-                if( next.second < 0 || next.second >= num_cols )
+                if( grid[ next.first ][ next.second ] == "0" )
                     continue;
 
-                if( rooms[ next.first ][ next.second ] != INT_MAX )
-                    continue;
-
-                rooms[ next.first ][ next.second ] = rooms[ loc.first ][ loc.second ] + 1;
-
+                grid[ next.first ][ next.second ] = "0";
                 queue.push( next );
             }
-
-            queue.pop();
         }
-
-        return INT_MAX;
     }
 
 public:
 
-    static void mark_map( std::vector<std::vector<int>>& rooms )
+    static int numIslands( std::vector<std::vector<std::string>> grid )
     {
-        if( rooms.empty() || rooms[ 0 ].empty() ) return;
+        if( grid.empty() || grid[ 0 ].empty() ) return 0;
 
-    	// first mark all the locations on the map that are
-    	// gates.
-        auto gates = std::vector<std::pair<int, int>>();
+        auto num_islands = 0;
 
-        for( auto row = 0ULL; row < rooms.size(); ++row )
+        for( auto row = 0; row < grid.size(); ++row )
         {
-            for( auto col = 0LL; col < rooms[ 0 ].size(); ++col )
+            for( auto col = 0; col < grid[ 0 ].size(); ++col )
             {
-                if( rooms[ row ][ col ] == 0 )
-                    gates.emplace_back( row, col);
+                if( grid[ row ][ col ] == "1" )
+                {
+                    num_islands++;
+                    map_connected( grid, row, col );
+                }
             }
         }
 
-    	// pass all the locations that are gates
-    	// to the mark distances function
-        mark_distances( rooms, gates );
+        return num_islands;
     }
 };
 
 auto main() -> int
 {
-    auto input = std::vector<std::vector<int>>{
-        { 2147483647, -1, 0, 2147483647 },
-        { 2147483647, 2147483647, 2147483647, -1 },
-        { 2147483647, -1, 2147483647,-1 },
-        { 0, -1, 2147483647, 2147483647 }
+    auto input = std::vector<std::vector<std::string>>
+	{
+        {"1","1","1","1","1","0","1","1","1","1","1","1","1","1","1","0","1","0","1","1"},
+        {"0","1","1","1","1","1","1","1","1","1","1","1","1","0","1","1","1","1","1","0"},
+        {"1","0","1","1","1","0","0","1","1","0","1","1","1","1","1","1","1","1","1","1"},
+        {"1","1","1","1","0","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"},
+        {"1","0","0","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"},
+        {"1","0","1","1","1","1","1","1","0","1","1","1","0","1","1","1","0","1","1","1"},
+        {"0","1","1","1","1","1","1","1","1","1","1","1","0","1","1","0","1","1","1","1"},
+        {"1","1","1","1","1","1","1","1","1","1","1","1","0","1","1","1","1","0","1","1"},
+        {"1","1","1","1","1","1","1","1","1","1","0","1","1","1","1","1","1","1","1","1"},
+        {"1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"},
+        {"0","1","1","1","1","1","1","1","0","1","1","1","1","1","1","1","1","1","1","1"},
+        {"0","1","1","1","1","1","1","1","0","1","1","1","1","1","1","1","1","1","1","1"}
 	};
 
-    walls_and_gates::mark_map( input );
-
-    const auto expected = std::vector<std::vector<int>>
-    {
-        { 3,-1,0,1 },
-        { 2,2,1,-1 },
-        { 1,-1,2,-1 },
-        { 0,-1,3,4 }
-    };
+    num_islands_queue::numIslands( input );
+	
+    const auto expected = 1;
 	
 	return 0;
 }
