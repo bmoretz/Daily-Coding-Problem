@@ -80,4 +80,27 @@ namespace leetcode::recursion::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class target_sum_rec_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( target_sum_rec_tests, case1 )
+    {
+        const auto input = std::vector<int>{ 1, 1, 1, 1, 1 };
+
+        const auto actual = target_sum_rec::find_target_sum_ways( input, 3 );
+        const auto expected = 5;
+    	
+        EXPECT_EQ( actual, expected );
+    }
 }

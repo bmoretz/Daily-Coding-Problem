@@ -1,126 +1,68 @@
 ﻿#include <bits/stdc++.h>
 
-/*133. Clone Graph.
+/*494. Target Sum.
 
-Given a reference of a node in a connected undirected graph.
+You are given a list of non-negative integers, a1, a2, ..., an, and a target, S. Now you have 2
+symbols + and -. For each integer, you should choose one from + and - as its new symbol.
 
-Return a deep copy (clone) of the graph.
-
-Each node in the graph contains a val (int) and a list (List[Node]) of its neighbors.
-
-class Node {
-    public int val;
-    public List<Node> neighbors;
-}
-
-Test case format:
-
-For simplicity sake, each node's value is the same as the node's index (1-indexed). For example, the first node with val = 1, the
-second node with val = 2, and so on. The graph is represented in the test case using an adjacency list.
-
-Adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
-
-The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
+Find out how many ways to assign symbols to make sum of integers equal to target S.
 
 Example 1:
 
-Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
-Output: [[2,4],[1,3],[2,4],[1,3]]
+Input: nums is [1, 1, 1, 1, 1], S is 3. 
+Output: 5
+Explanation: 
 
-Explanation: There are 4 nodes in the graph.
-1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
-2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
-3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
-4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+-1+1+1+1+1 = 3
++1-1+1+1+1 = 3
++1+1-1+1+1 = 3
++1+1+1-1+1 = 3
++1+1+1+1-1 = 3
 
-Example 2:
-
-Input: adjList = [[]]
-Output: [[]]
-Explanation: Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
-
-Example 3:
-
-Input: adjList = []
-Output: []
-Explanation: This an empty graph, it does not have any nodes.
-
-Example 4:
-
-Input: adjList = [[2],[1]]
-Output: [[2],[1]]
+There are 5 ways to assign symbols to make the sum of nums be target 3.
 
 Constraints:
 
-1 <= Node.val <= 100
-Node.val is unique for each node.
-Number of Nodes will not exceed 100.
-There is no repeated edges and no self-loops in the graph.
-The Graph is connected and all nodes can be visited starting from the given node.
+The length of the given array is positive and will not exceed 20.
+The sum of elements in the given array will not exceed 1000.
+Your output answer is guaranteed to be fitted in a 32-bit integer.
 */
 
-class graph_clone
+class target_sum_rec
 {
+    static void flip_pos( const std::vector<int>& numbers, const int index,
+        const int sum, const int target, int& result )
+    {
+        if( index == numbers.size() )
+        {
+            if( sum == target )
+                result++;
+        }
+        else
+        {
+            flip_pos( numbers, index + 1, sum + numbers[ index ], target, result );
+            flip_pos( numbers, index + 1, sum - numbers[ index ], target, result );
+        }
+    }
+
 public:
-	
-    class node
+
+    static int find_target_sum_ways( const std::vector<int>& numbers, const int target )
     {
-    public:
-    	
-        int val;
-        std::vector<node*> neighbors;
-    	
-        node() : node( 0 ) {}
+        auto result = 0;
 
-        explicit node( const int val )
-            : val{ val }
-        {
-            neighbors = std::vector<node*>();
-        }
-    };
+        flip_pos( numbers, 0, 0, target, result );
 
-    static node* clone_graph( node* root )
-    {
-        if( !root ) return nullptr;
-
-        auto map = std::unordered_map<node*, node*>();
-        auto stack = std::stack<node*>();
-        stack.push( root );
-
-        while( !stack.empty() )
-        {
-            const auto old_node = stack.top();
-            stack.pop();
-
-            if( map.find( old_node ) == map.end() )
-            {
-                map[ old_node ] = new node( old_node->val );
-            }
-
-            for( auto adj : old_node->neighbors )
-            {
-                if( map.find( adj ) == map.end() )
-                {
-                    map[ adj ] = new node( adj->val );
-                    stack.push( adj );
-                }
-
-                map[ old_node ]->neighbors.push_back( map[ adj ] );
-            }
-        }
-
-        return map[ root ];
+        return result;
     }
 };
 
 auto main() -> int
 {
-    using node = graph_clone::node;
-
-    auto root = std::make_unique<node>( 1 );
+    const auto input = std::vector<int> { 1, 1, 1, 1, 1 };
 	
-    auto actual = evaluate_rpn::eval_rpn( { "2","1","+","3","*" } );
-    auto expected = 6;
+    auto actual = target_sum_rec::find_target_sum_ways( input, 3 );
+    auto expected = 5;
 		
 	return 0;
 }
