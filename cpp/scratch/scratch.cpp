@@ -1,128 +1,124 @@
 ﻿#include <bits/stdc++.h>
 
-/*200. Number of Islands.
+/*133. Clone Graph.
 
-Given an m x n 2d grid map of '1's (land) and '0's (water), return the number of islands.
+Given a reference of a node in a connected undirected graph.
 
-An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+Return a deep copy (clone) of the graph.
+
+Each node in the graph contains a val (int) and a list (List[Node]) of its neighbors.
+
+class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+
+Test case format:
+
+For simplicity sake, each node's value is the same as the node's index (1-indexed). For example, the first node with val = 1, the
+second node with val = 2, and so on. The graph is represented in the test case using an adjacency list.
+
+Adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
+
+The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
 
 Example 1:
 
-Input: grid = [
-  ["1","1","1","1","0"],
-  ["1","1","0","1","0"],
-  ["1","1","0","0","0"],
-  ["0","0","0","0","0"]
-]
-Output: 1
+Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
+Output: [[2,4],[1,3],[2,4],[1,3]]
+
+Explanation: There are 4 nodes in the graph.
+1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+
 Example 2:
 
-Input: grid = [
-  ["1","1","0","0","0"],
-  ["1","1","0","0","0"],
-  ["0","0","1","0","0"],
-  ["0","0","0","1","1"]
-]
-Output: 3
- 
+Input: adjList = [[]]
+Output: [[]]
+Explanation: Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
+
+Example 3:
+
+Input: adjList = []
+Output: []
+Explanation: This an empty graph, it does not have any nodes.
+
+Example 4:
+
+Input: adjList = [[2],[1]]
+Output: [[2],[1]]
 
 Constraints:
 
-m == grid.length
-n == grid[i].length
-1 <= m, n <= 300
-grid[i][j] is '0' or '1'.
+1 <= Node.val <= 100
+Node.val is unique for each node.
+Number of Nodes will not exceed 100.
+There is no repeated edges and no self-loops in the graph.
+The Graph is connected and all nodes can be visited starting from the given node.
 */
 
-class num_islands_dfs
+class graph_clone
 {
-    struct point
+public:
+	
+    class node
     {
-        int row, col;
+    public:
+    	
+        int val;
+        std::vector<node*> neighbors;
+    	
+        node() : node( 0 ) {}
 
-        point( const int x, const int y )
-            : row{ x }, col{ y }
-        { }
-
-        point operator+( const point& other ) const
+        explicit node( const int val )
+            : val{ val }
         {
-            return point( row + other.row, col + other.col );
+            neighbors = std::vector<node*>();
         }
     };
 
-    std::vector<point> directions = std::vector<point>
+    static node* clone_graph( node* root )
     {
-        { 0, -1 }, {0, 1}, {-1, 0}, {1, 0}
-    };
+        if( !root ) return nullptr;
 
-    void map_connected( const std::vector<std::vector<char>>& grid,
-        std::vector<std::vector<bool>>& visited,
-        const int row, const int col )
-    {
-        const int num_rows = grid.size();
-        const int num_cols = grid[ 0 ].size();
-
-        visited[ row ][ col ] = true;
-
-        auto stack = std::stack<point>();
-        stack.push( { row, col } );
+        auto map = std::unordered_map<node*, node*>();
+        auto stack = std::stack<node*>();
+        stack.push( root );
 
         while( !stack.empty() )
         {
-            const auto cur = stack.top();
+            const auto old_node = stack.top();
             stack.pop();
 
-            visited[ cur.row ][ cur.col ] = true;
-
-            for( auto dir : directions )
+            if( map.find( old_node ) == map.end() )
             {
-                auto next = cur + dir;
-
-                if( next.row < 0 || next.row >= num_rows ||
-                    next.col < 0 || next.col >= num_cols )
-                    continue;
-
-                if( visited[ next.row ][ next.col ] ||
-                    grid[ next.row ][ next.col ] == '0' )
-                    continue;
-
-                stack.push( next );
+                map[ old_node ] = new node( old_node->val );
             }
-        }
-    }
 
-public:
-
-    int num_islands( const std::vector<std::vector<char>>& grid )
-    {
-        if( grid.empty() || grid[ 0 ].empty() ) return 0;
-
-        const int num_rows = grid.size();
-        const int num_cols = grid[ 0 ].size();
-
-        auto visited = std::vector<std::vector<bool>>
-            ( grid.size(), std::vector<bool>( grid[ 0 ].size(), false ) );
-
-        auto num_islands = 0;
-
-        for( int row = 0; row < num_rows; ++row )
-        {
-            for( auto col = 0; col < num_cols; ++col )
+            for( auto adj : old_node->neighbors )
             {
-                if( !visited[ row ][ col ] && grid[ row ][ col ] == '1' )
+                if( map.find( adj ) == map.end() )
                 {
-                    ++num_islands;
-                    map_connected( grid, visited, row, col );
+                    map[ adj ] = new node( adj->val );
+                    stack.push( adj );
                 }
+
+                map[ old_node ]->neighbors.push_back( map[ adj ] );
             }
         }
 
-        return num_islands;
+        return map[ root ];
     }
 };
 
 auto main() -> int
 {
+    using node = graph_clone::node;
+
+    auto root = std::make_unique<node>( 1 );
+	
     auto actual = evaluate_rpn::eval_rpn( { "2","1","+","3","*" } );
     auto expected = 6;
 		
