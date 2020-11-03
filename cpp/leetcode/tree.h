@@ -706,7 +706,7 @@ namespace leetcode::tree
 	{
 	public:
 
-		static tree_node* inorderSuccessor( tree_node* root, tree_node* p )
+		static tree_node* inorder_successor( tree_node* root, tree_node* p )
 		{
 			if( !root || !p ) return nullptr;
 
@@ -857,7 +857,7 @@ namespace leetcode::tree
 				// ensure the result vector has storage space
 				if( result.size() <= level )
 				{
-					result.push_back( {} );
+					result.emplace_back();
 				}
 
 				// if its an odd row, put the value at the front
@@ -1069,8 +1069,6 @@ namespace leetcode::tree
 			// remove the empty nodes & trailing delim from the end, ex, "#,#,#,#,"
 			if( !result.empty() )
 				result.erase( result.find_last_not_of( null_node + delimiter ) + 1 );
-
-			std::cout << result << std::endl;
 
 			return result;
 		}

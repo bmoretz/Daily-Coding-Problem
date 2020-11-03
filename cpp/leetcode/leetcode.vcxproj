@@ -156,7 +156,6 @@
   <ItemGroup>
     <ClInclude Include="arr.h" />
     <ClInclude Include="backtrack.h" />
-    <ClInclude Include="bfs.h" />
     <ClInclude Include="binary_search.h" />
     <ClInclude Include="bitmanip.h" />
     <ClInclude Include="containers.h" />

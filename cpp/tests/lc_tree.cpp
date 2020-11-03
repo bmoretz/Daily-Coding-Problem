@@ -577,7 +577,7 @@ namespace leetcode::tree::tests
 
         const auto root = build_tree_in_order( input1 );
 
-        const auto actual = in_order_successor::inorderSuccessor( root.get(), root->left.get() );
+        const auto actual = in_order_successor::inorder_successor( root.get(), root->left.get() );
     	
         const auto expected = 2;
 
@@ -590,7 +590,7 @@ namespace leetcode::tree::tests
 
         const auto root = build_tree_in_order( input1 );
 
-        const auto actual = in_order_successor::inorderSuccessor( root.get(), root->left.get() );
+        const auto actual = in_order_successor::inorder_successor( root.get(), root->left.get() );
 
         const auto expected = 4;
 
@@ -672,7 +672,7 @@ namespace leetcode::tree::tests
 
     TEST_F( lowest_common_ancestor_bfs_tests, case1 )
     {
-        auto root = build_tree_in_order(
+	    const auto root = build_tree_in_order(
             std::vector<std::string>{ "3", "5", "1", "6", "2", "0", "8", "", "", "7", "4" } );
 
         const auto actual = lowest_common_ancestor_bfs::lowest_common_ancestor( root.get(), root->left.get(), root->right.get() );
