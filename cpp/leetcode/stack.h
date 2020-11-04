@@ -610,4 +610,95 @@ namespace leetcode::stack
 			return num_islands;
 		}
 	};
+
+	/*394. Decode String.
+
+	Given an encoded string, return its decoded string.
+
+	The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being
+	repeated exactly k times. Note that k is guaranteed to be a positive integer.
+
+	You may assume that the input string is always valid; No extra white spaces, square brackets are well-formed, etc.
+
+	Furthermore, you may assume that the original data does not contain any digits and that
+	digits are only for those repeat numbers, k. For example, there won't be input like 3a or 2[4].
+
+	Example 1:
+
+	Input: s = "3[a]2[bc]"
+	Output: "aaabcbc"
+	Example 2:
+
+	Input: s = "3[a2[c]]"
+	Output: "accaccacc"
+	Example 3:
+
+	Input: s = "2[abc]3[cd]ef"
+	Output: "abcabccdcdcdef"
+	Example 4:
+
+	Input: s = "abc3[cd]xyz"
+	Output: "abccdcdcdxyz"
+	*/
+
+	class string_decoder
+	{
+
+	public:
+
+		static std::string decode_string( const std::string& input )
+		{
+			const int N = input.size();
+			auto stack = std::stack<char>();
+
+			for( auto index = 0; index < N; ++index )
+			{
+				if( input[ index ] == ']' )
+				{
+					std::string decoded;
+
+					while( stack.top() != '[' )
+					{
+						decoded += stack.top();
+						stack.pop();
+					}
+
+					stack.pop();
+
+					auto base = 1, k = 0;
+
+					while( !stack.empty() && isdigit( stack.top() ) )
+					{
+						k = k + ( stack.top() - '0' ) * base;
+						stack.pop();
+						base *= 10;
+					}
+
+					const int current_len = decoded.size();
+
+					for( auto cur = 0; cur < k; ++cur )
+					{
+						for( auto idx = current_len - 1; idx >= 0; --idx )
+						{
+							stack.push( decoded[ idx ] );
+						}
+					}
+				}
+				else
+				{
+					stack.push( input[ index ] );
+				}
+			}
+
+			std::string result;
+
+			while( !stack.empty() )
+			{
+				result = stack.top() + result;
+				stack.pop();
+			}
+
+			return result;
+		}
+	};
 }

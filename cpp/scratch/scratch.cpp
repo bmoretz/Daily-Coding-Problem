@@ -1,68 +1,138 @@
 ﻿#include <bits/stdc++.h>
 
-/*494. Target Sum.
+/* 542. 01 Matrix.
 
-You are given a list of non-negative integers, a1, a2, ..., an, and a target, S. Now you have 2
-symbols + and -. For each integer, you should choose one from + and - as its new symbol.
+Given a matrix consists of 0 and 1, find the distance of the nearest 0 for each cell.
 
-Find out how many ways to assign symbols to make sum of integers equal to target S.
+The distance between two adjacent cells is 1. 
 
 Example 1:
 
-Input: nums is [1, 1, 1, 1, 1], S is 3. 
-Output: 5
-Explanation: 
+Input:
+[[0,0,0],
+ [0,1,0],
+ [0,0,0]]
 
--1+1+1+1+1 = 3
-+1-1+1+1+1 = 3
-+1+1-1+1+1 = 3
-+1+1+1-1+1 = 3
-+1+1+1+1-1 = 3
+Output:
+[[0,0,0],
+ [0,1,0],
+ [0,0,0]]
+ 
+Example 2:
 
-There are 5 ways to assign symbols to make the sum of nums be target 3.
+Input:
+[[0,0,0],
+ [0,1,0],
+ [1,1,1]]
 
-Constraints:
+Output:
+[[0,0,0],
+ [0,1,0],
+ [1,2,1]]
+ 
+Note:
 
-The length of the given array is positive and will not exceed 20.
-The sum of elements in the given array will not exceed 1000.
-Your output answer is guaranteed to be fitted in a 32-bit integer.
+The number of elements of the given matrix will not exceed 10,000.
+There are at least one 0 in the given matrix.
+The cells are adjacent in only four directions: up, down, left and right.
 */
 
-class target_sum_rec
+class binary_matrix
 {
-    static void flip_pos( const std::vector<int>& numbers, const int index,
-        const int sum, const int target, int& result )
+    struct point
     {
-        if( index == numbers.size() )
+        int x, y;
+
+        point( const int _x, const int _y )
+            : x{ _x }, y{ _y }
+        {}
+
+        point operator+( const point other ) const
         {
-            if( sum == target )
-                result++;
+            return point( x + other.x, y + other.y );
         }
-        else
+    };
+
+    static inline std::vector<point> directions = {
+        {0, -1}, {0, 1}, {1, 0}, {-1, 0}
+    };
+
+    static void calculate_distances( const std::vector<std::vector<int>>& matrix,
+        std::queue<point>& to_search,
+        std::vector<std::vector<int>>& distances )
+    {
+        const int num_rows = matrix.size();
+        const int num_cols = matrix[ 0 ].size();
+
+        while( !to_search.empty() )
         {
-            flip_pos( numbers, index + 1, sum + numbers[ index ], target, result );
-            flip_pos( numbers, index + 1, sum - numbers[ index ], target, result );
+            const auto loc = to_search.front();
+            to_search.pop();
+
+            for( auto dir : directions )
+            {
+                const auto next = loc + dir;
+
+                if( next.x < 0 || next.x >= num_rows ||
+                    next.y < 0 || next.y >= num_cols )
+                    continue;
+
+                if( distances[ next.x ][ next.y ] > distances[ loc.x ][ loc.y ] + 1 )
+                {
+                    distances[ next.x ][ next.y ] = distances[ loc.x ][ loc.y ] + 1;
+                    to_search.push( next );
+                }
+            }
         }
     }
 
 public:
 
-    static int find_target_sum_ways( const std::vector<int>& numbers, const int target )
+    static std::vector<std::vector<int>> update_matrix( const std::vector<std::vector<int>>& matrix )
     {
-        auto result = 0;
+        if( matrix.empty() || matrix[ 0 ].empty() ) return matrix;
 
-        flip_pos( numbers, 0, 0, target, result );
+        const int num_rows = matrix.size();
+        const int num_cols = matrix[ 0 ].size();
 
-        return result;
+        auto to_search = std::queue<point>();
+        auto distances = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols, INT_MAX ) );
+
+        for( auto row = 0; row < num_rows; ++row )
+        {
+            for( auto col = 0; col < num_cols; ++col )
+            {
+                if( matrix[ row ][ col ] == 0 )
+                {
+                    to_search.push( { row, col } );
+                    distances[ row ][ col ] = 0;
+                }
+            }
+        }
+
+        calculate_distances( matrix, to_search, distances );
+
+        return distances;
     }
 };
 
 auto main() -> int
 {
-    const auto input = std::vector<int> { 1, 1, 1, 1, 1 };
+    auto input = std::vector<std::vector<int>>
+    {
+        { 0, 0, 0 },
+        { 0, 1, 0 },
+        { 1, 1, 1 }
+    };
 	
-    auto actual = target_sum_rec::find_target_sum_ways( input, 3 );
-    auto expected = 5;
-		
+    auto actual = binary_matrix::update_matrix( input );
+	
+    auto expected = std::vector<std::vector<int>>
+    {
+        { 0, 0, 0 },
+        { 0, 1, 0 },
+        { 1, 2, 1 }
+    };
+	
 	return 0;
 }

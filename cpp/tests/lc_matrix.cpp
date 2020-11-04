@@ -665,4 +665,38 @@ namespace leetcode::matrix::tests
 
         EXPECT_EQ( input, expected );
     }
+
+    class binary_matrix_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( binary_matrix_tests, case1 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            { 0, 0, 0 },
+            { 0, 1, 0 },
+            { 1, 1, 1 }
+        };
+
+        auto actual = binary_matrix::update_matrix( input );
+
+        const auto expected = std::vector<std::vector<int>>
+        {
+            { 0, 0, 0 },
+            { 0, 1, 0 },
+            { 1, 2, 1 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

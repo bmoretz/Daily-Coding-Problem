@@ -328,4 +328,47 @@ namespace leetcode::stack::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class string_decoder_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( string_decoder_tests, case1 )
+    {
+        const auto input = "abc3[cd]xyz";
+
+        const auto actual = string_decoder::decode_string( input );
+        const auto expected = "abccdcdcdxyz";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_decoder_tests, case2 )
+    {
+        const auto input = "2[abc]3[cd]ef";
+
+        const auto actual = string_decoder::decode_string( input );
+        const auto expected = "abcabccdcdcdef";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( string_decoder_tests, case3 )
+    {
+        const auto input = "3[a2[c]]";
+
+        auto actual = string_decoder::decode_string( input );
+        auto expected = "accaccacc";
+
+        EXPECT_EQ( actual, expected );
+    }
 }
