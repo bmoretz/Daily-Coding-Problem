@@ -20,47 +20,52 @@ Constraints:
 -50000 <= nums[i] <= 50000
 */
 
-class sort_arr_merge
+class sort_arr_quick
 {
-    static std::vector<int> merge_sort( const std::vector<int>& numbers )
+    static void qsort( std::vector<int>& numbers, const int low, const int high )
     {
-        const auto n = numbers.size();
-    	
-        if( n <= 1 )
-            return numbers;
+        if( high <= low ) return;
 
-        const int pivot = n/2;
+        const auto part = partition( numbers, low, high );
 
-        auto left = merge_sort( std::vector<int>( numbers.begin(), numbers.begin() + pivot ) );
-        auto right = merge_sort( std::vector<int>( numbers.begin() + pivot, numbers.end() ));
+        qsort( numbers, low, part - 1 );
+        qsort( numbers, part + 1, high );
+    }
 
-        auto result = std::vector<int>( n );
+    static int partition( std::vector<int>& numbers, const int low, const int high )
+    {
+	    const auto pivot = numbers[ high ];
 
-        auto left_ptr = 0, right_ptr = 0;
+	    auto left = low;
 
-        for( auto index = 0; index < n; ++index )
+        for( auto right = low; right < high; ++right )
         {
-            const auto left_val = left_ptr < left.size() ? left[ left_ptr ] : INT_MAX;
-            const auto right_val = right_ptr < right.size() ? right[ right_ptr ] : INT_MAX;
-        	
-            if( left_val < right_val )
+            if( numbers[ right ] < pivot )
             {
-                result[ index ] = left[ left_ptr++ ];
-            }
-            else
-            {
-                result[ index ] = right[ right_ptr++ ];
+                const auto tmp = numbers[ left ];
+                numbers[ left ] = numbers[ right ];
+                numbers[ right ] = tmp;
+
+                ++left;
             }
         }
 
-        return result;
+        const auto tmp = numbers[ left ];
+        numbers[ left ] = numbers[ high ];
+        numbers[ high ] = tmp;
+
+        return left;
     }
 
 public:
-
-    static std::vector<int> sortArray( std::vector<int>& numbers )
+	
+    static std::vector<int> sortArray( std::vector<int>& nums )
     {
-        return merge_sort( numbers );
+        const auto N = nums.size();
+
+        qsort( nums, 0, N - 1 );
+
+        return nums;
     }
 };
 
@@ -68,7 +73,7 @@ auto main() -> int
 {
     auto input = std::vector<int>{ 3, 1, 3 };
 	
-    auto actual = sort_arr_merge::sortArray( input );
+    auto actual = sort_arr_quick::sortArray( input );
 
     const auto expected = std::vector<int>{ 1, 2, 3, 5 };
 	

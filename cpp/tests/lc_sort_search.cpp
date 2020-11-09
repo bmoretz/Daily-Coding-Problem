@@ -92,7 +92,7 @@ namespace leetcode::sort_search::tests
         EXPECT_EQ( actual, expected );
     }
 
-    class sort_arr_merge_tests :
+    class sort_arr_tests :
         public ::testing::Test {
 
     protected:
@@ -105,22 +105,44 @@ namespace leetcode::sort_search::tests
         }
     };
 
-    TEST_F( sort_arr_merge_tests, case1 )
+    TEST_F( sort_arr_tests, merge_case1 )
     {
         auto input = std::vector<int>{ 3, 1, 3 };
 
-        auto actual = sort_arr_merge::sortArray( input );
+        auto actual = sort_arr_merge::sort_array( input );
 
         const auto expected = std::vector<int>{ 1, 3, 3 };
 
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( sort_arr_merge_tests, case2 )
+    TEST_F( sort_arr_tests, merge_case2 )
     {
         auto input = std::vector<int>{ 2, 5, 1, 3 };
 
-        auto actual = sort_arr_merge::sortArray( input );
+        auto actual = sort_arr_merge::sort_array( input );
+
+        const auto expected = std::vector<int>{ 1, 2, 3, 5 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_arr_tests, quick_case1 )
+    {
+        auto input = std::vector<int>{ 3, 1, 3 };
+
+        auto actual = sort_arr_merge::sort_array( input );
+
+        const auto expected = std::vector<int>{ 1, 3, 3 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_arr_tests, quick_case2 )
+    {
+        auto input = std::vector<int>{ 2, 5, 1, 3 };
+
+        auto actual = sort_arr_merge::sort_array( input );
 
         const auto expected = std::vector<int>{ 1, 2, 3, 5 };
 

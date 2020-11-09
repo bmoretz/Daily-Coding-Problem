@@ -196,9 +196,58 @@ namespace leetcode::sort_search
 
 	public:
 
-		static std::vector<int> sortArray( std::vector<int>& numbers )
+		static std::vector<int> sort_array( std::vector<int>& numbers )
 		{
 			return merge_sort( numbers );
+		}
+	};
+
+	class sort_arr_quick
+	{
+		static void qsort( std::vector<int>& numbers, const int low, const int high )
+		{
+			if( high <= low ) return;
+
+			const auto part = partition( numbers, low, high );
+
+			qsort( numbers, low, part - 1 );
+			qsort( numbers, part + 1, high );
+		}
+
+		static int partition( std::vector<int>& numbers, const int low, const int high )
+		{
+			const auto pivot = numbers[ high ];
+
+			auto left = low;
+
+			for( auto right = low; right < high; ++right )
+			{
+				if( numbers[ right ] < pivot )
+				{
+					const auto tmp = numbers[ left ];
+					numbers[ left ] = numbers[ right ];
+					numbers[ right ] = tmp;
+
+					++left;
+				}
+			}
+
+			const auto tmp = numbers[ left ];
+			numbers[ left ] = numbers[ high ];
+			numbers[ high ] = tmp;
+
+			return left;
+		}
+
+	public:
+
+		static std::vector<int> sortArray( std::vector<int>& nums )
+		{
+			const auto N = nums.size();
+
+			qsort( nums, 0, N - 1 );
+
+			return nums;
 		}
 	};
 }
