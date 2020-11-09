@@ -710,4 +710,64 @@ namespace leetcode::tree::tests
         EXPECT_EQ( actual_tree->left->val, 2 );
         EXPECT_EQ( actual_tree->right->val, 3 );
     }
+
+    class generate_trees_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( generate_trees_tests, case1 )
+    {
+        auto trees = generate_bst_trees::generate_trees( 3 );
+    	
+        EXPECT_EQ( trees.size(), 5 );
+
+        {
+            const auto tree_index = 0;
+            const auto actual = flatten_tree( trees[ tree_index ] );
+            const auto expected = std::vector<std::string>{ { "1", "", "2", "", "3" } };
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto tree_index = 1;
+            const auto actual = flatten_tree( trees[ tree_index ] );
+            const auto expected = std::vector<std::string>{ { "1", "", "3", "2", "" } };
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto tree_index = 2;
+            const auto actual = flatten_tree( trees[ tree_index ] );
+            const auto expected = std::vector<std::string>{ { "2", "1", "3" } };
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto tree_index = 3;
+            const auto actual = flatten_tree( trees[ tree_index ] );
+            const auto expected = std::vector<std::string>{ {  "3", "1", "", "", "2" } };
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto tree_index = 4;
+            const auto actual = flatten_tree( trees[ tree_index ] );
+            const auto expected = std::vector<std::string>{ { "3", "2", "", "1", "" } };
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
 }

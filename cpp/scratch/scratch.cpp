@@ -1,118 +1,77 @@
 ﻿#include <bits/stdc++.h>
 
-/* 542. 01 Matrix.
+/* 95. Unique Binary Search Trees II.
 
-Given a matrix consists of 0 and 1, find the distance of the nearest 0 for each cell.
+Given an integer n, generate all structurally unique BST's (binary search trees) that store values 1 ... n.
 
-The distance between two adjacent cells is 1. 
+Example:
 
-Example 1:
-
-Input:
-[[0,0,0],
- [0,1,0],
- [0,0,0]]
-
+Input: 3
 Output:
-[[0,0,0],
- [0,1,0],
- [0,0,0]]
- 
-Example 2:
+[
+  [1,null,3,2],
+  [3,2,null,1],
+  [3,1,null,null,2],
+  [2,1,3],
+  [1,null,2,null,3]
+]
 
-Input:
-[[0,0,0],
- [0,1,0],
- [1,1,1]]
+Explanation:
+The above output corresponds to the 5 unique BST's shown below:
 
-Output:
-[[0,0,0],
- [0,1,0],
- [1,2,1]]
- 
-Note:
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+   
+Constraints:
 
-The number of elements of the given matrix will not exceed 10,000.
-There are at least one 0 in the given matrix.
-The cells are adjacent in only four directions: up, down, left and right.
+0 <= n <= 8
 */
 
-class binary_matrix
+#include "../leetcode/tree.h"
+
+using namespace leetcode::tree;
+
+class generate_bst_trees
 {
-    struct point
+    static std::vector<tree_node*> gen_trees( const int beg, const int end )
     {
-        int x, y;
+        if( end < beg ) return { nullptr };
+        if( end == beg ) return { new tree_node( beg ) };
 
-        point( const int _x, const int _y )
-            : x{ _x }, y{ _y }
-        {}
+        std::vector<tree_node*> trees;
 
-        point operator+( const point other ) const
+        for( auto index = beg; index <= end; ++index )
         {
-            return point( x + other.x, y + other.y );
-        }
-    };
+            auto left_trees = gen_trees( beg, index - 1 );
+            auto right_trees = gen_trees( index + 1, end );
 
-    static inline std::vector<point> directions = {
-        {0, -1}, {0, 1}, {1, 0}, {-1, 0}
-    };
-
-    static void calculate_distances( const std::vector<std::vector<int>>& matrix,
-        std::queue<point>& to_search,
-        std::vector<std::vector<int>>& distances )
-    {
-        const int num_rows = matrix.size();
-        const int num_cols = matrix[ 0 ].size();
-
-        while( !to_search.empty() )
-        {
-            const auto loc = to_search.front();
-            to_search.pop();
-
-            for( auto dir : directions )
+            for( auto& left : left_trees )
             {
-                const auto next = loc + dir;
-
-                if( next.x < 0 || next.x >= num_rows ||
-                    next.y < 0 || next.y >= num_cols )
-                    continue;
-
-                if( distances[ next.x ][ next.y ] > distances[ loc.x ][ loc.y ] + 1 )
+                for( auto& right : right_trees )
                 {
-                    distances[ next.x ][ next.y ] = distances[ loc.x ][ loc.y ] + 1;
-                    to_search.push( next );
+                    auto node = new tree_node( index );
+                	
+                    node->left.reset( left );
+                    node->right.reset( right );
+                    
+                    trees.push_back( node );
                 }
             }
         }
+
+        return trees;
     }
 
 public:
 
-    static std::vector<std::vector<int>> update_matrix( const std::vector<std::vector<int>>& matrix )
+    static std::vector<tree_node*> generate_trees( const int n )
     {
-        if( matrix.empty() || matrix[ 0 ].empty() ) return matrix;
+        if( n == 0 ) return {};
 
-        const int num_rows = matrix.size();
-        const int num_cols = matrix[ 0 ].size();
-
-        auto to_search = std::queue<point>();
-        auto distances = std::vector<std::vector<int>>( num_rows, std::vector<int>( num_cols, INT_MAX ) );
-
-        for( auto row = 0; row < num_rows; ++row )
-        {
-            for( auto col = 0; col < num_cols; ++col )
-            {
-                if( matrix[ row ][ col ] == 0 )
-                {
-                    to_search.push( { row, col } );
-                    distances[ row ][ col ] = 0;
-                }
-            }
-        }
-
-        calculate_distances( matrix, to_search, distances );
-
-        return distances;
+        return gen_trees( 1, n );
     }
 };
 
@@ -125,14 +84,9 @@ auto main() -> int
         { 1, 1, 1 }
     };
 	
-    auto actual = binary_matrix::update_matrix( input );
+    auto actual = generate_bst_trees::generate_trees( 3 );
 	
-    auto expected = std::vector<std::vector<int>>
-    {
-        { 0, 0, 0 },
-        { 0, 1, 0 },
-        { 1, 2, 1 }
-    };
+
 	
 	return 0;
 }
