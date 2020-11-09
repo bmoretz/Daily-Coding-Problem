@@ -91,4 +91,39 @@ namespace leetcode::sort_search::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class sort_arr_merge_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( sort_arr_merge_tests, case1 )
+    {
+        auto input = std::vector<int>{ 3, 1, 3 };
+
+        auto actual = sort_arr_merge::sortArray( input );
+
+        const auto expected = std::vector<int>{ 1, 3, 3 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( sort_arr_merge_tests, case2 )
+    {
+        auto input = std::vector<int>{ 2, 5, 1, 3 };
+
+        auto actual = sort_arr_merge::sortArray( input );
+
+        const auto expected = std::vector<int>{ 1, 2, 3, 5 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
