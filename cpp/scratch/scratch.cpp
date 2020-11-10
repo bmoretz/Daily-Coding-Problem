@@ -1,105 +1,141 @@
 ﻿#include <bits/stdc++.h>
 
-/*52. N-Queens II.
+/*489. Robot Room Cleaner.
 
-The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+Given a robot cleaner in a room modeled as a grid.
 
-Given an integer n, return the number of distinct solutions to the n-queens puzzle.
+Each cell in the grid can be empty or blocked.
+
+The robot cleaner with 4 given APIs can move forward, turn left or turn right. Each turn it made is 90 degrees.
+
+When it tries to move into a blocked cell, its bumper sensor detects the obstacle and it stays on the current cell.
+
+Design an algorithm to clean the entire room using only the 4 given APIs shown below.
+
+interface Robot {
+  // returns true if next cell is open and robot moves into the cell.
+  // returns false if next cell is obstacle and robot stays on the current cell.
+  boolean move();
+
+  // Robot will stay on the same cell after calling turnLeft/turnRight.
+  // Each turn will be 90 degrees.
+  void turnLeft();
+  void turnRight();
+
+  // Clean the current cell.
+  void clean();
+}
 
 Example:
 
-Input: 4
-Output: 2
-Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
-[
- [".Q..",  // Solution 1
-  "...Q",
-  "Q...",
-  "..Q."],
+Input:
+room = [
+  [1,1,1,1,1,0,1,1],
+  [1,1,1,1,1,0,1,1],
+  [1,0,1,1,1,1,1,1],
+  [0,0,0,1,0,0,0,0],
+  [1,1,1,1,1,1,1,1]
+],
+row = 1,
+col = 3
 
- ["..Q.",  // Solution 2
-  "Q...",
-  "...Q",
-  ".Q.."]
-]
+Explanation:
+All grids in the room are marked by either 0 or 1.
+0 means the cell is blocked, while 1 means the cell is accessible.
+The robot initially starts at the position of row=1, col=3.
+From the top left corner, its position is one row below and three columns right.
+Notes:
+
+The input is only given to initialize the room and the robot's position internally. You must solve this problem "blindfolded". In other words,
+you must control the robot using only the mentioned 4 APIs, without knowing the room layout and the initial robot's position.
+The robot's initial position will always be in an accessible cell.
+The initial direction of the robot will be facing up.
+All accessible cells are connected, which means the all cells marked as 1 will be accessible by the robot.
+Assume all four edges of the grid are all surrounded by wall.
 */
 
-class n_queens_ii
+class robot_room_cleaner
 {
-    static int backtrack_n_queens( std::vector<std::vector<int>>& board,
-        const int row, int count )
-    {
-        const int num_rows = board.size();
-        const int num_cols = board[ 0 ].size();
-
-        for( auto col = 0; col < num_cols; col++ )
-        {
-            if( board[ row ][ col ] == 0 )
-            {
-                // this is where we will backtrack to
-                const auto prev_board = board;
-
-                place_queen( board, row, col );
-
-                if( row == num_rows - 1 )
-                {
-                    count++;
-                }
-                else
-                {
-                    count = backtrack_n_queens( board, row + 1, count );
-                }
-
-                // backtrack the last queen
-
-                board = prev_board;
-            }
-        }
-
-        return count;
-    }
-
-    static void place_queen( std::vector<std::vector<int>>& board,
-        const int row, const int col )
-    {
-        const auto num_rows = board.size();
-        const auto num_cols = board[ 0 ].size();
-
-        for( auto pos = 0; pos < num_rows; pos++ )
-        {
-            // fill vertically
-            board[ pos ][ col ] = 1;
-
-            // fill horizontally
-            board[ row ][ pos ] = 1;
-
-            // fill the NE diagonal
-            const auto j = row + col - pos;
-            if( j >= 0 && j < num_cols ) {
-                board[ pos ][ j ] = 1;
-            }
-
-            // fill the SE diagonal
-            const auto k = row - col + pos;
-            if( k >= 0 && k < num_rows ) {
-                board[ k ][ pos ] = 1;
-            }
-        }
-    }
+    class robot;
 	
+	static inline std::vector<std::pair<int, int>> directions_ = {
+        {-1, 0}, {0, 1}, {1, 0}, {0, -1}
+    };
+
+    std::set<std::pair<int, int>> visited_;
+    
+    robot* robot_{};
+    
+    void go_back() const
+    {
+        robot_->turnRight();
+        robot_->turnRight();
+        
+        robot_->move();
+        
+        robot_->turnRight();
+        robot_->turnRight();
+    }
+    
+    void backtrack( const std::pair<int, int> pos, const int dir )
+    {
+        visited_.insert( pos );
+        
+        robot_->clean();
+        
+        for( auto index = 0; index < 4; ++index )
+        {
+            const auto next_dir = (dir + index) % 4;
+            const auto next_pos = std::make_pair( pos.first + directions_[next_dir].first, 
+                                                 pos.second + directions_[next_dir].second );
+            
+            if( visited_.find( next_pos ) == visited_.end() && robot_->move() )
+            {
+                backtrack( next_pos, next_dir );
+                go_back();
+            }
+            
+            robot_->turnRight();
+        }
+    }
+    
 public:
 
-	static int totalNQueens( const int board_size )
-	{	
-        auto board = std::vector<std::vector<int>>( board_size, std::vector<int>( board_size, 0 ) );
-    	
-        return backtrack_n_queens( board, 0, 0 );
+    class robot
+    {
+    public:
+
+        robot() { }
+
+        // Returns true if the cell in front is open and robot moves into the cell.
+        // Returns false if the cell in front is blocked and robot stays in the current cell.
+        bool move();
+
+        // Robot will stay in the same cell after calling turnLeft/turnRight.
+        // Each turn will be 90 degrees.
+        void turnLeft();
+        void turnRight();
+
+        // Clean the current cell.
+        void clean();
+    };
+	
+    void clean_room( robot& robot ) 
+    {
+        this->robot_ = &robot;
+        
+        backtrack(std::make_pair(0, 0), 0);
     }
 };
 
 auto main() -> int
 {
-    auto actual = n_queens_ii::totalNQueens( 4 );
+    using robot = robot_room_cleaner::robot;
+	
+    auto sln = robot_room_cleaner();
+    auto rbt = robot();
+	
+    sln.clean_room( rbt );
 
     const auto expected = std::vector<int>{ 1, 2, 3, 5 };
 	
