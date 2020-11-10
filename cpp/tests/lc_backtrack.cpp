@@ -158,4 +158,62 @@ namespace leetcode::backtrack::tests
 
 		EXPECT_EQ( actual, expected );
 	}
+
+	class n_queens_ii_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( n_queens_ii_tests, case1 )
+	{
+		const auto actual = n_queens_ii::total_n_queens( 4 );
+
+		const auto expected = 2;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( n_queens_ii_tests, case2 )
+	{
+		const auto actual = n_queens_ii::total_n_queens( 5 );
+
+		const auto expected = 10;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( n_queens_ii_tests, case3 )
+	{
+		const auto actual = n_queens_ii::total_n_queens( 6 );
+
+		const auto expected = 4;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( n_queens_ii_tests, case4 )
+	{
+		const auto actual = n_queens_ii::total_n_queens( 7 );
+
+		const auto expected = 40;
+
+		EXPECT_EQ( actual, expected );
+	}
+
+	TEST_F( n_queens_ii_tests, case5 )
+	{
+		const auto actual = n_queens_ii::total_n_queens( 8 );
+
+		const auto expected = 92;
+
+		EXPECT_EQ( actual, expected );
+	}
 }

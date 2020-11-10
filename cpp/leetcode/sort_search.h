@@ -241,13 +241,13 @@ namespace leetcode::sort_search
 
 	public:
 
-		static std::vector<int> sortArray( std::vector<int>& nums )
+		static std::vector<int> sortArray( std::vector<int>& numbers )
 		{
-			const auto N = nums.size();
+			const auto N = numbers.size();
 
-			qsort( nums, 0, N - 1 );
+			qsort( numbers, 0, N - 1 );
 
-			return nums;
+			return numbers;
 		}
 	};
 }

@@ -1,79 +1,105 @@
 ﻿#include <bits/stdc++.h>
 
-/*912. Sort an Array.
+/*52. N-Queens II.
 
-Given an array of integers nums, sort the array in ascending order.
+The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
 
-Example 1:
+Given an integer n, return the number of distinct solutions to the n-queens puzzle.
 
-Input: nums = [5,2,3,1]
-Output: [1,2,3,5]
-Example 2:
+Example:
 
-Input: nums = [5,1,1,2,0,0]
-Output: [0,0,1,1,2,5]
- 
+Input: 4
+Output: 2
+Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
 
-Constraints:
-
-1 <= nums.length <= 50000
--50000 <= nums[i] <= 50000
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
 */
 
-class sort_arr_quick
+class n_queens_ii
 {
-    static void qsort( std::vector<int>& numbers, const int low, const int high )
+    static int backtrack_n_queens( std::vector<std::vector<int>>& board,
+        const int row, int count )
     {
-        if( high <= low ) return;
+        const int num_rows = board.size();
+        const int num_cols = board[ 0 ].size();
 
-        const auto part = partition( numbers, low, high );
-
-        qsort( numbers, low, part - 1 );
-        qsort( numbers, part + 1, high );
-    }
-
-    static int partition( std::vector<int>& numbers, const int low, const int high )
-    {
-	    const auto pivot = numbers[ high ];
-
-	    auto left = low;
-
-        for( auto right = low; right < high; ++right )
+        for( auto col = 0; col < num_cols; col++ )
         {
-            if( numbers[ right ] < pivot )
+            if( board[ row ][ col ] == 0 )
             {
-                const auto tmp = numbers[ left ];
-                numbers[ left ] = numbers[ right ];
-                numbers[ right ] = tmp;
+                // this is where we will backtrack to
+                const auto prev_board = board;
 
-                ++left;
+                place_queen( board, row, col );
+
+                if( row == num_rows - 1 )
+                {
+                    count++;
+                }
+                else
+                {
+                    count = backtrack_n_queens( board, row + 1, count );
+                }
+
+                // backtrack the last queen
+
+                board = prev_board;
             }
         }
 
-        const auto tmp = numbers[ left ];
-        numbers[ left ] = numbers[ high ];
-        numbers[ high ] = tmp;
-
-        return left;
+        return count;
     }
 
-public:
-	
-    static std::vector<int> sortArray( std::vector<int>& nums )
+    static void place_queen( std::vector<std::vector<int>>& board,
+        const int row, const int col )
     {
-        const auto N = nums.size();
+        const auto num_rows = board.size();
+        const auto num_cols = board[ 0 ].size();
 
-        qsort( nums, 0, N - 1 );
+        for( auto pos = 0; pos < num_rows; pos++ )
+        {
+            // fill vertically
+            board[ pos ][ col ] = 1;
 
-        return nums;
+            // fill horizontally
+            board[ row ][ pos ] = 1;
+
+            // fill the NE diagonal
+            const auto j = row + col - pos;
+            if( j >= 0 && j < num_cols ) {
+                board[ pos ][ j ] = 1;
+            }
+
+            // fill the SE diagonal
+            const auto k = row - col + pos;
+            if( k >= 0 && k < num_rows ) {
+                board[ k ][ pos ] = 1;
+            }
+        }
+    }
+	
+public:
+
+	static int totalNQueens( const int board_size )
+	{	
+        auto board = std::vector<std::vector<int>>( board_size, std::vector<int>( board_size, 0 ) );
+    	
+        return backtrack_n_queens( board, 0, 0 );
     }
 };
 
 auto main() -> int
 {
-    auto input = std::vector<int>{ 3, 1, 3 };
-	
-    auto actual = sort_arr_quick::sortArray( input );
+    auto actual = n_queens_ii::totalNQueens( 4 );
 
     const auto expected = std::vector<int>{ 1, 2, 3, 5 };
 	
