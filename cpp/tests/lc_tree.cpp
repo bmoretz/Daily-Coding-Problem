@@ -770,4 +770,58 @@ namespace leetcode::tree::tests
             EXPECT_EQ( actual, expected );
         }
     }
+
+
+    class equal_trees_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( equal_trees_tests, case1_rec )
+    {
+        const auto l_tree = build_tree_in_order( std::vector<std::string>{ "1", "2" } );
+        const auto r_tree = build_tree_in_order( std::vector<std::string>{ "1", "", "2" } );
+
+        const auto actual = equal_trees_rec::is_same_tree( l_tree.get(), r_tree.get() );
+
+        const auto expected = false;
+    }
+
+    TEST_F( equal_trees_tests, case1_iter )
+    {
+        const auto l_tree = build_tree_in_order( std::vector<std::string>{ "1", "2" } );
+        const auto r_tree = build_tree_in_order( std::vector<std::string>{ "1", "", "2" } );
+
+        const auto actual = equal_trees_iter::is_same_tree( l_tree.get(), r_tree.get() );
+
+        const auto expected = false;
+    }
+
+    TEST_F( equal_trees_tests, case2_rec )
+    {
+        const auto l_tree = build_tree_in_order( std::vector<std::string>{ "1", "2", "3" } );
+        const auto r_tree = build_tree_in_order( std::vector<std::string>{ "1", "2", "3" } );
+
+        const auto actual = equal_trees_rec::is_same_tree( l_tree.get(), r_tree.get() );
+
+        const auto expected = true;
+    }
+
+    TEST_F( equal_trees_tests, case2_iter )
+    {
+        const auto l_tree = build_tree_in_order( std::vector<std::string>{ "1", "2", "3" } );
+        const auto r_tree = build_tree_in_order( std::vector<std::string>{ "1", "2", "3" } );
+
+        const auto actual = equal_trees_iter::is_same_tree( l_tree.get(), r_tree.get() );
+
+        const auto expected = true;
+    }
 }
