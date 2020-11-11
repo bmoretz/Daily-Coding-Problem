@@ -38,63 +38,82 @@ Input:     1         1
 Output: false
 */
 
-class equal_trees_rec
+class gen_parens_iter
 {
-    static bool are_equal( tree_node* left, tree_node* right )
+    static bool is_valid( const std::string& input )
     {
-        if( !left && !right ) return true;
-        if( !left || !right ) return false;
-        if( left->val != right->val ) return false;
+        auto balance = 0;
 
-        return
-            are_equal( left->left.get(), right->left.get() ) &&
-            are_equal( left->right.get(), right->right.get() );
-    }
-
-public:
-
-    static bool is_same_tree( tree_node* p, tree_node* q )
-	{
-        return are_equal( p, q );
-    }
-};
-
-class equal_trees_iter
-{
-
-    static bool are_equal( tree_node* left, tree_node* right )
-    {
-        if( !left && !right ) return true;
-        if( !left || !right ) return false;
-
-        return left->val == right->val;
-    }
-
-public:
-
-    static bool is_same_tree( tree_node* p, tree_node* q )
-    {
-        auto tree = std::queue<std::pair<tree_node*, tree_node*>>();
-
-        if( p || q )
-            tree.push( std::make_pair( p, q ) );
-
-        while( !tree.empty() )
+        for( auto chr : input )
         {
-            const auto [left, right] = tree.front();
-            tree.pop();
+            if( chr == '(' )
+            {
+                ++balance;
+            }
+            else
+            {
+                if( balance == 0 )
+                    return false;
 
-            if( !are_equal( left, right ) )
-                return false;
-
-            if( left->left || right->left )
-                tree.push( std::make_pair( left->left.get(), right->left.get() ) );
-
-            if( left->right || right->right )
-                tree.push( std::make_pair( left->right.get(), right->right.get() ) );
+                --balance;
+            }
         }
 
-        return true;
+        return balance == 0;
+    }
+
+public:
+
+    static std::vector<std::string> generate_parenthesis( const int n )
+    {
+        const auto len = 2 * n;
+
+        auto candidates = std::vector<std::string>();
+
+        candidates.emplace_back(len, ' ');
+        candidates.emplace_back(len, ' ');
+
+        auto seen = std::set<std::string>();
+
+        for( auto index = 0; index < len; ++index )
+        {
+            auto temp = std::vector<std::string>();
+
+            for( auto str : candidates )
+            {
+                str[ index ] = '(';
+
+                if( index < len - 1 )
+                {
+                    temp.emplace_back( str.begin(), str.end() );
+                }
+                else
+                {
+                    if( is_valid( str ) && seen.find( str ) == seen.end() )
+                    {
+                        seen.insert( str );
+                    }
+                }
+
+                str[ index ] = ')';
+
+                if( index < len - 1 )
+                {
+                    temp.emplace_back( str.begin(), str.end() );
+                }
+                else
+                {
+                    if( is_valid( str ) && seen.find( str ) == seen.end() )
+                    {
+                        seen.insert( str );
+                    }
+                }
+            }
+
+            candidates = temp;
+        }
+
+        return std::vector<std::string>( seen.begin(), seen.end() );
     }
 };
 

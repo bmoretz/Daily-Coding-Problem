@@ -42,7 +42,7 @@ namespace leetcode::recursion::tests
         }
     };
 
-    TEST_F( gen_parenthesis_tests, case1 )
+    TEST_F( gen_parenthesis_tests, case1_rec )
     {
         const auto actual = gen_parenthesis::generate_parenthesis( 3 );
 
@@ -58,6 +58,22 @@ namespace leetcode::recursion::tests
         EXPECT_EQ( actual, expected );
     }
 
+    TEST_F( gen_parenthesis_tests, case1_iter )
+    {
+        const auto actual = gen_parens_iter::generate_parenthesis( 3 );
+
+        const auto expected = std::vector<std::string>
+        {
+            "((()))",
+            "(()())",
+            "(())()",
+            "()(())",
+            "()()()"
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+	
     class number_to_english_tests :
         public ::testing::Test {
 

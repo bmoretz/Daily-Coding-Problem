@@ -158,6 +158,85 @@ namespace leetcode::recursion
         }
     };
 
+    class gen_parens_iter
+    {
+        static bool is_valid( const std::string& input )
+        {
+            auto balance = 0;
+
+            for( auto chr : input )
+            {
+                if( chr == '(' )
+                {
+                    ++balance;
+                }
+                else
+                {
+                    if( balance == 0 )
+                        return false;
+
+                    --balance;
+                }
+            }
+
+            return balance == 0;
+        }
+
+    public:
+
+        static std::vector<std::string> generate_parenthesis( const int n )
+        {
+            const auto len = 2 * n;
+
+            auto candidates = std::vector<std::string>();
+
+            candidates.emplace_back( len, ' ' );
+            candidates.emplace_back( len, ' ' );
+
+            auto seen = std::set<std::string>();
+
+            for( auto index = 0; index < len; ++index )
+            {
+                auto temp = std::vector<std::string>();
+
+                for( auto str : candidates )
+                {
+                    str[ index ] = '(';
+
+                    if( index < len - 1 )
+                    {
+                        temp.emplace_back( str.begin(), str.end() );
+                    }
+                    else
+                    {
+                        if( is_valid( str ) && seen.find( str ) == seen.end() )
+                        {
+                            seen.insert( str );
+                        }
+                    }
+
+                    str[ index ] = ')';
+
+                    if( index < len - 1 )
+                    {
+                        temp.emplace_back( str.begin(), str.end() );
+                    }
+                    else
+                    {
+                        if( is_valid( str ) && seen.find( str ) == seen.end() )
+                        {
+                            seen.insert( str );
+                        }
+                    }
+                }
+
+                candidates = temp;
+            }
+
+            return std::vector<std::string>( seen.begin(), seen.end() );
+        }
+    };
+	
     /* 273. Integer to English Words.
 
     Convert a non-negative integer num to its English words representation.

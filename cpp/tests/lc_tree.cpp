@@ -770,8 +770,7 @@ namespace leetcode::tree::tests
             EXPECT_EQ( actual, expected );
         }
     }
-
-
+	
     class equal_trees_tests :
         public ::testing::Test {
 
