@@ -1,143 +1,149 @@
 ﻿#include <bits/stdc++.h>
 
-/*489. Robot Room Cleaner.
+/*37. Sudoku Solver.
 
-Given a robot cleaner in a room modeled as a grid.
+Write a program to solve a Sudoku puzzle by filling the empty cells.
 
-Each cell in the grid can be empty or blocked.
+A sudoku solution must satisfy all of the following rules:
 
-The robot cleaner with 4 given APIs can move forward, turn left or turn right. Each turn it made is 90 degrees.
+Each of the digits 1-9 must occur exactly once in each row.
+Each of the digits 1-9 must occur exactly once in each column.
+Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.
+The '.' character indicates empty cells.
 
-When it tries to move into a blocked cell, its bumper sensor detects the obstacle and it stays on the current cell.
+Example 1:
 
-Design an algorithm to clean the entire room using only the 4 given APIs shown below.
+Input: board =
+[
+	["5","3",".",".","7",".",".",".","."],
+	["6",".",".","1","9","5",".",".","."],
+	[".","9","8",".",".",".",".","6","."],
+	["8",".",".",".","6",".",".",".","3"],
+	["4",".",".","8",".","3",".",".","1"],
+	["7",".",".",".","2",".",".",".","6"],
+	[".","6",".",".",".",".","2","8","."],
+	[".",".",".","4","1","9",".",".","5"],
+	[".",".",".",".","8",".",".","7","9"]
+]
 
-interface Robot {
-  // returns true if next cell is open and robot moves into the cell.
-  // returns false if next cell is obstacle and robot stays on the current cell.
-  boolean move();
+Output:
+[
+	["5","3","4","6","7","8","9","1","2"],
+	["6","7","2","1","9","5","3","4","8"],
+	["1","9","8","3","4","2","5","6","7"],
+	["8","5","9","7","6","1","4","2","3"],
+	["4","2","6","8","5","3","7","9","1"],
+	["7","1","3","9","2","4","8","5","6"],
+	["9","6","1","5","3","7","2","8","4"],
+	["2","8","7","4","1","9","6","3","5"],
+	["3","4","5","2","8","6","1","7","9"]
+]
 
-  // Robot will stay on the same cell after calling turnLeft/turnRight.
-  // Each turn will be 90 degrees.
-  void turnLeft();
-  void turnRight();
+Explanation: The input board is shown above and the only valid solution is shown below:
 
-  // Clean the current cell.
-  void clean();
-}
+Constraints:
 
-Example:
-
-Input:
-room = [
-  [1,1,1,1,1,0,1,1],
-  [1,1,1,1,1,0,1,1],
-  [1,0,1,1,1,1,1,1],
-  [0,0,0,1,0,0,0,0],
-  [1,1,1,1,1,1,1,1]
-],
-row = 1,
-col = 3
-
-Explanation:
-All grids in the room are marked by either 0 or 1.
-0 means the cell is blocked, while 1 means the cell is accessible.
-The robot initially starts at the position of row=1, col=3.
-From the top left corner, its position is one row below and three columns right.
-Notes:
-
-The input is only given to initialize the room and the robot's position internally. You must solve this problem "blindfolded". In other words,
-you must control the robot using only the mentioned 4 APIs, without knowing the room layout and the initial robot's position.
-The robot's initial position will always be in an accessible cell.
-The initial direction of the robot will be facing up.
-All accessible cells are connected, which means the all cells marked as 1 will be accessible by the robot.
-Assume all four edges of the grid are all surrounded by wall.
+board.length == 9
+board[i].length == 9
+board[i][j] is a digit or '.'.
+It is guaranteed that the input board has only one solution.
 */
 
-class robot_room_cleaner
+class sudoku_solver
 {
-    class robot;
-	
-	static inline std::vector<std::pair<int, int>> directions_ = {
-        {-1, 0}, {0, 1}, {1, 0}, {0, -1}
-    };
+    static bool solve( std::vector<std::vector<char>>& board )
+    {
+        const int num_rows = board.size();
+        const int num_cols = board[ 0 ].size();
 
-    std::set<std::pair<int, int>> visited_;
-    
-    robot* robot_{};
-    
-    void go_back() const
-    {
-        robot_->turnRight();
-        robot_->turnRight();
-        
-        robot_->move();
-        
-        robot_->turnRight();
-        robot_->turnRight();
-    }
-    
-    void backtrack( const std::pair<int, int> pos, const int dir )
-    {
-        visited_.insert( pos );
-        
-        robot_->clean();
-        
-        for( auto index = 0; index < 4; ++index )
+        for( auto row = 0; row < num_rows; ++row )
         {
-            const auto next_dir = (dir + index) % 4;
-            const auto next_pos = std::make_pair( pos.first + directions_[next_dir].first, 
-                                                 pos.second + directions_[next_dir].second );
-            
-            if( visited_.find( next_pos ) == visited_.end() && robot_->move() )
+            for( auto col = 0; col < num_cols; ++col )
             {
-                backtrack( next_pos, next_dir );
-                go_back();
+                if( board[ row ][ col ] == '.' )
+                {
+                    for( auto candidate = '1'; 
+                        candidate <= '9'; 
+                        ++candidate )
+                    {
+                        if( is_valid( board, row, col, candidate ) )
+                        {
+                            board[ row ][ col ] = candidate;
+
+                            if( solve( board ) )
+                                return true;
+
+                            board[ row ][ col ] = '.';
+                        }
+                    }
+
+                    return false;
+                }
             }
-            
-            robot_->turnRight();
         }
+
+        return true;
     }
-    
+
+    static bool is_valid( std::vector<std::vector<char>>& board,
+        const int r, const int c, const char candidate )
+    {
+        const int num_rows = board.size();
+        const int num_cols = board[ 0 ].size();
+
+        for( auto row = 0; row < num_rows; ++row )
+            if( board[ row ][ c ] == candidate )
+                return false;
+
+        for( auto col = 0; col < num_cols; ++col )
+            if( board[ r ][ col ] == candidate )
+                return false;
+
+        for( auto row = ( r / 3 ) * 3; row < ( r / 3 + 1 ) * 3; ++row )
+            for( auto col = ( c / 3 ) * 3; col < ( c / 3 + 1 ) * 3; ++col )
+                if( board[ row ][ col ] == candidate )
+                    return false;
+
+        return true;
+    }
+
 public:
 
-    class robot
+    static void solve_sudoku( std::vector<std::vector<char>>& board )
     {
-    public:
-
-        robot() { }
-
-        // Returns true if the cell in front is open and robot moves into the cell.
-        // Returns false if the cell in front is blocked and robot stays in the current cell.
-        bool move();
-
-        // Robot will stay in the same cell after calling turnLeft/turnRight.
-        // Each turn will be 90 degrees.
-        void turnLeft();
-        void turnRight();
-
-        // Clean the current cell.
-        void clean();
-    };
-	
-    void clean_room( robot& robot ) 
-    {
-        this->robot_ = &robot;
-        
-        backtrack(std::make_pair(0, 0), 0);
+        solve( board );
     }
 };
 
 auto main() -> int
 {
-    using robot = robot_room_cleaner::robot;
-	
-    auto sln = robot_room_cleaner();
-    auto rbt = robot();
-	
-    sln.clean_room( rbt );
+    auto input = std::vector<std::vector<char>>
+    {
+        { '5','3','.','.','7','.','.','.','.' },
+        { '6','.','.','1','9','5','.','.','.' },
+        { '.','9','8','.','.','.','.','6','.' },
+        { '8','.','.','.','6','.','.','.','3' },
+        { '4','.','.','8','.','3','.','.','1' },
+        { '7','.','.','.','2','.','.','.','6' },
+        { '.','6','.','.','.','.','2','8','.' },
+        { '.','.','.','4','1','9','.','.','5' },
+        { '.','.','.','.','8','.','.','7','9' }
+    };
 
-    const auto expected = std::vector<int>{ 1, 2, 3, 5 };
+    sudoku_solver::solve_sudoku( input );
+
+    const auto expected = std::vector<std::vector<char>>
+    {
+        { '5','3','4','6','7','8','9','1','2' },
+        { '6','7','2','1','9','5','3','4','8' },
+        { '1','9','8','3','4','2','5','6','7' },
+        { '8','5','9','7','6','1','4','2','3' },
+        { '4','2','6','8','5','3','7','9','1' },
+        { '7','1','3','9','2','4','8','5','6' },
+        { '9','6','1','5','3','7','2','8','4' },
+        { '2','8','7','4','1','9','6','3','5' },
+        { '3','4','5','2','8','6','1','7','9' }
+    };
 	
 	return 0;
 }
