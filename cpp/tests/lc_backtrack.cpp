@@ -262,4 +262,29 @@ namespace leetcode::backtrack::tests
 
 		EXPECT_EQ( input, expected );
 	}
+
+	class combinations_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( combinations_tests, case1 )
+	{
+		auto actual = combinations::combine( 4, 2 );
+
+		const auto expected = std::vector<std::vector<int>>
+		{
+			{ {1,2}, { 1,3 }, { 1,4 }, { 2,3 }, { 2,4 }, { 3,4 } }
+		};
+
+		EXPECT_EQ( actual, expected );
+	}
 }
