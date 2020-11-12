@@ -1,101 +1,115 @@
 ﻿#include <bits/stdc++.h>
 
-#include "../leetcode/tree.h"
-using namespace leetcode::tree;
+/*218. The Skyline Problem.
 
-/*426. Convert Binary Search Tree to Sorted Doubly Linked List.
+A city's skyline is the outer contour of the silhouette formed by all the buildings in that city when viewed from a distance. Now suppose you are
+given the locations and height of all the buildings as shown on a cityscape photo (Figure A), write a program to output the skyline formed by
+these buildings collectively (Figure B).
 
-Convert a Binary Search Tree to a sorted Circular Doubly-Linked List in place.
+Buildings Skyline Contour
 
-You can think of the left and right pointers as synonymous to the predecessor and successor pointers in a doubly-linked
-list. For a circular doubly linked list, the predecessor of the first element is the last element,
-and the successor of the last element is the first element.
+The geometric information of each building is represented by a triplet of integers [Li, Ri, Hi], where Li and Ri are the x coordinates of the left and
+right edge of the ith building, respectively, and Hi is its height. It is guaranteed that 0 ≤ Li, Ri ≤ INT_MAX, 0 < Hi ≤ INT_MAX, and Ri - Li > 0. You
+may assume all buildings are perfect rectangles grounded on an absolutely flat surface at height 0.
 
-We want to do the transformation in place. After the transformation, the left pointer of the tree node should point to its predecessor,
-and the right pointer should point to its successor. You should return the pointer to the smallest element of the linked list.
+For instance, the dimensions of all buildings in Figure A are recorded as: [ [2 9 10], [3 7 15], [5 12 12], [15 20 10], [19 24 8] ] .
 
-Example 1:
+The output is a list of "key points" (red dots in Figure B) in the format of [ [x1,y1], [x2, y2], [x3, y3], ... ] that uniquely defines a skyline. A key point is
+the left endpoint of a horizontal line segment. Note that the last key point, where the rightmost building ends, is merely used to mark the termination of the skyline,
+and always has zero height. Also, the ground in between any two adjacent buildings should be considered part of the skyline contour.
 
-Input: root = [4,2,5,1,3]
+For instance, the skyline in Figure B should be represented as:[ [2 10], [3 15], [7 12], [12 0], [15 10], [20 8], [24, 0] ].
 
-Output: [1,2,3,4,5]
+Notes:
 
-Explanation: The figure below shows the transformed BST. The solid line indicates the successor relationship, while the dashed line means the predecessor relationship.
-
-Example 2:
-
-Input: root = [2,1,3]
-Output: [1,2,3]
-Example 3:
-
-Input: root = []
-Output: []
-Explanation: Input is an empty tree. Output is also an empty Linked List.
-Example 4:
-
-Input: root = [1]
-Output: [1]
- 
-Constraints:
-
--1000 <= Node.val <= 1000
-Node.left.val < Node.val < Node.right.val
-All values of Node.val are unique.
-0 <= Number of Nodes <= 2000
+The number of buildings in any input list is guaranteed to be in the range [0, 10000].
+The input list is already sorted in ascending order by the left x position Li.
+The output list must be sorted by the x position.
+There must be no consecutive horizontal lines of equal height in the output skyline. For instance, [...[2 3], [4 5], [7 5], [11 5], [12 7]...] is not acceptable;
+the three lines of height 5 should be merged into one in the final output as such: [...[2 3], [4 5], [12 7], ...]
 */
 
-
-class bst_to_dll
-{	
-    static void to_queue( tree_node* node, std::queue<int>& queue )
-    {
-        if( !node ) return;
-
-        to_queue( node->left.get(), queue );
-        queue.push( node->val );
-        to_queue( node->right.get(), queue );
-    }
-
+class skyline
+{
 public:
 
-    static tree_node* tree_to_doubly_list( tree_node* root )
+	static std::vector<std::vector<int>> get_skyline( std::vector<std::vector<int>>& buildings )
     {
-        if( !root ) return nullptr;
+        // the skyline can only change at the critical points which are either the beginning
+        // or the end of a building
+        std::set<int> critical;
 
-        auto queue = std::queue<int>();
-
-        to_queue( root, queue );
-
-        const auto sentinel = std::make_unique<tree_node>( 0 );
-        auto cur = sentinel.get(), prev = sentinel->left.get();
-
-        while( !queue.empty() )
+    	for( auto bldg : buildings ) 
         {
-            const auto val = queue.front();
-            queue.pop();
-
-            cur->right = std::make_unique<tree_node>( val );
-            cur->left.reset( prev );
-
-            prev = cur;
-            cur = cur->right.get();
+            critical.insert( bldg[ 0 ] );
+            critical.insert( bldg[ 1 ] );
         }
 
-        cur->left.reset( prev );
-        cur->right.reset(sentinel->right.get() );
-        sentinel->right->left.reset( cur );
+        std::vector<std::vector<int>> skyline;
 
-        return sentinel->right.get();
+        auto last_height = 0;
+
+        std::priority_queue<std::pair<int, int>> active;
+
+        auto bldg = buildings.begin();
+
+        for( const auto crit : critical ) 
+        {
+            // any building that started on or before the critical point could be active at
+            // the critical point
+            while( bldg != buildings.end() and bldg->at( 0 ) <= crit )
+            {
+                active.push( { bldg->at( 2 ), bldg->at( 1 ) } );
+                ++bldg;
+            }
+
+            // any building that ends or or before the critical point is not active at
+            // the critical point
+            while( !active.empty() and active.top().second <= crit )
+                active.pop();
+
+            // the height at the critical point is simply the tallest active building
+            // note: no active building implies we are at the right edge of a building
+            //       hence height is zero.
+            int height = 0;
+            if( !active.empty() )
+                height = active.top().first;
+
+            // the skyline only changes when the height at a critical point changes
+            if( height != last_height )
+            {
+                skyline.push_back( { crit, height } );
+                last_height = height;
+            }
+        }
+
+        return skyline;
     }
 };
 
 auto main() -> int
 {
-    auto input = build_tree_in_order( std::vector<std::string>{ "4", "2", "5", "1", "3" } );
-    
-    const auto actual = bst_to_dll::tree_to_doubly_list( input.get() );
+    auto input = std::vector<std::vector<int>>
+    {
+        { 2, 9, 10 },
+        { 3, 7, 15 },
+        { 5, 12, 12 },
+        { 15, 20, 10 },
+        { 19, 24, 8 }
+    };
+	
+    const auto actual = skyline::get_skyline( input );
 
-    const auto expected = false;
+    const auto expected = std::vector<std::vector<int>>
+    {
+        {2, 10},
+        {3, 15},
+        {7, 12},
+        {12, 0},
+        {15, 10},
+        {20, 8},
+    	{24, 0}
+    };
 	
 	return 0;
 }

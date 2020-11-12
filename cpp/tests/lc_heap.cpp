@@ -616,4 +616,44 @@ namespace leetcode::heap::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class skyline_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( skyline_tests, case1 )
+    {
+        auto input = std::vector<std::vector<int>>
+        {
+            { 2, 9, 10 },
+            { 3, 7, 15 },
+            { 5, 12, 12 },
+            { 15, 20, 10 },
+            { 19, 24, 8 }
+        };
+
+        const auto actual = skyline::get_skyline( input );
+
+        const auto expected = std::vector<std::vector<int>>
+        {
+            {2, 10},
+            {3, 15},
+            {7, 12},
+            {12, 0},
+            {15, 10},
+            {20, 8},
+            {24, 0}
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
