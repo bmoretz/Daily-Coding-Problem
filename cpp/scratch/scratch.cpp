@@ -3,126 +3,97 @@
 #include "../leetcode/tree.h"
 using namespace leetcode::tree;
 
-/*100. Same Tree.
+/*426. Convert Binary Search Tree to Sorted Doubly Linked List.
 
-Given two binary trees, write a function to check if they are the same or not.
+Convert a Binary Search Tree to a sorted Circular Doubly-Linked List in place.
 
-Two binary trees are considered the same if they are structurally identical and the nodes have the same value.
+You can think of the left and right pointers as synonymous to the predecessor and successor pointers in a doubly-linked
+list. For a circular doubly linked list, the predecessor of the first element is the last element,
+and the successor of the last element is the first element.
+
+We want to do the transformation in place. After the transformation, the left pointer of the tree node should point to its predecessor,
+and the right pointer should point to its successor. You should return the pointer to the smallest element of the linked list.
 
 Example 1:
 
-Input:     1         1
-          / \       / \
-         2   3     2   3
+Input: root = [4,2,5,1,3]
 
-        [1,2,3],   [1,2,3]
+Output: [1,2,3,4,5]
 
-Output: true
+Explanation: The figure below shows the transformed BST. The solid line indicates the successor relationship, while the dashed line means the predecessor relationship.
+
 Example 2:
 
-Input:     1         1
-          /           \
-         2             2
-
-        [1,2],     [1,null,2]
-
-Output: false
+Input: root = [2,1,3]
+Output: [1,2,3]
 Example 3:
 
-Input:     1         1
-          / \       / \
-         2   1     1   2
+Input: root = []
+Output: []
+Explanation: Input is an empty tree. Output is also an empty Linked List.
+Example 4:
 
-        [1,2,1],   [1,1,2]
+Input: root = [1]
+Output: [1]
+ 
+Constraints:
 
-Output: false
+-1000 <= Node.val <= 1000
+Node.left.val < Node.val < Node.right.val
+All values of Node.val are unique.
+0 <= Number of Nodes <= 2000
 */
 
-class gen_parens_iter
-{
-    static bool is_valid( const std::string& input )
+
+class bst_to_dll
+{	
+    static void to_queue( tree_node* node, std::queue<int>& queue )
     {
-        auto balance = 0;
+        if( !node ) return;
 
-        for( auto chr : input )
-        {
-            if( chr == '(' )
-            {
-                ++balance;
-            }
-            else
-            {
-                if( balance == 0 )
-                    return false;
-
-                --balance;
-            }
-        }
-
-        return balance == 0;
+        to_queue( node->left.get(), queue );
+        queue.push( node->val );
+        to_queue( node->right.get(), queue );
     }
 
 public:
 
-    static std::vector<std::string> generate_parenthesis( const int n )
+    static tree_node* tree_to_doubly_list( tree_node* root )
     {
-        const auto len = 2 * n;
+        if( !root ) return nullptr;
 
-        auto candidates = std::vector<std::string>();
+        auto queue = std::queue<int>();
 
-        candidates.emplace_back(len, ' ');
-        candidates.emplace_back(len, ' ');
+        to_queue( root, queue );
 
-        auto seen = std::set<std::string>();
+        const auto sentinel = std::make_unique<tree_node>( 0 );
+        auto cur = sentinel.get(), prev = sentinel->left.get();
 
-        for( auto index = 0; index < len; ++index )
+        while( !queue.empty() )
         {
-            auto temp = std::vector<std::string>();
+            const auto val = queue.front();
+            queue.pop();
 
-            for( auto str : candidates )
-            {
-                str[ index ] = '(';
+            cur->right = std::make_unique<tree_node>( val );
+            cur->left.reset( prev );
 
-                if( index < len - 1 )
-                {
-                    temp.emplace_back( str.begin(), str.end() );
-                }
-                else
-                {
-                    if( is_valid( str ) && seen.find( str ) == seen.end() )
-                    {
-                        seen.insert( str );
-                    }
-                }
-
-                str[ index ] = ')';
-
-                if( index < len - 1 )
-                {
-                    temp.emplace_back( str.begin(), str.end() );
-                }
-                else
-                {
-                    if( is_valid( str ) && seen.find( str ) == seen.end() )
-                    {
-                        seen.insert( str );
-                    }
-                }
-            }
-
-            candidates = temp;
+            prev = cur;
+            cur = cur->right.get();
         }
 
-        return std::vector<std::string>( seen.begin(), seen.end() );
+        cur->left.reset( prev );
+        cur->right.reset(sentinel->right.get() );
+        sentinel->right->left.reset( cur );
+
+        return sentinel->right.get();
     }
 };
 
 auto main() -> int
 {
-    auto l_tree = build_tree_in_order( std::vector<std::string>{ "1", "2" } );
-    auto r_tree = build_tree_in_order( std::vector<std::string>{ "1", "", "2" } );
-
-    const auto actual = equal_trees_iter::is_same_tree( l_tree.get(), r_tree.get() );
+    auto input = build_tree_in_order( std::vector<std::string>{ "4", "2", "5", "1", "3" } );
+    
+    const auto actual = bst_to_dll::tree_to_doubly_list( input.get() );
 
     const auto expected = false;
 	

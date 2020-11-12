@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 namespace data_structures::linkedlist
 {
 	class list_node
