@@ -1,89 +1,92 @@
 ﻿#include <bits/stdc++.h>
 
-/*218. The Skyline Problem.
+/*677. Map Sum Pairs.
 
-A city's skyline is the outer contour of the silhouette formed by all the buildings in that city when viewed from a distance. Now suppose you are
-given the locations and height of all the buildings as shown on a cityscape photo (Figure A), write a program to output the skyline formed by
-these buildings collectively (Figure B).
+Implement the MapSum class:
 
-Buildings Skyline Contour
+MapSum() Initializes the MapSum object.
+void insert(String key, int val) Inserts the key-val pair into the map. If the key already existed, the original key-value pair will be overridden to the new one.
+int sum(string prefix) Returns the sum of all the pairs' value whose key starts with the prefix.
+ 
+Example 1:
 
-The geometric information of each building is represented by a triplet of integers [Li, Ri, Hi], where Li and Ri are the x coordinates of the left and
-right edge of the ith building, respectively, and Hi is its height. It is guaranteed that 0 ≤ Li, Ri ≤ INT_MAX, 0 < Hi ≤ INT_MAX, and Ri - Li > 0. You
-may assume all buildings are perfect rectangles grounded on an absolutely flat surface at height 0.
+Input
+["MapSum", "insert", "sum", "insert", "sum"]
+[[], ["apple", 3], ["ap"], ["app", 2], ["ap"]]
+Output
+[null, null, 3, null, 5]
 
-For instance, the dimensions of all buildings in Figure A are recorded as: [ [2 9 10], [3 7 15], [5 12 12], [15 20 10], [19 24 8] ] .
+Explanation
+MapSum mapSum = new MapSum();
+mapSum.insert("apple", 3);  
+mapSum.sum("ap");           // return 3 (apple = 3)
+mapSum.insert("app", 2);    
+mapSum.sum("ap");           // return 5 (apple + app = 3 + 2 = 5)
 
-The output is a list of "key points" (red dots in Figure B) in the format of [ [x1,y1], [x2, y2], [x3, y3], ... ] that uniquely defines a skyline. A key point is
-the left endpoint of a horizontal line segment. Note that the last key point, where the rightmost building ends, is merely used to mark the termination of the skyline,
-and always has zero height. Also, the ground in between any two adjacent buildings should be considered part of the skyline contour.
+Constraints:
 
-For instance, the skyline in Figure B should be represented as:[ [2 10], [3 15], [7 12], [12 0], [15 10], [20 8], [24, 0] ].
-
-Notes:
-
-The number of buildings in any input list is guaranteed to be in the range [0, 10000].
-The input list is already sorted in ascending order by the left x position Li.
-The output list must be sorted by the x position.
-There must be no consecutive horizontal lines of equal height in the output skyline. For instance, [...[2 3], [4 5], [7 5], [11 5], [12 7]...] is not acceptable;
-the three lines of height 5 should be merged into one in the final output as such: [...[2 3], [4 5], [12 7], ...]
+1 <= key.length, prefix.length <= 50
+key and prefix consist of only lowercase English letters.
+1 <= val <= 1000
+At most 50 calls will be made to insert and sum.
 */
 
-class skyline
+class map_sum
 {
+    struct trie_node
+    {
+        std::unordered_map<char, std::unique_ptr<trie_node>> children;
+        std::unordered_map<std::string, int> values;
+    };
+
+    std::unique_ptr<trie_node> root_;
+
 public:
 
-	static std::vector<std::vector<int>> get_skyline( std::vector<std::vector<int>>& buildings )
+    map_sum()
     {
-        // the skyline can only change at the critical points which are either the beginning
-        // or the end of a building
-        std::set<int> critical;
+        root_ = std::make_unique<trie_node>();
+    }
 
-    	for( auto bldg : buildings ) 
+    void insert( const std::string& key, const int val ) const
+    {
+        auto node = root_.get();
+
+        for( auto chr : key )
         {
-            critical.insert( bldg[ 0 ] );
-            critical.insert( bldg[ 1 ] );
-        }
-
-        std::vector<std::vector<int>> skyline;
-
-        auto last_height = 0;
-
-        std::priority_queue<std::pair<int, int>> active;
-
-        auto bldg = buildings.begin();
-
-        for( const auto crit : critical ) 
-        {
-            // any building that started on or before the critical point could be active at
-            // the critical point
-            while( bldg != buildings.end() and bldg->at( 0 ) <= crit )
+            if( node->children.find( chr ) == node->children.end() )
             {
-                active.push( { bldg->at( 2 ), bldg->at( 1 ) } );
-                ++bldg;
+                node->children[ chr ] = std::make_unique<trie_node>();
             }
 
-            // any building that ends or or before the critical point is not active at
-            // the critical point
-            while( !active.empty() and active.top().second <= crit )
-                active.pop();
+            node = node->children[ chr ].get();
+            node->values[ key ] = val;
+        }
+    }
 
-            // the height at the critical point is simply the tallest active building
-            // note: no active building implies we are at the right edge of a building
-            //       hence height is zero.
-            int height = 0;
-            if( !active.empty() )
-                height = active.top().first;
+    int sum( const std::string& prefix ) const
+    {
+        auto node = root_.get();
 
-            // the skyline only changes when the height at a critical point changes
-            if( height != last_height )
+        for( auto chr : prefix )
+        {
+            if( node->children.find( chr ) == node->children.end() )
             {
-                skyline.push_back( { crit, height } );
-                last_height = height;
+                return 0;
             }
+
+            node = node->children[ chr ].get();
+
         }
 
-        return skyline;
+        auto result = 0;
+
+        for( auto& [k, v] : node->values )
+        {
+            result += v;
+        }
+
+        return result;
     }
 };
 

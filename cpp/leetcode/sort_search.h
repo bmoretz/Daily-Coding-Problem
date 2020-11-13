@@ -204,48 +204,44 @@ namespace leetcode::sort_search
 
 	class sort_arr_quick
 	{
-		static void qsort( std::vector<int>& numbers, const int low, const int high )
+		static void quick_sort( std::vector<int>& numbers, const int low, const int high )
 		{
 			if( high <= low ) return;
 
 			const auto part = partition( numbers, low, high );
 
-			qsort( numbers, low, part - 1 );
-			qsort( numbers, part + 1, high );
+			quick_sort( numbers, low, part - 1 );
+			quick_sort( numbers, part + 1, high );
 		}
 
-		static int partition( std::vector<int>& numbers, const int low, const int high )
+		static int partition( std::vector<int>& arr, const int low, const int high )
 		{
-			const auto pivot = numbers[ high ];
+			const auto pivot = arr[ high ];
 
 			auto left = low;
 
-			for( auto right = low; right < high; ++right )
+			for( auto right = left; right < high; ++right )
 			{
-				if( numbers[ right ] < pivot )
+				if( arr[ right ] < pivot )
 				{
-					const auto tmp = numbers[ left ];
-					numbers[ left ] = numbers[ right ];
-					numbers[ right ] = tmp;
+					std::swap( arr[ left ], arr[ right ] );
 
 					++left;
 				}
 			}
 
-			const auto tmp = numbers[ left ];
-			numbers[ left ] = numbers[ high ];
-			numbers[ high ] = tmp;
+			std::swap( arr[ left ], arr[ high ] );
 
 			return left;
 		}
 
 	public:
 
-		static std::vector<int> sortArray( std::vector<int>& numbers )
+		static std::vector<int> sort_array( std::vector<int>& numbers )
 		{
 			const auto N = numbers.size();
 
-			qsort( numbers, 0, N - 1 );
+			quick_sort( numbers, 0, N - 1 );
 
 			return numbers;
 		}
