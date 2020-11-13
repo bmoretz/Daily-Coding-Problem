@@ -1,148 +1,117 @@
 ﻿#include <bits/stdc++.h>
 
-/*648. Replace Words.
+/*211. Design Add and Search Words Data Structure.
 
-In English, we have a concept called root, which can be followed by some other word to form another longer word - let's call this word
-successor. For example, when the root "an" is followed by the successor word "other", we can form a new word "another".
+Design a data structure that supports adding new words and finding if a string matches any previously added string.
 
-Given a dictionary consisting of many roots and a sentence consisting of words separated by spaces, replace all the successors in the
-sentence with the root forming it. If a successor can be replaced by more than one root, replace it with the root that has the shortest length.
+Implement the WordDictionary class:
 
-Return the sentence after the replacement.
-
-Example 1:
-
-Input: dictionary = ["cat","bat","rat"], sentence = "the cattle was rattled by the battery"
-Output: "the cat was rat by the bat"
-Example 2:
-
-Input: dictionary = ["a","b","c"], sentence = "aadsfasf absbs bbab cadsfafs"
-Output: "a a b c"
-Example 3:
-
-Input: dictionary = ["a", "aa", "aaa", "aaaa"], sentence = "a aa a aaaa aaa aaa aaa aaaaaa bbb baba ababa"
-Output: "a a a a a a a a bbb baba a"
-Example 4:
-
-Input: dictionary = ["catt","cat","bat","rat"], sentence = "the cattle was rattled by the battery"
-Output: "the cat was rat by the bat"
-Example 5:
-
-Input: dictionary = ["ac","ab"], sentence = "it is abnormal that this solution is accepted"
-Output: "it is ab that this solution is ac"
+WordDictionary() Initializes the object.
+void addWord(word) Adds word to the data structure, it can be matched later.
+bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise. word may contain dots '.'
+where dots can be matched with any letter.
  
+Example:
+
+Input
+["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
+[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
+Output
+[null,null,null,null,false,true,true,true]
+
+Explanation
+WordDictionary wordDictionary = new WordDictionary();
+wordDictionary.addWord("bad");
+wordDictionary.addWord("dad");
+wordDictionary.addWord("mad");
+wordDictionary.search("pad"); // return False
+wordDictionary.search("bad"); // return True
+wordDictionary.search(".ad"); // return True
+wordDictionary.search("b.."); // return True
+ 
+
 Constraints:
 
-1 <= dictionary.length <= 1000
-1 <= dictionary[i].length <= 100
-dictionary[i] consists of only lower-case letters.
-1 <= sentence.length <= 10^6
-sentence consists of only lower-case letters and spaces.
-The number of words in sentence is in the range [1, 1000]
-The length of each word in sentence is in the range [1, 1000]
-Each two consecutive words in sentence will be separated by exactly one space.
-sentence does not have leading or trailing spaces.
+1 <= word.length <= 500
+word in addWord consists lower-case English letters.
+word in search consist of  '.' or lower-case English letters.
+At most 50000 calls will be made to addWord and search.
 */
 
-class replace_words
+class word_dictionary
 {
     struct trie_node
     {
-        std::unordered_map<char, trie_node*> children;
-        std::string word;
+        std::unordered_map<char, std::unique_ptr<trie_node>> children;
         bool is_terminal{false};
     };
 
-    static std::vector<std::string> to_words( const std::string& sentence )
+    std::unique_ptr<trie_node> root_;
+
+public:
+
+    word_dictionary()
     {
-        auto result = std::vector<std::string>();
-
-        std::string token;
-        std::stringstream ss( sentence );
-
-        while( std::getline( ss, token, ' ' ) )
-        {
-            result.push_back( token );
-        }
-
-        return result;
+        root_ = std::make_unique<trie_node>();
     }
 
-    trie_node* root_ = new trie_node();
-
-    void insert_word( const std::string& word ) const
+    void add_word( const std::string& word ) const
     {
-        auto node = root_;
+        auto node = root_.get();
 
         for( auto chr : word )
         {
             if( node->children.find( chr ) == node->children.end() )
             {
-                node->children[ chr ] = new trie_node();
+                node->children[ chr ] = std::make_unique<trie_node>();
             }
 
-            node = node->children[ chr ];
+            node = node->children[ chr ].get();
         }
 
-        node->word = word;
         node->is_terminal = true;
     }
 
-    trie_node* get_replacement( const std::string& word ) const
+    static bool search_node( const std::string& str, trie_node* node )
     {
-        auto node = root_;
-
-        for( auto chr : word )
+        for( auto index = 0; index < str.length(); ++index )
         {
-            if( node->is_terminal || node->children.find( chr ) == node->children.end() )
-                break;
+            auto chr = str.at( index );
 
-            node = node->children[ chr ];
-        }
-
-        return node;
-    }
-
-public:
-
-    std::string replaceWords( const std::vector<std::string>& dictionary, 
-        const std::string& sentence ) const
-    {
-        for( auto& word : dictionary )
-        {
-            insert_word( word );
-        }
-
-        auto tokens = to_words( sentence );
-
-        std::string result;
-
-        for( auto& token : tokens )
-        {
-	        const auto replacement = get_replacement( token );
-
-            if( replacement && replacement->is_terminal )
+            if( node->children.find( chr ) == node->children.end() )
             {
-                result += replacement->word;
+                if( chr == '.' )
+                {
+                    for( auto& [k, v] : node->children )
+                    {
+                        const auto child = node->children[ k ].get();
+                        const auto sub = str.substr( index + 1, str.length() );
+
+                        if( search_node( sub, child ) )
+                            return true;
+                    }
+                }
+
+                return false;
             }
             else
             {
-                result += token;
+                node = node->children[ chr ].get();
             }
-
-            result += " ";
         }
 
-        if( !result.empty() && result[ result.size() - 1 ] == ' ' )
-            result.erase( result.end() - 1 );
+        return node->is_terminal;
+    }
 
-        return result;
+    bool search( const std::string& word ) const
+    {
+        return search_node( word, root_.get() );
     }
 };
 
 auto main() -> int
 {
-	const auto replacer = replace_words();
+    const auto searcher = word_dictionary();
 	
     auto input = std::vector<std::string>{ "a", "aa", "aaa", "aaaa" };
 	
