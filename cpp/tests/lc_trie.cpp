@@ -109,4 +109,54 @@ namespace leetcode::trie::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class word_searcher_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( word_searcher_tests, case1 )
+    {
+        const auto searcher = word_dictionary();
+
+        searcher.add_word( "bad" );
+        searcher.add_word( "dad" );
+        searcher.add_word( "mad" );
+
+        {
+            const auto actual = searcher.search( "pad" );
+            const auto expected = false;
+        	
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = searcher.search( "bad" );
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = searcher.search( ".ad" );
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            const auto actual = searcher.search( "..d" );
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
 }

@@ -113,11 +113,11 @@ auto main() -> int
 {
     const auto searcher = word_dictionary();
 	
-    auto input = std::vector<std::string>{ "a", "aa", "aaa", "aaaa" };
+    searcher.add_word( "bad" );
+    searcher.add_word( "dad" );
+    searcher.add_word( "mad" );
 	
-    const auto actual = replacer.replaceWords( input, "a aa a aaaa aaa aaa aaa aaaaaa bbb baba ababa" );
-
-    const auto expected = "a a a a a a a a bbb baba a";
+    searcher.search( "pad" );
 	
 	return 0;
 }
