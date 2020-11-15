@@ -159,4 +159,34 @@ namespace leetcode::trie::tests
             EXPECT_EQ( actual, expected );
         }
     }
+
+    class word_squares_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( word_squares_tests, case1 )
+    {
+        const auto input = std::vector<std::string>{
+            "area", "lead", "wall", "lady", "ball", "walt"
+        };
+
+        const auto actual = word_squares::wordSquares( input );
+
+        const auto expected = std::vector<std::vector<std::string>>
+        {
+        	{ "wall", "area", "lead", "lady" },
+        	{ "ball", "area", "lead", "lady" }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

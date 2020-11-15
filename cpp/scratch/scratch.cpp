@@ -1,123 +1,192 @@
 ﻿#include <bits/stdc++.h>
 
-/*211. Design Add and Search Words Data Structure.
+/*425. Word Squares.
 
-Design a data structure that supports adding new words and finding if a string matches any previously added string.
+Given a set of words (without duplicates), find all word squares you can build from them.
 
-Implement the WordDictionary class:
+A sequence of words forms a valid word square if the kth row and column read the exact same string, where 0 ≤ k < max(numRows, numColumns).
 
-WordDictionary() Initializes the object.
-void addWord(word) Adds word to the data structure, it can be matched later.
-bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise. word may contain dots '.'
-where dots can be matched with any letter.
- 
-Example:
+For example, the word sequence ["ball","area","lead","lady"] forms a word square because each word reads the same both horizontally and vertically.
 
-Input
-["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
-[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
-Output
-[null,null,null,null,false,true,true,true]
+b a l l
+a r e a
+l e a d
+l a d y
 
-Explanation
-WordDictionary wordDictionary = new WordDictionary();
-wordDictionary.addWord("bad");
-wordDictionary.addWord("dad");
-wordDictionary.addWord("mad");
-wordDictionary.search("pad"); // return False
-wordDictionary.search("bad"); // return True
-wordDictionary.search(".ad"); // return True
-wordDictionary.search("b.."); // return True
- 
+Note:
+There are at least 1 and at most 1000 words.
+All words will have the exact same length.
+Word length is at least 1 and at most 5.
+Each word contains only lowercase English alphabet a-z.
+Example 1:
 
-Constraints:
+Input:
+["area","lead","wall","lady","ball"]
 
-1 <= word.length <= 500
-word in addWord consists lower-case English letters.
-word in search consist of  '.' or lower-case English letters.
-At most 50000 calls will be made to addWord and search.
+Output:
+[
+  [ "wall",
+    "area",
+    "lead",
+    "lady"
+  ],
+  [ "ball",
+    "area",
+    "lead",
+    "lady"
+  ]
+]
+
+Explanation:
+The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+Example 2:
+
+Input:
+["abat","baba","atan","atal"]
+
+Output:
+[
+  [ "baba",
+    "abat",
+    "baba",
+    "atan"
+  ],
+  [ "baba",
+    "abat",
+    "baba",
+    "atal"
+  ]
+]
+
+Explanation:
+The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
 */
 
-class word_dictionary
+class word_squares
 {
+	// trie structure that maps characters -> children (standard)
+	// and we also save each full word that starts with the same letters
+	// e.g., for wall | walt -> w | a | l, both words would be stored in the
+	// first 3 nodes (w, a & l)
     struct trie_node
     {
-        std::unordered_map<char, std::unique_ptr<trie_node>> children;
-        bool is_terminal{false};
+        std::unordered_map<char, trie_node*> children;
+        std::vector<std::string> prefixes;
     };
 
-    std::unique_ptr<trie_node> root_;
-
-public:
-
-    word_dictionary()
+	// add a word to the trie
+    static void insert_word( trie_node* root, 
+        const std::string& word )
     {
-        root_ = std::make_unique<trie_node>();
-    }
-
-    void add_word( const std::string& word ) const
-    {
-        auto node = root_.get();
+        auto node = root;
 
         for( auto chr : word )
         {
             if( node->children.find( chr ) == node->children.end() )
             {
-                node->children[ chr ] = std::make_unique<trie_node>();
+                node->children[ chr ] = new trie_node();
             }
 
-            node = node->children[ chr ].get();
+            node = node->children[ chr ];
+        	
+            node->prefixes.push_back( word );
         }
-
-        node->is_terminal = true;
     }
 
-    static bool search_node( const std::string& str, trie_node* node )
+	// takes a list of words and returns a trie (the root)
+    static trie_node* build_trie( const std::vector<std::string>& words )
     {
-        for( auto index = 0; index < str.length(); ++index )
+	    const auto root = new trie_node();
+
+        for( const auto& word : words )
         {
-            auto chr = str.at( index );
-
-            if( node->children.find( chr ) == node->children.end() )
-            {
-                if( chr == '.' )
-                {
-                    for( auto& [k, v] : node->children )
-                    {
-                        const auto child = node->children[ k ].get();
-                        const auto sub = str.substr( index + 1, str.length() );
-
-                        if( search_node( sub, child ) )
-                            return true;
-                    }
-                }
-
-                return false;
-            }
-            else
-            {
-                node = node->children[ chr ].get();
-            }
+            insert_word( root, word );
         }
 
-        return node->is_terminal;
+        return root;
     }
 
-    bool search( const std::string& word ) const
+	// try to place words in the grid based on the position
+    static void try_place_words( std::vector<std::vector<std::string>>& result,
+        std::vector<std::string>& board,
+        const std::vector<std::string>& words,
+        trie_node* trie,
+        const int row )
     {
-        return search_node( word, root_.get() );
+        const int num_rows = board.size();
+
+    	// terminal condition, we've reached past the end of
+    	// the length of the word (row > N)
+        if( row == num_rows )
+        {
+            result.push_back( board );
+            return;
+        }
+
+        auto node = trie;
+
+        // iterate the trie letter by letter of the current
+		// word getting the possible next list of next words
+		// character by character
+        for( auto index = 0; index < row; ++index )
+        {
+            const auto chr = board[ index ][ row ];
+
+        	// if any non-match, this combination can't work
+            if( node->children.find( chr ) == node->children.end() )
+                return;
+
+            node = node->children[ chr ];
+        }
+
+    	// replace (with backtracking) each word that could be a
+    	// potential match
+        for( const auto& replace : node->prefixes )
+        {
+            board[ row ] = replace;
+        	
+            try_place_words( result, board, words, trie, row + 1 );
+        }
+    }
+
+public:
+
+    static std::vector<std::vector<std::string>> wordSquares( const std::vector<std::string>& words )
+    {
+        const int N = words[ 0 ].size();
+        const auto trie = build_trie( words ); // ptr to our trie root
+
+    	// the result set of the word combinations that work
+        auto result = std::vector<std::vector<std::string>>();
+
+    	// the current board will be a list of N words (n=length of any given word since all same length)
+        auto board = std::vector<std::string>( N );
+
+        for( auto index = 0; index < words.size(); ++index )
+        {
+        	// place the word in the first row
+            board[ 0 ] = words[ index ];
+
+        	// then recursively try to fill the remaining positions
+            try_place_words( result, board, words, trie, 1 );
+        }
+
+        return result;
     }
 };
 
 auto main() -> int
 {
-    const auto searcher = word_dictionary();
-	
-    searcher.add_word( "bad" );
-    searcher.add_word( "dad" );
-    searcher.add_word( "mad" );
-	
-    searcher.search( "pad" );
+    const auto input = std::vector<std::string>{
+        "area", "lead", "wall", "lady", "ball", "walt"
+    };
+
+    const auto actual = word_squares::wordSquares( input );
+
+    const auto expected = std::vector<std::vector<std::string>>
+    {
+		
+    };
 	
 	return 0;
 }
