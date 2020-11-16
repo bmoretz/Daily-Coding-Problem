@@ -32,7 +32,7 @@ class palindrome_pairs
 	// trie structure
     struct trie_node
     {
-        std::unordered_map<char, trie_node*> children;
+        std::unordered_map<char, std::unique_ptr<trie_node>> children;
         int word_id{ -1 }; // -1 used to represent not a word
         std::vector<int> prefixes; // word ids
     };
@@ -80,10 +80,10 @@ class palindrome_pairs
 
                 if( node->children.find( chr ) == node->children.end() )
                 {
-                    node->children[ chr ] = new trie_node();
+                    node->children[ chr ] = std::make_unique<trie_node>();
                 }
 
-                node = node->children[ chr ];
+                node = node->children[ chr ].get();
             }
 
         	// node id / word it represents
@@ -121,7 +121,7 @@ public:
 
                 const auto chr = word[ index ];
 
-                node = node->children[ chr ];
+                node = node->children[ chr ].get();
 
                 if( !node )
                     break;

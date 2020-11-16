@@ -653,7 +653,7 @@ namespace leetcode::trie
         // first 3 nodes (w, a & l)
         struct trie_node
         {
-            std::unordered_map<char, trie_node*> children;
+            std::unordered_map<char, std::unique_ptr<trie_node>> children;
             std::vector<std::string> prefixes;
         };
 
@@ -667,10 +667,10 @@ namespace leetcode::trie
             {
                 if( node->children.find( chr ) == node->children.end() )
                 {
-                    node->children[ chr ] = new trie_node();
+                    node->children[ chr ] = std::make_unique<trie_node>();
                 }
 
-                node = node->children[ chr ];
+                node = node->children[ chr ].get();
 
                 node->prefixes.push_back( word );
             }
@@ -719,7 +719,7 @@ namespace leetcode::trie
                 if( node->children.find( chr ) == node->children.end() )
                     return;
 
-                node = node->children[ chr ];
+                node = node->children[ chr ].get();
             }
 
             // replace (with backtracking) each word that could be a
@@ -790,7 +790,7 @@ namespace leetcode::trie
         // trie structure
         struct trie_node
         {
-            std::unordered_map<char, trie_node*> children;
+            std::unordered_map<char, std::unique_ptr<trie_node>> children;
             int word_id{ -1 }; // -1 used to represent not a word
             std::vector<int> prefixes; // word ids
         };
@@ -838,10 +838,10 @@ namespace leetcode::trie
 
                     if( node->children.find( chr ) == node->children.end() )
                     {
-                        node->children[ chr ] = new trie_node();
+                        node->children[ chr ] = std::make_unique<trie_node>();
                     }
 
-                    node = node->children[ chr ];
+                    node = node->children[ chr ].get();
                 }
 
                 // node id / word it represents
@@ -879,7 +879,7 @@ namespace leetcode::trie
 
                     const auto chr = word[ index ];
 
-                    node = node->children[ chr ];
+                    node = node->children[ chr ].get();
 
                     if( !node )
                         break;
