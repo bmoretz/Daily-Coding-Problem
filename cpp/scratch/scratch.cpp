@@ -1,187 +1,160 @@
 ﻿#include <bits/stdc++.h>
 
-/*425. Word Squares.
+/*336. Palindrome Pairs.
 
-Given a set of words (without duplicates), find all word squares you can build from them.
+Given a list of unique words, return all the pairs of the distinct indices (i, j) in the given list, so that the concatenation of the two words
+words[i] + words[j] is a palindrome.
 
-A sequence of words forms a valid word square if the kth row and column read the exact same string, where 0 ≤ k < max(numRows, numColumns).
-
-For example, the word sequence ["ball","area","lead","lady"] forms a word square because each word reads the same both horizontally and vertically.
-
-b a l l
-a r e a
-l e a d
-l a d y
-
-Note:
-There are at least 1 and at most 1000 words.
-All words will have the exact same length.
-Word length is at least 1 and at most 5.
-Each word contains only lowercase English alphabet a-z.
 Example 1:
 
-Input:
-["area","lead","wall","lady","ball"]
-
-Output:
-[
-  [ "wall",
-    "area",
-    "lead",
-    "lady"
-  ],
-  [ "ball",
-    "area",
-    "lead",
-    "lady"
-  ]
-]
-
-Explanation:
-The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+Input: words = ["abcd","dcba","lls","s","sssll"]
+Output: [[0,1],[1,0],[3,2],[2,4]]
+Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
 Example 2:
 
-Input:
-["abat","baba","atan","atal"]
+Input: words = ["bat","tab","cat"]
+Output: [[0,1],[1,0]]
+Explanation: The palindromes are ["battab","tabbat"]
+Example 3:
 
-Output:
-[
-  [ "baba",
-    "abat",
-    "baba",
-    "atan"
-  ],
-  [ "baba",
-    "abat",
-    "baba",
-    "atal"
-  ]
-]
+Input: words = ["a",""]
+Output: [[0,1],[1,0]] 
 
-Explanation:
-The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+Constraints:
+
+1 <= words.length <= 5000
+0 <= words[i].length <= 300
+words[i] consists of lower-case English letters.
 */
 
-class word_squares
+class palindrome_pairs
 {
-	// trie structure that maps characters -> children (standard)
-	// and we also save each full word that starts with the same letters
-	// e.g., for wall | walt -> w | a | l, both words would be stored in the
-	// first 3 nodes (w, a & l)
+	// trie structure
     struct trie_node
     {
         std::unordered_map<char, trie_node*> children;
-        std::vector<std::string> prefixes;
+        int word_id{ -1 }; // -1 used to represent not a word
+        std::vector<int> prefixes; // word ids
     };
 
-	// add a word to the trie
-    static void insert_word( trie_node* root, 
-        const std::string& word )
+	// checks to see if str[index, end) is a palindrome
+    static bool has_palindrome_remaining( const std::string& str, const int index )
     {
-        auto node = root;
+        int left = index, right = str.length() - 1;
 
-        for( auto chr : word )
+        while( left < right )
         {
-            if( node->children.find( chr ) == node->children.end() )
-            {
-                node->children[ chr ] = new trie_node();
-            }
+            if( str[ left ] != str[ right ] )
+                return false;
 
-            node = node->children[ chr ];
-        	
-            node->prefixes.push_back( word );
+            left++; right--;
         }
+
+        return true;
     }
 
-	// takes a list of words and returns a trie (the root)
+	// builds a trie from our word list
     static trie_node* build_trie( const std::vector<std::string>& words )
     {
-	    const auto root = new trie_node();
+        const auto root = new trie_node();
 
-        for( const auto& word : words )
+        for( auto word_id = 0; word_id < words.size(); ++word_id )
         {
-            insert_word( root, word );
+        	// reverse the word in the word list
+            auto word = words[ word_id ];
+            std::reverse( word.begin(), word.end() );
+        	
+            auto node = root;
+
+        	// insert the reversed word in the trie
+            for( auto index = 0; index < word.size(); ++index )
+            {
+            	// if word[index, end) is a palindrome, then
+            	// save its word id to the node
+                if( has_palindrome_remaining( word, index ) )
+                {
+                    node->prefixes.push_back( word_id );
+                }
+
+                const auto chr = word[ index ];
+
+                if( node->children.find( chr ) == node->children.end() )
+                {
+                    node->children[ chr ] = new trie_node();
+                }
+
+                node = node->children[ chr ];
+            }
+
+        	// node id / word it represents
+            node->word_id = word_id;
         }
 
         return root;
     }
 
-	// try to place words in the grid based on the position
-    static void try_place_words( std::vector<std::vector<std::string>>& result,
-        std::vector<std::string>& board,
-        const std::vector<std::string>& words,
-        trie_node* trie,
-        const int row )
-    {
-        const int num_rows = board.size();
-
-    	// terminal condition, we've reached past the end of
-    	// the length of the word (row > N)
-        if( row == num_rows )
-        {
-            result.push_back( board );
-            return;
-        }
-
-        auto node = trie;
-
-        // iterate the trie letter by letter of the current
-		// word getting the possible next list of next words
-		// character by character
-        for( auto index = 0; index < row; ++index )
-        {
-            const auto chr = board[ index ][ row ];
-
-        	// if any non-match, this combination can't work
-            if( node->children.find( chr ) == node->children.end() )
-                return;
-
-            node = node->children[ chr ];
-        }
-
-    	// replace (with backtracking) each word that could be a
-    	// potential match
-        for( const auto& replace : node->prefixes )
-        {
-            board[ row ] = replace;
-        	
-            try_place_words( result, board, words, trie, row + 1 );
-        }
-    }
-
 public:
 
-    static std::vector<std::vector<std::string>> wordSquares( const std::vector<std::string>& words )
+	// returns palindrome pairs
+    static std::vector<std::vector<int>> palindromePairs( const std::vector<std::string>& words )
     {
-        const int N = words[ 0 ].size();
-        const auto trie = build_trie( words ); // ptr to our trie root
+    	// root of the trie that contains all of the words in reverse
+	    const auto root = build_trie( words );
 
-    	// the result set of the word combinations that work
-        auto result = std::vector<std::vector<std::string>>();
+        auto results = std::vector<std::vector<int>>();
 
-    	// the current board will be a list of N words (n=length of any given word since all same length)
-        auto board = std::vector<std::string>( N );
-
-        for( auto index = 0; index < words.size(); ++index )
+        for( auto word_id = 0; word_id < words.size(); ++word_id )
         {
-        	// place the word in the first row
-            board[ 0 ] = words[ index ];
+            const auto& word = words[ word_id ];
 
-        	// then recursively try to fill the remaining positions
-            try_place_words( result, board, words, trie, 1 );
+            auto node = root;
+
+        	// iterate down the trie to find a palindrome 
+            for( auto index = 0; index < word.size(); ++index )
+            {
+            	// if we have a valid word match & a palindrome save the result
+                if( node->word_id != -1 && node->word_id != word_id &&
+                    has_palindrome_remaining( word, index ) )
+                {
+                    results.push_back( { word_id, node->word_id } );
+                }
+
+                const auto chr = word[ index ];
+
+                node = node->children[ chr ];
+
+                if( !node )
+                    break;
+            }
+
+            if( !node ) continue;
+
+            if( node->word_id != -1 && node->word_id != word_id )
+            {
+                results.push_back( { word_id, node->word_id } );
+            }
+
+            for( auto other_id : node->prefixes )
+            {
+                results.push_back( { word_id, other_id } );
+            }
         }
 
-        return result;
+        return results;
     }
 };
 
 auto main() -> int
 {
-    const auto input = std::vector<std::string>{
-        "area", "lead", "wall", "lady", "ball", "walt"
+    const auto input1 = std::vector<std::string>{
+        "abcd", "dcba", "lls", "s", "sssll"
     };
 
-    const auto actual = word_squares::wordSquares( input );
+    const auto input = std::vector<std::string>{
+        "a", ""
+    };
+	
+    const auto actual = palindrome_pairs::palindromePairs( input );
 
     const auto expected = std::vector<std::vector<std::string>>
     {

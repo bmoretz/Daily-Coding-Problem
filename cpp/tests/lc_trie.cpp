@@ -179,12 +179,73 @@ namespace leetcode::trie::tests
             "area", "lead", "wall", "lady", "ball", "walt"
         };
 
-        const auto actual = word_squares::wordSquares( input );
+        const auto actual = valid_word_squares::word_squares( input );
 
         const auto expected = std::vector<std::vector<std::string>>
         {
         	{ "wall", "area", "lead", "lady" },
         	{ "ball", "area", "lead", "lady" }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    class palindrome_pairs_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( palindrome_pairs_tests, case1 )
+    {
+        const auto input = std::vector<std::string>{
+            "abcd", "dcba", "lls", "s", "sssll"
+        };
+
+        const auto actual = palindrome_pairs::palindromePairs( input );
+
+        const auto expected = std::vector<std::vector<int>>
+        {
+            { 0, 1 }, { 1, 0 }, { 2, 4 }, { 3, 2 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_pairs_tests, case2 )
+    {
+        const auto input = std::vector<std::string>{
+            "bat", "tab", "cat"
+        };
+
+        const auto actual = palindrome_pairs::palindromePairs( input );
+
+        const auto expected = std::vector<std::vector<int>>
+        {
+            { 0, 1 }, { 1, 0 }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( palindrome_pairs_tests, case3 )
+    {
+        const auto input = std::vector<std::string>{
+            "a", ""
+        };
+
+        const auto actual = palindrome_pairs::palindromePairs( input );
+
+        const auto expected = std::vector<std::vector<int>>
+        {
+            { 0, 1 }, { 1, 0 }
         };
 
         EXPECT_EQ( actual, expected );
