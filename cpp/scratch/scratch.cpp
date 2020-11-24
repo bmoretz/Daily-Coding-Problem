@@ -1,165 +1,176 @@
 ﻿#include <bits/stdc++.h>
 
-/*336. Palindrome Pairs.
+/*707. Design Linked List.
 
-Given a list of unique words, return all the pairs of the distinct indices (i, j) in the given list, so that the concatenation of the two words
-words[i] + words[j] is a palindrome.
+Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+
+A node in a singly linked list should have two attributes: val and next. val is the value of the current node,
+and next is a pointer/reference to the next node.
+
+If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the
+linked list. Assume all nodes in the linked list are 0-indexed.
+
+Implement the MyLinkedList class:
+
+MyLinkedList() Initializes the MyLinkedList object.
+
+int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
+
+void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion,
+	the new node will be the first node of the linked list.
+
+void addAtTail(int val) Append a node of value val as the last element of the linked list.
+
+void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index equals the length of
+	the linked list, the node will be appended to the end of the linked list. If index is greater than the length, the node will not be inserted.
+
+void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
 
 Example 1:
 
-Input: words = ["abcd","dcba","lls","s","sssll"]
-Output: [[0,1],[1,0],[3,2],[2,4]]
-Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
-Example 2:
+Input
+["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
+[[], [1], [3], [1, 2], [1], [1], [1]]
 
-Input: words = ["bat","tab","cat"]
-Output: [[0,1],[1,0]]
-Explanation: The palindromes are ["battab","tabbat"]
-Example 3:
+Output
 
-Input: words = ["a",""]
-Output: [[0,1],[1,0]] 
+[null, null, null, null, 2, null, 3]
+
+Explanation
+
+MyLinkedList myLinkedList = new MyLinkedList();
+myLinkedList.addAtHead(1);
+myLinkedList.addAtTail(3);
+myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
+myLinkedList.get(1);              // return 2
+myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
+myLinkedList.get(1);              // return 3
 
 Constraints:
 
-1 <= words.length <= 5000
-0 <= words[i].length <= 300
-words[i] consists of lower-case English letters.
+0 <= index, val <= 1000
+Please do not use the built-in LinkedList library.
+At most 2000 calls will be made to get, addAtHead, addAtTail,  addAtIndex and deleteAtIndex.
 */
 
-class palindrome_pairs
+class my_linked_list
 {
-	// trie structure
-    struct trie_node
-    {
-        std::unordered_map<char, std::unique_ptr<trie_node>> children;
-        int word_id{ -1 }; // -1 used to represent not a word
-        std::vector<int> prefixes; // word ids
-    };
+	struct node;
 
-	// checks to see if str[index, end) is a palindrome
-    static bool has_palindrome_remaining( const std::string& str, const int index )
-    {
-        int left = index, right = str.length() - 1;
+	typedef std::unique_ptr<node> node_ptr;
 
-        while( left < right )
-        {
-            if( str[ left ] != str[ right ] )
-                return false;
+	struct node
+	{
+		int val;
+		node_ptr next;
 
-            left++; right--;
-        }
+		explicit node( const int _val )
+		{
+			val = _val;
+		}
+	};
 
-        return true;
-    }
-
-	// builds a trie from our word list
-    static trie_node* build_trie( const std::vector<std::string>& words )
-    {
-        const auto root = new trie_node();
-
-        for( auto word_id = 0; word_id < words.size(); ++word_id )
-        {
-        	// reverse the word in the word list
-            auto word = words[ word_id ];
-            std::reverse( word.begin(), word.end() );
-        	
-            auto node = root;
-
-        	// insert the reversed word in the trie
-            for( auto index = 0; index < word.size(); ++index )
-            {
-            	// if word[index, end) is a palindrome, then
-            	// save its word id to the node
-                if( has_palindrome_remaining( word, index ) )
-                {
-                    node->prefixes.push_back( word_id );
-                }
-
-                const auto chr = word[ index ];
-
-                if( node->children.find( chr ) == node->children.end() )
-                {
-                    node->children[ chr ] = std::make_unique<trie_node>();
-                }
-
-                node = node->children[ chr ].get();
-            }
-
-        	// node id / word it represents
-            node->word_id = word_id;
-        }
-
-        return root;
-    }
+	node_ptr head_;
 
 public:
 
-	// returns palindrome pairs
-    static std::vector<std::vector<int>> palindromePairs( const std::vector<std::string>& words )
-    {
-    	// root of the trie that contains all of the words in reverse
-	    const auto root = build_trie( words );
+	my_linked_list()
+	{
+		head_ = std::make_unique<node>( 0 );
+	}
 
-        auto results = std::vector<std::vector<int>>();
+	/// <summary>
+	/// Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+	/// </summary>
+	/// <param name="index">position of the element to get</param>
+	/// <returns>the value of the element (if valid index)</returns>
+	int get( const int index ) const
+	{
+		auto node = head_->next.get();
 
-        for( auto word_id = 0; word_id < words.size(); ++word_id )
-        {
-            const auto& word = words[ word_id ];
+		for( auto cur = 0; node && cur < index; ++cur )
+			node = node->next.get();
 
-            auto node = root;
+		return node ? node->val : -1;
+	}
 
-        	// iterate down the trie to find a palindrome 
-            for( auto index = 0; index < word.size(); ++index )
-            {
-            	// if we have a valid word match & a palindrome save the result
-                if( node->word_id != -1 && node->word_id != word_id &&
-                    has_palindrome_remaining( word, index ) )
-                {
-                    results.push_back( { word_id, node->word_id } );
-                }
+	/// <summary>
+	/// Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+	/// </summary>
+	/// <param name="val"></param>
+	void add_at_head( int val ) const
+	{
+		auto old_head = std::move( head_->next );
 
-                const auto chr = word[ index ];
+		head_->next = std::make_unique<node>( val );
 
-                node = node->children[ chr ].get();
+		if( old_head )
+			head_->next->next = std::move( old_head );
+	}
 
-                if( !node )
-                    break;
-            }
+	/// <summary>
+	/// Append a node of value val to the last element of the linked list.
+	/// </summary>
+	/// <param name="val"></param>
+	void add_at_tail( int val ) const
+	{
+		auto cur = head_->next.get();
 
-            if( !node ) continue;
+		while( cur->next )
+		{
+			cur = cur->next.get();
+		}
 
-            if( node->word_id != -1 && node->word_id != word_id )
-            {
-                results.push_back( { word_id, node->word_id } );
-            }
+		cur->next = std::make_unique<node>( val );
+	}
 
-            for( auto other_id : node->prefixes )
-            {
-                results.push_back( { word_id, other_id } );
-            }
-        }
+	/// <summary>
+	/// Add a node of value val before the index-th node in the linked list. If index equals to the length of
+	/// linked list, the node will be appended to the end of linked list. If index is greater than
+	/// the length, the node will not be inserted.
+	/// </summary>
+	/// <param name="index">position to insert</param>
+	/// <param name="val">value </param>
+	void add_at_index( const int index, const int val ) const
+	{
+		auto cur = head_.get();
 
-        return results;
-    }
+		for( auto pos = 0; pos < index; ++pos )
+			cur = cur->next.get();
+
+		auto next = std::move( cur->next );
+
+		cur->next = std::make_unique<node>( val );
+		cur->next->next = std::move( next );
+	}
+
+	/// <summary>
+	/// Delete the index-th node in the linked list, if the index is valid.
+	/// </summary>
+	/// <param name="index">index of the node</param>
+	void delete_at_index( const int index ) const
+	{
+		auto cur = head_->next.get();
+		auto prev = head_.get();
+
+		for( auto pos = 0; cur && pos < index; ++pos )
+		{
+			prev = cur;
+			cur = cur->next.get();
+		}
+
+		if( !cur ) return;
+		
+		prev->next = std::move( cur->next );
+	}
 };
 
 auto main() -> int
 {
-    const auto input1 = std::vector<std::string>{
-        "abcd", "dcba", "lls", "s", "sssll"
-    };
+    auto list = my_linked_list();
 
-    const auto input = std::vector<std::string>{
-        "a", ""
-    };
-	
-    const auto actual = palindrome_pairs::palindromePairs( input );
-
-    const auto expected = std::vector<std::vector<std::string>>
-    {
-		
-    };
+	list.add_at_head( 4 );
+	auto v1 = list.get( 1 );
 	
 	return 0;
 }

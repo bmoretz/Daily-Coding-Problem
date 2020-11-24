@@ -388,4 +388,60 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_EQ( expected, expected );
     }
+
+    class my_linked_list_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( my_linked_list_test, case1 )
+    {
+        auto list = my_linked_list();
+
+        list.add_at_head( 2 );
+        list.delete_at_index( 1 );
+        list.add_at_head( 2 );
+        list.add_at_head( 7 );
+        list.add_at_head( 3 );
+        list.add_at_head( 2 );
+        list.add_at_head( 5 );
+        list.add_at_tail( 5 );
+
+        EXPECT_EQ( list.get( 5 ), 2 );
+
+        list.delete_at_index( 6 );
+        list.delete_at_index( 4 );
+    }
+
+    TEST_F( my_linked_list_test, case2 )
+    {
+        auto list = my_linked_list();
+
+        list.add_at_head( 1 );
+        list.add_at_tail( 3 );
+        list.add_at_index( 1, 2 );
+
+        EXPECT_EQ( list.get( 1 ), 2 );
+
+        list.delete_at_index( 1 );
+
+        EXPECT_EQ( list.get( 1 ), 3 );
+    }
+
+    TEST_F( my_linked_list_test, case3 )
+    {
+        auto list = my_linked_list();
+
+        list.add_at_head( 4 );
+
+    	EXPECT_EQ( list.get(1), )
+    }
 }

@@ -785,7 +785,7 @@ namespace leetcode::trie
     words[i] consists of lower-case English letters.
     */
 
-    class palindrome_pairs
+    class find_palindrome_pairs
     {
         // trie structure
         struct trie_node
@@ -854,7 +854,7 @@ namespace leetcode::trie
     public:
 
         // returns palindrome pairs
-        static std::vector<std::vector<int>> palindromePairs( const std::vector<std::string>& words )
+        static std::vector<std::vector<int>> palindrome_pairs( const std::vector<std::string>& words )
         {
             // root of the trie that contains all of the words in reverse
             const auto root = build_trie( words );
@@ -887,6 +887,7 @@ namespace leetcode::trie
 
                 if( !node ) continue;
 
+            	
                 if( node->word_id != -1 && node->word_id != word_id )
                 {
                     results.push_back( { word_id, node->word_id } );

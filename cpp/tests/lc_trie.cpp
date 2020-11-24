@@ -209,7 +209,7 @@ namespace leetcode::trie::tests
             "abcd", "dcba", "lls", "s", "sssll"
         };
 
-        const auto actual = palindrome_pairs::palindromePairs( input );
+        const auto actual = find_palindrome_pairs::palindrome_pairs( input );
 
         const auto expected = std::vector<std::vector<int>>
         {
@@ -225,7 +225,7 @@ namespace leetcode::trie::tests
             "bat", "tab", "cat"
         };
 
-        const auto actual = palindrome_pairs::palindromePairs( input );
+        const auto actual = find_palindrome_pairs::palindrome_pairs( input );
 
         const auto expected = std::vector<std::vector<int>>
         {
@@ -241,7 +241,7 @@ namespace leetcode::trie::tests
             "a", ""
         };
 
-        const auto actual = palindrome_pairs::palindromePairs( input );
+        const auto actual = find_palindrome_pairs::palindrome_pairs( input );
 
         const auto expected = std::vector<std::vector<int>>
         {
