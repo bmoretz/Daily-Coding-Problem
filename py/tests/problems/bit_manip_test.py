@@ -118,7 +118,7 @@ class Test_BitFlip1(unittest.TestCase):
     10000000000
     '''
     def test_case3(self):
-
+        
         actual = flip_bit1(1024)
 
         expected = 2

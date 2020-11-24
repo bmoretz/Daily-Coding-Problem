@@ -435,13 +435,4 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_EQ( list.get( 1 ), 3 );
     }
-
-    TEST_F( my_linked_list_test, case3 )
-    {
-        auto list = my_linked_list();
-
-        list.add_at_head( 4 );
-
-    	EXPECT_EQ( list.get(1), )
-    }
 }

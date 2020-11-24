@@ -5,8 +5,6 @@ Note that elements beyond the length of the original array are not written.
 
 Do the above modifications to the input array in place, do not return anything from your function.
 
- 
-
 Example 1:
 
 Input: [1,0,2,3,0,4,5,0]
@@ -17,7 +15,6 @@ Example 2:
 Input: [1,2,3]
 Output: null
 Explanation: After calling your function, the input array is modified to: [1,2,3]
- 
 
 Note:
 
@@ -27,7 +24,7 @@ Note:
 
 from typing import List
 
-class Solution:
+class duplicate_zeros:
     
     def shift_arr( self, arr : List[int], index : int ) -> None:
         
@@ -57,11 +54,3 @@ class Solution:
                 pos[arr] = 0
                 
             pos += 1
-
-arr = [1,0,2,3,0,4,5,0]
-
-sln = Solution()
-
-sln.duplicateZeros(arr)
-
-print(arr)
