@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\bmore\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "python.pythonPath": "dcp\\Scripts\\python.exe",
     "python.testing.pytestArgs": [
         "tests"
     ],
