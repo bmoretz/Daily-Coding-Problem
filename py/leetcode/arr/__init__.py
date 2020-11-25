@@ -133,18 +133,23 @@ class sorted_squares():
     
     def sortedSquares(self, A):
         
-        answer = [0] * len(A)
-        l, r = 0, len(A) - 1
+        N = len( arr )
         
-        while l <= r:
+        result = [0] * N 
+        left, right = 0, N - 1
+        pos = N - 1
+        
+        while left <= right:
             
-            left, right = abs(A[l]), abs(A[r])
+            l, r = abs(arr[left]), abs(arr[right])
             
-            if left > right:
-                answer[r - l] = left * left
-                l += 1
+            if l < r:
+                result[pos] = r * r
+                right -= 1
             else:
-                answer[r - l] = right * right
-                r -= 1
-                
-        return answer
+                result[pos] = l * l
+                left += 1
+            
+            pos -= 1
+            
+        return result
