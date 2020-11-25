@@ -131,7 +131,7 @@ A is sorted in non-decreasing order.
 
 class sorted_squares():
     
-    def sortedSquares(self, A):
+    def sortedSquares(self, arr):
         
         N = len( arr )
         
