@@ -1,58 +1,48 @@
 '''
-Given an array nums of integers, return how many of them contain an even number of digits.
- 
+977. Squares of a Sorted Array.
+
+Given an array of integers A sorted in non-decreasing order, return an array of the squares of each number, also in sorted non-decreasing order.
+
 Example 1:
 
-Input: nums = [12,345,2,6,7896]
-Output: 2
-Explanation: 
-12 contains 2 digits (even number of digits). 
-345 contains 3 digits (odd number of digits). 
-2 contains 1 digit (odd number of digits). 
-6 contains 1 digit (odd number of digits). 
-7896 contains 4 digits (even number of digits). 
-Therefore only 12 and 7896 contain an even number of digits.
+Input: [-4,-1,0,3,10]
+Output: [0,1,9,16,100]
 Example 2:
 
-Input: nums = [555,901,482,1771]
-Output: 1 
-Explanation: 
-Only 1771 contains an even number of digits.
+Input: [-7,-3,2,3,11]
+Output: [4,9,9,49,121]
  
+Note:
 
-Constraints:
-
-1 <= nums.length <= 500
-1 <= nums[i] <= 10^5
+1 <= A.length <= 10000
+-10000 <= A[i] <= 10000
+A is sorted in non-decreasing order.
 '''
 
 from typing import List
 
 class Solution:
     
-    def num_digits( self, num : int ):
+    def sortedSquares(self, A):
         
-        digits = 0
+        answer = [0] * len(A)
+        l, r = 0, len(A) - 1
         
-        while int(num) > 0:
-            digits += 1
-            num /= 10
-        
-        return digits
-    
-    def findNumbers(self, nums: List[int]) -> int:
-        
-        result = 0
-        
-        for num in nums:
+        while l <= r:
             
-            if self.num_digits( num ) % 2 == 0:
-                result += 1
+            left, right = abs(A[l]), abs(A[r])
+            
+            if left > right:
+                answer[r - l] = left * left
+                l += 1
+            else:
+                answer[r - l] = right * right
+                r -= 1
                 
-        return result
+        return answer
 
-arr = [555,901,482,1771]
+arr = [-4,-1,0,3,10]
 
-Solution().findNumbers(arr)
+Solution().sortedSquares(arr)
 
 print(arr)

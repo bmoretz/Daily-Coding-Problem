@@ -39,7 +39,6 @@ class Test_EvenDigits(unittest.TestCase):
         arr = [555,901,482,1771]
 
         actual = even_digits1().findNumbers(arr)
-        
         expected = 1
 
         assert actual == expected
@@ -49,7 +48,31 @@ class Test_EvenDigits(unittest.TestCase):
         arr = [100000]
 
         actual = even_digits1().findNumbers(arr)
-
         expected = 1
+
+        assert actual == expected
+
+from py.leetcode.arr import sorted_squares
+
+class Test_SortedSquares(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        
+        arr = [-4,-1,0,3,10]
+
+        actual = sorted_squares().sortedSquares(arr)
+        expected = [-4, -1, 0, 3, 10]
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        arr = [-7,-3,2,3,11]
+
+        actual = sorted_squares().sortedSquares(arr)
+        expected = [4,9,9,49,121]
 
         assert actual == expected
