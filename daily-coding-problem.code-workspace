@@ -10,6 +10,7 @@
 			"expon",
 			"mults",
 			"numpy",
+			"nums",
 			"scipy"
 		]
 	}
