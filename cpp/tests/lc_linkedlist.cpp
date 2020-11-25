@@ -435,4 +435,37 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_EQ( list.get( 1 ), 3 );
     }
+
+    class detect_cycle_ii_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( detect_cycle_ii_test, case1 )
+    {
+        const auto head = detected_cycle_ii::build_list( { 3, 2, 0, -4 }, 1 );
+
+        const auto actual = detected_cycle_ii::detect_cycle( head.get() );
+        const auto expected = head->next;
+
+        EXPECT_TRUE( actual == expected );
+    }
+
+    TEST_F( detect_cycle_ii_test, case2 )
+    {
+        const auto head = detected_cycle_ii::build_list( { -1, -7, 7, -4, 19, 6, -9, -5, -2, -5 }, 9 );
+
+        const auto actual = detected_cycle_ii::detect_cycle( head.get() );
+        const auto expected = head->next->next->next->next->next->next->next->next->next;
+
+        EXPECT_TRUE( actual == expected );
+    }
 }

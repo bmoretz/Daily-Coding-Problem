@@ -1,176 +1,132 @@
 ﻿#include <bits/stdc++.h>
 
-/*707. Design Linked List.
+/*142. Linked List Cycle II.
 
-Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
 
-A node in a singly linked list should have two attributes: val and next. val is the value of the current node,
-and next is a pointer/reference to the next node.
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next
+pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
 
-If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the
-linked list. Assume all nodes in the linked list are 0-indexed.
-
-Implement the MyLinkedList class:
-
-MyLinkedList() Initializes the MyLinkedList object.
-
-int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
-
-void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion,
-	the new node will be the first node of the linked list.
-
-void addAtTail(int val) Append a node of value val as the last element of the linked list.
-
-void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index equals the length of
-	the linked list, the node will be appended to the end of the linked list. If index is greater than the length, the node will not be inserted.
-
-void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+Notice that you should not modify the linked list. 
 
 Example 1:
 
-Input
-["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
-[[], [1], [3], [1, 2], [1], [1], [1]]
+Input: head = [3,2,0,-4], pos = 1
+Output: tail connects to node index 1
+Explanation: There is a cycle in the linked list, where tail connects to the second node.
 
-Output
+Example 2:
 
-[null, null, null, null, 2, null, 3]
+Input: head = [1,2], pos = 0
+Output: tail connects to node index 0
+Explanation: There is a cycle in the linked list, where tail connects to the first node.
+Example 3:
 
-Explanation
-
-MyLinkedList myLinkedList = new MyLinkedList();
-myLinkedList.addAtHead(1);
-myLinkedList.addAtTail(3);
-myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
-myLinkedList.get(1);              // return 2
-myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
-myLinkedList.get(1);              // return 3
+Input: head = [1], pos = -1
+Output: no cycle
+Explanation: There is no cycle in the linked list.
 
 Constraints:
 
-0 <= index, val <= 1000
-Please do not use the built-in LinkedList library.
-At most 2000 calls will be made to get, addAtHead, addAtTail,  addAtIndex and deleteAtIndex.
+The number of the nodes in the list is in the range [0, 104].
+-105 <= Node.val <= 105
+pos is -1 or a valid index in the linked-list.
+
+Follow up: Can you solve it using O(1) (i.e. constant) memory?
 */
 
-class my_linked_list
+class detected_cycle_ii
 {
-	struct node;
+    struct list_node;
 
-	typedef std::unique_ptr<node> node_ptr;
-
-	struct node
+    typedef std::unique_ptr<list_node> node_ptr;
+	
+	struct list_node
 	{
-		int val;
-		node_ptr next;
-
-		explicit node( const int _val )
-		{
-			val = _val;
-		}
+        int value;
+        list_node* next{};
+        node_ptr next_ptr;
+		
+        explicit list_node( int _value )
+            : value{ _value }
+        { }
 	};
-
-	node_ptr head_;
 
 public:
 
-	my_linked_list()
-	{
-		head_ = std::make_unique<node>( 0 );
-	}
-
 	/// <summary>
-	/// Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+	/// constructs a new linked list with a cycle that points to the node at
+	/// the index of the intersect parameter.
 	/// </summary>
-	/// <param name="index">position of the element to get</param>
-	/// <returns>the value of the element (if valid index)</returns>
-	int get( const int index ) const
+	/// <param name="values">list of values for the list</param>
+	/// <param name="intersect">node to loop to</param>
+	/// <returns>new linked list</returns>
+	static node_ptr build_list( const std::vector<int>& values, 
+        const int intersect )
 	{
-		auto node = head_->next.get();
+        const auto sentinel = std::make_unique<list_node>( 0 );
+        auto node = sentinel.get();
 
-		for( auto cur = 0; node && cur < index; ++cur )
-			node = node->next.get();
-
-		return node ? node->val : -1;
-	}
-
-	/// <summary>
-	/// Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
-	/// </summary>
-	/// <param name="val"></param>
-	void add_at_head( int val ) const
-	{
-		auto old_head = std::move( head_->next );
-
-		head_->next = std::make_unique<node>( val );
-
-		if( old_head )
-			head_->next->next = std::move( old_head );
-	}
-
-	/// <summary>
-	/// Append a node of value val to the last element of the linked list.
-	/// </summary>
-	/// <param name="val"></param>
-	void add_at_tail( int val ) const
-	{
-		auto cur = head_->next.get();
-
-		while( cur->next )
-		{
-			cur = cur->next.get();
-		}
-
-		cur->next = std::make_unique<node>( val );
-	}
-
-	/// <summary>
-	/// Add a node of value val before the index-th node in the linked list. If index equals to the length of
-	/// linked list, the node will be appended to the end of linked list. If index is greater than
-	/// the length, the node will not be inserted.
-	/// </summary>
-	/// <param name="index">position to insert</param>
-	/// <param name="val">value </param>
-	void add_at_index( const int index, const int val ) const
-	{
-		auto cur = head_.get();
-
-		for( auto pos = 0; pos < index; ++pos )
-			cur = cur->next.get();
-
-		auto next = std::move( cur->next );
-
-		cur->next = std::make_unique<node>( val );
-		cur->next->next = std::move( next );
-	}
-
-	/// <summary>
-	/// Delete the index-th node in the linked list, if the index is valid.
-	/// </summary>
-	/// <param name="index">index of the node</param>
-	void delete_at_index( const int index ) const
-	{
-		auto cur = head_->next.get();
-		auto prev = head_.get();
-
-		for( auto pos = 0; cur && pos < index; ++pos )
-		{
-			prev = cur;
-			cur = cur->next.get();
-		}
-
-		if( !cur ) return;
+        auto nodes = std::vector<list_node*>();
 		
-		prev->next = std::move( cur->next );
+		for( auto val : values )
+		{
+            node->next_ptr = std::make_unique<list_node>( val );
+            node->next = node->next_ptr.get();
+            node = node->next_ptr.get();
+            nodes.push_back( node );
+		}
+
+        node->next = nodes[ intersect ];
+		
+        return std::move( sentinel->next_ptr );
 	}
+
+	/// <summary>
+	/// returns the node that forms a cycle in a given linked list
+	/// </summary>
+	/// <param name="head">the list</param>
+	/// <returns>cycle node (if any)</returns>
+    static list_node* detect_cycle( list_node* head )
+    {
+        if( !head ) return nullptr;
+
+        auto slow = head, fast = head;
+        list_node* intersect = nullptr;
+
+        while( fast && fast->next )
+        {
+            slow = slow->next;
+            fast = fast->next->next;
+
+            if( slow == fast )
+            {
+                intersect = slow;
+                break;
+            }
+        }
+
+        if( !intersect ) return nullptr;
+
+        auto p1 = head, p2 = intersect;
+
+        while( p1 != p2 )
+        {
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+
+        return p1;
+    }
 };
 
 auto main() -> int
 {
-    auto list = my_linked_list();
+    const auto head = detected_cycle_ii::build_list( { 3, 2, 0, -4 },1 );
 
-	list.add_at_head( 4 );
-	auto v1 = list.get( 1 );
-	
+    auto actual = detected_cycle_ii::detect_cycle( head.get() );
+
+    auto expected = head->next;
+
 	return 0;
 }
