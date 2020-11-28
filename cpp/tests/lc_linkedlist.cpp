@@ -468,4 +468,43 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_TRUE( actual == expected );
     }
+
+    class remove_kth_node_from_end_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( remove_kth_node_from_end_test, case1 )
+    {
+        const auto head = remove_kth_node_from_end::build_list( { 1, 2, 3, 4, 5 } );
+
+        const auto new_list = remove_kth_node_from_end::remove_nth_from_end( head.get(), 2 );
+
+        const auto actual = remove_kth_node_from_end::to_vector( new_list );
+
+        const auto expected = std::vector<int>{ 1, 2, 3, 5 };
+
+        EXPECT_TRUE( actual == expected );
+    }
+
+    TEST_F( remove_kth_node_from_end_test, case2 )
+    {
+        const auto head = remove_kth_node_from_end::build_list( { 1 } );
+
+        const auto new_list = remove_kth_node_from_end::remove_nth_from_end( head.get(), 1 );
+
+        const auto actual = remove_kth_node_from_end::to_vector( new_list );
+
+        const auto expected = std::vector<int>{ };
+
+        EXPECT_TRUE( actual == expected );
+    }
 }

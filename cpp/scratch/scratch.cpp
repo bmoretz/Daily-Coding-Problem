@@ -1,41 +1,34 @@
 ﻿#include <bits/stdc++.h>
 
-/*142. Linked List Cycle II.
+/*19. Remove Nth Node From End of List.
 
-Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
 
-There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next
-pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
-
-Notice that you should not modify the linked list. 
+Follow up: Could you do this in one pass?
 
 Example 1:
 
-Input: head = [3,2,0,-4], pos = 1
-Output: tail connects to node index 1
-Explanation: There is a cycle in the linked list, where tail connects to the second node.
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
 
 Example 2:
 
-Input: head = [1,2], pos = 0
-Output: tail connects to node index 0
-Explanation: There is a cycle in the linked list, where tail connects to the first node.
+Input: head = [1], n = 1
+Output: []
 Example 3:
 
-Input: head = [1], pos = -1
-Output: no cycle
-Explanation: There is no cycle in the linked list.
-
+Input: head = [1,2], n = 1
+Output: [1]
+ 
 Constraints:
 
-The number of the nodes in the list is in the range [0, 104].
--105 <= Node.val <= 105
-pos is -1 or a valid index in the linked-list.
-
-Follow up: Can you solve it using O(1) (i.e. constant) memory?
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
 */
 
-class detected_cycle_ii
+class remove_kth_node_from_end
 {
     struct list_node;
 
@@ -44,89 +37,88 @@ class detected_cycle_ii
 	struct list_node
 	{
         int value;
-        list_node* next{};
-        node_ptr next_ptr;
+        node_ptr next;
 		
-        explicit list_node( int _value )
-            : value{ _value }
+        explicit list_node( const int value )
+            : value{ value }
         { }
 	};
 
 public:
 
 	/// <summary>
-	/// constructs a new linked list with a cycle that points to the node at
-	/// the index of the intersect parameter.
+	/// constructs a new linked list from the values in the passed
+	/// in vector.
 	/// </summary>
 	/// <param name="values">list of values for the list</param>
-	/// <param name="intersect">node to loop to</param>
 	/// <returns>new linked list</returns>
-	static node_ptr build_list( const std::vector<int>& values, 
-        const int intersect )
+	static node_ptr build_list( const std::vector<int>& values )
 	{
         const auto sentinel = std::make_unique<list_node>( 0 );
         auto node = sentinel.get();
 
-        auto nodes = std::vector<list_node*>();
-		
 		for( auto val : values )
 		{
-            node->next_ptr = std::make_unique<list_node>( val );
-            node->next = node->next_ptr.get();
-            node = node->next_ptr.get();
-            nodes.push_back( node );
+            node->next = std::make_unique<list_node>( val );
+            node = node->next.get();
 		}
 
-        node->next = nodes[ intersect ];
-		
-        return std::move( sentinel->next_ptr );
+        return std::move( sentinel->next );
 	}
 
-	/// <summary>
-	/// returns the node that forms a cycle in a given linked list
-	/// </summary>
-	/// <param name="head">the list</param>
-	/// <returns>cycle node (if any)</returns>
-    static list_node* detect_cycle( list_node* head )
+	static std::vector<int> to_vector( list_node* head )
+	{
+        auto result = std::vector<int>();
+
+        auto node = head;
+
+		while( node )
+		{
+            result.push_back( node->value );
+            node = node->next.get();
+		}
+		
+        return result;
+	}
+	
+    static list_node* remove_nth_from_end( list_node* head, const int n )
     {
         if( !head ) return nullptr;
+		
+        auto lead = head, lag = head;
 
-        auto slow = head, fast = head;
-        list_node* intersect = nullptr;
-
-        while( fast && fast->next )
+        for( auto index = 0; index < n; ++index )
         {
-            slow = slow->next;
-            fast = fast->next->next;
-
-            if( slow == fast )
-            {
-                intersect = slow;
-                break;
-            }
+            lead = lead->next.get();
         }
 
-        if( !intersect ) return nullptr;
+        if( !lead )
+            return lag->next.get();
 
-        auto p1 = head, p2 = intersect;
+        auto prev = head;
 
-        while( p1 != p2 )
+        while( lead )
         {
-            p1 = p1->next;
-            p2 = p2->next;
+            prev = lag;
+            lead = lead->next.get();
+            lag = lag->next.get();
         }
 
-        return p1;
+        prev->next = std::move( lag->next );
+
+        return head;
     }
 };
 
 auto main() -> int
 {
-    const auto head = detected_cycle_ii::build_list( { 3, 2, 0, -4 },1 );
+    const auto head = remove_kth_node_from_end::build_list( { 1, 2, 3, 4, 5 } );
 
-    auto actual = detected_cycle_ii::detect_cycle( head.get() );
+    const auto new_list = remove_kth_node_from_end::remove_nth_from_end( head.get(), 2 );
 
-    auto expected = head->next;
+    auto actual = remove_kth_node_from_end::to_vector( new_list );
+	
+    auto expected = std::vector<int>{ 1, 2, 4, 5 };
 
 	return 0;
 }
