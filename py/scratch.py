@@ -1,65 +1,77 @@
 
 '''
-1100. Find K-Length Substrings With No Repeated Characters.
+206. Reverse Linked List.
 
-Given a string S, return the number of substrings of length K with no repeated characters.
+Reverse a singly linked list.
 
-Example 1:
+Example:
 
-Input: S = "havefunonleetcode", K = 5
-Output: 6
-Explanation: 
-There are 6 substrings they are : 'havef','avefu','vefun','efuno','etcod','tcode'.
+Input: 1->2->3->4->5->NULL
+Output: 5->4->3->2->1->NULL
+Follow up:
 
-Example 2:
-
-Input: S = "home", K = 5
-Output: 0
-Explanation: 
-Notice K can be larger than the length of S. In this case is not possible to find any substring.
-
-Note:
-
-1 <= S.length <= 10^4
-All characters of S are lowercase English letters.
-1 <= K <= 10^4
+A linked list can be reversed either iteratively or recursively. Could you implement both?
 '''
 
-class k_len_substrings:
+class rev_linkedlist:
 
-    def numKLenSubstrNoRepeats(self, S: str, K: int) -> int:
+    from typing import List
+
+    class ListNode:
+        def __init__(self, val):
+            self.next = None
+            self.val = val
+
+    def build_list(self, values : List[int] ) -> ListNode:
         
-        from collections import Counter
+        sentinel = self.ListNode(0)
+        node = sentinel
 
-        pos, N, result = 0, len(S), 0
+        for value in values:
+            node.next = self.ListNode(value)
+            node = node.next
 
-        if N < K: return 0
+        return sentinel.next
 
-        chars = Counter()
+    def to_list(self, head : ListNode ) -> List[int]:
 
-        for index in range(N):
-            
-            chars[S[index]] += 1
-    
-            while chars[S[index]] > 1:
+        node, result = head, []
 
-                chars[S[pos]] -= 1
-
-                if chars[S[pos]] == 0:
-                    del chars[S[pos]]
-
-                pos += 1
-
-            if len(chars) == K:
-                result += 1
-                del chars[S[pos]]
-                pos += 1
+        while node:
+            result += [node.val]
+            node = node.next
 
         return result
 
-S, K = "gdggdbjchgadcfddfahbdebjbagaicgeahehjhdfghadbcbbfhgefcihbcbjjibjdhfhbdijehhiabad", 5
+    def reverseList_iter(self, head: ListNode) -> ListNode:
+    
+        node, prev = head, None
+        
+        while node:
+            
+            tmp = node.next
+            node.next = prev
+            
+            prev = node
+            node = tmp
+            
+        return prev
 
-actual = k_len_substrings().numKLenSubstrNoRepeats(S, K)
-expected = 5
+    def reverseList_rec(self, head: ListNode ) -> ListNode:
+    
+        if not head or not head.next: return head
 
+        node = self.reverseList_rec(head.next)
 
+        head.next.next = head
+        head.next = None
+
+        return node
+
+head = rev_linkedlist().build_list([1,2,3,4,5])
+
+new_list = rev_linkedlist().reverseList_iter(head)
+
+actual = rev_linkedlist.to_list(new_list)
+
+expected = [5, 4, 3, 2, 1]
