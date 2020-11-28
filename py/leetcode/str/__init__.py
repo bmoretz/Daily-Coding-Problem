@@ -1,4 +1,3 @@
-
 '''
 1100. Find K-Length Substrings With No Repeated Characters.
 
@@ -26,7 +25,7 @@ All characters of S are lowercase English letters.
 '''
 
 class k_len_substrings:
-
+    
     def numKLenSubstrNoRepeats(self, S: str, K: int) -> int:
         
         from collections import Counter
@@ -42,24 +41,12 @@ class k_len_substrings:
             chars[S[index]] += 1
     
             while chars[S[index]] > 1:
-
                 chars[S[pos]] -= 1
-
-                if chars[S[pos]] == 0:
-                    del chars[S[pos]]
-
                 pos += 1
 
-            if len(chars) == K:
+            if index - pos + 1 == K:
                 result += 1
-                del chars[S[pos]]
+                chars[S[pos]] -= 1
                 pos += 1
 
         return result
-
-S, K = "gdggdbjchgadcfddfahbdebjbagaicgeahehjhdfghadbcbbfhgefcihbcbjjibjdhfhbdijehhiabad", 5
-
-actual = k_len_substrings().numKLenSubstrNoRepeats(S, K)
-expected = 5
-
-
