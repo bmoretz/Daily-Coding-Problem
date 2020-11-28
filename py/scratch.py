@@ -2,103 +2,63 @@
 from typing import List
 
 '''
-160. Intersection of Two Linked Lists.
+26. Remove Duplicates from Sorted Array.
 
-Write a program to find the node at which the intersection of two singly linked lists begins.
+Given a sorted array nums, remove the duplicates in-place such that each element appears only once and returns the new length.
 
-For example, the following two linked lists:
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
 
-begin to intersect at node c1.
+Clarification:
+
+Confused why the returned value is an integer but your answer is an array?
+
+Note that the input array is passed in by reference, which means a modification to the input array will be known to the caller as well.
+
+Internally you can think of this:
+
+// nums is passed in by reference. (i.e., without making a copy)
+int len = removeDuplicates(nums);
+
+// any modification to nums in your function would be known by the caller.
+// using the length returned by your function, it prints the first len elements.
+for (int i = 0; i < len; i++) {
+    print(nums[i]);
+}
 
 Example 1:
 
-Input: intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
-Output: Reference of the node with value = 8
-Input Explanation: The intersected node's value is 8 (note that this must not be 0 if the two lists intersect). From the head of A, it reads as [4,1,8,4,5]. From the head of B, 
-it reads as [5,6,1,8,4,5]. There are 2 nodes before the intersected node in A; There are 3 nodes before the intersected node in B.
-
+Input: nums = [1,1,2]
+Output: 2, nums = [1,2]
+Explanation: Your function should return length = 2, with the first two elements of nums being 1 and 2 respectively. It doesn't matter what you leave beyond the returned length.
 Example 2:
 
-Input: intersectVal = 2, listA = [1,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
-Output: Reference of the node with value = 2
-Input Explanation: The intersected node's value is 2 (note that this must not be 0 if the two lists intersect). From the head of A, it reads as [1,9,1,2,4]. From the 
-head of B, it reads as [3,2,4]. There are 3 nodes before the intersected node in A; There are 1 node before the intersected node in B.
+Input: nums = [0,0,1,1,1,2,2,3,3,4]
+Output: 5, nums = [0,1,2,3,4]
+Explanation: Your function should return length = 5, with the first five elements of nums being modified to 0, 1, 2, 3, and 4 respectively. It doesn't matter what values are set beyond the returned length.
+ 
 
-Example 3:
+Constraints:
 
-Input: intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
-Output: null
-Input Explanation: From the head of A, it reads as [2,6,4]. From the head of B, it reads as [1,5]. Since the two lists do not intersect, 
-intersectVal must be 0, while skipA and skipB can be arbitrary values.
-
-Explanation: The two lists do not intersect, so return null.
-
-Notes:
-
-If the two linked lists have no intersection at all, return null.
-The linked lists must retain their original structure after the function returns.
-You may assume there are no cycles anywhere in the entire linked structure.
-Each value on each linked list is in the range [1, 10^9].
-Your code should preferably run in O(n) time and use only O(1) memory.
+0 <= nums.length <= 3 * 104
+-104 <= nums[i] <= 104
+nums is sorted in ascending order.
 '''
 
-class intersection:
-
-    class ListNode:
-        def __init__(self, x):
-            self.val = x
-            self.next = None
-
-    def to_list(self, values) -> ListNode:
-
-        sentinel = self.ListNode(0)
-        node = sentinel
-
-        for val in values:
-            node.next = self.ListNode(val)
-            node = node.next
+class dedupe_sorted:
         
-        return (sentinel.next, node)
+    def removeDuplicates(self, nums: List[int]) -> int:
         
-    def build_list( self, list1 : List[int], list2 : List[int], common : List[int] ) -> (ListNode, ListNode, ListNode):
-        
-        headA, tailA = self.to_list( list1 )
-        headB, tailB = self.to_list( list2 )
+        cnt = 0
+        for num in nums:
+            if cnt == 0 or num != nums[cnt - 1]:
+                nums[cnt] = num
+                cnt += 1
+                
+        return cnt
 
-        tail, _ = self.to_list( common )
+arr = [0,0,1,1,1,2,2,3,3,4]
 
-        tailA.next = tail
-        tailB.next = tail
+actual = dedupe_sorted().removeDuplicates(arr)
+expected = 5
 
-        return (headA, headB, tail)
-
-    def to_set( self, head : ListNode ) -> set():
-        seen = set()
-        node = head
-        
-        while node:
-            seen.add( node )
-            node = node.next
-        
-        return seen
-    
-    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
-            
-        seen = self.to_set(headA)
-        
-        node = headB
-        
-        while node:
-            
-            if node in seen:
-                return node
-            
-            node = node.next
-            
-        return None
-
-headA, headB, intersect = intersection().build_list( [4,1], [5,6,1], [8,4,5] )
-
-actual = intersection().getIntersectionNode( headA, headB )
-expected = intersect
 

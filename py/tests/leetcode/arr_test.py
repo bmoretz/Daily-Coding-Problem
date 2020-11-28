@@ -61,10 +61,10 @@ class Test_SortedSquares(unittest.TestCase):
 
     def test_case1(self):
         
-        arr = [ -4, -1, 0, 3, 10]
+        arr = [-4, -1, 0, 3, 10]
 
         actual = sorted_squares().sortedSquares(arr)
-        expected = [0, 1, 3, 16, 100]
+        expected = [0, 1, 9, 16, 100]
 
         assert actual == expected
 
@@ -76,3 +76,29 @@ class Test_SortedSquares(unittest.TestCase):
         expected = [4, 9, 9, 49, 121]
 
         assert actual == expected
+
+from py.leetcode.arr import dedupe_sorted
+
+class Test_DedupeSorted(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+        
+        arr = [0,0,1,1,1,2,2,3,3,4]
+
+        actual = dedupe_sorted().removeDuplicates(arr)
+        expected = 5
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        arr = [0,1,1,2]
+
+        actual = dedupe_sorted().removeDuplicates(arr)
+        expected = 3
+
+        assert actual == expected
+

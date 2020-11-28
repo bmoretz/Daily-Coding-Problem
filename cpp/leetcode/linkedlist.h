@@ -212,7 +212,7 @@ namespace leetcode::linkedlist
 			return new_head;
 		}
 
-		static int tail_value;
+		static inline int tail_value = 1001;
 
 		/// <summary>
 		/// helper method for unit testing, takes a vector of value/random pairs and builds a linked
@@ -254,8 +254,6 @@ namespace leetcode::linkedlist
 			return head;
 		}
 	};
-
-	int copy_list::tail_value = 1001;
 
 	/* 21. Merge Two Sorted Lists.
 
