@@ -507,4 +507,30 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_TRUE( actual == expected );
     }
+
+    class even_odd_linkedlist_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( even_odd_linkedlist_test, case1 )
+    {
+        const auto head = even_odd_list::build_list( { 1, 2, 3, 4, 5, 6 } );
+
+        const auto new_list = even_odd_list::odd_even_list( head.get() );
+
+        const auto actual = even_odd_list::to_vector( new_list.get() );
+
+        const auto expected = std::vector<int>{ 1, 3, 5, 2, 4, 6 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
