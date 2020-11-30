@@ -23,7 +23,7 @@ The first node is considered odd, the second node even and so on ...
 The length of the linked list is between [0, 10^4].
 '''
 
-class even_odd_linkedlist:
+class is_palindrome:
 
     from typing import List
 
@@ -53,37 +53,30 @@ class even_odd_linkedlist:
 
         return result
 
-    def oddEvenList(self, head: ListNode) -> ListNode:
+    def isPalindrome(self, head: ListNode) -> bool:
         
-        if head == None or head.next == None: return head
+        from queue import LifoQueue
         
-        even_head, odd_head = head.next, head
-        even, odd = even_head, odd_head
-        
-        node = head.next.next
-        index = 1
+        stack = LifoQueue()
+        node = head
         
         while node:
-            
-            if index % 2 == 0:
-                even.next = node
-                even = even.next
-            else:
-                odd.next = node
-                odd = odd.next
-                
-            index += 1
+            stack.put(node.val)
             node = node.next
             
-        even.next = None
-        odd.next = even_head
-        
-        return odd_head
+        node = head
 
-head = even_odd_linkedlist().build_list([1,2,3,4,5])
+        while node:
+            
+            if node.val != stack.get():
+                return False
+            
+            node = node.next
+            
+        return True
 
-new_list = even_odd_linkedlist().oddEvenList(head)
+head = is_palindrome().build_list([1,2,2,1])
 
-actual = even_odd_linkedlist().to_list(new_list)
+actual = is_palindrome().isPalindrome(head)
 
-expected = [1, 3, 5, 2, 4]
+expected = True
