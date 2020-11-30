@@ -1,19 +1,29 @@
 
 '''
-206. Reverse Linked List.
+328. Odd Even Linked List.
 
-Reverse a singly linked list.
+Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.
 
-Example:
+You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.
+
+Example 1:
 
 Input: 1->2->3->4->5->NULL
-Output: 5->4->3->2->1->NULL
-Follow up:
+Output: 1->3->5->2->4->NULL
+Example 2:
 
-A linked list can be reversed either iteratively or recursively. Could you implement both?
+Input: 2->1->3->5->6->4->7->NULL
+Output: 2->3->6->7->1->5->4->NULL
+ 
+
+Constraints:
+
+The relative order inside both the even and odd groups should remain as it was in the input.
+The first node is considered odd, the second node even and so on ...
+The length of the linked list is between [0, 10^4].
 '''
 
-class rev_linkedlist:
+class even_odd_linkedlist:
 
     from typing import List
 
@@ -43,35 +53,37 @@ class rev_linkedlist:
 
         return result
 
-    def reverseList_iter(self, head: ListNode) -> ListNode:
-    
-        node, prev = head, None
+    def oddEvenList(self, head: ListNode) -> ListNode:
+        
+        if head == None or head.next == None: return head
+        
+        even_head, odd_head = head.next, head
+        even, odd = even_head, odd_head
+        
+        node = head.next.next
+        index = 1
         
         while node:
             
-            tmp = node.next
-            node.next = prev
+            if index % 2 == 0:
+                even.next = node
+                even = even.next
+            else:
+                odd.next = node
+                odd = odd.next
+                
+            index += 1
+            node = node.next
             
-            prev = node
-            node = tmp
-            
-        return prev
+        even.next = None
+        odd.next = even_head
+        
+        return odd_head
 
-    def reverseList_rec(self, head: ListNode ) -> ListNode:
-    
-        if not head or not head.next: return head
+head = even_odd_linkedlist().build_list([1,2,3,4,5])
 
-        node = self.reverseList_rec(head.next)
+new_list = even_odd_linkedlist().oddEvenList(head)
 
-        head.next.next = head
-        head.next = None
+actual = even_odd_linkedlist().to_list(new_list)
 
-        return node
-
-head = rev_linkedlist().build_list([1,2,3,4,5])
-
-new_list = rev_linkedlist().reverseList_iter(head)
-
-actual = rev_linkedlist.to_list(new_list)
-
-expected = [5, 4, 3, 2, 1]
+expected = [1, 3, 5, 2, 4]
