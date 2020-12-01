@@ -1,82 +1,166 @@
 
 '''
-328. Odd Even Linked List.
+707. Design Linked List.
 
-Given a singly linked list, group all odd nodes together followed by the even nodes. Please note here we are talking about the node number and not the value in the nodes.
+Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+A node in a singly linked list should have two attributes: val and next. val is the value of the current node, and next is a 
+pointer/reference to the next node. If you want to use the doubly linked list, you will need one more attribute prev to 
+indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.
 
-You should try to do it in place. The program should run in O(1) space complexity and O(nodes) time complexity.
+Implement the MyLinkedList class:
 
+MyLinkedList() Initializes the MyLinkedList object.
+
+int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
+void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion, the new 
+    node will be the first node of the linked list.
+void addAtTail(int val) Append a node of value val as the last element of the linked list.
+void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index 
+    equals the length of the linked list, the node will be appended 
+    to the end of the linked list. If index is greater than the length, the node will not be inserted.
+void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+ 
 Example 1:
 
-Input: 1->2->3->4->5->NULL
-Output: 1->3->5->2->4->NULL
-Example 2:
+Input
+["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
+[[], [1], [3], [1, 2], [1], [1], [1]]
+Output
+[null, null, null, null, 2, null, 3]
 
-Input: 2->1->3->5->6->4->7->NULL
-Output: 2->3->6->7->1->5->4->NULL
+Explanation
+MyLinkedList myLinkedList = new MyLinkedList();
+myLinkedList.addAtHead(1);
+myLinkedList.addAtTail(3);
+myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
+myLinkedList.get(1);              // return 2
+myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
+myLinkedList.get(1);              // return 3
  
-
 Constraints:
 
-The relative order inside both the even and odd groups should remain as it was in the input.
-The first node is considered odd, the second node even and so on ...
-The length of the linked list is between [0, 10^4].
+0 <= index, val <= 1000
+Please do not use the built-in LinkedList library.
+At most 2000 calls will be made to get, addAtHead, addAtTail,  addAtIndex and deleteAtIndex.
 '''
 
-class is_palindrome:
-
-    from typing import List
+class DoubleLinkedList:
 
     class ListNode:
-        def __init__(self, val):
-            self.next = None
-            self.val = val
-
-    def build_list(self, values : List[int] ) -> ListNode:
         
-        sentinel = self.ListNode(0)
-        node = sentinel
+        def __init__(self, val : int,prev=None,nxt=None):
+            self.prev, self.next = prev, nxt
+            self.value = val
+    
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.head, self.tail = self.ListNode(0), self.ListNode(0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
 
-        for value in values:
-            node.next = self.ListNode(value)
-            node = node.next
-
-        return sentinel.next
-
-    def to_list(self, head : ListNode ) -> List[int]:
-
-        node, result = head, []
-
-        while node:
-            result += [node.val]
-            node = node.next
-
-        return result
-
-    def isPalindrome(self, head: ListNode) -> bool:
+    def get(self, index: int) -> int:
+        """
+        Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+        """
         
-        from queue import LifoQueue
+        node, pos = self.head.next, 0
         
-        stack = LifoQueue()
-        node = head
+        while node and pos < index:
+            node, pos = node.next, pos + 1
+            
+        return node.value if node and node != self.tail else -1
+    
+    def addAtHead(self, val: int) -> None:
+        """
+        Add a node of value val before the first element of the linked list. After 
+        the insertion, the new node will be the first node of the linked list.
+        """
         
-        while node:
-            stack.put(node.val)
+        new_node = self.ListNode(val, self.head, self.head.next)
+
+        self.head.next.prev, self.head.next = new_node, new_node
+        
+    def addAtTail(self, val: int) -> None:
+        """
+        Append a node of value val to the last element of the linked list.
+        """
+        
+        new_node = self.ListNode(val,self.tail.prev,self.tail)
+
+        self.tail.prev.next, self.tail.prev = new_node, new_node
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        """
+        Add a node of value val before the index-th node in the linked list. If index 
+        equals to the length of linked list, the node will be appended to the end of 
+        linked list. If index is greater than the length, the node will not be inserted.
+        """
+    
+        node, cur = self.head.next, 0
+        
+        while node and cur < index:
+            if not node: return
             node = node.next
-            
-        node = head
-
-        while node:
-            
-            if node.val != stack.get():
-                return False
-            
+            cur += 1
+        
+        if not node: return
+        
+        new_node = self.ListNode(val, node.prev, node)
+        node.prev.next, node.prev = new_node, new_node
+        
+    def deleteAtIndex(self, index: int) -> None:
+        """
+        Delete the index-th node in the linked list, if the index is valid.
+        """
+        
+        node, cur = self.head.next, 0
+        
+        while node and cur < index:
+            if not node: return
             node = node.next
-            
-        return True
+            cur += 1
+        
+        if not node or node == self.tail: return
+        
+        node.prev.next, node.next.prev = node.next, node.prev
 
-head = is_palindrome().build_list([1,2,2,1])
+my_list = DoubleLinkedList()
 
-actual = is_palindrome().isPalindrome(head)
+my_list.addAtHead(4)
+my_list.display()
+print(my_list.get(1))
 
-expected = True
+my_list.addAtHead(1)
+my_list.display()
+
+my_list.addAtHead(5)
+my_list.display()
+
+my_list.deleteAtIndex(3)
+my_list.display()
+
+
+my_list = DoubleLinkedList()
+
+my_list.addAtHead(7)
+my_list.display()
+my_list.addAtTail(7)
+my_list.display()
+my_list.addAtHead(9)
+my_list.display()
+my_list.addAtTail(8)
+my_list.display()
+my_list.addAtHead(6)
+my_list.display()
+my_list.addAtHead(0)
+my_list.display()
+
+print(my_list.get(5))
+
+my_list.addAtHead(0)
+
+print(my_list.get(2))
+print(my_list.get(5))
+my_list.addAtTail(4)
