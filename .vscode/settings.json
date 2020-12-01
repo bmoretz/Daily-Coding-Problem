@@ -31,5 +31,8 @@
         "xdir",
         "ydir",
         "yintecept"
+    ],
+    "cSpell.ignoreWords": [
+        "havefunonleetcode"
     ]
 }

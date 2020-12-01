@@ -169,3 +169,40 @@ class Test_DoubleLinkedList(unittest.TestCase):
         dl.addAtTail(4)
 
         assert dl.get(7) == 4
+
+from py.leetcode.linkedlist import merge_sorted_lists
+
+class Test_MergeSortedLists(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        l1, l2 = merge_sorted_lists().build_list([1,2,4]), merge_sorted_lists().build_list([1,3,4])
+
+        merged = merge_sorted_lists().mergeTwoLists(l1, l2)
+
+        actual = merge_sorted_lists().to_vector(merged)
+
+        expected = [1,1,2,3,4,4]
+
+        assert actual == expected
+
+from py.leetcode.linkedlist import add_two_numbers
+
+class Test_AddTwoNumbers(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        l1, l2 = add_two_numbers().build_list([2,4,3]), add_two_numbers().build_list([5,6,4])
+
+        merged = add_two_numbers().addTwoNumbers(l1, l2)
+
+        actual = add_two_numbers().to_vector(merged)
+        expected = [7,0,8]
+
+        assert actual == expected

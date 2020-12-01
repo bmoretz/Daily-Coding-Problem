@@ -416,14 +416,14 @@ Implement the MyLinkedList class:
 
 MyLinkedList() Initializes the MyLinkedList object.
 
-int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
+int get(int index) Get the value of the index^th node in the linked list. If the index is invalid, return -1.
 void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion, the new 
     node will be the first node of the linked list.
 void addAtTail(int val) Append a node of value val as the last element of the linked list.
-void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index 
+void addAtIndex(int index, int val) Add a node of value val before the index^th node in the linked list. If index 
     equals the length of the linked list, the node will be appended 
     to the end of the linked list. If index is greater than the length, the node will not be inserted.
-void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+void deleteAtIndex(int index) Delete the index^th node in the linked list, if the index is valid.
  
 Example 1:
 
@@ -530,3 +530,265 @@ class DoubleLinkedList:
         if not node or node == self.tail: return
         
         node.prev.next, node.next.prev = node.next, node.prev
+
+    '''
+21. Merge Two Sorted Lists.
+
+Merge two sorted linked lists and return it as a new sorted list. The new list should be made by splicing together the nodes of the first two lists.
+
+Example 1:
+
+Input: l1 = [1,2,4], l2 = [1,3,4]
+Output: [1,1,2,3,4,4]
+Example 2:
+
+Input: l1 = [], l2 = []
+Output: []
+Example 3:
+
+Input: l1 = [], l2 = [0]
+Output: [0]
+
+Constraints:
+
+The number of nodes in both lists is in the range [0, 50].
+-100 <= Node.val <= 100
+Both l1 and l2 are sorted in non-decreasing order.
+'''
+
+class merge_sorted_lists:
+
+    from typing import List
+    class ListNode:
+
+        def __init__(self, val : int ):
+            self.val = val
+            self.next = None
+    
+    def build_list(self, values : List[int] ) -> ListNode:
+
+        sentinel = self.ListNode(0)
+        node = sentinel
+
+        for val in values:
+            node.next = self.ListNode(val)
+            node = node.next
+
+        return sentinel.next
+
+    def to_vector(self, head : ListNode ) -> List[int]:
+
+        node, result = head, []
+
+        while node:
+            result.append(node.val)
+            node = node.next
+
+        return result
+
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        
+        sentinel = self.ListNode(0)
+        node = sentinel
+        
+        l_node, r_node = l1, l2
+        
+        while l_node or r_node:
+            
+            left = l_node.val if l_node else float('inf')
+            right = r_node.val if r_node else float('inf')
+            
+            if left <= right:
+                node.next = self.ListNode(left)
+                l_node = l_node.next
+            else:
+                node.next = self.ListNode(right)
+                r_node = r_node.next
+                
+            node = node.next
+            
+        return sentinel.next
+
+
+'''
+2. Add Two Numbers.
+
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in 
+reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself. 
+
+Example 1:
+
+Input: l1 = [2,4,3], l2 = [5,6,4]
+Output: [7,0,8]
+Explanation: 342 + 465 = 807.
+
+Example 2:
+
+Input: l1 = [0], l2 = [0]
+Output: [0]
+Example 3:
+
+Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+Output: [8,9,9,9,0,0,0,1]
+
+Constraints:
+
+The number of nodes in each linked list is in the range [1, 100].
+0 <= Node.val <= 9
+It is guaranteed that the list represents a number that does not have leading zeros.
+'''
+
+class add_two_numbers:
+
+    from typing import List
+    class ListNode:
+
+        def __init__(self, val : int ):
+            self.val = val
+            self.next = None
+    
+    def build_list(self, values : List[int] ) -> ListNode:
+
+        sentinel = self.ListNode(0)
+        node = sentinel
+
+        for val in values:
+            node.next = self.ListNode(val)
+            node = node.next
+
+        return sentinel.next
+
+    def to_vector(self, head : ListNode ) -> List[int]:
+
+        node, result = head, []
+
+        while node:
+            result.append(node.val)
+            node = node.next
+
+        return result
+
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        
+        sentinel = self.ListNode(0)
+        node, carry = sentinel, 0
+        
+        while l1 or l2 or carry:
+            
+            left = l1.val if l1 else 0
+            right = l2.val if l2 else 0
+            
+            val = left + right + carry
+            
+            node.next = self.ListNode( val % 10 )
+            node = node.next
+            
+            carry = 1 if val > 9 else 0
+            
+            l1, l2 = l1.next if l1 else None, l2.next if l2 else None
+            
+        return sentinel.next
+
+
+'''
+430. Flatten a Multilevel Doubly Linked List.
+
+You are given a doubly linked list which in addition to the next and previous pointers, it could have a child pointer,
+which may or may not point to a separate doubly linked list. These child lists may have one or more children of their own,
+and so on, to produce a multilevel data structure, as shown in the example below.
+
+Flatten the list so that all the nodes appear in a single-level, doubly linked list. You are 
+given the head of the first level of the list.
+
+Example 1:
+
+Input: head = [1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12]
+Output: [1,2,3,7,8,11,12,9,10,4,5,6]
+Explanation:
+
+The multilevel linked list in the input is as follows:
+
+After flattening the multilevel linked list it becomes:
+
+Example 2:
+
+Input: head = [1,2,null,3]
+Output: [1,3,2]
+Explanation:
+
+The input multilevel linked list is as follows:
+
+  1---2---NULL
+  |
+  3---NULL
+Example 3:
+
+Input: head = []
+Output: []
+
+How multilevel linked list is represented in test case:
+
+We use the multilevel linked list from Example 1 above:
+
+ 1---2---3---4---5---6--NULL
+         |
+         7---8---9---10--NULL
+             |
+             11--12--NULL
+The serialization of each level is as follows:
+
+[1,2,3,4,5,6,null]
+[7,8,9,10,null]
+[11,12,null]
+To serialize all levels together we will add nulls in each level to signify no node connects to the upper node of the previous level. The serialization becomes:
+
+[1,2,3,4,5,6,null]
+[null,null,7,8,9,10,null]
+[null,11,12,null]
+Merging the serialization of each level and removing trailing nulls we obtain:
+
+[1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12]
+ 
+Constraints:
+
+Number of Nodes will not exceed 1000.
+1 <= Node.val <= 10^5
+'''
+
+class flatten_nested_list:
+    class ListNode:
+        def __init__(self, val, prev, next, child):
+            self.val = val
+            self.prev = prev
+            self.next = next
+            self.child = child
+        
+    def __str__(self):
+        return self.val
+
+    def flatten(self, head: Node) -> ListNode:
+    
+        sentinel = ListNode(0, None, None, None)
+        flat, node, prev = sentinel, head, None
+        
+        while node:
+            
+            flat.next = ListNode(node.val,prev,None,None)
+            flat = flat.next
+            
+            if node.child:
+                flat.next = self.flatten(node.child)
+                flat.next.prev = flat
+                
+                while flat.next:
+                    flat = flat.next
+                
+                prev = flat
+            else:
+                prev = node
+                
+            node = node.next
+            
+        return sentinel.next

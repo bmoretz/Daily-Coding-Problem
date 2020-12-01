@@ -1,166 +1,113 @@
 
 '''
-707. Design Linked List.
+430. Flatten a Multilevel Doubly Linked List
+Medium
 
-Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
-A node in a singly linked list should have two attributes: val and next. val is the value of the current node, and next is a 
-pointer/reference to the next node. If you want to use the doubly linked list, you will need one more attribute prev to 
-indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.
+1883
 
-Implement the MyLinkedList class:
+179
 
-MyLinkedList() Initializes the MyLinkedList object.
+Add to List
 
-int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
-void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion, the new 
-    node will be the first node of the linked list.
-void addAtTail(int val) Append a node of value val as the last element of the linked list.
-void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index 
-    equals the length of the linked list, the node will be appended 
-    to the end of the linked list. If index is greater than the length, the node will not be inserted.
-void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+Share
+You are given a doubly linked list which in addition to the next and previous pointers, it could have a child pointer, which may or may not point to a separate doubly linked list. These child lists may have one or more children of their own, and so on, to produce a multilevel data structure, as shown in the example below.
+
+Flatten the list so that all the nodes appear in a single-level, doubly linked list. You are given the head of the first level of the list.
+
  
+
 Example 1:
 
-Input
-["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
-[[], [1], [3], [1, 2], [1], [1], [1]]
-Output
-[null, null, null, null, 2, null, 3]
+Input: head = [1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12]
+Output: [1,2,3,7,8,11,12,9,10,4,5,6]
+Explanation:
 
-Explanation
-MyLinkedList myLinkedList = new MyLinkedList();
-myLinkedList.addAtHead(1);
-myLinkedList.addAtTail(3);
-myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
-myLinkedList.get(1);              // return 2
-myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
-myLinkedList.get(1);              // return 3
+The multilevel linked list in the input is as follows:
+
+
+
+After flattening the multilevel linked list it becomes:
+
+
+Example 2:
+
+Input: head = [1,2,null,3]
+Output: [1,3,2]
+Explanation:
+
+The input multilevel linked list is as follows:
+
+  1---2---NULL
+  |
+  3---NULL
+Example 3:
+
+Input: head = []
+Output: []
  
+
+How multilevel linked list is represented in test case:
+
+We use the multilevel linked list from Example 1 above:
+
+ 1---2---3---4---5---6--NULL
+         |
+         7---8---9---10--NULL
+             |
+             11--12--NULL
+The serialization of each level is as follows:
+
+[1,2,3,4,5,6,null]
+[7,8,9,10,null]
+[11,12,null]
+To serialize all levels together we will add nulls in each level to signify no node connects to the upper node of the previous level. The serialization becomes:
+
+[1,2,3,4,5,6,null]
+[null,null,7,8,9,10,null]
+[null,11,12,null]
+Merging the serialization of each level and removing trailing nulls we obtain:
+
+[1,2,3,4,5,6,null,null,null,7,8,9,10,null,null,11,12]
+ 
+
 Constraints:
 
-0 <= index, val <= 1000
-Please do not use the built-in LinkedList library.
-At most 2000 calls will be made to get, addAtHead, addAtTail,  addAtIndex and deleteAtIndex.
+Number of Nodes will not exceed 1000.
+1 <= Node.val <= 10^5
 '''
 
-class DoubleLinkedList:
-
+class flatten_nested_list:
     class ListNode:
+        def __init__(self, val, prev, next, child):
+            self.val = val
+            self.prev = prev
+            self.next = next
+            self.child = child
         
-        def __init__(self, val : int,prev=None,nxt=None):
-            self.prev, self.next = prev, nxt
-            self.value = val
-    
-    def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        self.head, self.tail = self.ListNode(0), self.ListNode(0)
-        self.head.next = self.tail
-        self.tail.prev = self.head
+    def __str__(self):
+        return self.val
 
-    def get(self, index: int) -> int:
-        """
-        Get the value of the index-th node in the linked list. If the index is invalid, return -1.
-        """
+    def flatten(self, head: Node) -> ListNode:
+    
+        sentinel = ListNode(0, None, None, None)
+        flat, node, prev = sentinel, head, None
         
-        node, pos = self.head.next, 0
-        
-        while node and pos < index:
-            node, pos = node.next, pos + 1
+        while node:
             
-        return node.value if node and node != self.tail else -1
-    
-    def addAtHead(self, val: int) -> None:
-        """
-        Add a node of value val before the first element of the linked list. After 
-        the insertion, the new node will be the first node of the linked list.
-        """
-        
-        new_node = self.ListNode(val, self.head, self.head.next)
-
-        self.head.next.prev, self.head.next = new_node, new_node
-        
-    def addAtTail(self, val: int) -> None:
-        """
-        Append a node of value val to the last element of the linked list.
-        """
-        
-        new_node = self.ListNode(val,self.tail.prev,self.tail)
-
-        self.tail.prev.next, self.tail.prev = new_node, new_node
-
-    def addAtIndex(self, index: int, val: int) -> None:
-        """
-        Add a node of value val before the index-th node in the linked list. If index 
-        equals to the length of linked list, the node will be appended to the end of 
-        linked list. If index is greater than the length, the node will not be inserted.
-        """
-    
-        node, cur = self.head.next, 0
-        
-        while node and cur < index:
-            if not node: return
+            flat.next = ListNode(node.val,prev,None,None)
+            flat = flat.next
+            
+            if node.child:
+                flat.next = self.flatten(node.child)
+                flat.next.prev = flat
+                
+                while flat.next:
+                    flat = flat.next
+                
+                prev = flat
+            else:
+                prev = node
+                
             node = node.next
-            cur += 1
-        
-        if not node: return
-        
-        new_node = self.ListNode(val, node.prev, node)
-        node.prev.next, node.prev = new_node, new_node
-        
-    def deleteAtIndex(self, index: int) -> None:
-        """
-        Delete the index-th node in the linked list, if the index is valid.
-        """
-        
-        node, cur = self.head.next, 0
-        
-        while node and cur < index:
-            if not node: return
-            node = node.next
-            cur += 1
-        
-        if not node or node == self.tail: return
-        
-        node.prev.next, node.next.prev = node.next, node.prev
-
-my_list = DoubleLinkedList()
-
-my_list.addAtHead(4)
-my_list.display()
-print(my_list.get(1))
-
-my_list.addAtHead(1)
-my_list.display()
-
-my_list.addAtHead(5)
-my_list.display()
-
-my_list.deleteAtIndex(3)
-my_list.display()
-
-
-my_list = DoubleLinkedList()
-
-my_list.addAtHead(7)
-my_list.display()
-my_list.addAtTail(7)
-my_list.display()
-my_list.addAtHead(9)
-my_list.display()
-my_list.addAtTail(8)
-my_list.display()
-my_list.addAtHead(6)
-my_list.display()
-my_list.addAtHead(0)
-my_list.display()
-
-print(my_list.get(5))
-
-my_list.addAtHead(0)
-
-print(my_list.get(2))
-print(my_list.get(5))
-my_list.addAtTail(4)
+            
+        return sentinel.next
