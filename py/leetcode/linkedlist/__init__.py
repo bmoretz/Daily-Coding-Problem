@@ -757,7 +757,8 @@ Number of Nodes will not exceed 1000.
 1 <= Node.val <= 10^5
 '''
 
-class flatten_nested_list:
+''' Recursive Version '''
+class flatten_nested_list_rec:
     class ListNode:
         def __init__(self, val, prev, next, child):
             self.val = val
@@ -792,3 +793,49 @@ class flatten_nested_list:
             node = node.next
             
         return sentinel.next
+
+''' Iterative Version w/ Stack '''
+class flatten_nested_list_iter:
+    class Node:
+        def __init__(self, val, prev, next, child):
+            self.val = val
+            self.prev = prev
+            self.next = next
+            self.child = child
+        
+    def __str__(self):
+        return self.val
+
+    def flatten(self, head: 'Node') -> 'Node':
+        
+        node, prev = head, None
+        stack = []
+
+        while node:
+
+            # if the node has a child node    
+            if node.child:
+
+                if node.next:
+                    # save the normal next node before
+                    # we flatten out the sublist
+                    stack.append( node.next )
+                
+                # next now points to the child node so it flattens out
+                # we also need to update the child nodes prev node to point to
+                # the current node
+                node.next, node.next.prev = node.child, node
+            
+            # if we reach the end of a sublist (no valid next ptr) and
+            # we have valid next nodes in our stack
+            if not node.next and stack:
+                # update the next ptr to point to the top of the stack
+                # and then update its prev ptr to the current node
+                node.next, node.next.prev = stack.pop(), node
+            
+            # normal traversal, save prev node, move the current node fwd
+            # and clear out the child ptr (if one) to satisfy the problem's
+            # definition of a 'valid double linked list'
+            prev, node.child, node = node, None, node.next
+            
+        return head
