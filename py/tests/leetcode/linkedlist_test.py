@@ -206,3 +206,22 @@ class Test_AddTwoNumbers(unittest.TestCase):
         expected = [7,0,8]
 
         assert actual == expected
+
+from py.leetcode.linkedlist import circular_insert
+
+class Test_CircularInsert(unittest.TestCase):
+    
+    def setUp(self):
+        pass
+
+    def test_case1(self):
+
+        head = circular_insert().make_list([3,4,1])
+
+        new_list = circular_insert().insert(head, 2)
+
+        actual = circular_insert().to_list(new_list)
+
+        expected = [3,4,1,2]
+
+        assert actual == expected
