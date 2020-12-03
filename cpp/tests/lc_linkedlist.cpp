@@ -533,4 +533,29 @@ namespace leetcode::linkedlist::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class rotate_list_test :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( rotate_list_test, case1 )
+    {
+        const auto head = rotate_list::build_list( { 1, 2, 3, 4, 5 } );
+        const auto new_list = rotate_list::rotate_right( head.get(), 2 );
+
+        auto actual = rotate_list::to_vector( new_list.get() );
+
+        const auto expected = std::vector<int>{ 4, 5, 1, 2, 3 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
