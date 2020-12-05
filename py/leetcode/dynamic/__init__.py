@@ -1,4 +1,3 @@
-
 '''
 198. House Robber.
 
@@ -50,9 +49,3 @@ class house_robber:
             dp[index] = max(dp[index-2] + nums[index], dp[index-1])
             
         return dp[N-1]
-
-nums = [1,2,3,1]
-
-actual = house_robber.rob(nums)
-
-expected = 4

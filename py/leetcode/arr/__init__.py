@@ -1,4 +1,3 @@
-from typing import List
 
 '''
 1089. Duplicate Zeros
@@ -28,6 +27,8 @@ Note:
 
 class duplicate_zeros:
     
+    from typing import List
+
     def shift_arr( self, arr : List[int], index : int ) -> None:
         
         pos = len(arr) - 1
@@ -87,6 +88,8 @@ Constraints:
 
 class even_digits1:
     
+    from typing import List
+
     def num_digits( self, num : int ):
         
         digits = 0
@@ -198,7 +201,9 @@ nums is sorted in ascending order.
 '''
 
 class dedupe_sorted:
-        
+    
+    from typing import List
+    
     def removeDuplicates(self, nums: List[int]) -> int:
         
         cnt = 0

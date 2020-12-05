@@ -33,3 +33,18 @@ class Test_KLenSubstrings(unittest.TestCase):
         expected = 29
 
         assert actual == expected
+
+from py.leetcode.str import find_and_replace
+
+class Test_FindAndReplace(unittest.TestCase):
+
+    def test_case1(self):
+        
+        str_in = "jjievdtjfb"
+
+        indexes, sources, targets = [4,6,1], ["md","tjgb","jf"], ["foe","oov","e"]
+
+        actual = find_and_replace.findReplaceString(str_in, indexes, sources, targets)
+
+        expected = "jjievdtjfb"
+
