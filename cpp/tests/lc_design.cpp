@@ -191,4 +191,142 @@ namespace leetcode::design::tests
         |X | X | X |
         */
     }
+
+    class vector_iterator_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( vector_iterator_tests, case1 )
+    {
+        const auto vectors = std::vector<std::vector<int>>{
+            {1}, {}
+        };
+
+        auto iter = vector_iterator( vectors );
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.next();
+            const auto expected = 1;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = false;
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
+
+    TEST_F( vector_iterator_tests, case2 )
+    {
+        const auto vectors = std::vector<std::vector<int>>{
+            {}, {-1}
+        };
+
+        auto iter = vector_iterator( vectors );
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.next();
+            const auto expected = -1;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = false;
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
+
+    TEST_F( vector_iterator_tests, case3 )
+    {
+        const auto vectors = std::vector<std::vector<int>>{
+            {1,2}, {3}, {4}
+        };
+
+        auto iter = vector_iterator( vectors );
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.next();
+            const auto expected = 1;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.next();
+            const auto expected = 2;
+
+            EXPECT_EQ( actual, expected );
+        }
+    	
+        {
+            auto actual = iter.has_next();
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.next();
+            const auto expected = 3;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = true;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.next();
+            const auto expected = 4;
+
+            EXPECT_EQ( actual, expected );
+        }
+
+        {
+            auto actual = iter.has_next();
+            const auto expected = false;
+
+            EXPECT_EQ( actual, expected );
+        }
+    }
 }

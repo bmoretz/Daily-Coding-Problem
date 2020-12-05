@@ -98,8 +98,10 @@ sources[i] and targets[i] consist of only lowercase English letters.
 
 class find_and_replace:
     
+    from typing import List
+    
     @staticmethod
-    def findReplaceString(self, S, indices, sources, targets):
+    def findReplaceString(S : str, indices : List[int], sources : List[int], targets : List[int]) -> str:
             """
             :type S: str
             :type indexes: List[int]

@@ -1,123 +1,89 @@
 ﻿#include <bits/stdc++.h>
 
-/*61. Rotate List.
+/*251. Flatten 2D Vector.
 
-Given the head of a linked list, rotate the list to the right by k places.
+Design and implement an iterator to flatten a 2d vector. It should support the following operations: next and hasNext.
 
-Example 1:
+Example:
 
-Input: head = [1,2,3,4,5], k = 2
-Output: [4,5,1,2,3]
-Example 2:
+Vector2D iterator = new Vector2D([[1,2],[3],[4]]);
 
-Input: head = [0,1,2], k = 4
-Output: [2,0,1]
+iterator.next(); // return 1
+iterator.next(); // return 2
+iterator.next(); // return 3
+iterator.hasNext(); // return true
+iterator.hasNext(); // return true
+iterator.next(); // return 4
+iterator.hasNext(); // return false
+ 
 
-Constraints:
+Notes:
 
-The number of nodes in the list is in the range [0, 500].
--100 <= Node.val <= 100
-0 <= k <= 2 * 109
+Please remember to RESET your class variables declared in Vector2D, as static/class variables are persisted across multiple test cases. Please see here for more details.
+You may assume that next() call will always be valid, that is, there will be at least a next element in the 2d vector when next() is called. 
+
+Follow up:
+
+As an added challenge, try to code it using only iterators in C++ or iterators in Java.
 */
 
-class rotate_list
+class vector_iterator
 {
-    struct list_node;
+    const std::vector<std::vector<int>>& vectors_;
+    std::size_t row_ = 0, col_ = 0;
 
-    typedef std::unique_ptr<list_node> node_ptr;
-
-	struct list_node
-	{
-        int val;
-        node_ptr next;
-
-		explicit list_node( const int val )
-            : val{val}
-        {}
-	};
-	
 public:
 
-	static std::vector<int> to_vector( list_node* head )
-	{
-        auto node = head;
-        auto result = std::vector<int>();
-		
-		while( node )
-		{
-            result.push_back( node->val );
-            node = node->next.get();
-		}
+    explicit vector_iterator( const std::vector<std::vector<int>>& v )
+        : vectors_( v )
+    {}
 
-        return result;
-	}
-	
-	static node_ptr build_list( const std::vector<int>& values )
-	{
-        const auto sentinel = std::make_unique<list_node>( 0 );
-        auto node = sentinel.get();
-
-		for( auto val : values )
-		{
-            node->next = std::make_unique<list_node>( val );
-            node = node->next.get();
-		}
-
-        return std::move( sentinel->next );
-	}
-	
-    static node_ptr rotate_right( list_node* head, const int k )
+    int next()
     {
-        auto sentinel = std::make_unique<list_node>( 0 );
-        auto new_list = sentinel.get();
-
-        auto nodes = std::vector<list_node*>();
-
-        auto node = head;
-
-        while( node )
+        while( row_ < vectors_.size() &&
+            col_ == vectors_[ row_ ].size() )
         {
-            nodes.push_back( node );
-            node = node->next.get();
+            ++row_;
+            col_ = 0;
         }
 
-        if( nodes.empty() ) return nullptr;
+        const auto value = vectors_[ row_ ][ col_ ];
+        ++col_;
 
-        auto head_index = nodes.size() - ( k % nodes.size() );
+        return value;
+    }
 
-        if( head_index >= nodes.size() )
-            head_index = 0;
+    [[nodiscard]] bool has_next() const
+    {
+        if( row_ >= vectors_.size() ) return false;
+        if( col_ < vectors_[ row_ ].size() ) return true;
 
-        std::cout << head_index;
+        auto next = row_ + 1;
 
-        auto new_head = nodes[ head_index ];
-
-        while( new_head )
+        while( next < vectors_.size() )
         {
-            new_list->next = std::make_unique<list_node>( new_head->val );
-            new_list = new_list->next.get();
+            if( !vectors_[ next ].empty() )
+                return true;
 
-            new_head = new_head->next.get();
+            ++next;
         }
 
-        for( auto index = 0; index < head_index; ++index )
-        {
-            new_list->next = std::make_unique<list_node>( nodes[ index ]->val );
-            new_list = new_list->next.get();
-        }
-
-        return std::move( sentinel->next );
+        return false;
     }
 };
 
 auto main() -> int
 {
-    const auto head = rotate_list::build_list( { 1, 2, 3, 4, 5 } );
-    const auto new_list = rotate_list::rotate_right( head.get(), 2 );
-	
-    auto actual = rotate_list::to_vector( new_list.get() );
-	
-    auto expected = std::vector<int>{ 4, 5, 1, 2, 3 };
+    const auto vectors = std::vector<std::vector<int>>{
+        { }, {-1}
+    };
 
+    const auto iter = vector_iterator( vectors );
+	
+    {
+        auto actual = iter.has_next();
+        auto expected = true;
+    }
+	
 	return 0;
 }
