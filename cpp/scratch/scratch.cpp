@@ -1,89 +1,67 @@
 ﻿#include <bits/stdc++.h>
 
-/*251. Flatten 2D Vector.
+/*370. Range Addition.
 
-Design and implement an iterator to flatten a 2d vector. It should support the following operations: next and hasNext.
+Assume you have an array of length n initialized with all 0's and are given k update operations.
+
+Each operation is represented as a triplet: [startIndex, endIndex, inc] which increments each element of subarray
+A[startIndex ... endIndex] (startIndex and endIndex inclusive) with inc.
+
+Return the modified array after all k operations were executed.
 
 Example:
 
-Vector2D iterator = new Vector2D([[1,2],[3],[4]]);
+Input: length = 5, updates = [[1,3,2],[2,4,3],[0,2,-2]]
+Output: [-2,0,3,5,3]
+Explanation:
 
-iterator.next(); // return 1
-iterator.next(); // return 2
-iterator.next(); // return 3
-iterator.hasNext(); // return true
-iterator.hasNext(); // return true
-iterator.next(); // return 4
-iterator.hasNext(); // return false
- 
+Initial state:
+[0,0,0,0,0]
 
-Notes:
+After applying operation [1,3,2]:
+[0,2,2,2,0]
 
-Please remember to RESET your class variables declared in Vector2D, as static/class variables are persisted across multiple test cases. Please see here for more details.
-You may assume that next() call will always be valid, that is, there will be at least a next element in the 2d vector when next() is called. 
+After applying operation [2,4,3]:
+[0,2,5,5,3]
 
-Follow up:
-
-As an added challenge, try to code it using only iterators in C++ or iterators in Java.
+After applying operation [0,2,-2]:
+[-2,0,3,5,3]
 */
 
-class vector_iterator
+class range_addition
 {
-    const std::vector<std::vector<int>>& vectors_;
-    std::size_t row_ = 0, col_ = 0;
 
 public:
 
-    explicit vector_iterator( const std::vector<std::vector<int>>& v )
-        : vectors_( v )
-    {}
-
-    int next()
+    static std::vector<int> get_modified_array( const int length, 
+        const std::vector<std::vector<int>>& updates )
     {
-        while( row_ < vectors_.size() &&
-            col_ == vectors_[ row_ ].size() )
+        auto result = std::vector<int>( length );
+
+        for( auto& op : updates )
         {
-            ++row_;
-            col_ = 0;
+            const auto start = op[ 0 ], stop = op[ 1 ], inc = op[ 2 ];
+
+            result[ start ] += inc;
+
+            if( stop < length - 1 )
+                result[ stop + 1 ] -= inc;
         }
 
-        const auto value = vectors_[ row_ ][ col_ ];
-        ++col_;
+        std::partial_sum( result.begin(), result.end(), result.begin() );
 
-        return value;
-    }
-
-    [[nodiscard]] bool has_next() const
-    {
-        if( row_ >= vectors_.size() ) return false;
-        if( col_ < vectors_[ row_ ].size() ) return true;
-
-        auto next = row_ + 1;
-
-        while( next < vectors_.size() )
-        {
-            if( !vectors_[ next ].empty() )
-                return true;
-
-            ++next;
-        }
-
-        return false;
+        return result;
     }
 };
 
 auto main() -> int
 {
-    const auto vectors = std::vector<std::vector<int>>{
-        { }, {-1}
+    const auto operations = std::vector<std::vector<int>>{
+        {1,3,2}, {2,4,3}, {0,2,-2}
     };
-
-    const auto iter = vector_iterator( vectors );
 	
-    {
-        auto actual = iter.has_next();
-        auto expected = true;
-    }
+    auto actual = range_addition::get_modified_array( 5, operations );
+    auto expected = std::vector<int> { -2, 0, 3, 5, 3 };
 	
 	return 0;
 }

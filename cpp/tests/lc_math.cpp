@@ -349,11 +349,36 @@ namespace leetcode::math::tests
     TEST_F( maximum_abs_tests, case1 )
     {
         const auto arr1 = std::vector<int>{ 1, 2, 3, 4 };
-        const auto arr2 = std::vector<int>{ -1,4, 5, 6 };
+        const auto arr2 = std::vector<int>{ -1, 4, 5, 6 };
 
         const auto actual = maximum_abs::max_abs_val_expr( arr1, arr2 );
-        const auto expected = 0;
+        const auto expected = 13;
     	
+        EXPECT_EQ( actual, expected );
+    }
+
+    class range_sum_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( range_sum_tests, case1 )
+    {
+        const auto operations = std::vector<std::vector<int>>{
+            {1,3,2}, {2,4,3}, {0,2,-2}
+        };
+
+        auto actual = range_addition::get_modified_array( 5, operations );
+        const auto expected = std::vector<int>{ -2, 0, 3, 5, 3 };
+
         EXPECT_EQ( actual, expected );
     }
 }
