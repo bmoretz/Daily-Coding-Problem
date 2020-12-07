@@ -380,14 +380,35 @@ namespace leetcode::dynamic::tests
 		const int actual = perfect_squares::num_squares( 12 );
 		const int expected = 3;
 		
-		//EXPECT_EQ( actual, expected );
+		EXPECT_EQ( actual, expected );
 	}
 
 	TEST_F( perfect_squares_tests, case2 )
 	{
 		const int actual = perfect_squares::num_squares( 5849 );
-		const int expected = 3;
+		const int expected = 2;
 
-		//EXPECT_EQ( actual, expected );
+		EXPECT_EQ( actual, expected );
+	}
+
+	class buy_and_sell_stock_ii_tests :
+		public testing::Test
+	{
+	protected:
+		void SetUp() override
+		{
+		}
+
+		void TearDown() override
+		{
+		}
+	};
+
+	TEST_F( buy_and_sell_stock_ii_tests, case1 )
+	{
+		const auto prices = std::vector<int>{ 1, 2, 3, 0, 2 };
+
+		const auto actual = buy_and_sell_stock_ii::max_profit( prices );
+		const auto expected = 3;
 	}
 }

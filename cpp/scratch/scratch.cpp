@@ -1,67 +1,67 @@
 ﻿#include <bits/stdc++.h>
 
-/*370. Range Addition.
+/*309. Best Time to Buy and Sell Stock with Cooldown.
 
-Assume you have an array of length n initialized with all 0's and are given k update operations.
+Say you have an array for which the ith element is the price of a given stock on day i.
 
-Each operation is represented as a triplet: [startIndex, endIndex, inc] which increments each element of subarray
-A[startIndex ... endIndex] (startIndex and endIndex inclusive) with inc.
+Design an algorithm to find the maximum profit. You may complete as many transactions as you like
+(ie, buy one and sell one share of the stock multiple times) with the following restrictions:
 
-Return the modified array after all k operations were executed.
+You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)
 
 Example:
 
-Input: length = 5, updates = [[1,3,2],[2,4,3],[0,2,-2]]
-Output: [-2,0,3,5,3]
-Explanation:
-
-Initial state:
-[0,0,0,0,0]
-
-After applying operation [1,3,2]:
-[0,2,2,2,0]
-
-After applying operation [2,4,3]:
-[0,2,5,5,3]
-
-After applying operation [0,2,-2]:
-[-2,0,3,5,3]
+Input: [1,2,3,0,2]
+Output: 3 
+Explanation: transactions = [buy, sell, cooldown, buy, sell]
 */
 
-class range_addition
+class buy_and_sell_stock_ii
 {
-
 public:
-
-    static std::vector<int> get_modified_array( const int length, 
-        const std::vector<std::vector<int>>& updates )
+	
+    static int max_profit( const std::vector<int>& prices )
     {
-        auto result = std::vector<int>( length );
+        if( prices.size() < 2 )
+            return 0;
 
-        for( auto& op : updates )
+        const int N = prices.size();
+        auto result = 0;
+
+    	std::vector<int> buy( N, 0 );
+        std::vector<int> sell( N, 0 );
+    	
+        buy[ 0 ] = -prices[ 0 ];
+
+    	for( auto index = 1; index < N; ++index )
         {
-            const auto start = op[ 0 ], stop = op[ 1 ], inc = op[ 2 ];
+            sell[ index ] = std::max( buy[ index - 1 ] + prices[ index ], sell[ index - 1 ] - prices[ index - 1 ] + prices[ index ] );
 
-            result[ start ] += inc;
+            //record the max sell[i]
+    		if( result < sell[ index ] )
+                result = sell[ index ];
 
-            if( stop < length - 1 )
-                result[ stop + 1 ] -= inc;
+            if( 1 == index )
+            {
+                buy[ index ] = buy[ 0 ] + prices[ 0 ] - prices[ 1 ];
+            }
+            else
+            {
+                buy[ index ] = std::max( sell[ index - 2 ] - prices[ index ], buy[ index - 1 ] + prices[ index - 1 ] - prices[ index ] );
+            }
         }
-
-        std::partial_sum( result.begin(), result.end(), result.begin() );
-
+    	
         return result;
     }
 };
 
 auto main() -> int
 {
-    const auto operations = std::vector<std::vector<int>>{
-        {1,3,2}, {2,4,3}, {0,2,-2}
-    };
+    const auto prices = std::vector<int>{ 1, 2, 3, 0, 2 };
 	
-    auto actual = range_addition::get_modified_array( 5, operations );
-    auto expected = std::vector<int> { -2, 0, 3, 5, 3 };
+    const auto actual = buy_and_sell_stock_ii::max_profit( prices );
+    const auto expected = 3;
 	
 	return 0;
 }
