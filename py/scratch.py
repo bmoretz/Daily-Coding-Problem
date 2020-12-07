@@ -1,53 +1,60 @@
 
 '''
-747. Largest Number At Least Twice of Others.
+66. Plus One.
 
-In a given integer array nums, there is always exactly one largest element.
+Given a non-empty array of decimal digits representing a non-negative integer, 
+increment one to the integer.
 
-Find whether the largest element in the array is at least twice as much as every other number in the array.
+The digits are stored such that the most significant digit is at the head of 
+the list, and each element in the array contains a single digit.
 
-If it is, return the index of the largest element, otherwise return -1.
+You may assume the integer does not contain any leading zero, except the number 0 itself. 
 
 Example 1:
 
-Input: nums = [3, 6, 1, 0]
-Output: 1
-Explanation: 6 is the largest integer, and for every other number in the array x,
-6 is more than twice as big as x.  The index of value 6 is 1, so we return 1.
- 
+Input: digits = [1,2,3]
+Output: [1,2,4]
+Explanation: The array represents the integer 123.
 
 Example 2:
 
-Input: nums = [1, 2, 3, 4]
-Output: -1
-Explanation: 4 isn't at least as big as twice the value of 3, so we return -1.
+Input: digits = [4,3,2,1]
+Output: [4,3,2,2]
+Explanation: The array represents the integer 4321.
+Example 3:
 
-Note:
+Input: digits = [0]
+Output: [1]
 
-nums will have a length in the range [1, 50].
-Every nums[i] will be an integer in the range [0, 99].
+Constraints:
+
+1 <= digits.length <= 100
+0 <= digits[i] <= 9
 '''
 
-class dominate_index:
-
-    from typing import List
+class plus_one:
     
     @staticmethod
-    def dominantIndex(self, nums: List[int]) -> int:
+    def plusOne(digits: List[int]) -> List[int]:
         
-        max_index, max_num = float('-inf'), float('-inf')
+        if not digits: return []
         
-        for index, num in enumerate(nums):
-            
-            if num > max_num:
-                max_index, max_num = index, num
+        pos, carry = len(digits) - 1, 1
         
-        for num in nums:
+        while pos >= 0 and carry:
             
-            if num != max_num and num*2 > max_num:
-                return -1
+            digits[pos] = digits[pos] + carry
             
-        return max_index
+            if digits[pos] > 9:
+                digits[pos], carry = 0, 1
+                pos -= 1
+            else:
+                carry = 0
+        
+        if carry:
+            digits = [carry] + digits
+            
+        return digits
 
 actual = dominate_index.dominantIndex([3, 6, 1, 0])
 expected = 1
