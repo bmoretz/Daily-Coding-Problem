@@ -1,58 +1,58 @@
 
 '''
-198. House Robber.
+724. Find Pivot Index.
 
-You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only 
-constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will 
-automatically contact the police if two adjacent houses were broken into on the same night.
+Given an array of integers nums, write a method that returns the "pivot" index of this array.
 
-Given a list of non-negative integers representing the amount of money of each house, determine the maximum 
-amount of money you can rob tonight without alerting the police. 
+We define the pivot index as the index where the sum of all the numbers to the left of the 
+index is equal to the sum of all the numbers to the right of the index.
+
+If no such index exists, we should return -1. If there are multiple pivot indexes, you should return the left-most pivot index. 
 
 Example 1:
 
-Input: nums = [1,2,3,1]
-Output: 4
-Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
-             Total amount you can rob = 1 + 3 = 4.
+Input: nums = [1,7,3,6,5,6]
+Output: 3
+
+Explanation:
+
+The sum of the numbers to the left of index 3 (nums[3] = 6) is equal to the sum of numbers to the right of index 3.
+Also, 3 is the first index where this occurs.
 
 Example 2:
 
-Input: nums = [2,7,9,3,1]
-Output: 12
-Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
-             Total amount you can rob = 2 + 9 + 1 = 12.
+Input: nums = [1,2,3]
+Output: -1
+Explanation:
+There is no index that satisfies the conditions in the problem statement.
 
 Constraints:
 
-0 <= nums.length <= 100
-0 <= nums[i] <= 400
+The length of nums will be in the range [0, 10000].
+Each element nums[i] will be an integer in the range [-1000, 1000].
 '''
 
-class house_robber:
+class find_pivot:
 
     from typing import List
 
     @staticmethod
-    def rob(nums: List[int]) -> int:
+    def pivotIndex(nums: List[int]) -> int:
         
-        N = len(nums)
+        left_sum, right_sum = 0, sum(nums)
         
-        if N <= 1: return 0 if N == 0 else nums[0]
+        for index in range(len(nums)):
             
-        dp = [0] * N
-        
-        dp[0] = nums[0]
-        dp[1] = max(nums[0], nums[1])
-        
-        for index in range(2, N):
+            right_sum -= nums[index]
             
-            dp[index] = max(dp[index-2] + nums[index], dp[index-1])
+            if left_sum == right_sum:
+                return index
             
-        return dp[N-1]
+            left_sum += nums[index]
+            
+        return -1
+            
 
-nums = [1,2,3,1]
+actual = find_pivot.pivotIndex([1,7,3,6,5,6])
 
-actual = house_robber.rob(nums)
-
-expected = 4
+expected = 3
