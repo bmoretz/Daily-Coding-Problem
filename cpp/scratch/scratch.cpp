@@ -30,7 +30,7 @@ public:
 
 	static std::string max_common_prefix( const std::vector<std::string>& strings )
     {
-		if( strings.empty() ) return "";
+		if( strings.empty() || strings[0].empty() ) return "";
 		
         auto position = 0;
 		auto result = std::string();
@@ -38,7 +38,6 @@ public:
 		
 		while( valid )
 		{
-			if( strings[ 0 ].empty() ) break;
 			if( strings[ 0 ].length() <= position )
 				break;
 
@@ -51,9 +50,7 @@ public:
 			}
 
 			if( valid )
-				result += strings[ 0 ][ position ];
-
-			position++;
+				result += strings[ 0 ][ position++ ];
 		}
 		
         return result;

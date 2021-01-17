@@ -1,42 +1,51 @@
 
 '''
-344. Reverse String.
+27. Remove Element.
 
-Write a function that reverses a string. The input string is given as an array of characters char[].
+Given an array nums and a value val, remove all instances of that value in-place and return the new length.
 
 Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
 
-You may assume all the characters consist of printable ascii characters.
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
 
 Example 1:
 
-Input: ["h","e","l","l","o"]
-Output: ["o","l","l","e","h"]
+Input: nums = [3,2,2,3], val = 3
+Output: 2, nums = [2,2]
+Explanation: Your function should return length = 2, with the first two elements of nums being 2.
+It doesn't matter what you leave beyond the returned length. For example if you return 2 with nums = [2,2,3,3] or nums = [2,2,0,0], your answer will be accepted.
 Example 2:
 
-Input: ["H","a","n","n","a","h"]
-Output: ["h","a","n","n","a","H"]
+Input: nums = [0,1,2,2,3,0,4,2], val = 2
+Output: 5, nums = [0,1,4,0,3]
+Explanation: Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4. Note that the order of those five elements can be arbitrary. It doesn't matter what values are set beyond the returned length.
+ 
+
+Constraints:
+
+0 <= nums.length <= 100
+0 <= nums[i] <= 50
+0 <= val <= 100
 '''
 
-class reverse_string:
+class remove_element:
 
     from typing import List
 
     @staticmethod
-    def reverseString(s: List[str]) -> None:
-        """
-        Do not return anything, modify s in-place instead.
-        """
+    def removeElement( nums : List[int], val : int ) -> int:
+        
+        position = 0
 
-        left, right = 0, len(s) - 1
+        for index in range(len(nums)):
 
-        while left < right:
+            if nums[index] != val:
+                nums[position] = nums[index]
+                position += 1
 
-            s[left], s[right] = s[right], s[left]
+        return position
 
-            left += 1
-            right -= 1
+input1 = [3,2,2,3]
+actual = remove_element.removeElement(input1)
 
-input1 = ["h","e","l","l","o"]
-reverse_string.reverseString(input1)
-expected = ["o","l","l","e","h"]
+expected = [2, 2]
