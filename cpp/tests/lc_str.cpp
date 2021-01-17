@@ -728,4 +728,50 @@ namespace leetcode::str::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class longest_common_prefix_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( longest_common_prefix_tests, case1 )
+    {
+        const auto input = std::vector<std::string>{ "flower", "flow", "flight" };
+
+        const auto actual = longest_common_prefix::max_common_prefix( input );
+
+        const auto expected = "fl";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( longest_common_prefix_tests, case2 )
+    {
+        const auto input = std::vector<std::string>{ "dog", "racecar", "car" };
+
+        const auto actual = longest_common_prefix::max_common_prefix( input );
+
+        const auto expected = "";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( longest_common_prefix_tests, case3 )
+    {
+        const auto input = std::vector<std::string>{ };
+
+        const auto actual = longest_common_prefix::max_common_prefix( input );
+
+        const auto expected = "";
+
+        EXPECT_EQ( actual, expected );
+    }
 }

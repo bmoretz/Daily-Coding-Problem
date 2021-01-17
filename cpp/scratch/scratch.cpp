@@ -1,67 +1,72 @@
 ﻿#include <bits/stdc++.h>
 
-/*309. Best Time to Buy and Sell Stock with Cooldown.
+/*14. Longest Common Prefix.
 
-Say you have an array for which the ith element is the price of a given stock on day i.
+Write a function to find the longest common prefix string amongst an array of strings.
 
-Design an algorithm to find the maximum profit. You may complete as many transactions as you like
-(ie, buy one and sell one share of the stock multiple times) with the following restrictions:
+If there is no common prefix, return an empty string "".
 
-You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
-After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)
+Example 1:
 
-Example:
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+Example 2:
 
-Input: [1,2,3,0,2]
-Output: 3 
-Explanation: transactions = [buy, sell, cooldown, buy, sell]
+Input: strs = ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+ 
+Constraints:
+
+0 <= strs.length <= 200
+0 <= strs[i].length <= 200
+strs[i] consists of only lower-case English letters.
+
 */
 
-class buy_and_sell_stock_ii
+class longest_common_prefix
 {
 public:
-	
-    static int max_profit( const std::vector<int>& prices )
+
+	static std::string max_common_prefix( const std::vector<std::string>& strings )
     {
-        if( prices.size() < 2 )
-            return 0;
+		if( strings.empty() ) return "";
+		
+        auto position = 0;
+		auto result = std::string();
+		auto valid = true;
+		
+		while( valid )
+		{
+			if( strings[ 0 ].empty() ) break;
+			if( strings[ 0 ].length() <= position )
+				break;
 
-        const int N = prices.size();
-        auto result = 0;
+			for( auto index = 1ULL; index < strings.size(); ++index )
+			{
+				valid &= position <= strings[ index ].size() && 
+					strings[ index ][ position ] == strings[ 0 ][ position ];
 
-    	std::vector<int> buy( N, 0 );
-        std::vector<int> sell( N, 0 );
-    	
-        buy[ 0 ] = -prices[ 0 ];
+				if( !valid ) break;
+			}
 
-    	for( auto index = 1; index < N; ++index )
-        {
-            sell[ index ] = std::max( buy[ index - 1 ] + prices[ index ], sell[ index - 1 ] - prices[ index - 1 ] + prices[ index ] );
+			if( valid )
+				result += strings[ 0 ][ position ];
 
-            //record the max sell[i]
-    		if( result < sell[ index ] )
-                result = sell[ index ];
-
-            if( 1 == index )
-            {
-                buy[ index ] = buy[ 0 ] + prices[ 0 ] - prices[ 1 ];
-            }
-            else
-            {
-                buy[ index ] = std::max( sell[ index - 2 ] - prices[ index ], buy[ index - 1 ] + prices[ index - 1 ] - prices[ index ] );
-            }
-        }
-    	
+			position++;
+		}
+		
         return result;
     }
 };
 
 auto main() -> int
 {
-    const auto prices = std::vector<int>{ 1, 2, 3, 0, 2 };
+    auto input = std::vector<std::string>{ "a" };
 	
-    const auto actual = buy_and_sell_stock_ii::max_profit( prices );
-    const auto expected = 3;
+    const auto actual = longest_common_prefix::max_common_prefix( input );
+	
+	const auto expected = 4;
 	
 	return 0;
 }
