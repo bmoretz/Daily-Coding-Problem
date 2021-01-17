@@ -362,7 +362,7 @@ namespace leetcode::str::tests
         EXPECT_EQ( actual, expected );
     }
 
-    class reverse_string_tests :
+    class reverse_words_tests :
         public ::testing::Test {
 
     protected:
@@ -375,51 +375,51 @@ namespace leetcode::str::tests
         }
     };
 
-    TEST_F( reverse_string_tests, case1 )
+    TEST_F( reverse_words_tests, case1 )
     { 
         auto input = std::string("       the    sky     is    blue            ");
 
-        const auto actual = reverse_string::reverse_words( input );
+        const auto actual = word_reverser::reverse_words( input );
         const auto expected = "blue is sky the";
 
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( reverse_string_tests, case2 )
+    TEST_F( reverse_words_tests, case2 )
     {
         auto input = std::string( "hello world!" );
 
-        const auto actual = reverse_string::reverse_words( input );
+        const auto actual = word_reverser::reverse_words( input );
         const auto expected = "world! hello";
 
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( reverse_string_tests, case3 )
+    TEST_F( reverse_words_tests, case3 )
     {
         auto input = std::string( "a good   example" );
 
-        const auto actual = reverse_string::reverse_words( input );
+        const auto actual = word_reverser::reverse_words( input );
         const auto expected = "example good a";
 
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( reverse_string_tests, case4 )
+    TEST_F( reverse_words_tests, case4 )
     {
         auto input = std::string( "                   " );
 
-        const auto actual = reverse_string::reverse_words( input );
+        const auto actual = word_reverser::reverse_words( input );
         const auto expected = "";
 
         EXPECT_EQ( actual, expected );
     }
 
-    TEST_F( reverse_string_tests, case5 )
+    TEST_F( reverse_words_tests, case5 )
     {
         auto input = std::string( "                      blue               " );
 
-        const auto actual = reverse_string::reverse_words( input );
+        const auto actual = word_reverser::reverse_words( input );
         const auto expected = "blue";
 
         EXPECT_EQ( actual, expected );
@@ -679,6 +679,52 @@ namespace leetcode::str::tests
         const auto actual = minimum_window_substring::min_window( input1.first, input1.second );
 
         const auto expected = "a";
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    class reverse_string_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( reverse_string_tests, case1 )
+    {
+        auto actual = std::vector<char>{ 'h', 'e', 'l', 'l', 'o' };
+
+        reverse_string::reverse( actual );
+
+        const auto expected = std::vector<char>{ 'o', 'l', 'l', 'e', 'h' };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_string_tests, case2 )
+    {
+        auto actual = std::vector<char>{ 'h' };
+
+        reverse_string::reverse( actual );
+
+        const auto expected = std::vector<char>{ 'h' };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( reverse_string_tests, case3 )
+    {
+        auto actual = std::vector<char>{ 'h', 'e', 'l' };
+
+        reverse_string::reverse( actual );
+
+        const auto expected = std::vector<char>{ 'l', 'e', 'h' };
 
         EXPECT_EQ( actual, expected );
     }
