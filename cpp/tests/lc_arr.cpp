@@ -1003,4 +1003,39 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class array_partition_i_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( array_partition_i_tests, case1 )
+    {
+        auto input = std::vector<int>{ 1, 4, 3, 2 };
+
+        const auto actual = array_partition_i::array_pair_sum( input );
+
+        const auto expected = 4;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( array_partition_i_tests, case2 )
+    {
+        auto input = std::vector<int>{ 6, 2, 6, 5, 1, 2 };
+
+        const auto actual = array_partition_i::array_pair_sum( input );
+
+        const auto expected = 9;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
