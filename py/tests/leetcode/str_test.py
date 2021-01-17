@@ -48,3 +48,27 @@ class Test_FindAndReplace(unittest.TestCase):
 
         expected = "jjievdtjfb"
 
+from py.leetcode.str import longest_common_prefix
+
+class Test_LongestCommonPrefix(unittest.TestCase):
+
+    def test_case1(self):
+        
+        input1 = ["flower","flow","flight"]
+
+        actual = longest_common_prefix.longestCommonPrefix(input1)
+        expected = "fl"
+
+    def test_case2(self):
+        
+        input1 = ["ab", "a"]
+
+        actual = longest_common_prefix.longestCommonPrefix(input1)
+        expected = "a"
+
+    def test_case3(self):
+        
+        input1 = ["dog","racecar","car"]
+
+        actual = longest_common_prefix.longestCommonPrefix(input1)
+        expected = ""

@@ -1,69 +1,67 @@
 
 '''
-498. Diagonal Traverse.
+14. Longest Common Prefix.
 
-Given a matrix of M x N elements (M rows, N columns), return all 
-elements of the matrix in diagonal order as shown in the below image. 
+Write a function to find the longest common prefix string amongst an array of strings.
 
-Example:
+If there is no common prefix, return an empty string "".
 
-Input:
-[
- [ 1, 2, 3 ],
- [ 4, 5, 6 ],
- [ 7, 8, 9 ]
-]
+Example 1:
 
-Output:  [1,2,4,7,5,3,6,8,9]
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+Example 2:
 
-Explanation:
+Input: strs = ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+ 
 
-Note:
+Constraints:
 
-The total number of elements of the given matrix will not exceed 10,000.
+0 <= strs.length <= 200
+0 <= strs[i].length <= 200
+
+strs[i] consists of only lower-case English letters.
 '''
 
-class diagonal_traverse():
-    
+class longest_common_prefix:
+
     from typing import List
-    
+
     @staticmethod
-    def findDiagonalOrder(matrix : List[List[int]]) -> List[int]:
-        from collections import defaultdict, deque
-        """
-        :type matrix: List[List[int]]
-        :rtype: List[int]
-        """
+    def longestCommonPrefix(strs: List[str]) -> str:
 
-        if not matrix:
-            return []
+        max_len, prefix = 0, ''
+
+        for string in strs:
+            max_len = max(max_len, len(string))
         
-        num_rows, num_cols = len(matrix), len(matrix[0])
-        ht = defaultdict(deque)
-        
-        for row in range(num_rows):
-            for col in range(num_cols):
-                s = row + col
-                if s % 2:
-                    ht[s].appendleft(matrix[row][col])
-                else:
-                    ht[s].append(matrix[row][col])
-        
-        index, result = 0, []
-        
-        while ht[index]:
-            while ht[index]:
-                result.append(ht[index].pop())
-            index+=1
+        for position in range(0, max_len):
             
-        return result
+            if len(strs[0]) <= position:
+                break
 
-mat = [
- [ 1, 2, 3 ],
- [ 4, 5, 6 ],
- [ 7, 8, 9 ]
-]
+            cur = strs[0][position]
 
-actual = diagonal_traverse.findDiagonalOrder(mat)
+            for index in range(1,len(strs)):
 
-expected = [1,2,4,7,5,3,6,8,9]
+                if len(strs[index]) < position:
+                    cur = None
+                    break
+
+                if strs[index][position] != cur:
+                    cur = None
+                    break
+            
+            if cur is None:
+                break
+            
+            prefix += cur
+
+        return prefix
+
+input1 = ["flower","flow","flight"]
+
+actual = longest_common_prefix.longestCommonPrefix(input1)
+expected = "fl"
