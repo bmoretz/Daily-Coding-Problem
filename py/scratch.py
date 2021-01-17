@@ -1,67 +1,42 @@
 
 '''
-14. Longest Common Prefix.
+344. Reverse String.
 
-Write a function to find the longest common prefix string amongst an array of strings.
+Write a function that reverses a string. The input string is given as an array of characters char[].
 
-If there is no common prefix, return an empty string "".
+Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+You may assume all the characters consist of printable ascii characters.
 
 Example 1:
 
-Input: strs = ["flower","flow","flight"]
-Output: "fl"
+Input: ["h","e","l","l","o"]
+Output: ["o","l","l","e","h"]
 Example 2:
 
-Input: strs = ["dog","racecar","car"]
-Output: ""
-Explanation: There is no common prefix among the input strings.
- 
-
-Constraints:
-
-0 <= strs.length <= 200
-0 <= strs[i].length <= 200
-
-strs[i] consists of only lower-case English letters.
+Input: ["H","a","n","n","a","h"]
+Output: ["h","a","n","n","a","H"]
 '''
 
-class longest_common_prefix:
+class reverse_string:
 
     from typing import List
 
     @staticmethod
-    def longestCommonPrefix(strs: List[str]) -> str:
+    def reverseString(s: List[str]) -> None:
+        """
+        Do not return anything, modify s in-place instead.
+        """
 
-        max_len, prefix = 0, ''
+        left, right = 0, len(s) - 1
 
-        for string in strs:
-            max_len = max(max_len, len(string))
-        
-        for position in range(0, max_len):
-            
-            if len(strs[0]) <= position:
-                break
+        while left < right:
 
-            cur = strs[0][position]
+            s[left], s[right] = s[right], s[left]
 
-            for index in range(1,len(strs)):
+            left += 1
+            right -= 1
 
-                if len(strs[index]) < position:
-                    cur = None
-                    break
-
-                if strs[index][position] != cur:
-                    cur = None
-                    break
-            
-            if cur is None:
-                break
-            
-            prefix += cur
-
-        return prefix
-
-input1 = ["flower","flow","flight"]
-
-actual = longest_common_prefix.longestCommonPrefix(input1)
-expected = "fl"
+input1 = ["h","e","l","l","o"]
+reverse_string.reverseString(input1)
+expected = ["o","l","l","e","h"]

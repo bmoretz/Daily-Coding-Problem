@@ -59,6 +59,8 @@ class Test_LongestCommonPrefix(unittest.TestCase):
         actual = longest_common_prefix.longestCommonPrefix(input1)
         expected = "fl"
 
+        assert actual == expected
+        
     def test_case2(self):
         
         input1 = ["ab", "a"]
@@ -66,9 +68,48 @@ class Test_LongestCommonPrefix(unittest.TestCase):
         actual = longest_common_prefix.longestCommonPrefix(input1)
         expected = "a"
 
+        assert actual == expected
+
     def test_case3(self):
         
         input1 = ["dog","racecar","car"]
 
         actual = longest_common_prefix.longestCommonPrefix(input1)
         expected = ""
+
+        assert actual == expected
+
+from py.leetcode.str import reverse_string
+
+class Test_ReverseString(unittest.TestCase):
+
+    def test_case1(self):
+        
+        actual = ["h","e","l","l","o"]
+
+        reverse_string.reverseString(actual)
+        
+        expected = ["o","l","l","e","h"]
+
+        assert actual == expected
+
+    def test_case2(self):
+        
+        actual = ["h","e"]
+
+        reverse_string.reverseString(actual)
+
+        expected = ["e", "h"]
+
+        assert actual == expected
+
+    def test_case3(self):
+        
+        actual = ["h","e","i"]
+
+        reverse_string.reverseString(actual)
+        
+        expected = ["i","e","h"]
+
+        assert actual == expected
+
