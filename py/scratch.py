@@ -1,51 +1,42 @@
 
 '''
-27. Remove Element.
+209. Minimum Size Subarray Sum.
 
-Given an array nums and a value val, remove all instances of that value in-place and return the new length.
+Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
 
-Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+Example: 
 
-The order of elements can be changed. It doesn't matter what you leave beyond the new length.
-
-Example 1:
-
-Input: nums = [3,2,2,3], val = 3
-Output: 2, nums = [2,2]
-Explanation: Your function should return length = 2, with the first two elements of nums being 2.
-It doesn't matter what you leave beyond the returned length. For example if you return 2 with nums = [2,2,3,3] or nums = [2,2,0,0], your answer will be accepted.
-Example 2:
-
-Input: nums = [0,1,2,2,3,0,4,2], val = 2
-Output: 5, nums = [0,1,4,0,3]
-Explanation: Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4. Note that the order of those five elements can be arbitrary. It doesn't matter what values are set beyond the returned length.
- 
-
-Constraints:
-
-0 <= nums.length <= 100
-0 <= nums[i] <= 50
-0 <= val <= 100
+Input: s = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: the subarray [4,3] has the minimal length under the problem constraint.
+Follow up:
+If you have figured out the O(n) solution, try coding another solution of which the time complexity is O(n log n). 
 '''
 
-class remove_element:
-
+class min_size_subarray_sum:
+    
     from typing import List
 
     @staticmethod
-    def removeElement( nums : List[int], val : int ) -> int:
+    def minSubArrayLen(s: int, nums: List[int]) -> int:
         
-        position = 0
+        N, min_len = len(nums), float('inf')
+        left, right, cur_sum = 0, 0, 0
+        
+        while right < N:
+            
+            while cur_sum < s and right < N:
+                cur_sum += nums[right]
+                right += 1
+            
+            while cur_sum >= s:
+                min_len = min(min_len, right - left)
+                cur_sum -= nums[left]
+                left += 1
+                
+        return 0 if min_len == float('inf') else min_len
 
-        for index in range(len(nums)):
-
-            if nums[index] != val:
-                nums[position] = nums[index]
-                position += 1
-
-        return position
-
-input1 = [3,2,2,3]
-actual = remove_element.removeElement(input1)
+s, n = 20, [2,3,1,2,4,3]
+actual = min_size_subarray_sum.minSubArrayLen(s, n)
 
 expected = [2, 2]
