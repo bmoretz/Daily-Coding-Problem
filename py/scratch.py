@@ -1,42 +1,47 @@
 
 '''
-209. Minimum Size Subarray Sum.
+485. Max Consecutive Ones.
 
-Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum ≥ s. If there isn't one, return 0 instead.
+Given a binary array, find the maximum number of consecutive 1s in this array.
 
-Example: 
+Example 1:
 
-Input: s = 7, nums = [2,3,1,2,4,3]
-Output: 2
-Explanation: the subarray [4,3] has the minimal length under the problem constraint.
-Follow up:
-If you have figured out the O(n) solution, try coding another solution of which the time complexity is O(n log n). 
+Input: [1,1,0,1,1,1]
+Output: 3
+
+Explanation: The first two digits or the last three digits are consecutive 1s.
+    The maximum number of consecutive 1s is 3.
+
+Note:
+
+The input array will only contain 0 and 1.
+The length of input array is a positive integer and will not exceed 10,000
 '''
 
-class min_size_subarray_sum:
-    
+class Solution:
+
     from typing import List
 
     @staticmethod
-    def minSubArrayLen(s: int, nums: List[int]) -> int:
+    def findMaxConsecutiveOnes(nums: List[int]) -> int:
         
-        N, min_len = len(nums), float('inf')
-        left, right, cur_sum = 0, 0, 0
-        
+        left, right, max_len, N = 0, 0, 0, len(nums)
+
         while right < N:
             
-            while cur_sum < s and right < N:
-                cur_sum += nums[right]
-                right += 1
-            
-            while cur_sum >= s:
-                min_len = min(min_len, right - left)
-                cur_sum -= nums[left]
-                left += 1
-                
-        return 0 if min_len == float('inf') else min_len
+            left = right
 
-s, n = 20, [2,3,1,2,4,3]
-actual = min_size_subarray_sum.minSubArrayLen(s, n)
+            while right < N and nums[right] == 1:
+                right += 1
+
+            max_len = max(max_len, right - left)
+
+            while right < N and nums[right] == 0:
+                right += 1
+
+        return max_len
+
+s = [1,1,0,1,1,1]
+actual = Solution.findMaxConsecutiveOnes(s)
 
 expected = [2, 2]
