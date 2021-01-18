@@ -1038,4 +1038,50 @@ namespace leetcode::arr::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class rotate_array_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( rotate_array_tests, case1 )
+    {
+        auto actual = std::vector<int>{ 1,2,3,4,5,6,7 };
+
+        rotate_array::rotate1( actual, 3 );
+
+        const auto expected = std::vector<int>{ 5,6,7,1,2,3,4 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( rotate_array_tests, case2 )
+    {
+        auto actual = std::vector<int>{ 1,2,3,4,5,6,7 };
+
+        rotate_array::rotate2( actual, 3 );
+
+        const auto expected = std::vector<int>{ 5,6,7,1,2,3,4 };
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( rotate_array_tests, case3 )
+    {
+        auto actual = std::vector<int>{ 1,2,3,4,5,6,7 };
+
+        rotate_array::rotate3( actual, 3 );
+
+        const auto expected = std::vector<int>{ 5,6,7,1,2,3,4 };
+
+        EXPECT_EQ( actual, expected );
+    }
 }

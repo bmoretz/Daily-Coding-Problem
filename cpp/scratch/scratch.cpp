@@ -1,67 +1,152 @@
 ﻿#include <bits/stdc++.h>
 
-/*14. Longest Common Prefix.
+/*189. Rotate Array.
 
-Write a function to find the longest common prefix string amongst an array of strings.
+Given an array, rotate the array to the right by k steps, where k is non-negative.
 
-If there is no common prefix, return an empty string "".
+Follow up:
+
+Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+Could you do it in-place with O(1) extra space?
+ 
 
 Example 1:
 
-Input: strs = ["flower","flow","flight"]
-Output: "fl"
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
 Example 2:
 
-Input: strs = ["dog","racecar","car"]
-Output: ""
-Explanation: There is no common prefix among the input strings.
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
  
+
 Constraints:
 
-0 <= strs.length <= 200
-0 <= strs[i].length <= 200
-strs[i] consists of only lower-case English letters.
+1 <= nums.length <= 2 * 104
+-231 <= nums[i] <= 231 - 1
+0 <= k <= 105
 
 */
 
-class longest_common_prefix
+class rotate_array
 {
 public:
 
-	static std::string max_common_prefix( const std::vector<std::string>& strings )
-    {
-		if( strings.empty() || strings[0].empty() ) return "";
+	/// <summary>
+	/// rotate 1
+	///
+	/// O(N) run-time, O(N) space
+	/// </summary>
+	/// <param name="numbers">array to rotate</param>
+	/// <param name="k">number of places</param>
+	static void rotate1( std::vector<int>& numbers, const std::size_t k )
+	{	
+		const auto N = numbers.size();
+		const auto places = k % N;
+
+		if( places == 0 ) return;
 		
-        auto position = 0;
-		auto result = std::string();
-		auto valid = true;
-		
-		while( valid )
+		auto temp = std::vector<int>( N, 0 );
+
+		auto ptr = N - places, pos = std::size_t();
+
+		while( ptr < N )
 		{
-			if( strings[ 0 ].length() <= position )
-				break;
+			temp[ pos++ ] = numbers[ ptr++ ];
+		}
 
-			for( auto index = 1ULL; index < strings.size(); ++index )
-			{
-				valid &= position <= strings[ index ].size() && 
-					strings[ index ][ position ] == strings[ 0 ][ position ];
+		ptr = 0;
 
-				if( !valid ) break;
-			}
+		while( ptr < N - places )
+		{
+			temp[ pos++ ] = numbers[ ptr++ ];
+		}
 
-			if( valid )
-				result += strings[ 0 ][ position++ ];
+		std::swap( temp, numbers );
+	}
+
+	/// <summary>
+	/// rotate 2
+	///
+	/// O(N) run-time, O(k) space
+	/// </summary>
+	/// <param name="numbers">array to rotate</param>
+	/// <param name="k">number of places</param>
+	static void rotate2( std::vector<int>& numbers, const std::size_t k )
+	{
+		const auto N = numbers.size();
+		const auto places = k % N;
+
+		if( places == 0 ) return;
+		
+		auto temp = std::vector<int>( places, 0 );
+
+		auto ptr = N - places, pos = std::size_t();
+
+		while( ptr < N )
+		{
+			temp[ pos++ ] = numbers[ ptr++ ];
+		}
+
+		ptr = N - 1, pos = N - places - 1;
+		
+		while( ptr >= places )
+		{
+			numbers[ ptr-- ] = numbers[ pos-- ];
 		}
 		
-        return result;
+		ptr = 0, pos = 0;
+
+		while( ptr < places )
+		{
+			numbers[ pos++ ] = temp[ ptr++ ];
+		}
+	}
+
+	/// <summary>
+	/// rotate 3
+	///
+	/// O(N) run-time, O(1) space
+	/// </summary>
+	/// <param name="numbers">array to rotate</param>
+	/// <param name="k">number of places</param>
+	static void rotate3( std::vector<int>& numbers, const std::size_t k )
+    {
+		const auto N = numbers.size();
+		const auto places = k % N;
+
+		auto ptr = std::size_t();
+
+		for( auto pos = std::size_t(); ptr < N; pos++ )
+		{
+			auto current = pos;
+			auto prev = numbers[ pos ];
+
+			do
+			{
+				const auto next = ( current + places ) % N;
+				const auto temp = numbers[ next ];
+				numbers[ next ] = prev;
+				prev = temp;
+				current = next;
+				ptr++;
+			} while( pos != current );
+		}
     }
 };
 
 auto main() -> int
 {
-    auto input = std::vector<std::string>{ "a" };
+    auto input = std::vector<int>{ 1,2,3,4,5,6,7 };
 	
-    const auto actual = longest_common_prefix::max_common_prefix( input );
+    rotate_array::rotate3( input, 2 );
 	
 	const auto expected = 4;
 	
