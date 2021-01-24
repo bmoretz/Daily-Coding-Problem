@@ -1,154 +1,114 @@
 ﻿#include <bits/stdc++.h>
 
-/*189. Rotate Array.
+/*705. Design HashSet.
 
-Given an array, rotate the array to the right by k steps, where k is non-negative.
+Design a HashSet without using any built-in hash table libraries.
 
-Follow up:
+To be specific, your design should include these functions:
 
-Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
-Could you do it in-place with O(1) extra space?
- 
+add(value): Insert a value into the HashSet. 
+contains(value) : Return whether the value exists in the HashSet or not.
+remove(value): Remove a value in the HashSet. If the value does not exist in the HashSet, do nothing.
 
-Example 1:
+Example:
 
-Input: nums = [1,2,3,4,5,6,7], k = 3
-Output: [5,6,7,1,2,3,4]
-Explanation:
-rotate 1 steps to the right: [7,1,2,3,4,5,6]
-rotate 2 steps to the right: [6,7,1,2,3,4,5]
-rotate 3 steps to the right: [5,6,7,1,2,3,4]
-Example 2:
+MyHashSet hashSet = new MyHashSet();
 
-Input: nums = [-1,-100,3,99], k = 2
-Output: [3,99,-1,-100]
-Explanation: 
-rotate 1 steps to the right: [99,-1,-100,3]
-rotate 2 steps to the right: [3,99,-1,-100]
- 
+hashSet.add(1);         
+hashSet.add(2);         
+hashSet.contains(1);    // returns true
+hashSet.contains(3);    // returns false (not found)
+hashSet.add(2);          
+hashSet.contains(2);    // returns true
+hashSet.remove(2);          
+hashSet.contains(2);    // returns false (already removed)
 
-Constraints:
+Note:
 
-1 <= nums.length <= 2 * 104
--231 <= nums[i] <= 231 - 1
-0 <= k <= 105
+All values will be in the range of [0, 1000000].
+The number of operations will be in the range of [1, 10000].
+Please do not use the built-in HashSet library.
 
 */
 
-class rotate_array
+class my_hash_set
 {
-public:
-
-	/// <summary>
-	/// rotate 1
-	///
-	/// O(N) run-time, O(N) space
-	/// </summary>
-	/// <param name="numbers">array to rotate</param>
-	/// <param name="k">number of places</param>
-	static void rotate1( std::vector<int>& numbers, const std::size_t k )
-	{	
-		const auto N = numbers.size();
-		const auto places = k % N;
-
-		if( places == 0 ) return;
-		
-		auto temp = std::vector<int>( N, 0 );
-
-		auto ptr = N - places, pos = std::size_t();
-
-		while( ptr < N )
-		{
-			temp[ pos++ ] = numbers[ ptr++ ];
-		}
-
-		ptr = 0;
-
-		while( ptr < N - places )
-		{
-			temp[ pos++ ] = numbers[ ptr++ ];
-		}
-
-		std::swap( temp, numbers );
-	}
-
-	/// <summary>
-	/// rotate 2
-	///
-	/// O(N) run-time, O(k) space
-	/// </summary>
-	/// <param name="numbers">array to rotate</param>
-	/// <param name="k">number of places</param>
-	static void rotate2( std::vector<int>& numbers, const std::size_t k )
-	{
-		const auto N = numbers.size();
-		const auto places = k % N;
-
-		if( places == 0 ) return;
-		
-		auto temp = std::vector<int>( places, 0 );
-
-		auto ptr = N - places, pos = std::size_t();
-
-		while( ptr < N )
-		{
-			temp[ pos++ ] = numbers[ ptr++ ];
-		}
-
-		ptr = N - 1, pos = N - places - 1;
-		
-		while( ptr >= places )
-		{
-			numbers[ ptr-- ] = numbers[ pos-- ];
-		}
-		
-		ptr = 0, pos = 0;
-
-		while( ptr < places )
-		{
-			numbers[ pos++ ] = temp[ ptr++ ];
-		}
-	}
-
-	/// <summary>
-	/// rotate 3
-	///
-	/// O(N) run-time, O(1) space
-	/// </summary>
-	/// <param name="numbers">array to rotate</param>
-	/// <param name="k">number of places</param>
-	static void rotate3( std::vector<int>& numbers, const std::size_t k )
+    class bucket
     {
-		const auto N = numbers.size();
-		const auto places = k % N;
+        std::list<int> container_;
+    	
+    public:
 
-		auto ptr = std::size_t();
+    	void insert( const int key )
+    	{
+            if( std::find( container_.begin(), container_.end(), key ) != container_.end() )
+                return;
+    		
+			container_.insert( container_.begin(), key );
+    	}
 
-		for( auto pos = std::size_t(); ptr < N; pos++ )
-		{
-			auto current = pos;
-			auto prev = numbers[ pos ];
+    	void remove( const int key )
+    	{
+            const auto position = 
+                std::find( container_.begin(), container_.end(), key );
 
-			do
-			{
-				const auto next = ( current + places ) % N;
-				const auto temp = numbers[ next ];
-				numbers[ next ] = prev;
-				prev = temp;
-				current = next;
-				ptr++;
-			} while( pos != current );
-		}
+            if( position == container_.end() )
+                return;
+
+            container_.erase( position );
+    	}
+
+    	bool exists( const int key )
+    	{
+            return std::find( container_.begin(), container_.end(), key ) != container_.end();
+    	}
+    };
+
+    std::vector<bucket> buckets_;
+    const int num_buckets = 11;
+
+protected:
+
+    [[nodiscard]] int hash( const int key ) const
+	{
+        return key % num_buckets;
+	}
+	
+public:
+	
+    my_hash_set()
+    {
+        buckets_ = std::vector<bucket>( num_buckets, bucket() );
+    }
+
+    void add( const int key )
+	{
+        buckets_[ hash( key ) ].insert( key );
+    }
+
+    void remove( int key )
+	{
+        buckets_[ hash( key ) ].remove( key );
+    }
+
+    bool contains( int key )
+    {
+        return buckets_[ hash( key ) ].exists( key );
     }
 };
 
 auto main() -> int
 {
-    auto input = std::vector<int>{ 1,2,3,4,5,6,7 };
+    auto hash_set = my_hash_set();
 	
-    rotate_array::rotate3( input, 2 );
-	
-	const auto expected = 4;
+    hash_set.add( 1 );
+    hash_set.add( 2 );
+    hash_set.contains( 1 );    // returns true
+    hash_set.contains( 3 );    // returns false (not found)
+    hash_set.add( 2 );
+    hash_set.contains( 2 );    // returns true
+    hash_set.remove( 2 );
+    hash_set.contains( 2 );    // returns false (already removed)
 	
 	return 0;
 }

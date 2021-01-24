@@ -1,47 +1,32 @@
 
 '''
-485. Max Consecutive Ones.
+557. Reverse Words in a String III.
 
-Given a binary array, find the maximum number of consecutive 1s in this array.
+Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
 
 Example 1:
-
-Input: [1,1,0,1,1,1]
-Output: 3
-
-Explanation: The first two digits or the last three digits are consecutive 1s.
-    The maximum number of consecutive 1s is 3.
-
-Note:
-
-The input array will only contain 0 and 1.
-The length of input array is a positive integer and will not exceed 10,000
+Input: "Let's take LeetCode contest"
+Output: "s'teL ekat edoCteeL tsetnoc"
+Note: In the string, each word is separated by single space and there will not be any extra space in the string.
 '''
 
-class Solution:
-
-    from typing import List
-
+class reverse_words_str_iii:
     @staticmethod
-    def findMaxConsecutiveOnes(nums: List[int]) -> int:
+    def reverseWords(s: str) -> str:
         
-        left, right, max_len, N = 0, 0, 0, len(nums)
+        result = ''
 
-        while right < N:
+        for word in s.split(' '):
             
-            left = right
+            if result:
+                result += ' '
 
-            while right < N and nums[right] == 1:
-                right += 1
+            for l in reversed(list(word)):
+                result += l
 
-            max_len = max(max_len, right - left)
+        return result
 
-            while right < N and nums[right] == 0:
-                right += 1
-
-        return max_len
-
-s = [1,1,0,1,1,1]
-actual = Solution.findMaxConsecutiveOnes(s)
+s 
+actual = max_consecutive_ones.findMaxConsecutiveOnes(s)
 
 expected = [2, 2]

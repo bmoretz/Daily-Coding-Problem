@@ -329,4 +329,36 @@ namespace leetcode::design::tests
             EXPECT_EQ( actual, expected );
         }
     }
+
+    class hash_set_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( hash_set_tests, case1 )
+    {
+        auto hash_set = my_hash_set();
+
+        hash_set.add( 1 );
+        hash_set.add( 2 );
+
+        EXPECT_EQ( hash_set.contains( 1 ), true );
+        EXPECT_EQ( hash_set.contains( 3 ), false );
+    	
+        hash_set.add( 2 );
+
+        EXPECT_EQ( hash_set.contains( 2 ), true );
+    	
+        hash_set.remove( 2 );
+
+        EXPECT_EQ( hash_set.contains( 2 ), false );
+    }
 }
