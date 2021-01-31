@@ -264,4 +264,99 @@ namespace leetcode::design
             return buckets_[ hash( key ) ].exists( key );
         }
     };
+
+    class my_hash_map
+    {
+        template<typename U, typename V>
+        struct pair
+        {
+            U first;
+            V second;
+
+            pair( U first, V second ) :
+                first{ first }, second{ second }
+            {}
+        };
+
+        class bucket
+        {
+            std::list<pair<int, int>> container_;
+
+            auto find_key( const int key )
+            {
+                return std::find_if( container_.begin(), container_.end(),
+                    [key]( const pair<int, int>& current )
+                    {
+                        return key == current.first;
+                    } );
+            }
+
+        public:
+
+            int get( const int key )
+            {
+                const auto iter = find_key( key );
+
+                if( iter == container_.end() ) return -1;
+
+                return iter->second;
+            }
+
+            void update( const int key, const int value )
+            {
+                const auto iter = find_key( key );
+
+                if( iter == container_.end() )
+                {
+                    container_.emplace_back( key, value );
+                }
+                else
+                {
+                    iter->second = value;
+                }
+            }
+
+            void remove( const int key )
+            {
+                const auto iter = find_key( key );
+
+                if( iter != container_.end() )
+                {
+                    container_.erase( iter );
+                }
+            }
+        };
+
+        std::vector<bucket> buckets_;
+        const int num_buckets_ = 2069;
+
+    protected:
+
+        [[nodiscard]] int hash( const int key ) const
+        {
+            return key % num_buckets_;
+        }
+
+    public:
+
+        my_hash_map()
+        {
+            buckets_ = std::vector<bucket>( num_buckets_, bucket() );
+        }
+
+        void put( const int key, const int value )
+        {
+            buckets_[ hash( key ) ].update( key, value );
+        }
+
+        void remove( const int key )
+        {
+            buckets_[ hash( key ) ].remove( key );
+        }
+
+        int get( const int key )
+        {
+            return buckets_[ hash( key ) ].get( key );
+        }
+    };
 }

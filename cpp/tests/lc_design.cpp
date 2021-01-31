@@ -361,4 +361,36 @@ namespace leetcode::design::tests
 
         EXPECT_EQ( hash_set.contains( 2 ), false );
     }
+
+    class hash_map_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( hash_map_tests, case1 )
+    {
+        auto hash_map = my_hash_map();
+
+        hash_map.put( 1, 1 );
+        hash_map.put( 2, 2 );
+
+        EXPECT_EQ( hash_map.get( 1 ), 1 );
+        EXPECT_EQ( hash_map.get( 3 ), -1 );
+
+        hash_map.put( 2, 1 );
+
+        EXPECT_EQ( hash_map.get( 2 ), 1 );
+
+        hash_map.remove( 2 );
+
+        EXPECT_EQ( hash_map.get( 2 ), -1 );
+    }
 }
