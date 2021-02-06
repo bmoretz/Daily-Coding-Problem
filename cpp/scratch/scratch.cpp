@@ -1,81 +1,54 @@
 ﻿#include <bits/stdc++.h>
 
-/*136. Single Number.
+/* 202. Happy Number.
 
-Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.
+Write an algorithm to determine if a number n is happy.
 
-Follow up: Could you implement a solution with a linear runtime complexity and without using extra memory?
+A happy number is a number defined by the following process:
 
-
-Example 1:
-
-Input: nums = [2,2,1]
-Output: 1
-Example 2:
-
-Input: nums = [4,1,2,1,2]
-Output: 4
-Example 3:
-
-Input: nums = [1]
-Output: 1
- 
-
-Constraints:
-
-1 <= nums.length <= 3 * 104
--3 * 104 <= nums[i] <= 3 * 104
-Each element in the array appears twice except for one element which appears only once.
+Starting with any positive integer, replace the number by the sum of the squares of its digits.
+Repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.
+Those numbers for which this process ends in 1 are happy.
+Return true if n is a happy number, and false if not.
 
 */
 
-class single_number
+class happy_number
 {
+	static int get_sqr_sum_digits( int num )
+	{
+		auto total_sum = 0;
+
+		while( num > 0 )
+		{
+			const auto digit = num % 10;
+			num = num / 10;
+			total_sum += digit * digit;
+		}
+
+		return total_sum;
+	}
 	
 public:
 
-	/// <summary>
-	/// O(N) run-time, O(1) space
-	/// </summary>
-	/// <param name="numbers">numbers</param>
-	/// <returns>the number with 1 occurence</returns>
-	static int singleNumber1( const std::vector<int>& numbers )
+	static bool is_happy( int n )
 	{
-		auto counts = std::unordered_map<int, int>();
+		auto seen = std::set<int>();
 
-		for( auto num : numbers )
+		while( n != 1 && seen.find( n ) == seen.end() )
 		{
-			counts[ num ]++;
-		}
-
-		for( auto& [k, v] : counts )
-		{
-			if( v == 1 ) return k;
-		}
-
-		return -1;
-	}
-
-	/// <summary>
-	/// O(N) run-time, O(1) space
-	/// </summary>
-	/// <param name="numbers">numbers</param>
-	/// <returns>number with 1 occurence.</returns>
-	static int singleNumber2( const std::vector<int>& numbers )
-	{
-		auto seen = 0;
-		
-		for( auto num : numbers ) 
-		{
-			seen ^= num;
+			seen.insert( n );
+			n = get_sqr_sum_digits( n );
 		}
 		
-		return seen;
+		return n == 1;
 	}
 };
 
 auto main() -> int
 {
 
+	auto result = happy_number::is_happy( 19 );
+	
 	return 0;
 }

@@ -263,4 +263,41 @@ namespace leetcode::hashtable::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class happy_number_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( happy_number_tests, case1 )
+    {
+        const auto actual = happy_number::is_happy( 19 );
+        const auto expected = true;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( happy_number_tests, case2 )
+    {
+        const auto actual = happy_number::is_happy( 89 );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( happy_number_tests, case3 )
+    {
+        const auto actual = happy_number::is_happy( 2 );
+        const auto expected = false;
+
+        EXPECT_EQ( actual, expected );
+    }
 }
