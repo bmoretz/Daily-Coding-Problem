@@ -1,4 +1,3 @@
-
 '''
 Isomorphic Strings
 Given two strings s and t, determine if they are isomorphic.
@@ -27,7 +26,3 @@ class is_isomorphic:
             t2s[t[index]] = s[index]
 
         return True
-        
-s, t = "badc", "baba"
-actual = is_isomorphic.isIsomorphic(s, t)
-expected = True
