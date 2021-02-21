@@ -1,68 +1,51 @@
 
 '''
-359. Logger Rate Limiter.
+49. Group Anagrams.
 
-Design a logger system that receives a stream of messages along with their timestamps. Each unique message should only be printed at most every 10 seconds
- (i.e. a message printed at timestamp t will prevent other identical messages from being printed until timestamp t + 10).
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
 
-All messages will come in chronological order. Several messages may arrive at the same timestamp.
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
 
-Implement the Logger class:
-
-Logger() Initializes the logger object.
-bool shouldPrintMessage(int timestamp, string message) Returns true if the message should be printed in the given timestamp, otherwise returns false.
- 
 Example 1:
 
-Input
-["Logger", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage"]
-[[], [1, "foo"], [2, "bar"], [3, "foo"], [8, "bar"], [10, "foo"], [11, "foo"]]
-Output
-[null, true, true, false, false, false, true]
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+Example 2:
 
-Explanation
-Logger logger = new Logger();
-logger.shouldPrintMessage(1, "foo");  // return true, next allowed timestamp for "foo" is 1 + 10 = 11
-logger.shouldPrintMessage(2, "bar");  // return true, next allowed timestamp for "bar" is 2 + 10 = 12
-logger.shouldPrintMessage(3, "foo");  // 3 < 11, return false
-logger.shouldPrintMessage(8, "bar");  // 8 < 12, return false
-logger.shouldPrintMessage(10, "foo"); // 10 < 11, return false
-logger.shouldPrintMessage(11, "foo"); // 11 >= 11, return true, next allowed timestamp for "foo" is
-                                      // 11 + 10 = 21
+Input: strs = [""]
+Output: [[""]]
+Example 3:
+
+Input: strs = ["a"]
+Output: [["a"]]
  
+
 Constraints:
 
-0 <= timestamp <= 109
-Every timestamp will be passed in non-decreasing order (chronological order).
-1 <= message.length <= 30
-At most 104 calls will be made to shouldPrintMessage.
+1 <= strs.length <= 104
+0 <= strs[i].length <= 100
+strs[i] consists of lower-case English letters.
 '''
 
-from datetime import datetime, timedelta
-class logger:
+class group_anagrams:
 
-    def __init__(self):
-        """
-        Initialize your data structure here.
-        """
-        self.last_print = None
+    from typing import List
 
-    def shouldPrintMessage(self, timestamp: int, message: str) -> bool:
-        """
-        Returns true if the message should be printed in the given timestamp, otherwise returns false.
-        If this method returns false, the message will not be printed.
-        The timestamp is in seconds granularity.
-        """
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         
-        if self.last_print is None or timedelta()
+        from collections import defaultdict
 
+        groups = defaultdict(list)
 
-# Your Logger object will be instantiated and called as such:
-# obj = Logger()
-# param_1 = obj.shouldPrintMessage(timestamp,message)
+        for s in strs:
 
-nums, k = [1,0,1,1], 1
+            key = ''.join(sorted(list(s)))
+            groups[key] += [s]
 
-actual = contains_duplicate_ii.containsNearbyDuplicate(nums, k)
+        return list(groups.values())
+
+strs = ["eat","tea","tan","ate","nat","bat"]
+
+actual = group_anagrams().groupAnagrams(strs)
 
 print(actual)
