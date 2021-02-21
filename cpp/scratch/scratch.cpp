@@ -1,54 +1,68 @@
 ﻿#include <bits/stdc++.h>
 
-/* 202. Happy Number.
+/*
 
-Write an algorithm to determine if a number n is happy.
+Given a string, we can "shift" each of its letter to its successive letter, for example: "abc" -> "bcd". We can keep "shifting" which forms the sequence:
 
-A happy number is a number defined by the following process:
+"abc" -> "bcd" -> ... -> "xyz"
+Given a list of non-empty strings which contains only lowercase alphabets, group all strings that belong to the same shifting sequence.
 
-Starting with any positive integer, replace the number by the sum of the squares of its digits.
-Repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.
-Those numbers for which this process ends in 1 are happy.
-Return true if n is a happy number, and false if not.
+Example:
+
+Input: ["abc", "bcd", "acef", "xyz", "az", "ba", "a", "z"],
+Output: 
+[
+  ["abc","bcd","xyz"],
+  ["az","ba"],
+  ["acef"],
+  ["a","z"]
+]
 
 */
 
-class happy_number
+class group_shifted_sequence
 {
-	static int get_sqr_sum_digits( int num )
-	{
-		auto total_sum = 0;
-
-		while( num > 0 )
-		{
-			const auto digit = num % 10;
-			num = num / 10;
-			total_sum += digit * digit;
-		}
-
-		return total_sum;
-	}
 	
 public:
 
-	static bool is_happy( int n )
+	static std::vector<std::vector<std::string>> groupStrings( const std::vector<std::string>& strings )
 	{
-		auto seen = std::set<int>();
+		std::map<std::vector<int>, std::vector<std::string>> group_map;
 
-		while( n != 1 && seen.find( n ) == seen.end() )
+		for( const auto& str : strings )
 		{
-			seen.insert( n );
-			n = get_sqr_sum_digits( n );
+			auto key = std::vector<int>();
+
+			for( auto index = 1; index < str.length(); ++index )
+			{
+				const auto cur = str[ index ];
+				const auto prev = str[ index - 1 ];
+
+				const auto val = ( str[ index ] - str[ index - 1 ] + 26 ) % 26;
+				
+				key.push_back( val );
+			}
+
+			group_map[ key ].push_back( str );
+		}
+
+		auto results = std::vector<std::vector<std::string>>();
+
+		for( auto &[k, v] : group_map )
+		{
+			results.push_back( v );
 		}
 		
-		return n == 1;
+		return results;
 	}
 };
 
 auto main() -> int
 {
-
-	auto result = happy_number::is_happy( 19 );
+	//const auto input = std::vector<std::string>{ "abc", "bcd", "acef", "xyz", "az", "ba", "a", "z" };
+	const auto input = std::vector<std::string>{ "aa","bb","b" };
+	
+	auto result = group_shifted_sequence::groupStrings( input );
 	
 	return 0;
 }

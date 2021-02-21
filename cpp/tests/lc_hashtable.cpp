@@ -300,4 +300,44 @@ namespace leetcode::hashtable::tests
 
         EXPECT_EQ( actual, expected );
     }
+
+    class group_shifted_sequence_tests :
+        public ::testing::Test {
+
+    protected:
+        void SetUp() override
+        {
+        }
+
+        void TearDown() override
+        {
+        }
+    };
+
+    TEST_F( group_shifted_sequence_tests, case1 )
+    {
+        const auto input = std::vector<std::string>{ "aa","bb","b" };
+
+        auto actual = group_shifted_sequence::groupStrings( input );
+
+        const auto expected = std::vector<std::vector<std::string>>{ { "b" }, { "aa","bb" } };
+    	
+        EXPECT_EQ( actual, expected );
+    }
+
+    TEST_F( group_shifted_sequence_tests, case2 )
+    {
+        const auto input = std::vector<std::string>{ "abc", "bcd", "acef", "xyz", "az", "ba", "a", "z" };
+
+        auto actual = group_shifted_sequence::groupStrings( input );
+
+        const auto expected = std::vector<std::vector<std::string>>{
+        	{ "a","z" },
+        	{ "abc","bcd","xyz" },
+        	{ "acef" },
+            { "az","ba" }
+        };
+
+        EXPECT_EQ( actual, expected );
+    }
 }
