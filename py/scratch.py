@@ -1,78 +1,45 @@
 
 '''
-599. Minimum Index Sum of Two Lists.
+219. Contains Duplicate II.
 
-Suppose Andy and Doris want to choose a restaurant for dinner, and they both have a list of favorite restaurants represented by strings.
-
-You need to help them find out their common interest with the least list index sum. If there is a choice tie between answers, 
-output all of them with no order requirement. You could assume there always exists an answer.
+Given an array of integers and an integer k, find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the absolute difference between i and j is at most k.
 
 Example 1:
 
-Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["Piatti","The Grill at Torrey Pines","Hungry Hunter Steakhouse","Shogun"]
-Output: ["Shogun"]
-Explanation: The only restaurant they both like is "Shogun".
+Input: nums = [1,2,3,1], k = 3
+Output: true
 Example 2:
 
-Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["KFC","Shogun","Burger King"]
-Output: ["Shogun"]
-Explanation: The restaurant they both like and have the least index sum is "Shogun" with index sum 1 (0+1).
+Input: nums = [1,0,1,1], k = 1
+Output: true
 Example 3:
 
-Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["KFC","Burger King","Tapioca Express","Shogun"]
-
-Output: ["KFC","Burger King","Tapioca Express","Shogun"]
-Example 4:
-
-Input: list1 = ["Shogun","Tapioca Express","Burger King","KFC"], list2 = ["KNN","KFC","Burger King","Tapioca Express","Shogun"]
-Output: ["KFC","Burger King","Tapioca Express","Shogun"]
-Example 5:
-
-Input: list1 = ["KFC"], list2 = ["KFC"]
-Output: ["KFC"]
- 
-
-Constraints:
-
-1 <= list1.length, list2.length <= 1000
-1 <= list1[i].length, list2[i].length <= 30
-list1[i] and list2[i] consist of spaces ' ' and English letters.
-All the stings of list1 are unique.
-All the stings of list2 are unique.
+Input: nums = [1,2,3,1,2,3], k = 2
+Output: false
 '''
 
-class minimum_index_sum:
+class contains_duplicate_ii:
 
-    from typing import List, Dict
+    from typing import List
 
-    def to_dict(self, items : List[str]) -> Dict[str, int]:
+    def containsNearbyDuplicate(self, nums: List[int], k :int ) -> bool:
 
         result = {}
 
-        for index, item in enumerate(items):
-            result[item] = index
-
-        return result
-
-    def findRestaurant(self, list1: List[str], list2: List[str]) -> List[str]:
-
-        from collections import defaultdict
-
-        d1, d2 = self.to_dict(list1), self.to_dict(list2)
-
-        results = defaultdict(list)
-
-        for k, v in d1.items():
-            if k in d2:
-                val = v + d2[k]
+        for index, item in enumerate(nums):
+            if item not in result:
+                result[item] = [index]
+            else:
+                for other in result[item]:
+                    if abs(other - index) <= k:
+                        return True
                 
-                results[val] += [k]
+                result[item] += [index]
 
-        return results[min(results.keys())]
+        return False
         
+nums, k = [1,0,1,1], 1
 
-list1, list2 = ["Shogun","Tapioca Express","Burger King","KFC"], ["KFC","Shogun","Burger King"]
-
-actual = minimum_index_sum().findRestaurant(list1, list2)
+actual = contains_duplicate_ii().containsNearbyDuplicate(nums, k)
 
 print(actual)

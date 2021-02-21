@@ -73,7 +73,8 @@ class minimum_index_sum:
 
     from typing import List, Dict
 
-    def to_dict(self, items : List[str]) -> Dict[str, int]:
+    @staticmethod
+    def to_dict(items : List[str]) -> Dict[str, int]:
 
         result = {}
 
@@ -82,11 +83,12 @@ class minimum_index_sum:
 
         return result
 
-    def findRestaurant(self, list1: List[str], list2: List[str]) -> List[str]:
+    @staticmethod
+    def findRestaurant(list1: List[str], list2: List[str]) -> List[str]:
 
         from collections import defaultdict
 
-        d1, d2 = self.to_dict(list1), self.to_dict(list2)
+        d1, d2 = minimum_index_sum.to_dict(list1), minimum_index_sum.to_dict(list2)
 
         results = defaultdict(list)
 
@@ -97,3 +99,42 @@ class minimum_index_sum:
                 results[val] += [k]
 
         return results[min(results.keys())]
+
+'''
+219. Contains Duplicate II.
+
+Given an array of integers and an integer k, find out whether there are two distinct indices i and j in the array such that nums[i] = nums[j] and the absolute difference between i and j is at most k.
+
+Example 1:
+
+Input: nums = [1,2,3,1], k = 3
+Output: true
+Example 2:
+
+Input: nums = [1,0,1,1], k = 1
+Output: true
+Example 3:
+
+Input: nums = [1,2,3,1,2,3], k = 2
+Output: false
+'''
+class contains_duplicate_ii:
+
+    from typing import List
+
+    @staticmethod
+    def containsNearbyDuplicate(nums: List[int], k :int ) -> bool:
+
+        result = {}
+
+        for index, item in enumerate(nums):
+            if item not in result:
+                result[item] = [index]
+            else:
+                for other in result[item]:
+                    if abs(other - index) <= k:
+                        return True
+                
+                result[item] += [index]
+
+        return False
