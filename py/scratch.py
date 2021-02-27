@@ -1,51 +1,93 @@
 
 '''
-49. Group Anagrams.
+36. Valid Sudoku
 
-Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
 
-An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+Each row must contain the digits 1-9 without repetition.
+Each column must contain the digits 1-9 without repetition.
+Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+Note:
 
+A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+Only the filled cells need to be validated according to the mentioned rules.
+ 
 Example 1:
 
-Input: strs = ["eat","tea","tan","ate","nat","bat"]
-Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+Input: board = 
+[["5","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: true
+
 Example 2:
 
-Input: strs = [""]
-Output: [[""]]
-Example 3:
-
-Input: strs = ["a"]
-Output: [["a"]]
+Input: board = 
+[["8","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: false
+Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
  
-
 Constraints:
 
-1 <= strs.length <= 104
-0 <= strs[i].length <= 100
-strs[i] consists of lower-case English letters.
+board.length == 9
+board[i].length == 9
+board[i][j] is a digit or '.'.
 '''
 
-class group_anagrams:
+class valid_sudoku:
 
     from typing import List
 
-    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+    def isValidSudoku(self, board):
+        return (self.is_row_valid(board) and
+                self.is_col_valid(board) and
+                self.is_square_valid(board))
+
+    def is_row_valid(self, board):
+        for row in board:
+            if not self.is_unit_valid(row):
+                return False
+        return True
+
+    def is_col_valid(self, board):
+        for col in zip(*board):
+            if not self.is_unit_valid(col):
+                return False
+        return True
         
-        from collections import defaultdict
+    def is_square_valid(self, board):
+        for i in (0, 3, 6):
+            for j in (0, 3, 6):
+                square = [board[x][y] for x in range(i, i + 3) for y in range(j, j + 3)]
+                if not self.is_unit_valid(square):
+                    return False
+        return True
+        
+    def is_unit_valid(self, unit):
+        unit = [i for i in unit if i != '.']
+        return len(set(unit)) == len(unit)
 
-        groups = defaultdict(list)
 
-        for s in strs:
-
-            key = ''.join(sorted(list(s)))
-            groups[key] += [s]
-
-        return list(groups.values())
-
-strs = ["eat","tea","tan","ate","nat","bat"]
-
-actual = group_anagrams().groupAnagrams(strs)
-
-print(actual)
+board = [["5","3",".",".","7",".",".",".","."],
+        ["6",".",".","1","9","5",".",".","."],
+        [".","9","8",".",".",".",".","6","."],
+        ["8",".",".",".","6",".",".",".","3"],
+        ["4",".",".","8",".","3",".",".","1"],
+        ["7",".",".",".","2",".",".",".","6"],
+        [".","6",".",".",".",".","2","8","."],
+        [".",".",".","4","1","9",".",".","5"],
+        [".",".",".",".","8",".",".","7","9"]]
