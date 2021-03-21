@@ -174,12 +174,12 @@ You should return the following tree:
 d      e  f    g
 '''
 
-def reconstruct1(preorder, inorder):
+def reconstruct1(preorder, in_order):
 
-    def reconstruct(preorder, inorder):
-        if not preorder or not inorder: return None
+    def reconstruct(preorder, in_order):
+        if not preorder or not in_order: return None
 
-        mid = round( ( len(inorder) ) / 2)
+        mid = round((len(in_order)) / 2)
 
         node = Node(preorder[0])
 
@@ -195,28 +195,28 @@ def reconstruct1(preorder, inorder):
 
         return node
 
-    return reconstruct(preorder, inorder)
+    return reconstruct(preorder, in_order)
     
-def reconstruct2(preorder, inorder):
+def reconstruct2(preorder, in_order):
 
-    def reconstruct(preorder, inorder):
-        if not preorder and not inorder:
+    def reconstruct(preorder, in_order):
+        if not preorder and not in_order:
             return None
 
         root = Node(preorder[0])
 
-        if len(preorder) == len(inorder) == 1:
+        if len(preorder) == len(in_order) == 1:
             return root
  
-        root_i = inorder.index(root.data) if len(inorder) > 1 else 0
+        root_i = in_order.index(root.data) if len(in_order) > 1 else 0
         root.left = reconstruct(preorder[1:1 + root_i],
-                                inorder[0:root_i])
+                                in_order[0:root_i])
         root.right = reconstruct(preorder[1 + root_i:],
-                                        inorder[root_i + 1:])
+                                        in_order[root_i + 1:])
 
         return root
 
-    return reconstruct(preorder, inorder)
+    return reconstruct(preorder, in_order)
 
 
 ''' Evaluate Arithmetic.

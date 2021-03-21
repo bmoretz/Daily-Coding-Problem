@@ -1,93 +1,87 @@
 
 '''
-36. Valid Sudoku
+652. Find Duplicate Subtrees
 
-Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
-
-Each row must contain the digits 1-9 without repetition.
-Each column must contain the digits 1-9 without repetition.
-Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
-Note:
-
-A Sudoku board (partially filled) could be valid but is not necessarily solvable.
-Only the filled cells need to be validated according to the mentioned rules.
- 
 Example 1:
 
-Input: board = 
-[["5","3",".",".","7",".",".",".","."]
-,["6",".",".","1","9","5",".",".","."]
-,[".","9","8",".",".",".",".","6","."]
-,["8",".",".",".","6",".",".",".","3"]
-,["4",".",".","8",".","3",".",".","1"]
-,["7",".",".",".","2",".",".",".","6"]
-,[".","6",".",".",".",".","2","8","."]
-,[".",".",".","4","1","9",".",".","5"]
-,[".",".",".",".","8",".",".","7","9"]]
-Output: true
-
+Input: root = [1,2,3,4,null,2,4,null,null,4]
+Output: [[2,4],[4]]
 Example 2:
 
-Input: board = 
-[["8","3",".",".","7",".",".",".","."]
-,["6",".",".","1","9","5",".",".","."]
-,[".","9","8",".",".",".",".","6","."]
-,["8",".",".",".","6",".",".",".","3"]
-,["4",".",".","8",".","3",".",".","1"]
-,["7",".",".",".","2",".",".",".","6"]
-,[".","6",".",".",".",".","2","8","."]
-,[".",".",".","4","1","9",".",".","5"]
-,[".",".",".",".","8",".",".","7","9"]]
-Output: false
-Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
- 
+Input: root = [2,1,1]
+Output: [[1]]
+Example 3:
+
+Input: root = [2,2,2,3,null,3,null]
+Output: [[2,3],[3]]
+
 Constraints:
 
-board.length == 9
-board[i].length == 9
-board[i][j] is a digit or '.'.
+The number of the nodes in the tree will be in the range [1, 10^4]
+-200 <= Node.val <= 200
 '''
 
-class valid_sudoku:
+class duplicate_subtrees:
 
-    from typing import List
+    class Node:
 
-    def isValidSudoku(self, board):
-        return (self.is_row_valid(board) and
-                self.is_col_valid(board) and
-                self.is_square_valid(board))
+        def __init__(self, val):
+            self.value = val
+            self.left, self.right = None, None
 
-    def is_row_valid(self, board):
-        for row in board:
-            if not self.is_unit_valid(row):
-                return False
-        return True
+    def build_tree(self, values):
 
-    def is_col_valid(self, board):
-        for col in zip(*board):
-            if not self.is_unit_valid(col):
-                return False
-        return True
+        if not values:
+            return None
+
+        root = self.Node(values[0])
+        values.pop(0)
         
-    def is_square_valid(self, board):
-        for i in (0, 3, 6):
-            for j in (0, 3, 6):
-                square = [board[x][y] for x in range(i, i + 3) for y in range(j, j + 3)]
-                if not self.is_unit_valid(square):
-                    return False
-        return True
+        nodes = [root]
+
+        it = iter(values)
+
+        for val in it:
+            parent = nodes[0]
+
+            parent.left = self.Node(val)
+
+            if parent.left.value != None:
+                nodes += [parent.left]
+
+            parent.right = self.Node(next(it, None))
+
+            if parent.right.value != None:
+                nodes += [parent.right]
+
+            nodes.pop(0)
+
+        return root
+
+    def findDuplicateSubtrees(self, values):
         
-    def is_unit_valid(self, unit):
-        unit = [i for i in unit if i != '.']
-        return len(set(unit)) == len(unit)
+        root = self.build_tree(values)
 
+        from collections import defaultdict, Counter
+        
+        trees = defaultdict()
+        trees.default_factory = trees.__len__
+        count = Counter()
+        ans = []
+        def lookup(node):
+            if node:
+                uid = trees[node.value, lookup(node.left), lookup(node.right)]
+                count[uid] += 1
+                if count[uid] == 2:
+                    ans.append(node)
+                return uid
 
-board = [["5","3",".",".","7",".",".",".","."],
-        ["6",".",".","1","9","5",".",".","."],
-        [".","9","8",".",".",".",".","6","."],
-        ["8",".",".",".","6",".",".",".","3"],
-        ["4",".",".","8",".","3",".",".","1"],
-        ["7",".",".",".","2",".",".",".","6"],
-        [".","6",".",".",".",".","2","8","."],
-        [".",".",".","4","1","9",".",".","5"],
-        [".",".",".",".","8",".",".","7","9"]]
+        lookup(root)
+
+        return ans
+
+values = [1,2,3,4,None,2,4,None,None,4]
+
+sln = duplicate_subtrees().findDuplicateSubtrees( values )
+
+print(sln)
