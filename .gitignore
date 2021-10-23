@@ -15,3 +15,5 @@ dcp/share/
 .vs/*
 packages/*
 output/*
+
+R/.Rproj.user/*
