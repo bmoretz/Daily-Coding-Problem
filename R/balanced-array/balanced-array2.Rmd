@@ -1,0 +1,59 @@
+---
+title: "Balanced Array"
+output: pdf_document
+---
+
+## Balanced Array
+
+Given an array of numbers, find the index of the smallest array element (the pivot), for which the sums of all elements to the left and to the right are equal. The array may not be reordered.
+
+Example
+
+arr=[1,2,3,4,6]
+
+the sum of the first three elements, 1+2+3=6. The value of the last element is 6. 
+Using zero based indexing, arr[3]=4 is the pivot between the two sub-arrays.
+The index of the pivot is 3.
+ 
+Function Description 
+
+Complete the function balancedSum in the editor below.
+
+balancedSum has the following parameter(s):
+
+    int arr[n]:  an array of integers
+
+Returns:
+
+    int: an integer representing the index of the pivot
+
+Constraints
+
+3 ≤ n ≤ 105
+1 ≤ arr[i] ≤ 2 × 104, where 0 ≤ i < n
+It is guaranteed that a solution always exists.
+
+```{r}
+nums <- c(1,2,3,4,6)
+
+lp <- 1; rp <- length(nums);
+lsum <- 0; rsum <- 0
+
+while(lp < rp) {
+  if(lsum <= rsum) {
+    lsum <- sum(lsum, nums[lp])
+    lp <- lp + 1
+  } else {
+    rsum = sum(rsum, nums[rp])
+    rp <- rp - 1
+  }
+  
+  if(lsum == rsum)
+    break
+}
+
+stopifnot(lp == rp)
+
+nums[lp]
+```
+
