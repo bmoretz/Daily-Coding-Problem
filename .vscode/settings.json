@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "dcp\\Scripts\\python.exe",
+    "python.pythonPath": "py\\dcp\\Scripts\\python3.9.exe",
     "python.testing.pytestArgs": [
         "tests"
     ],
