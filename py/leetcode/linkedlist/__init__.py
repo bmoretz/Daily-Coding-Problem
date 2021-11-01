@@ -140,7 +140,7 @@ class intersection:
         
         return (sentinel.next, node)
         
-    def build_list( self, list1 : List[int], list2 : List[int], common : List[int] ) -> (ListNode, ListNode, ListNode):
+    def build_list( self, list1 : List[int], list2 : List[int], common : List[int] ) -> tuple(ListNode, ListNode, ListNode):
         
         headA, tailA = self.to_list( list1 )
         headB, tailB = self.to_list( list2 )
