@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import smaller_counts1
+from dcp.problems.arr.smaller_counts import smaller_counts1
 
 class Test_SmallerCounts1(unittest.TestCase):
 

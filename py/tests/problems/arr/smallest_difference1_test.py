@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import smallest_difference1
+from dcp.problems.arr.smallest_difference import smallest_difference1
 
 class Test_SmallestDifference1(unittest.TestCase):
 

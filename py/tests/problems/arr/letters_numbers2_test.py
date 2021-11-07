@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import letters_numbers2
+from dcp.problems.arr.letters_numbers import letters_numbers2
 
 class Test_LettersNumbers2(unittest.TestCase):
 

@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import window1
+from dcp.problems.arr.smallest_window import window1
 
 class Test_SmallestWindow(unittest.TestCase):
 

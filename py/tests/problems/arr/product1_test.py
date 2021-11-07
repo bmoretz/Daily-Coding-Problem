@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import product1
+from dcp.problems.arr.products import product1
 
 class Test_ArrayProduct1(unittest.TestCase):
     

@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import max_subarray_sum1
+from dcp.problems.arr.sum_contigous_subarray import max_subarray_sum1
 
 class Test_MaxSubarraySum(unittest.TestCase):
 

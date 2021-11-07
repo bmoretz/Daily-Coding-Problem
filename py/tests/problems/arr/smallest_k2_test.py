@@ -1,6 +1,6 @@
 import unittest
 
-from problems.arr import smallest_k2
+from dcp.problems.arr.smallest_k import smallest_k2
 
 class Test_SmallestK1(unittest.TestCase):
 
