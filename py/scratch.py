@@ -1,87 +1,47 @@
+class UnionFind:
 
-'''
-652. Find Duplicate Subtrees
+    root = []
 
-Example 1:
+    def __init__(self, size : int) -> None:
+        root = [0] * size
 
-Input: root = [1,2,3,4,null,2,4,null,null,4]
-Output: [[2,4],[4]]
-Example 2:
+        for index in range(0, size):
+            root[index] = index
 
-Input: root = [2,1,1]
-Output: [[1]]
-Example 3:
+        self.root = root
 
-Input: root = [2,2,2,3,null,3,null]
-Output: [[2,3],[3]]
+    def find(self, x : int) -> int:
+        return self.root[x]
 
-Constraints:
+    def union(self, x, y) -> None:
+        root_x = self.find(x)
+        root_y = self.find(y)
 
-The number of the nodes in the tree will be in the range [1, 10^4]
--200 <= Node.val <= 200
-'''
+        if root_x != root_y:
+            for index in range(len(self.root)):
+                if self.root[index] == root_y:
+                    self.root[index] = root_x
 
-class duplicate_subtrees:
+    def connected(self, x, y) -> bool:
+        return self.find(x) == self.find(y)
 
-    class Node:
 
-        def __init__(self, val):
-            self.value = val
-            self.left, self.right = None, None
+uf = UnionFind(10)
 
-    def build_tree(self, values):
+# 1-2-5-6-7 | 3-8-9-4
+uf.union(1, 2)
+uf.union(2, 5)
+uf.union(5, 6)
+uf.union(6, 7)
 
-        if not values:
-            return None
+uf.union(3, 8)
+uf.union(8, 9)
 
-        root = self.Node(values[0])
-        values.pop(0)
-        
-        nodes = [root]
 
-        it = iter(values)
+print(uf.connected(1, 5))
+print(uf.connected(5, 7))
+print(uf.connected(4, 9))
 
-        for val in it:
-            parent = nodes[0]
+uf.union(9, 4)
 
-            parent.left = self.Node(val)
-
-            if parent.left.value != None:
-                nodes += [parent.left]
-
-            parent.right = self.Node(next(it, None))
-
-            if parent.right.value != None:
-                nodes += [parent.right]
-
-            nodes.pop(0)
-
-        return root
-
-    def findDuplicateSubtrees(self, values):
-        
-        root = self.build_tree(values)
-
-        from collections import defaultdict, Counter
-        
-        trees = defaultdict()
-        trees.default_factory = trees.__len__
-        count = Counter()
-        ans = []
-        def lookup(node):
-            if node:
-                uid = trees[node.value, lookup(node.left), lookup(node.right)]
-                count[uid] += 1
-                if count[uid] == 2:
-                    ans.append(node)
-                return uid
-
-        lookup(root)
-
-        return ans
-
-values = [1,2,3,4,None,2,4,None,None,4]
-
-sln = duplicate_subtrees().findDuplicateSubtrees( values )
-
-print(sln)
+print(uf.connected(4, 9))

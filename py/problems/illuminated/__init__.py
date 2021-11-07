@@ -13,7 +13,7 @@ def karatsuba(x, y):
 
     def zero_pad(value, digits, left = True):
 
-        for pad in range(digits):
+        for _ in range(digits):
             if left:
                 value = '0' + value
             else:
@@ -100,7 +100,7 @@ def count_inversions(arr):
 
         result = []
 
-        for index in range(n):
+        for _ in range(n):
             
             left  = left_set[left_index] if left_index < len(left_set) else None
             right = right_set[right_index] if right_index < len(right_set) else None
@@ -139,6 +139,7 @@ Partition subroutine exactly as it is described in the video lectures (otherwise
 '''
 
 def get_sort_data():
+    
     from os import getcwd
     
     data_dir = getcwd() + '\\data\\illuminated\\quick-sort\\'

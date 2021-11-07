@@ -17,15 +17,16 @@ DIRECTIONS FOR THIS PROBLEM:
 For the first part of the programming assignment, you should always use the first element of the array as the pivot element.
 '''
 
-from os import getcwd
-
-data_dir = getcwd() + '\\data\\illuminated\\quick-sort\\'
-file_path = data_dir + 'QuickSort.txt'
+from utility import get_test_file
 
 def read_numbers():
+
+    file_path = get_test_file('quick-sort', 'QuickSort.txt')
+
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
         numbers = [int(line) for line in lines]
+
     return numbers
 
 ''' quick sort with pivot statically set at 0 '''
@@ -89,6 +90,7 @@ def quick_sort(arr, left=0, right=None, choose_pivot=None, comp=0):
     return comp
 
 def run_compare():
+    
     for method in (pivot_0, pivot_n, pivot_m):
 
         numbers = read_numbers()
