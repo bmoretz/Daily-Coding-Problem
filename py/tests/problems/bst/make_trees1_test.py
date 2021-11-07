@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bst import make_trees1
+from dcp.problems.bst.possible import make_trees1
 
 class Test_MakeTrees1(unittest.TestCase):
     

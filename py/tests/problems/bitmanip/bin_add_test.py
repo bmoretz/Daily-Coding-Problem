@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bit_manip import bin_add
+from dcp.problems.bit_manip.bin_add import bin_add1
 
 class Test_BinAdd1(unittest.TestCase):
     
@@ -11,7 +11,7 @@ class Test_BinAdd1(unittest.TestCase):
 
         a, b = 1, None
 
-        actual = bin_add(a, b)
+        actual = bin_add1(a, b)
         expected = None
 
         assert actual == None
@@ -21,7 +21,7 @@ class Test_BinAdd1(unittest.TestCase):
         a = 6 # 0110
         b = 6 # 0110
 
-        actual = bin_add(a, b)
+        actual = bin_add1(a, b)
         expected = 12 # 1100
 
         assert actual == expected
@@ -31,7 +31,7 @@ class Test_BinAdd1(unittest.TestCase):
         a = 9 # 1001
         b = 7 # 0111
 
-        actual = bin_add(a, b)
+        actual = bin_add1(a, b)
         expected = 16 # 10000
 
         assert actual == expected
@@ -41,7 +41,7 @@ class Test_BinAdd1(unittest.TestCase):
         a = 4 # 0100
         b = 6 # 0011
 
-        actual = bin_add(a, b)
+        actual = bin_add1(a, b)
         expected = 10 # 1010
 
         assert actual == expected
@@ -51,7 +51,7 @@ class Test_BinAdd1(unittest.TestCase):
         a = 658 # 1010010010
         b = 326 # 0101000110
 
-        actual = bin_add(a, b)
+        actual = bin_add1(a, b)
         expected = 984 # 1111011000
 
         assert actual == expected
@@ -61,7 +61,7 @@ class Test_BinAdd1(unittest.TestCase):
         a = 9101 # 10001110001101
         b = 43 # 101011
 
-        actual = bin_add(a, b)
+        actual = bin_add1(a, b)
         expected = 9192 # 10001111101000
 
         assert actual == expected

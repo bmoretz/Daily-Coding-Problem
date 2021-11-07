@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bit_manip import binrep1
+from dcp.problems.bit_manip.bin_to_str import binrep1
 
 class Test_BinaryString1(unittest.TestCase):
     

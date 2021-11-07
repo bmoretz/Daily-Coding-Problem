@@ -1,8 +1,7 @@
 import unittest
 
-from problems.bst import BST
-
-from problems.bst import floor_ceiling1
+from dcp.problems.bst.ds import BST
+from dcp.problems.bst.floor_ceiling import floor_ceiling1
 
 class Test_FloorCeiling1(unittest.TestCase):
     

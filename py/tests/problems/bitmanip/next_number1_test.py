@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bit_manip import next_number1
+from dcp.problems.bit_manip.next_number import next_number1
 
 class Test_NextNumber1(unittest.TestCase):
     

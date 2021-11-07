@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bit_manip import number_swap
+from dcp.problems.bit_manip.number_swapper import number_swap
 
 class Test_NumberSwap1(unittest.TestCase):
     

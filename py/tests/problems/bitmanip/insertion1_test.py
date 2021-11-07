@@ -2,7 +2,7 @@ import unittest
 
 from bitarray import bitarray
 
-from problems.bit_manip import insertion1
+from dcp.problems.bit_manip.intersection import insertion1
 
 class Test_Insertion1(unittest.TestCase):
     

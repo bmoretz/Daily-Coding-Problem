@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bit_manip import flip_bit2
+from dcp.problems.bit_manip.flip_to_win import flip_bit2
 
 class Test_BitFlip2(unittest.TestCase):
     

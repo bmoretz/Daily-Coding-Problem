@@ -1,8 +1,6 @@
-from collections import defaultdict
-
 from abc import ABCMeta
 
-from py.problems.graph import IGraph, InvalidState
+from common import InvalidState
 
 class AMGraph(metaclass=ABCMeta):
     """Adjacency matrix graph implementation."""
