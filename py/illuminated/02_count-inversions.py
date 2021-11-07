@@ -18,6 +18,7 @@ def to_array(str):
     return [int(c) for c in str]
 
 def read_numbers():
+
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
         numbers = [int(line) for line in lines]

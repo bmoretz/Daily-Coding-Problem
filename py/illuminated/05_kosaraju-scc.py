@@ -21,9 +21,9 @@ Because of the size of the graph you may have to manage memory carefully. The be
 suggest that you exchange tips for doing this on the discussion forums.
 '''
 
-data_dir = os.getcwd() + '\\data\\illuminated\\kosaraju\\'
+from utility import get_test_file
 
-submission_file_path = data_dir + 'SCC.txt'
+submission_file_path = get_test_file('kosaraju', 'SCC.txt')
 
 import heapq
 from collections import defaultdict

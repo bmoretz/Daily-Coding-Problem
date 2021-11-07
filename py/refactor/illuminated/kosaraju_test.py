@@ -2,7 +2,7 @@ import unittest, os
 
 from problems.illuminated import run_kosaraju
 
-from .utility import get_test_data_path
+from .utility import get_test_file
 
 class Test_Kosaraju(unittest.TestCase):
 

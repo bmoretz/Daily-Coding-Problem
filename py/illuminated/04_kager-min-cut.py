@@ -18,15 +18,17 @@ Write your numeric answer in the space provided.
 So e.g., if your answer is 5, just type 5 in the space provided.
 '''
 
-file_path = os.getcwd() + '\py\\data\\kargerMinCut.txt'
-# file_path = os.getcwd() + '\py\\data\\minGraph.txt'
-# file_path = os.getcwd() + '\py\\data\\minGraph_test_case1.txt'
+from utility import get_test_file
+
+# kargerMinCut.txt minGraph.txt minGraph_test_case1.txt
+file_path = get_test_file('karger', 'kargerMinCut.txt')
 
 from copy import deepcopy
 from collections import defaultdict
 from random import uniform, seed, choice
 
 class Graph():
+
     ''' simple adjency list graph '''
     def __init__(self):
         self.vertices = defaultdict(list)
@@ -117,11 +119,7 @@ def read_graph():
 
     return g
 
-# seed(392)
 seed(5520)
-# seed(130)
-# seed(20)
-# seed(90)
 
 graph = read_graph()
 

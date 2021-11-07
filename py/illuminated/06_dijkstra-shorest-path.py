@@ -19,10 +19,10 @@ additional challenge, try implementing the heap-based version. Note this require
 of mapping between vertices and their positions in the heap.
 '''
 
-data_dir = os.getcwd() + '\\data\\illuminated\\dijkstra\\'
+from utility import get_test_file
 
-submission_file_path = data_dir + 'dijkstraData.txt'
-test_file_path = data_dir + 'problem9.8test.txt'
+submission_file_path = get_test_file('dijkstra', 'dijkstraData.txt')
+test_file_path = get_test_file('dijkstra', 'problem9.8test.txt')
 
 from collections import defaultdict
 import heapq, time
