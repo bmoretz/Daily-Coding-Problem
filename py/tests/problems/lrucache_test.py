@@ -1,4 +1,4 @@
-from py.data_structures.LRUCache import LRUCache
+from data_structures.LRUCache import LRUCache
 
 import unittest
 

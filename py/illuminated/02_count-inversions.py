@@ -10,15 +10,15 @@ The numeric answer for the given input file should be typed in the space below.
 So if your answer is 1198233847, then just type 1198233847 in the space provided without any space / commas / any other punctuation marks. You can make up to 5 attempts, and we'll use the best one for grading.
 '''
 
-from os import getcwd
+from utility import get_test_file
 
-data_dir = getcwd() + '\\data\\illuminated\\count-inversions\\'
-file_path = data_dir + 'IntegerArray.txt'
+file_path = get_test_file('count-inversions', 'IntegerArray.txt')
 
 def to_array(str):
     return [int(c) for c in str]
 
 def read_numbers():
+
     with open(file_path, 'r') as f:
         lines = f.read().splitlines()
         numbers = [int(line) for line in lines]

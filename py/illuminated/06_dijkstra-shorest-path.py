@@ -1,5 +1,3 @@
-import os
-
 '''
 The file contains an adjacency list representation of an undirected weighted graph with 200 vertices labeled 1 to 200. Each row consists of the node tuples that are 
 adjacent to that particular vertex along with the length of that edge. For example, the 6th row has 6 as the first entry indicating that this row corresponds to the vertex
@@ -19,10 +17,10 @@ additional challenge, try implementing the heap-based version. Note this require
 of mapping between vertices and their positions in the heap.
 '''
 
-data_dir = os.getcwd() + '\\data\\illuminated\\dijkstra\\'
+from utility import get_test_file
 
-submission_file_path = data_dir + 'dijkstraData.txt'
-test_file_path = data_dir + 'problem9.8test.txt'
+submission_file_path = get_test_file('dijkstra', 'dijkstraData.txt')
+test_file_path = get_test_file('dijkstra', 'problem9.8test.txt')
 
 from collections import defaultdict
 import heapq, time

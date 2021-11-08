@@ -1,10 +1,10 @@
-from py.problems.tree import TreeToList
-from py.problems.tree import get_height, get_width
-from py.problems.tree import populate_pre_order
+from problems.tree import TreeToList
+from problems.tree import get_height, get_width
+from problems.tree import populate_pre_order
 
 import unittest
 
-from py.problems.tree import Node
+from problems.tree import Node
 
 tree1 = [0,
         [1, [], []],
@@ -40,7 +40,7 @@ class Test_InitTree(unittest.TestCase):
     def test_case4(self):
         assert get_width(self.tree2) == 2
 
-from py.problems.tree import count_unival_subtrees1
+from problems.tree import count_unival_subtrees1
 class Test_CountUnivalSubtree1(unittest.TestCase):
 
     def setUp(self):
@@ -58,7 +58,7 @@ class Test_CountUnivalSubtree1(unittest.TestCase):
 
         assert subtrees == 3
 
-from py.problems.tree import count_unival_subtrees2
+from problems.tree import count_unival_subtrees2
 class Test_CountUnivalSubtree2(unittest.TestCase):
 
     def setUp(self):
@@ -76,7 +76,7 @@ class Test_CountUnivalSubtree2(unittest.TestCase):
 
         assert subtrees == 5
 
-from py.problems.tree import serialize, deserialize
+from problems.tree import serialize, deserialize
 class Test_Serialization(unittest.TestCase):
 
     def setUp(self):
@@ -93,7 +93,7 @@ class Test_Serialization(unittest.TestCase):
         assert tree1.left.data == 1
         assert tree1.right.data == 0
 
-from py.problems.tree import reconstruct1
+from problems.tree import reconstruct1
 class Test_Reconstruct1(unittest.TestCase):
 
     def setUp(self):
@@ -122,7 +122,7 @@ class Test_Reconstruct1(unittest.TestCase):
         assert right.left.data == 'f'
         assert right.right.data == 'g'
 
-from py.problems.tree import reconstruct2
+from problems.tree import reconstruct2
 class Test_Reconstruct2(unittest.TestCase):
 
     def setUp(self):
@@ -151,7 +151,7 @@ class Test_Reconstruct2(unittest.TestCase):
         assert right.left.data == 'f'
         assert right.right.data == 'g'
 
-from py.problems.tree import evaluate1
+from problems.tree import evaluate1
 class Test_Arithmetic1(unittest.TestCase):
 
     def setUp(self):
@@ -193,7 +193,7 @@ class Test_Arithmetic1(unittest.TestCase):
 
         assert result == 10
 
-from py.problems.tree import minsum1
+from problems.tree import minsum1
 class Test_MinSum1(unittest.TestCase):
 
     def setUp(self):
@@ -221,7 +221,7 @@ class Test_MinSum1(unittest.TestCase):
 
         assert min_level == 1
 
-from py.problems.tree import MinTree1
+from problems.tree import MinTree1
 class Test_MinTree1(unittest.TestCase):
 
     def setUp(self):
@@ -280,7 +280,7 @@ class Test_MinTree1(unittest.TestCase):
         assert right.left.data == 5
         assert right.right.data == 7
 
-from py.problems.tree import DepthList
+from problems.tree import DepthList
 class Test_DepthList(unittest.TestCase):
 
     def setUp(self):
@@ -601,7 +601,7 @@ class Test_DepthList(unittest.TestCase):
                 assert values[2].next.next.data == 5
                 assert values[2].next.next.next.data == 7
 
-from py.problems.tree import is_balanced, Node
+from problems.tree import is_balanced, Node
 class Test_IsBalanced(unittest.TestCase):
 
     def setUp(self):
@@ -695,7 +695,7 @@ class Test_IsBalanced(unittest.TestCase):
 
         assert is_balanced(root) == True
 
-from py.problems.tree import is_bst
+from problems.tree import is_bst
 class Test_IsBST(unittest.TestCase):
 
     def setUp(self):
@@ -893,7 +893,7 @@ class Test_IsBST(unittest.TestCase):
 
         assert is_bst(tree) == False
 
-from py.problems.tree import successor
+from problems.tree import successor
 class Test_Successor(unittest.TestCase):
 
     def setUp(self):
@@ -1080,7 +1080,7 @@ class Test_Successor(unittest.TestCase):
 
         assert actual.data == 30
 
-from py.problems.tree import first_common_ancestor1
+from problems.tree import first_common_ancestor1
 class Test_FirstCommonAncestor1(unittest.TestCase):
 
     def setUp(self):
@@ -1181,7 +1181,7 @@ class Test_FirstCommonAncestor1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.tree import check_subtree1
+from problems.tree import check_subtree1
 class Test_CheckSubtree1(unittest.TestCase):
 
     def setUp(self):
@@ -1434,7 +1434,7 @@ class Test_CheckSubtree1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.tree import check_subtree2
+from problems.tree import check_subtree2
 class Test_CheckSubtree2(unittest.TestCase):
 
     def setUp(self):
@@ -1687,7 +1687,7 @@ class Test_CheckSubtree2(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.tree import RandomBinaryTree1
+from problems.tree import RandomBinaryTree1
 class Test_RandomBinaryTree1(unittest.TestCase):
 
     def setUp(self):
@@ -1807,7 +1807,7 @@ class Test_RandomBinaryTree1(unittest.TestCase):
 
         assert tree.root == None
 
-from py.problems.tree import SumTree1
+from problems.tree import SumTree1
 class Test_SumTree1(unittest.TestCase):
 
     def setUp(self):

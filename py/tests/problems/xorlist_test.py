@@ -1,6 +1,6 @@
 import unittest
 
-from py.data_structures.XORList import XorLinkedList
+from data_structures.XORList import XorLinkedList
 class Test_XORList1(unittest.TestCase):
     
     def setUp(self):

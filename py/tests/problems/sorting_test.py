@@ -1,6 +1,6 @@
 import unittest
 
-from py.problems.sorting import merge_sort1
+from problems.sorting import merge_sort1
 class Test_MergeSort1(unittest.TestCase):
     
     def setUp(self):
@@ -56,7 +56,7 @@ class Test_MergeSort1(unittest.TestCase):
         
         assert actual == expected
 
-from py.problems.sorting import sorted_merge1
+from problems.sorting import sorted_merge1
 class Test_SortedMerge1(unittest.TestCase):
     
     def setUp(self):
@@ -125,7 +125,7 @@ class Test_SortedMerge1(unittest.TestCase):
         
         assert actual == expected
 
-from py.problems.sorting import group_anagrams1
+from problems.sorting import group_anagrams1
 class Test_GroupAnagrams1(unittest.TestCase):
     
     def setUp(self):
@@ -191,7 +191,7 @@ class Test_GroupAnagrams1(unittest.TestCase):
         
         assert actual == expected
 
-from py.problems.sorting import group_anagrams2
+from problems.sorting import group_anagrams2
 class Test_GroupAnagrams2(unittest.TestCase):
     
     def setUp(self):
@@ -257,7 +257,7 @@ class Test_GroupAnagrams2(unittest.TestCase):
         
         assert actual == expected
 
-from py.problems.sorting import find_rotated1
+from problems.sorting import find_rotated1
 class Test_FindRotated1(unittest.TestCase):
     
     def setUp(self):
@@ -326,8 +326,8 @@ class Test_FindRotated1(unittest.TestCase):
         
         assert actual == expected
 
-from py.problems.sorting import Listy
-from py.problems.sorting import sorted_find1
+from problems.sorting import Listy
+from problems.sorting import sorted_find1
 class Test_SortedFind1(unittest.TestCase):
     
     def setUp(self):
@@ -387,7 +387,7 @@ class Test_SortedFind1(unittest.TestCase):
 
         assert actual == expected
     
-from py.problems.sorting import sparse_search
+from problems.sorting import sparse_search
 class Test_SparseSearch1(unittest.TestCase):
     
     def setUp(self):
@@ -456,8 +456,8 @@ class Test_SparseSearch1(unittest.TestCase):
 
         assert actual == expected
     
-from py.problems.sorting import build_mat
-from py.problems.sorting import mat_search
+from problems.sorting import build_mat
+from problems.sorting import mat_search
 class Test_MatrixSearch1(unittest.TestCase):
     
     def setUp(self):
@@ -517,7 +517,7 @@ class Test_MatrixSearch1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.sorting import RankStream
+from problems.sorting import RankStream
 class Test_RankStream1(unittest.TestCase):
     
     def setUp(self):
@@ -600,7 +600,7 @@ class Test_RankStream1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.sorting import alt_sort1
+from problems.sorting import alt_sort1
 class Test_AltSort1(unittest.TestCase):
     
     def setUp(self):
@@ -669,7 +669,7 @@ class Test_AltSort1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.sorting import alt_sort2
+from problems.sorting import alt_sort2
 class Test_AltSort2(unittest.TestCase):
     
     def setUp(self):
@@ -738,7 +738,7 @@ class Test_AltSort2(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.sorting import sub_sort1
+from problems.sorting import sub_sort1
 class Test_SubSort1(unittest.TestCase):
     
     def setUp(self):
@@ -798,7 +798,7 @@ class Test_SubSort1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.sorting import CircusTower
+from problems.sorting import CircusTower
 class Test_CircusTower(unittest.TestCase):
     
     def setUp(self):

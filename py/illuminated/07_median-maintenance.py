@@ -17,16 +17,12 @@ additional challenge, try implementing the heap-based version. Note this require
 of mapping between vertices and their positions in the heap.
 '''
 
-import os
+from utility import get_test_file
 
-data_dir = os.getcwd() + '\\data\\illuminated\\median-maintenance\\'
+submission_file_path = get_test_file('median-maintenance', 'Median.txt')
+test_file_path = get_test_file('median-maintenance', 'problem11.3test.txt')
 
-submission_file_path = data_dir + 'Median.txt'
-test_file_path = data_dir + 'problem11.3test.txt'
-
-from collections import defaultdict
 import heapq, time
-
 
 BLACK = 'BLACK'
 RED = 'RED'

@@ -1,8 +1,8 @@
 import unittest
 
-from py.problems.matrix import print_mat, build_mat
+from problems.matrix import print_mat, build_mat
 
-from py.problems.matrix import rotate1
+from problems.matrix import rotate1
 class Test_Rotate1(unittest.TestCase):
 
     def setUp(self):
@@ -34,7 +34,7 @@ class Test_Rotate1(unittest.TestCase):
 
         assert rotate1(build_mat(5, 5)) == expected
 
-from py.problems.matrix import rotate2
+from problems.matrix import rotate2
 class Test_Rotate2(unittest.TestCase):
 
     def setUp(self):
@@ -66,7 +66,7 @@ class Test_Rotate2(unittest.TestCase):
 
         assert rotate2(build_mat(5, 5)) == expected
 
-from py.problems.matrix import zero1
+from problems.matrix import zero1
 class Test_Zero1(unittest.TestCase):
 
     def setUp(self):
@@ -155,7 +155,7 @@ class Test_Zero1(unittest.TestCase):
 
         assert zero1(mat) == expected
 
-from py.problems.matrix import pond_sizes
+from problems.matrix import pond_sizes
 class Test_PondSizes(unittest.TestCase):
 
     def setUp(self):

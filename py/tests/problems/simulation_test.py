@@ -1,6 +1,6 @@
 import unittest
 
-from py.problems.simulation import estimate_pi
+from problems.simulation import estimate_pi
 class Test_SimulatePi(unittest.TestCase):
     
     def setUp(self):
@@ -10,7 +10,7 @@ class Test_SimulatePi(unittest.TestCase):
         
         assert round( estimate_pi(10e5), 2) == 3.14
 
-from py.problems.simulation import Deck
+from problems.simulation import Deck
 class Test_Shuffle(unittest.TestCase):
 
     def setUp(self):
@@ -38,7 +38,7 @@ class Test_Shuffle(unittest.TestCase):
 
 import numpy as np
 from collections import defaultdict
-from py.problems.simulation import get_unique_set, get_random_set
+from problems.simulation import get_unique_set, get_random_set
 class Test_RandomSet(unittest.TestCase):
 
     def setUp(self):

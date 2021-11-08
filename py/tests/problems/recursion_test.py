@@ -1,6 +1,6 @@
 import unittest
 
-from py.problems.recursion import matches
+from problems.recursion import matches
 class Test_RegularExpression(unittest.TestCase):
     
     def setUp(self):
@@ -18,7 +18,7 @@ class Test_RegularExpression(unittest.TestCase):
 
         assert matches(s, r) == False
 
-from py.problems.recursion import min_and_max1, min_and_max2
+from problems.recursion import min_and_max1, min_and_max2
 class Test_MinMax(unittest.TestCase):
     
     def setUp(self):
@@ -32,7 +32,7 @@ class Test_MinMax(unittest.TestCase):
 
         assert min_and_max2([4, 2, 7, 5, -1, 3, 6]) == (-1, 7)
 
-from py.problems.recursion import nim1, nim2
+from problems.recursion import nim1, nim2
 class Test_PlayNim(unittest.TestCase):
     
     def setUp(self):
@@ -46,7 +46,7 @@ class Test_PlayNim(unittest.TestCase):
 
         assert nim2([3, 4, 5]) == True
 
-from py.problems.recursion import triple_step1
+from problems.recursion import triple_step1
 class Test_TripleStep1(unittest.TestCase):
     
     def setUp(self):
@@ -97,7 +97,7 @@ class Test_TripleStep1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import triple_step2
+from problems.recursion import triple_step2
 class Test_TripleStep2(unittest.TestCase):
     
     def setUp(self):
@@ -148,8 +148,8 @@ class Test_TripleStep2(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import build_grid
-from py.problems.recursion import robot_walk1
+from problems.recursion import build_grid
+from problems.recursion import robot_walk1
 class Test_RobotWalk1(unittest.TestCase):
     
     def setUp(self):
@@ -250,7 +250,7 @@ class Test_RobotWalk1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import  magic_index1
+from problems.recursion import  magic_index1
 class Test_MagicIndex1(unittest.TestCase):
     
     def setUp(self):
@@ -299,7 +299,7 @@ class Test_MagicIndex1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import magic_index2
+from problems.recursion import magic_index2
 class Test_MagicIndex2(unittest.TestCase):
     
     def setUp(self):
@@ -356,7 +356,7 @@ class Test_MagicIndex2(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import power_sets1
+from problems.recursion import power_sets1
 class Test_PowerSets1(unittest.TestCase):
     
     def setUp(self):
@@ -407,7 +407,7 @@ class Test_PowerSets1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import rec_multiply1
+from problems.recursion import rec_multiply1
 class Test_RecMultiply1(unittest.TestCase):
     
     def setUp(self):
@@ -448,7 +448,7 @@ class Test_RecMultiply1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import permutations1
+from problems.recursion import permutations1
 class Test_Permutations1(unittest.TestCase):
     
     def setUp(self):
@@ -489,7 +489,7 @@ class Test_Permutations1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import gen_parens1
+from problems.recursion import gen_parens1
 class Test_GenParens1(unittest.TestCase):
     
     def setUp(self):
@@ -537,7 +537,7 @@ class Test_GenParens1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import coin_ways1
+from problems.recursion import coin_ways1
 class Test_GenParens1(unittest.TestCase):
     
     def setUp(self):
@@ -585,7 +585,7 @@ class Test_GenParens1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import coin_ways2
+from problems.recursion import coin_ways2
 class Test_GenParens1(unittest.TestCase):
     
     def setUp(self):
@@ -633,8 +633,8 @@ class Test_GenParens1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import Box
-from py.problems.recursion import stack_boxes1
+from problems.recursion import Box
+from problems.recursion import stack_boxes1
 
 class Test_StackBoxes1(unittest.TestCase):
     
@@ -695,7 +695,7 @@ class Test_StackBoxes1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.recursion import diving_boards1
+from problems.recursion import diving_boards1
 class Test_DivingBoards1(unittest.TestCase):
     
     def setUp(self):

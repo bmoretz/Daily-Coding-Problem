@@ -1,6 +1,6 @@
 import unittest
 
-from py.problems.str import anagram1
+from problems.str import anagram1
 class Test_Anagram1(unittest.TestCase):
     
     def setUp(self):
@@ -12,7 +12,7 @@ class Test_Anagram1(unittest.TestCase):
     def test_case2(self):
         assert anagram1( "abba", "ab" ) == [0, 2]
 
-from py.problems.str import is_palindrome
+from problems.str import is_palindrome
 class Test_Palindrome(unittest.TestCase):
 
     def setUp(self):
@@ -24,7 +24,7 @@ class Test_Palindrome(unittest.TestCase):
     def test_pal2(self):
         assert is_palindrome("code") == False
 
-from py.problems.str import palindrome1
+from problems.str import palindrome1
 class Test_Palindrome1(unittest.TestCase):
     
     def setUp(self):
@@ -36,7 +36,7 @@ class Test_Palindrome1(unittest.TestCase):
     def test_case2(self):
         assert palindrome1( ["code", "edoc", "da", "d"] ) == [(0, 1), (1, 0), (2, 3)]
 
-from py.problems.str import palindrome2
+from problems.str import palindrome2
 class Test_Palindrome2(unittest.TestCase):
    
     def setUp(self):
@@ -54,7 +54,7 @@ t     a     g
   i i   i z  
    s     g   
 """
-from py.problems.str import zigzag1
+from problems.str import zigzag1
 class Test_Zigzag1(unittest.TestCase):
 
     def setUp(self):
@@ -63,7 +63,7 @@ class Test_Zigzag1(unittest.TestCase):
     def test_case1(self):
         assert zigzag1("thisisazigzag", 4) == zigzag_out
 
-from py.problems.str import is_unique1
+from problems.str import is_unique1
 class Test_IsUnique1(unittest.TestCase):
 
     def setUp(self):
@@ -78,7 +78,7 @@ class Test_IsUnique1(unittest.TestCase):
     def test_case3(self):
         assert is_unique1(None) == False
 
-from py.problems.str import is_unique2
+from problems.str import is_unique2
 class Test_IsUnique2(unittest.TestCase):
 
     def setUp(self):
@@ -93,7 +93,7 @@ class Test_IsUnique2(unittest.TestCase):
     def test_case3(self):
         assert is_unique1(None) == False
 
-from py.problems.str import is_permutation
+from problems.str import is_permutation
 class Test_IsPermutation(unittest.TestCase):
 
     def setUp(self):
@@ -108,7 +108,7 @@ class Test_IsPermutation(unittest.TestCase):
     def test_case3(self):
         assert is_permutation(None, None) == False
 
-from py.problems.str import urlify1
+from problems.str import urlify1
 class Test_Urlify1(unittest.TestCase):
 
     def setUp(self):
@@ -126,7 +126,7 @@ class Test_Urlify1(unittest.TestCase):
     def test_case4(self):
         assert urlify1('Mr John Smith') == 'Mr%20John%20Smith'
 
-from py.problems.str import urlify2
+from problems.str import urlify2
 class Test_Urlify2(unittest.TestCase):
 
     def setUp(self):
@@ -144,7 +144,7 @@ class Test_Urlify2(unittest.TestCase):
     def test_case4(self):
         assert urlify2('Mr John Smith') == 'Mr%20John%20Smith'
 
-from py.problems.str import is_palindrome_perm1
+from problems.str import is_palindrome_perm1
 class Test_IsPalindromePerm(unittest.TestCase):
 
     def setUp(self):
@@ -168,7 +168,7 @@ class Test_IsPalindromePerm(unittest.TestCase):
     def test_case6(self):
         assert is_palindrome_perm1('tactcoapapa') == True
 
-from py.problems.str import is_one_away1
+from problems.str import is_one_away1
 class Test_IsOneAway1(unittest.TestCase):
 
     def setUp(self):
@@ -192,7 +192,7 @@ class Test_IsOneAway1(unittest.TestCase):
     def test_case6(self):
         assert is_one_away1('pale', 'apaled') == False
 
-from py.problems.str import compress1
+from problems.str import compress1
 class Test_Compress1(unittest.TestCase):
 
     def setUp(self):
@@ -210,7 +210,7 @@ class Test_Compress1(unittest.TestCase):
     def test_case4(self):
         assert compress1('aa') == 'aa'
 
-from py.problems.str import is_rotation1
+from problems.str import is_rotation1
 class Test_IsRotation1(unittest.TestCase):
 
     def setUp(self):

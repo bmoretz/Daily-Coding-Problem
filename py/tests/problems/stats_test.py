@@ -1,6 +1,6 @@
 import unittest
 
-from py.problems.stats import distribution_fitting
+from problems.stats import distribution_fitting
 
 class Test_DistributionFitting1(unittest.TestCase):
     

@@ -1,6 +1,6 @@
 import unittest
 
-from py.problems.math import line_intersect1
+from problems.math import line_intersect1
 
 class Test_LineIntersect1(unittest.TestCase):
     
@@ -76,7 +76,7 @@ class Test_LineIntersect1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import factorial_zeros1
+from problems.math import factorial_zeros1
 class Test_FactorialZeros1(unittest.TestCase):
     
     def setUp(self):
@@ -136,7 +136,7 @@ class Test_FactorialZeros1(unittest.TestCase):
         
         assert actual == expected
 
-from py.problems.math import english_int
+from problems.math import english_int
 class Test_EnglishInt1(unittest.TestCase):
     
     def setUp(self):
@@ -197,7 +197,7 @@ class Test_EnglishInt1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import Ops
+from problems.math import Ops
 class Test_Operations(unittest.TestCase):
     
     def setUp(self):
@@ -248,7 +248,7 @@ class Test_Operations(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import BisectSquares
+from problems.math import BisectSquares
 class Test_BisectSquares(unittest.TestCase):
     
     def setUp(self):
@@ -269,7 +269,7 @@ class Test_BisectSquares(unittest.TestCase):
         assert actual.p2.x == 3.5
         assert actual.p2.y == 8.0
         
-from py.problems.math import contiguous_seq1
+from problems.math import contiguous_seq1
 class Test_ContiguousSeq1(unittest.TestCase):
     
     def setUp(self):
@@ -329,7 +329,7 @@ class Test_ContiguousSeq1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import sum_swap
+from problems.math import sum_swap
 class Test_SumSwap1(unittest.TestCase):
     
     def setUp(self):
@@ -389,7 +389,7 @@ class Test_SumSwap1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import calculate1
+from problems.math import calculate1
 class Test_Calculate1(unittest.TestCase):
     
     def setUp(self):
@@ -449,7 +449,7 @@ class Test_Calculate1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import count_twos1
+from problems.math import count_twos1
 class Test_CountTwos1(unittest.TestCase):
     
     def setUp(self):
@@ -509,7 +509,7 @@ class Test_CountTwos1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import count_twos2
+from problems.math import count_twos2
 class Test_CountTwos2(unittest.TestCase):
     
     def setUp(self):
@@ -569,7 +569,7 @@ class Test_CountTwos2(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import kth_smallest1
+from problems.math import kth_smallest1
 class Test_KthSmallest1(unittest.TestCase):
     
     def setUp(self):
@@ -617,7 +617,7 @@ class Test_KthSmallest1(unittest.TestCase):
 
         assert actual == expected
 
-from py.problems.math import kth_smallest2
+from problems.math import kth_smallest2
 class Test_KthSmallest2(unittest.TestCase):
     
     def setUp(self):

@@ -65,7 +65,7 @@ balancedSum <- function(len, nums) {
 ```{r}
 arr <- c(4,1,2,3)
 
-balancedSum(arr)
+balancedSum(4, arr)
 ```
 
 ### Test Cases
@@ -77,11 +77,13 @@ problem_path <- here::here(problem_name, "test_cases")
 
 test_cases <- list()
 
+file <- list.files(problem_path)[1]
+
 for(file in list.files(problem_path)) {
   
   test_file <- file.path(problem_path, file)
   test_data <- readLines(test_file)
-  n <- test_data[1]; arr <- as.numeric(test_data[2:length(test_data)])
+  n <- as.numeric(test_data[1]); arr <- as.numeric(test_data[2:length(test_data)])
   
   test_cases <- c(list(test_case = file,
                        result = balancedSum(n, arr)))
