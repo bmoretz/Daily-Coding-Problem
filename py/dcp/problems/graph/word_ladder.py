@@ -20,7 +20,7 @@ from collections import defaultdict
 from dcp.problems.graph.adj_mat_graph import AMGraph
 from dcp.problems.graph.common import find_path
 
-def word_ladder1(start, end, words):
+def word_ladder1(start : str, end : str, words : dict[str, str]):
 
     all_words = set(words) | set([start, end])
 

@@ -1,6 +1,6 @@
 import unittest
 
-from problems.bst import built_bst1
+from dcp.problems.bst.ds import built_bst1
 
 class Test_BuildBST1(unittest.TestCase):
     

@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from .common import IGraph, search
+from .common import IGraph
 
 ''' Remove edges to create even trees.
 

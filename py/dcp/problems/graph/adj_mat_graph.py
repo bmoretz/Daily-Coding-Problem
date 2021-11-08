@@ -38,7 +38,7 @@ class AMGraph(metaclass=ABCMeta):
                 if connection and (neighbor, vertex) not in edges:
                     edges.append({vertex : neighbor})
 
-        return edges    
+        return edges
 
     def isolated(self):
         
@@ -49,7 +49,6 @@ class AMGraph(metaclass=ABCMeta):
                 isolated += self.vertices()[index]
 
         return isolated
-
 
     def neighbors(self, vertex):
 

@@ -1,47 +1,29 @@
-class UnionFind:
+"""
+Decoding.
 
-    root = []
+Given the mapping a = 1, b = 2, … z = 26, and an encoded message, count the number of ways it can be decoded.
 
-    def __init__(self, size : int) -> None:
-        root = [0] * size
+For example, the message ‘111’ would give 3, since it could be decoded as ‘aaa’, ‘ka’, and ‘ak’.
 
-        for index in range(0, size):
-            root[index] = index
+You can assume that the messages are decodable. For example, ‘001’ is not allowed.
+"""
 
-        self.root = root
+def decode(msg : str) -> int:
 
-    def find(self, x : int) -> int:
-        return self.root[x]
+    msg_len = len(msg)
 
-    def union(self, x, y) -> None:
-        root_x = self.find(x)
-        root_y = self.find(y)
+    n_solutions = [1] * (msg_len + 1)
 
-        if root_x != root_y:
-            for index in range(len(self.root)):
-                if self.root[index] == root_y:
-                    self.root[index] = root_x
+    for index in range(2, msg_len+1):
+        last_digit = int(msg[index-1])
+        two_last_digits = int(msg[(index-2):index])
 
-    def connected(self, x, y) -> bool:
-        return self.find(x) == self.find(y)
+        if last_digit > 0:
+            n_solutions[index] = n_solutions[index - 1]
 
+        if two_last_digits > 9 & two_last_digits < 27:
+            n_solutions[index] += n_solutions[index - 2]
 
-uf = UnionFind(10)
+    return n_solutions[-1]
 
-# 1-2-5-6-7 | 3-8-9-4
-uf.union(1, 2)
-uf.union(2, 5)
-uf.union(5, 6)
-uf.union(6, 7)
-
-uf.union(3, 8)
-uf.union(8, 9)
-
-
-print(uf.connected(1, 5))
-print(uf.connected(5, 7))
-print(uf.connected(4, 9))
-
-uf.union(9, 4)
-
-print(uf.connected(4, 9))
+print(decode('111'))
