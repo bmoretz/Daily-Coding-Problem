@@ -1,5 +1,3 @@
-import os
-
 '''
 The file contains the edges of a directed graph. Vertices are labeled as positive integers from 1 to 875714. Every row indicates an edge, 
 the vertex label in first column is the tail and the vertex label in second column is the head (recall the graph is directed, and the edges are 
@@ -21,6 +19,7 @@ Because of the size of the graph you may have to manage memory carefully. The be
 suggest that you exchange tips for doing this on the discussion forums.
 '''
 
+import os
 from utility import get_test_file
 
 submission_file_path = get_test_file('kosaraju', 'SCC.txt')
@@ -29,9 +28,11 @@ import heapq
 from collections import defaultdict
 
 def gen_test_cases(root=os.getcwd()):
+    
     cases = {}
     for case in range(1, 7):
-        cases[case] = f'{data_dir}problem8.10test' + str(case) + '.txt'
+
+        cases[case] = get_test_file('kosaraju', f'problem8.10test{case}.txt')
     return cases
 
 class Graph():
