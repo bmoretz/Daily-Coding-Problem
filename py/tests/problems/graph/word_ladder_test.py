@@ -12,7 +12,7 @@ class Test_WordLadderAM(unittest.TestCase):
         start, end = "dog", "cat"
         words = {"dot", "dop", "dat", "cat"}
 
-        ladder = word_ladder1(start, end, words)
-        exists = True
+        actual = word_ladder1(start, end, words)
+        expected = True
 
-        assert exists == True
+        assert actual == expected

@@ -1,5 +1,5 @@
-
-''' Create stepword chain.
+"""
+Create stepword chain.
 
 Given a start word, an end word, and a dictionary of valid words, find the shortest transformation sequence from start to end
 such that only one letter is changed at each step of the sequence, and each transformed word exists in the dictionary. If
@@ -13,18 +13,28 @@ return ["dog", "dot", "dat", "cat"]
 
 given start = "dog", end = "cat", and dictionary = {"dot", "tod", "dat", "dar"},
 return null as there is no possible transformation from "dog" to "cat".
-'''
+"""
 
 from collections import defaultdict
+    
+from dcp.problems.graph.adj_mat_graph import AMGraph
+from dcp.problems.graph.common import find_path
 
 def word_ladder1(start, end, words):
 
-    from dcp.problems.graph.adj_mat_graph import AMGraph
-
     all_words = set(words) | set([start, end])
 
-    def are_similar(word1, word2):
-        ''' return true if words are seperated by only 1 character '''
+    def are_similar(word1, word2) -> bool:
+        """
+        determines if two words are seperated by only 1 edge
+
+        Args:
+            word1 ([type]): word 1
+            word2 ([type]): word 2
+
+        Returns:
+            [bool]: return true if words are seperated by only 1 character
+        """
         n1, n2 = len(word1), len(word2)
 
         if n1 != n2: 
@@ -38,8 +48,16 @@ def word_ladder1(start, end, words):
 
         return differences <= 1
 
-    def gen_links(words):
-        ''' returns dictionary of words seperated by 1 char or less '''
+    def gen_links(all_words : set[str] ):
+        """
+        gets all words that are seprated by 1 char or less.
+
+        Args:
+            all_words ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         links = defaultdict(list)
 
         for word1 in all_words:
