@@ -89,7 +89,7 @@ Twisted==18.9.0
 ubuntu-advantage-tools==27.2
 ufw==0.36
 unattended-upgrades==0.1
-urllib3==1.25.8
+urllib3==1.26.5
 virtualenv==20.9.0
 virtualenv-clone==0.5.7
 virtualenvwrapper==4.8.4
