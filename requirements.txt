@@ -85,7 +85,7 @@ stevedore==3.5.0
 systemd-python==234
 testresources==2.0.1
 traitlets==4.3.3
-Twisted==18.9.0
+Twisted==20.3.0
 ubuntu-advantage-tools==27.2
 ufw==0.36
 unattended-upgrades==0.1
