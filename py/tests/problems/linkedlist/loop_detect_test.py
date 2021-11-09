@@ -50,6 +50,7 @@ class Test_DetectLoop1(unittest.TestCase):
         assert actual == expected
 
     def test_case4(self):
+        
         node = build_ref_list(['A', 'B', 'C', 'D', 'E'])
 
         self.set_loop(node, 'D')

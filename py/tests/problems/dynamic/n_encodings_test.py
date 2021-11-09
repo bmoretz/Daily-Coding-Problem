@@ -12,6 +12,7 @@ class Test_NumEncodings1(unittest.TestCase):
         assert num_encodings1('111') == 3
 
 from dcp.problems.dynamic.n_encodings import num_encodings2
+
 class Test_NumEncodings2(unittest.TestCase):
 
     def setUp(self):

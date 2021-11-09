@@ -16,12 +16,7 @@ class UnionFind:
             size (int): number of nodes
         """
 
-        root = [0] * size
-
-        for index in range(0, size):
-            root[index] = index
-
-        self.root = root
+        self.root = [idx for idx in range(size)]
 
     def find(self, x : int) -> int:
         """

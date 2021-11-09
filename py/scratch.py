@@ -1,29 +1,44 @@
-"""
-Decoding.
+def countComponents4(n: int, edges: list[list[int]]) -> int:
 
-Given the mapping a = 1, b = 2, … z = 26, and an encoded message, count the number of ways it can be decoded.
+    connections = [idx for idx in range(n)]
+    rank = [1] * n
 
-For example, the message ‘111’ would give 3, since it could be decoded as ‘aaa’, ‘ka’, and ‘ak’.
+    def get_parent(node : int) -> int:
 
-You can assume that the messages are decodable. For example, ‘001’ is not allowed.
-"""
+        if node == connections[node]:
+            return node
 
-def decode(msg : str) -> int:
+        connections[node] = get_parent(connections[node])
 
-    msg_len = len(msg)
+        return connections[node]
 
-    n_solutions = [1] * (msg_len + 1)
+    def connect(u, v) -> None:
 
-    for index in range(2, msg_len+1):
-        last_digit = int(msg[index-1])
-        two_last_digits = int(msg[(index-2):index])
+        pu, pv = get_parent(u), get_parent(v)
 
-        if last_digit > 0:
-            n_solutions[index] = n_solutions[index - 1]
+        if pu != pv:
 
-        if two_last_digits > 9 & two_last_digits < 27:
-            n_solutions[index] += n_solutions[index - 2]
+            if rank[pu] > rank[pv]:
+                connections[pv] = pu
+            elif rank[pu] < rank[pv]:
+                connections[pu] = pv
+            else:
+                connections[pv] = pu
+                rank[pv] = rank[pv] + 1
 
-    return n_solutions[-1]
+    for edge in edges:
+        u, v = edge[0], edge[1]
+        connect(u, v)
 
-print(decode('111'))
+    components = set()
+
+    for node in range(n):
+        components.add(get_parent(node))
+
+    return len(components)
+
+
+n, edges = 7, [[0,1], [1,2], [1,3], [4,5], [4,6], [1,5]]
+
+actual = countComponents4(n, edges)
+expected = 1

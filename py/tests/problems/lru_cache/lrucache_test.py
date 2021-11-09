@@ -1,6 +1,6 @@
-from data_structures.LRUCache import LRUCache
-
 import unittest
+
+from data_structures.LRUCache import LRUCache
 
 class Test_LRUCacheBase(unittest.TestCase):
     
