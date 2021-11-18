@@ -1,18 +1,7 @@
 idea/
 vs/
-env
 pk
 pem
 pub
 
-__pycache__
 .vscode/.ropeproject/
-
-env/**/*
-packages/*
-output/*
-
-R/.Rproj.user/*
-R/.Rhistory
-R/.RData
-.Rproj.user

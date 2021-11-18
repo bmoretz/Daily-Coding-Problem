@@ -1,4 +1,5 @@
 '''
+
 The file contains the edges of a directed graph. Vertices are labeled as positive integers from 1 to 875714. Every row indicates an edge, 
 the vertex label in first column is the tail and the vertex label in second column is the head (recall the graph is directed, and the edges are 
 directed from the first column vertex to the second column vertex). So for example, the 11^th row looks like : "2 47646". 
@@ -205,9 +206,9 @@ def kosaraju(graphs):
 
     forward, reverse = graphs
 
-    path = topological_path( reverse )
+    path = topological_path(reverse)
 
-    components = compute_scc( forward, path )
+    components = compute_scc(forward, path)
 
     return components
 
@@ -226,7 +227,7 @@ def top_N(components, n=5):
 
     sorted_components = heapq.nlargest(n, components.items(), key=lambda x: len(x[1]))
     
-    result = [ len(c[1]) for c in sorted_components ]
+    result = [len(c[1]) for c in sorted_components]
 
     return result
 
@@ -269,4 +270,6 @@ def run_test_cases():
 
 # run_test_cases()
 
-run_kosaraju(submission_file_path) # run submission
+run_kosaraju(submission_file_path) 
+
+# run submission
