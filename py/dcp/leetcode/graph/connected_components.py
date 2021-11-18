@@ -171,3 +171,91 @@ def countComponents4(n: int, edges: list[list[int]]) -> int:
         components.add(get_parent(node))
 
     return len(components)
+
+def countComponents5(n: int, edges: list[list[int]]) -> int:
+
+    from collections import defaultdict
+    from queue import Queue
+
+    graph = defaultdict(list)
+
+    for edge in edges:
+        u, v = edge[0], edge[1]
+
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    seen = set()
+    
+    def bfs(node : int):
+
+        path, queue = [], Queue()
+        queue.put(node)
+
+        while not queue.empty():
+
+            v = queue.get()
+
+            if v not in seen:
+                path.append(v)
+                seen.add(v)
+
+            for u in graph[v]:
+                if u not in seen:
+                    queue.put(u)
+
+        return path
+
+    components = []
+
+    for node in range(n):
+
+        if node not in seen:
+            path = bfs(node)
+            components.append(len(path))
+
+    return len(components)
+
+
+def countComponents6(n: int, edges: list[list[int]]) -> int:
+
+    from collections import defaultdict
+
+    graph = defaultdict(list)
+
+    for edge in edges:
+        u, v = edge[0], edge[1]
+
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    seen = set()
+    
+    def dfs(node : int):
+        
+        path, stack = [], [node]
+
+        while stack:
+
+            v = stack.pop()
+
+            for u in graph[v]:
+
+                if u not in seen:
+                    seen.add(u)
+                    stack.append(u)
+
+            path.append(v)
+            seen.add(v)
+        
+        return path
+
+    components = []
+
+    for node in range(n):
+
+        if node not in seen:
+            path = dfs(node)
+            components.append(len(path))
+
+    return len(components)

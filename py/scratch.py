@@ -1,44 +1,138 @@
-def countComponents4(n: int, edges: list[list[int]]) -> int:
+from collections import defaultdict
+import string
 
-    connections = [idx for idx in range(n)]
-    rank = [1] * n
+class Trie:
 
-    def get_parent(node : int) -> int:
+    class Node:
+        
+        _letter = None
+        _count = None
+        _children = None
 
-        if node == connections[node]:
-            return node
+        def __init__(self, letter):
+            self._letter = letter
+            self._children = [None] * 36
+            self._count = 0
 
-        connections[node] = get_parent(connections[node])
+        def increment(self):
+            self._count = self._count + 1
 
-        return connections[node]
+        def decrement(self):
+            self._count = self._count - 1
 
-    def connect(u, v) -> None:
+        def __len__(self) -> int:
+            return self._count
 
-        pu, pv = get_parent(u), get_parent(v)
+        def __getitem__(self, letter : str) -> 'Trie.Node':
+            idx = Trie._get_index(letter)
+            return self._children[idx]
 
-        if pu != pv:
+        def __setitem__(self, letter : str, _) -> None:
+            idx = Trie._get_index(letter)
 
-            if rank[pu] > rank[pv]:
-                connections[pv] = pu
-            elif rank[pu] < rank[pv]:
-                connections[pu] = pv
+            if self._children[idx] is None:
+                self._children[idx] = Trie.Node(letter)
+
+            child:Trie.Node
+            child = self._children[idx]
+            child.increment()
+
+        def __delitem__(self, letter : str) -> None:
+            idx = Trie._get_index(letter)
+
+            child:Trie.Node
+            child = self._children[idx]
+            
+            if child is not None:
+                child.decrement()
+
+                if len(child) == 0:
+                    self._children[idx] = None
+    
+    _root = None
+    _lookup = defaultdict(int)
+
+    def __init__(self):
+        self._root = Trie.Node(None)
+
+        for index, char in enumerate(string.ascii_lowercase + string.digits):
+            self._lookup[char] = index        
+
+    @classmethod
+    def _get_index(cls, letter : str) -> int:
+        return cls._lookup[letter]
+        
+    def insert(self, word: str) -> None:
+        
+        node = self._root
+
+        for _, chr in enumerate(word):
+            child = node[chr]
+
+            if child is None:
+                node[chr] = chr
             else:
-                connections[pv] = pu
-                rank[pv] = rank[pv] + 1
+                child.increment()
 
-    for edge in edges:
-        u, v = edge[0], edge[1]
-        connect(u, v)
+            node = node[chr]
 
-    components = set()
+    def _get_matches(self, word : str,
+                    partial : bool = False) -> int:
 
-    for node in range(n):
-        components.add(get_parent(node))
+        node = self._root
+        match = ''
 
-    return len(components)
+        for _, char in enumerate(word):
 
+            if node[char] is None:
+                break
 
-n, edges = 7, [[0,1], [1,2], [1,3], [4,5], [4,6], [1,5]]
+            if partial and len(match) == len(word):
+                break
 
-actual = countComponents4(n, edges)
-expected = 1
+            match += char
+            node = node[char]
+
+        return len(node) if word == match else 0
+
+    def countWordsEqualTo(self, word: str) -> int:
+        return self._get_matches(word)
+
+    def countWordsStartingWith(self, prefix: str) -> int:
+        return self._get_matches(prefix, True)
+
+    def erase(self, word: str) -> None:
+
+        node = self._root
+        to_remove = []
+
+        for _, char in enumerate(word):
+
+            if node[char] is None:
+                break
+
+            to_remove.append((node, char))
+            node = node[char]
+
+        while len(to_remove) > 0:
+            node, char = to_remove.pop()
+            del node[char]
+
+trie = Trie()
+
+trie.insert("a01b2")
+
+actual = trie.countWordsStartingWith("a0")
+print(actual)
+
+actual = trie.countWordsStartingWith("gy")
+print(actual)
+
+trie.insert("gyu")
+
+trie.erase("gyu")
+
+trie.insert("gyu")
+
+actual = trie.countWordsEqualTo("gyu")
+print(actual)
